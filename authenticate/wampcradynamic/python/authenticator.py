@@ -53,8 +53,8 @@ class MyAuthenticator(ApplicationSession):
    @inlineCallbacks
    def onJoin(self, details):
 
-      def authenticate(realm, authid):
-         print("authenticate called: realm = '{}', authid = '{}'".format(realm, authid))
+      def authenticate(realm, authid, details):
+         print("authenticate called: realm = '{}', authid = '{}', details = '{}'".format(realm, authid, details))
 
          if authid in self.USERDB:
             return self.USERDB[authid]
