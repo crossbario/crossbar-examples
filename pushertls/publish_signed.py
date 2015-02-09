@@ -26,43 +26,21 @@
 ##
 ###############################################################################
 
-from twisted.internet.defer import inlineCallbacks
 
-from autobahn.twisted.wamp import ApplicationSession
-from autobahn.wamp.exception import ApplicationError
-
+import ssl
+import crossbarconnect
 
 
-class MyAuthenticator(ApplicationSession):
+if __name__ == '__main__':
+    ## Create a new Crossbar.io push client (once), providing key/secret
+    ##
+    context = ssl._create_unverified_context() # we're using self-signed certs, so disable cert checking
+    client = crossbarconnect.Client("https://127.0.0.1:8080/pushsigned",
+                                    key="foobar", secret="secret", context = context)
 
-   USERDB = {
-      'joe': {
-         'secret': 'secret2',
-         'role': 'frontend'
-      },
-      'peter': {
-         # autobahn.wamp.auth.derive_key(secret.encode('utf8'), salt.encode('utf8')).decode('ascii')
-         'secret': 'prq7+YkJ1/KlW1X0YczMHw==',
-         'role': 'frontend',
-         'salt': 'salt123',
-         'iterations': 100,
-         'keylen': 16
-      }
-   }
+    ## Publish an event with (positional) payload and get publication ID
+    ## Since we provided key/secret before, the request will be signed.
+    ##
+    event_id = client.publish("com.myapp.topic1", "Hello, world!", 23)
 
-   @inlineCallbacks
-   def onJoin(self, details):
-
-      def authenticate(realm, authid, details):
-         print("authenticate called: realm = '{}', authid = '{}', details = '{}'".format(realm, authid, details))
-
-         if authid in self.USERDB:
-            return self.USERDB[authid]
-         else:
-            raise ApplicationError("com.example.no_such_user", "could not authenticate session - no such user {}".format(authid))
-
-      try:
-         yield self.register(authenticate, 'com.example.authenticate')
-         print("custom WAMP-CRA authenticator registered")
-      except Exception as e:
-         print("could not register custom WAMP-CRA authenticator: {0}".format(e))
+    print("event published with ID {0}".format(event_id))

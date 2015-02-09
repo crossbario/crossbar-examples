@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Crossbar.io HTTP Bridge Demo</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <p>
+         Crossbar.io is configured to receive PubSub events via HTTP/POST.
+      </p>
+      <p>
+         To publish using 'curl' do
+      </p>
+      <pre>
+curl --insecure -H "Content-Type: application/json" \
+   -d '{"topic": "com.myapp.topic1", "args": ["Hello, world"]}' \
+   https://127.0.0.1:8080/push
+      </pre>
+      <p>
+         Note: we are using a self-signed certificate for Crossbar.io in this example. That certificate cannot be verified by <b>curl</b>, and hence we need to disable certificate verification using the "--insecure" option.
+      </p>
+
+      <script>AUTOBAHN_DEBUG = true;</script>
+      <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         // the URL of the WAMP Router (Crossbar.io)
+         var wsuri;
+         if (document.location.origin == "file://") {
+            wsuri = "wss://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         connection.onopen = function (session) {
+
+            console.log("Connected");
+
+            function onevent (args, kwargs) {
+               console.log("Got event:", args, kwargs);
+            }
+
+            session.subscribe('com.myapp.topic1', onevent);
+         };
+
+         connection.onclose = function () {
+            console.log("Connection lost", arguments);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

@@ -56,8 +56,9 @@ var USERDB = {
 function authenticate (args) {
    var realm = args[0];
    var authid = args[1];
+   var details = args[2];
 
-   console.log("authenticate called:", realm, authid);
+   console.log("authenticate called:", realm, authid, details);
 
    if (USERDB[authid] !== undefined) {
       return USERDB[authid];

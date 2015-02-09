@@ -59,8 +59,9 @@ $userDb = [
 $authenticate = function ($args) use ($userDb) {
     $realm  = array_shift($args);
     $authid = array_shift($args);
+    $details = array_shift($args);
 
-    echo "authenticate called: {$realm}, {$authid}\n";
+    echo "authenticate called: {$realm}, {$authid}, {$details}\n";
 
     if (isset($userDb[$authid])) {
         return $userDb[$authid];
