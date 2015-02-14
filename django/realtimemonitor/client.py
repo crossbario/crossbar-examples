@@ -76,7 +76,7 @@ app = Application('monitoring')
 # from the outside. You should change this value
 # to the IP of the machine you put Crossbar.io
 # and Django.
-SERVER = '192.168.0.104'
+SERVER = '192.168.55.138'
 
 # First, we use a trick to know the public IP for this
 # machine.
@@ -96,13 +96,19 @@ def called_on_joinded():
         This function is executed when the client joins the router, which
         means it's connected and authenticated, ready to send WAMP messages.
     """
+    print("Connected")
+
     # Then we make a POST request to the server to notify it we are active
     # and to retrieve the configuration values for our client.
-    app._params.update(requests.post('http://' + SERVER + ':8080/clients/',
-                                    data={'ip': app._params['ip']}).json())
+    response = requests.post('http://' + SERVER + ':8080/clients/', data={'ip': app._params['ip']})
+    if response.status_code == 200:
+        app._params.update(response.json())
+    else:
+        print("Could not retrieve configuration for client: {} ({})".format(response.reason, response.status_code))
 
 
     # The we loop for ever.
+    print("Entering stats loop ..")
     while True:
         # Every time we loop, we get the stats for our machine
         stats = {'ip': app._params['ip'], 'name': app._params['name']}
@@ -111,6 +117,7 @@ def called_on_joinded():
         # If we are requested to send the stats, we publish them using WAMP.
         if not app._params['disabled']:
             app.session.publish('clientstats', stats)
+            print("Stats published: {}".format(stats))
 
         # Then we wait. Thanks to @inlineCallbacks, using yield means we
         # won't block here, so our client can still listen to WAMP events
@@ -127,4 +134,4 @@ def update_configuration(args):
 
 # We start our client.
 if __name__ == '__main__':
-    app.run(url="ws://%s:8080/ws" % SERVER)
+    app.run(url="ws://%s:8080/ws" % SERVER, debug=False, debug_wamp=False)

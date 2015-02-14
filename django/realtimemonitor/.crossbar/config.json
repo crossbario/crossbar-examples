@@ -38,7 +38,8 @@
                      "object": "application"
                   },
                   "ws": {
-                     "type": "websocket"
+                     "type": "websocket",
+                     "debug": false
                   },
                   "notify": {
                      "type": "pusher",
