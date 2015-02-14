@@ -50,7 +50,7 @@ def get_stats(filters={}):
     if (filters.get('show_memory', True)):
         memory = psutil.phymem_usage()
         results['memory'] = '{used}/{total} ({percent}%)'.format(
-            used=to_gib(memory.active),
+            used=to_gib(memory.used),
             total=to_gib(memory.total),
             percent=memory.percent
         )
@@ -58,12 +58,14 @@ def get_stats(filters={}):
     if (filters.get('show_disk', True)):
         disks = {}
         for device in psutil.disk_partitions():
-            usage = psutil.disk_usage(device.mountpoint)
-            disks[device.mountpoint] = '{used}/{total} ({percent}%)'.format(
-                used=to_gib(usage.used),
-                total=to_gib(usage.total),
-                percent=usage.percent
-            )
+            # skip mountpoint not actually mounted (like CD drives with no disk on Windows)
+            if device.fstype != "":
+                usage = psutil.disk_usage(device.mountpoint)
+                disks[device.mountpoint] = '{used}/{total} ({percent}%)'.format(
+                    used=to_gib(usage.used),
+                    total=to_gib(usage.total),
+                    percent=usage.percent
+                )
         results['disks'] = disks
 
     return results
@@ -110,19 +112,24 @@ def called_on_joinded():
     # The we loop for ever.
     print("Entering stats loop ..")
     while True:
-        # Every time we loop, we get the stats for our machine
-        stats = {'ip': app._params['ip'], 'name': app._params['name']}
-        stats.update(get_stats(app._params))
+        print("Tick")
+        try:
+            # Every time we loop, we get the stats for our machine
+            stats = {'ip': app._params['ip'], 'name': app._params['name']}
+            stats.update(get_stats(app._params))
 
-        # If we are requested to send the stats, we publish them using WAMP.
-        if not app._params['disabled']:
-            app.session.publish('clientstats', stats)
-            print("Stats published: {}".format(stats))
+            # If we are requested to send the stats, we publish them using WAMP.
+            if not app._params['disabled']:
+                app.session.publish('clientstats', stats)
+                print("Stats published: {}".format(stats))
 
-        # Then we wait. Thanks to @inlineCallbacks, using yield means we
-        # won't block here, so our client can still listen to WAMP events
-        # and react to them.
-        yield sleep(app._params['frequency'])
+            # Then we wait. Thanks to @inlineCallbacks, using yield means we
+            # won't block here, so our client can still listen to WAMP events
+            # and react to them.
+            yield sleep(app._params['frequency'])
+        except Exception as e:
+            print("Error in stats loop: {}".format(e))
+            break
 
 
 # We subscribe to the "clientconfig" WAMP event.
