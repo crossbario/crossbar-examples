@@ -4,6 +4,11 @@
       <h1>Hello WAMP</h1>
       <p>Open JavaScript console to watch output.</p>
 
+      <h2>Sessions</h2>
+      <p>
+         <button onclick="list_sessions()">List Sessions</button>
+      </p>
+
       <h2>Topic 1</h2>
       <p>
          <button onclick="topic1_get_subscription()">Get Subscription</button>
@@ -26,10 +31,33 @@
 
          var session = null;
 
+         function list_sessions () {
+            if (session) {
+               session.call("wamp.session.list").then(
+                  function (sessions) {
+                     console.log("Current session IDs on realm", sessions);
+                     for (var i = 0; i < sessions.length; ++i) {
+                        session.call("wamp.session.get", [sessions[i]]).then(
+                           function (session_details) {
+                              console.log(session_details);
+                           },
+                           function (err) {
+                              console.log(err);
+                           }
+                        );
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
 
          var topic1 = "com.example.topic1";
          var topic1_options = {};
-
 
          function topic1_get_subscription () {
             if (session) {

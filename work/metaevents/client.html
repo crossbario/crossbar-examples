@@ -38,9 +38,9 @@
          var topic1_received = 0;
          var topic1_sent = 0;
 
-         function topic1_onevent (args, kwargs) {
+         function topic1_onevent (args, kwargs, details) {
             topic1_received += 1;
-            console.log("Received event " + topic1_received + " for topic " + topic1, args, kwargs);
+            console.log("Received event " + topic1_received + " for topic " + topic1, args, kwargs, details);
          }
 
          function topic1_subscribe () {
