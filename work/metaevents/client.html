@@ -21,12 +21,22 @@
       <script src="autobahn.min.js"></script>
 
       <script>
-         var topic1 = "com.example.topic1";
-         var topic1_received = 0;
-         var topic1_sent = 0;
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
 
          var session = null;
-         var subscription_topic1 = null;
+
+         // topic1
+         //
+         var topic1 = "com.example.topic1";
+         var topic1_options = {};
+         var topic1_subscription = null;
+         var topic1_received = 0;
+         var topic1_sent = 0;
 
          function topic1_onevent (args, kwargs) {
             topic1_received += 1;
@@ -36,10 +46,10 @@
          function topic1_subscribe () {
             if (session) {
                console.log("Subscribing to topic " + topic1 + " ...");
-               session.subscribe(topic1, topic1_onevent).then(
+               session.subscribe(topic1, topic1_onevent, topic1_options).then(
                   function (subscription) {
                      console.log("Subscribed to " + topic1 + " with subscription ID " + subscription.id);
-                     subscription_topic1 = subscription;
+                     topic1_subscription = subscription;
                   },
                   function (err) {
                      console.log("Could not subscribe to " + topic1, err);
@@ -52,10 +62,10 @@
 
          function topic1_unsubscribe () {
             if (session) {
-               console.log("Unsubscribing from topic " + topic1 + " / subscription " + subscription_topic1.id);
-               session.unsubscribe(subscription_topic1).then(
+               console.log("Unsubscribing from topic " + topic1 + " / subscription " + topic1_subscription.id);
+               session.unsubscribe(topic1_subscription).then(
                   function () {
-                     console.log("Unsubscribed from topic " + topic1 + " / subscription ID " + subscription_topic1.id);
+                     console.log("Unsubscribed from topic " + topic1 + " / subscription ID " + topic1_subscription.id);
                   },
                   function (err) {
                      console.log("Could not unsubscribe from " + topic1, err);
@@ -81,14 +91,6 @@
                console.log("not conntected");
             }
          }
-
-         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
-                        document.location.host + "/ws";
-
-         var connection = new autobahn.Connection({
-            url: wsuri,
-            realm: "realm1"
-         });
 
          connection.onopen = function (new_session, details) {
 

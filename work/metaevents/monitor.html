@@ -1,39 +1,14 @@
 <!DOCTYPE html>
-<!--###############################################################################
-##
-##  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.
-## 
-##  Redistribution and use in source and binary forms, with or without
-##  modification, are permitted provided that the following conditions are met:
-## 
-##  1. Redistributions of source code must retain the above copyright notice,
-##     this list of conditions and the following disclaimer.
-## 
-##  2. Redistributions in binary form must reproduce the above copyright notice,
-##     this list of conditions and the following disclaimer in the documentation
-##     and/or other materials provided with the distribution.
-## 
-##  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-##  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-##  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-##  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-##  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-##  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-##  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-##  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-##  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-##  POSSIBILITY OF SUCH DAMAGE.
-##
-###############################################################################
--->
-
 <html>
    <body>
       <h1>Hello WAMP</h1>
       <p>Open JavaScript console to watch output.</p>
 
-      <button onclick="get_subscribers()">Get subscribers</button>
+      <h2>Topic 1</h2>
+      <p>
+         <button onclick="topic1_get_subscription()">Get Subscription</button>
+         <button onclick="topic1_list_subscribers()">List Subscribers</button>
+      </p>
 
       <script>AUTOBAHN_DEBUG = false;</script>
 <!--
@@ -42,46 +17,65 @@
       <script src="autobahn.min.js"></script>
 
       <script>
-         // the URL of the WAMP Router (Crossbar.io)
-         //
-         var wsuri;
-         if (document.location.origin == "file://") {
-            wsuri = "ws://127.0.0.1:8080/ws";
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
 
-         } else {
-            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
-                        document.location.host + "/ws";
-         }
-
-
-         var session = null;
-
-         function get_subscriptions () {
-            if (session) {
-               session.call("wamp.broker.subscription.get", ["com.example.topic1"]).then(
-                  function (subscription) {
-                     console.log(subscription);
-                  },
-                  function (err) {
-                     console.log(err);
-                  }
-               );
-            } else {
-               console.log("not conntected");
-            }
-         }
-
-
-         // the WAMP connection to the Router
-         //
          var connection = new autobahn.Connection({
             url: wsuri,
             realm: "realm1"
          });
 
+         var session = null;
 
-         // fired when connection is established and session attached
-         //
+
+         var topic1 = "com.example.topic1";
+         var topic1_options = {};
+
+
+         function topic1_get_subscription () {
+            if (session) {
+               session.call("wamp.broker.subscription.get", [topic1, topic1_options]).then(
+                  function (subscription) {
+                     if (subscription) {
+                        console.log("Topic " + topic1 + " is managed via subscription", subscription);
+                     } else {
+                        console.log("No subscription for topic " + topic1 + " currently exists on broker");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function topic1_list_subscribers () {
+            if (session) {
+               session.call("wamp.broker.subscription.get", [topic1, topic1_options]).then(
+                  function (subscription) {
+                     if (subscription) {
+                        session.call("wamp.broker.subscriber.list", [subscription.id]).then(
+                           function (subscribers) {
+                              console.log("Subscribers on topic " + topic1 + " (subscription " + subscription.id + "):", subscribers);
+                           },
+                           function (err) {
+                              console.log("Could not retrieve subscribers on subscription", err);
+                           }
+                        );
+                     } else {
+                        console.log("No subscription for topic " + topic1 + " currently exists on broker");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
          connection.onopen = function (new_session, details) {
 
             session = new_session;
@@ -89,26 +83,42 @@
             console.log("Connected with session ID " + session.id);
 
             var meta_topics = [
+               // WAMP Session meta events
+               "wamp.session.on_join",
+               "wamp.session.on_leave",
+
+               // WAMP PubSub meta events
                "wamp.topic.on_first_subscribe",
                "wamp.topic.on_subscribe",
                "wamp.topic.on_unsubscribe",
                "wamp.topic.on_last_unsubscribe",
+
+               // WAMP RPC meta events
+               "wamp.procedure.on_first_register",
+               "wamp.procedure.on_register",
+               "wamp.procedure.on_unregister",
+               "wamp.procedure.on_last_unregister",
+
+               // WAMP reflection
+               "wamp.reflect.on_define",
+               "wamp.reflect.on_undefine",
             ];
 
+            // subscribe to all of above WAMP meta events
             for (var i = 0; i < meta_topics.length; ++i) {
 
                (function subscribe (topic) {
 
-                  function on_event (args, kwargs) {
-                     console.log(topic, args, kwargs);
+                  function on_meta_event (args, kwargs) {
+                     console.log("WAMP meta event " + topic + " received", args, kwargs);
                   }
 
-                  session.subscribe(topic, on_event).then(
+                  session.subscribe(topic, on_meta_event).then(
                      function (sub) {
-                        console.log('subscribed to meta topic ' + topic);
+                        console.log('Subscribed to meta topic ' + topic);
                      },
                      function (err) {
-                        console.log('failed to subscribe to meta topic ' + topic, err);
+                        console.log('Failed to subscribe to meta topic ' + topic, err);
                      }
                   );
 
@@ -116,18 +126,11 @@
             }
          };
 
-
-         // fired when connection was lost (or could not be established)
-         //
          connection.onclose = function (reason, details) {
             console.log("Connection lost: " + reason);
          }
 
-
-         // now actually open the connection
-         //
          connection.open();
-
       </script>
    </body>
 </html>
