@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>WAMP application component</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <h2>Topic 1</h2>
+      <p>
+         Topic "com.example.topic1" and match == exact.
+      </p>
+      <p>
+         <button onclick="topic1_subscribe()">Subscribe</button>
+         <button onclick="topic1_unsubscribe()">Unsubscribe</button>
+         <button onclick="topic1_publish()">Publish</button>
+      </p>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+<!--
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+-->
+      <script src="autobahn.min.js"></script>
+
+      <script>
+         var topic1 = "com.example.topic1";
+         var topic1_received = 0;
+         var topic1_sent = 0;
+
+         var session = null;
+         var subscription_topic1 = null;
+
+         function topic1_onevent (args, kwargs) {
+            topic1_received += 1;
+            console.log("Received event " + topic1_received + " for topic " + topic1, args, kwargs);
+         }
+
+         function topic1_subscribe () {
+            if (session) {
+               console.log("Subscribing to topic " + topic1 + " ...");
+               session.subscribe(topic1, topic1_onevent).then(
+                  function (subscription) {
+                     console.log("Subscribed to " + topic1 + " with subscription ID " + subscription.id);
+                     subscription_topic1 = subscription;
+                  },
+                  function (err) {
+                     console.log("Could not subscribe to " + topic1, err);
+                  }
+               );
+            } else {
+               console.log("not conntected");
+            }
+         }
+
+         function topic1_unsubscribe () {
+            if (session) {
+               console.log("Unsubscribing from topic " + topic1 + " / subscription " + subscription_topic1.id);
+               session.unsubscribe(subscription_topic1).then(
+                  function () {
+                     console.log("Unsubscribed from topic " + topic1 + " / subscription ID " + subscription_topic1.id);
+                  },
+                  function (err) {
+                     console.log("Could not unsubscribe from " + topic1, err);
+                  }
+               );
+            } else {
+               console.log("not conntected");
+            }
+         }
+
+         function topic1_publish () {
+            if (session) {
+               topic1_sent += 1;
+               session.publish(topic1, ["hello", topic1_sent], {}, {acknowledge: true}).then(
+                  function (publication) {
+                     console.log("Event published to topic " + topic1, publication.id);
+                  },
+                  function (err) {
+                     console.log("Could not publish event to topic " + topic1, err);
+                  }
+               );
+            } else {
+               console.log("not conntected");
+            }
+         }
+
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         connection.onopen = function (new_session, details) {
+
+            session = new_session;
+
+            console.log("Connected with session ID " + session.id);
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
