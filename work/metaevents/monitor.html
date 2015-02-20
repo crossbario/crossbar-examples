@@ -13,6 +13,7 @@
       <p>
          <button onclick="topic1_get_subscription()">Get Subscription</button>
          <button onclick="topic1_list_subscribers()">List Subscribers</button>
+         <button onclick="topic1_count_subscribers()">CountSubscribers</button>
       </p>
 
       <script>AUTOBAHN_DEBUG = false;</script>
@@ -89,6 +90,36 @@
                            },
                            function (err) {
                               console.log("Could not retrieve subscribers on subscription", err);
+                           }
+                        );
+                     } else {
+                        console.log("No subscription for topic " + topic1 + " currently exists on broker");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function topic1_count_subscribers () {
+            if (session) {
+               session.call("wamp.broker.subscription.get", [topic1, topic1_options]).then(
+                  function (subscription) {
+                     if (subscription) {
+                        session.call("wamp.broker.subscriber.count", [subscription.id]).then(
+                           function (count) {
+                              if (count) {
+                                 console.log("" + count + " subscribers on topic " + topic1);
+                              } else {
+                                 console.log("No subscribers on topic " + topic1);
+                              }
+                           },
+                           function (err) {
+                              console.log("Could not retrieve subscriber count on subscription", err);
                            }
                         );
                      } else {

@@ -100,7 +100,7 @@
          };
 
          connection.onclose = function (reason, details) {
-            console.log("Connection lost: " + reason);
+            console.log("Connection lost: " + reason, details);
          }
 
          connection.open();
