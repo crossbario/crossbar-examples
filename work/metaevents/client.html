@@ -6,12 +6,45 @@
 
       <h2>Topic 1</h2>
       <p>
-         Topic "com.example.topic1" and match == exact.
+         Topic "com.example.topic1" and match == "exact".
       </p>
       <p>
          <button onclick="topic1_subscribe()">Subscribe</button>
          <button onclick="topic1_unsubscribe()">Unsubscribe</button>
          <button onclick="topic1_publish()">Publish</button>
+      </p>
+
+      <h2>Procedure 1</h2>
+      <p>
+         Actions for procedure 1.
+      </p>
+      <p>
+         <div>
+            Procedure URI: <input type="text" id="register_uri" name="register_uri" value="com.example.procedure1"><br>
+            <div>
+               Match policy:
+               <input type="radio" id="register_match_default" name="register_match" value="" checked>default
+               <input type="radio" id="register_match_exact" name="register_match" value="exact">exact
+               <input type="radio" id="register_match_prefix" name="register_match" value="prefix">prefix
+               <input type="radio" id="register_match_wildcard" name="register_match" value="wildcard">wildcard
+            </div>
+            <div>
+               Invoke policy:
+               <input type="radio" id="register_invoke_default" name="register_invoke" value="" checked>default
+               <input type="radio" id="register_invoke_single" name="register_invoke" value="single">single
+               <input type="radio" id="register_invoke_first" name="register_invoke" value="first">first
+               <input type="radio" id="register_invoke_last" name="register_invoke" value="last">last
+               <input type="radio" id="register_invoke_roundrobin" name="register_invoke" value="roundrobin">roundrobin
+               <input type="radio" id="register_invoke_random" name="register_invoke" value="random">random
+            </div>
+            <button onclick="procedure1_register()">Register</button>
+         </div><br>
+         <div>
+            <button onclick="procedure1_unregister()">Unregister</button>
+         </div><br>
+         <div>
+            <button onclick="procedure1_call()">Call</button>
+         </div><br>
       </p>
 
       <script>AUTOBAHN_DEBUG = false;</script>
@@ -56,7 +89,7 @@
                   }
                );
             } else {
-               console.log("not conntected");
+               console.log("not connected");
             }
          }
 
@@ -66,13 +99,14 @@
                session.unsubscribe(topic1_subscription).then(
                   function () {
                      console.log("Unsubscribed from topic " + topic1 + " / subscription ID " + topic1_subscription.id);
+                     topic1_subscription = null;
                   },
                   function (err) {
                      console.log("Could not unsubscribe from " + topic1, err);
                   }
                );
             } else {
-               console.log("not conntected");
+               console.log("not connected");
             }
          }
 
@@ -88,7 +122,107 @@
                   }
                );
             } else {
-               console.log("not conntected");
+               console.log("not connected");
+            }
+         }
+
+         // procedure1
+         //
+         var procedure1_uri = "com.example.procedure1";
+         var procedure1_options = {};
+         var procedure1_registration = null;
+         var procedure1_count_called = 0;
+         var procedure1_count_calls = 0;
+
+         function procedure1 (args, kwargs, details) {
+            procedure1_count_called += 1;
+            console.log("Received call " + procedure1_count_called + " for procedure " + procedure1_uri, args, kwargs, details);
+            return procedure1_count_called;
+         }
+
+         function procedure1_register () {
+
+            if (session) {
+
+               procedure1_uri = document.getElementById('register_uri').value;
+
+               procedure1_options = {};
+
+               if (document.getElementById('register_invoke_default').checked) {
+               }
+               else if (document.getElementById('register_invoke_single').checked) {
+                  procedure1_options.invoke = 'single';
+               }
+               else if (document.getElementById('register_invoke_first').checked) {
+                  procedure1_options.invoke = 'first';
+               }
+               else if (document.getElementById('register_invoke_last').checked) {
+                  procedure1_options.invoke = 'last';
+               }
+               else if (document.getElementById('register_invoke_roundrobin').checked) {
+                  procedure1_options.invoke = 'roundrobin';
+               }
+               else if (document.getElementById('register_invoke_random').checked) {
+                  procedure1_options.invoke = 'random';
+               }
+
+               if (document.getElementById('register_match_default').checked) {
+               }
+               else if (document.getElementById('register_match_exact').checked) {
+                  procedure1_options.match = 'exact';
+               }
+               else if (document.getElementById('register_match_prefix').checked) {
+                  procedure1_options.match = 'prefix';
+               }
+               else if (document.getElementById('register_match_wildcard').checked) {
+                  procedure1_options.match = 'wildcard';
+               }
+
+               console.log("Registering " + procedure1_uri + " with options ", procedure1_options);
+               session.register(procedure1_uri, procedure1, procedure1_options).then(
+                  function (registration) {
+                     console.log("Registered " + procedure1_uri + " with registration ID " + registration.id);
+                     procedure1_registration = registration;
+                  },
+                  function (err) {
+                     console.log("Could not register procedure " + procedure1_uri, err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function procedure1_unregister () {
+            if (session) {
+               console.log("Unregistering procedure " + procedure1_uri + " / registration " + procedure1_registration.id);
+               session.unregister(procedure1_registration).then(
+                  function () {
+                     console.log("Unregistered procedure " + procedure1_uri + " / registration ID " + procedure1_registration.id);
+                     procedure1_registration = null;
+                  },
+                  function (err) {
+                     console.log("Could not unregister procedure " + procedure1_uri, err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function procedure1_call () {
+            if (session) {
+               procedure1_count_calls += 1;
+               session.call(procedure1_uri, ["hello", procedure1_count_calls], {}, {}).then(
+                  function (result) {
+                     console.log("Call to " + procedure1_uri + " returned success", result);
+                  },
+                  function (err) {
+                     console.log("Call to " + procedure1_uri + " returned error", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
             }
          }
 
