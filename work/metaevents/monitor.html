@@ -23,6 +23,11 @@
          <button onclick="procedure1_count_callees()">Count Callees</button>
       </p>
 
+      <h2>Registrations</h2>
+      <p>
+         <button onclick="get_registrations()">Get Registrations</button>
+      </p>
+
       <script>AUTOBAHN_DEBUG = false;</script>
 <!--
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
@@ -64,6 +69,47 @@
             }
          }
 
+         function get_registrations () {
+            if (session) {
+               session.call("wamp.registration.list").then(
+                  function (registrations) {
+                     console.log(registrations);
+                     for (var i = 0; i < registrations.exact.length; ++i) {
+                        (function (k) {
+                           session.call("wamp.registration.get", []).then(
+                              function (registration) {
+                                 console.log(registration);
+                              },
+                              function (err) {
+                                 console.log(err);
+                              }
+                           );
+                        })(i);
+                     }
+/*                     
+                     if (registration) {
+                        session.call("wamp.registration.list_callees", [registration.id]).then(
+                           function (callees) {
+                              console.log("Callees on procedure " + procedure1_uri + " (registration " + registration.id + "):", callees);
+                           },
+                           function (err) {
+                              console.log("Could not retrieve calless on registration", err);
+                           }
+                        );
+                     } else {
+                        console.log("No registration for procedure " + procedure1_uri + " currently exists on dealer");
+                     }
+*/                     
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registration for procedure", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }            
+         }
+
          // procedure1
          //
          var procedure1_uri = "com.example.procedure1";
@@ -71,7 +117,7 @@
 
          function procedure1_get_registration () {
             if (session) {
-               session.call("wamp.dealer.registration.get", [procedure1_uri, procedure1_options]).then(
+               session.call("wamp.registration.get", [procedure1_uri, procedure1_options]).then(
                   function (registration) {
                      if (registration) {
                         console.log("Procedure " + procedure1_uri + " is managed via registration", registration);
@@ -90,10 +136,10 @@
 
          function procedure1_list_callees () {
             if (session) {
-               session.call("wamp.dealer.registration.get", [procedure1_uri, procedure1_options]).then(
+               session.call("wamp.registration.get", [procedure1_uri, procedure1_options]).then(
                   function (registration) {
                      if (registration) {
-                        session.call("wamp.dealer.callee.list", [registration.id]).then(
+                        session.call("wamp.registration.list_callees", [registration.id]).then(
                            function (callees) {
                               console.log("Callees on procedure " + procedure1_uri + " (registration " + registration.id + "):", callees);
                            },
@@ -116,10 +162,10 @@
 
          function procedure1_count_callees () {
             if (session) {
-               session.call("wamp.dealer.registration.get", [procedure1_uri, procedure1_options]).then(
+               session.call("wamp.registration.get", [procedure1_uri, procedure1_options]).then(
                   function (registration) {
                      if (registration) {
-                        session.call("wamp.dealer.callee.count", [registration.id]).then(
+                        session.call("wamp.registration.count_callees", [registration.id]).then(
                            function (count) {
                               if (count) {
                                  console.log("" + count + " callees on procedure " + procedure1_uri);
@@ -151,7 +197,7 @@
 
          function topic1_get_subscription () {
             if (session) {
-               session.call("wamp.broker.subscription.get", [topic1_uri, topic1_options]).then(
+               session.call("wamp.subscription.get", [topic1_uri, topic1_options]).then(
                   function (subscription) {
                      if (subscription) {
                         console.log("Topic " + topic1_uri + " is managed via subscription", subscription);
@@ -170,10 +216,10 @@
 
          function topic1_list_subscribers () {
             if (session) {
-               session.call("wamp.broker.subscription.get", [topic1_uri, topic1_options]).then(
+               session.call("wamp.subscription.get", [topic1_uri, topic1_options]).then(
                   function (subscription) {
                      if (subscription) {
-                        session.call("wamp.broker.subscriber.list", [subscription.id]).then(
+                        session.call("wamp.subscription.list_subscribers", [subscription.id]).then(
                            function (subscribers) {
                               console.log("Subscribers on topic " + topic1_uri + " (subscription " + subscription.id + "):", subscribers);
                            },
@@ -196,10 +242,10 @@
 
          function topic1_count_subscribers () {
             if (session) {
-               session.call("wamp.broker.subscription.get", [topic1_uri, topic1_options]).then(
+               session.call("wamp.subscription.get", [topic1_uri, topic1_options]).then(
                   function (subscription) {
                      if (subscription) {
-                        session.call("wamp.broker.subscriber.count", [subscription.id]).then(
+                        session.call("wamp.subscription.count_subscribers", [subscription.id]).then(
                            function (count) {
                               if (count) {
                                  console.log("" + count + " subscribers on topic " + topic1_uri);
@@ -238,16 +284,16 @@
                "wamp.session.on_leave",
 
                // WAMP PubSub meta events
-               "wamp.topic.on_first_subscribe",
-               "wamp.topic.on_subscribe",
-               "wamp.topic.on_unsubscribe",
-               "wamp.topic.on_last_unsubscribe",
+               "wamp.subscription.on_create",
+               "wamp.subscription.on_subscribe",
+               "wamp.subscription.on_unsubscribe",
+               "wamp.subscription.on_delete",
 
                // WAMP RPC meta events
-               "wamp.procedure.on_first_register",
-               "wamp.procedure.on_register",
-               "wamp.procedure.on_unregister",
-               "wamp.procedure.on_last_unregister",
+               "wamp.registration.on_create",
+               "wamp.registration.on_register",
+               "wamp.registration.on_unregister",
+               "wamp.registration.on_delete",
 
                // WAMP reflection
                "wamp.reflect.on_define",
