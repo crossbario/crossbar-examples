@@ -13,7 +13,14 @@
       <p>
          <button onclick="topic1_get_subscription()">Get Subscription</button>
          <button onclick="topic1_list_subscribers()">List Subscribers</button>
-         <button onclick="topic1_count_subscribers()">CountSubscribers</button>
+         <button onclick="topic1_count_subscribers()">Count Subscribers</button>
+      </p>
+
+      <h2>Procedure 1</h2>
+      <p>
+         <button onclick="procedure1_get_registration()">Get Registration</button>
+         <button onclick="procedure1_list_callees()">List Callees</button>
+         <button onclick="procedure1_count_callees()">Count Callees</button>
       </p>
 
       <script>AUTOBAHN_DEBUG = false;</script>
@@ -57,17 +64,99 @@
             }
          }
 
-         var topic1 = "com.example.topic1";
+         // procedure1
+         //
+         var procedure1_uri = "com.example.procedure1";
+         var procedure1_options = {};
+
+         function procedure1_get_registration () {
+            if (session) {
+               session.call("wamp.dealer.registration.get", [procedure1_uri, procedure1_options]).then(
+                  function (registration) {
+                     if (registration) {
+                        console.log("Procedure " + procedure1_uri + " is managed via registration", registration);
+                     } else {
+                        console.log("No registration for procedure " + procedure1_uri + " currently exists on dealer");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registration for procedure", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function procedure1_list_callees () {
+            if (session) {
+               session.call("wamp.dealer.registration.get", [procedure1_uri, procedure1_options]).then(
+                  function (registration) {
+                     if (registration) {
+                        session.call("wamp.dealer.callee.list", [registration.id]).then(
+                           function (callees) {
+                              console.log("Callees on procedure " + procedure1_uri + " (registration " + registration.id + "):", callees);
+                           },
+                           function (err) {
+                              console.log("Could not retrieve calless on registration", err);
+                           }
+                        );
+                     } else {
+                        console.log("No registration for procedure " + procedure1_uri + " currently exists on dealer");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registration for procedure", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function procedure1_count_callees () {
+            if (session) {
+               session.call("wamp.dealer.registration.get", [procedure1_uri, procedure1_options]).then(
+                  function (registration) {
+                     if (registration) {
+                        session.call("wamp.dealer.callee.count", [registration.id]).then(
+                           function (count) {
+                              if (count) {
+                                 console.log("" + count + " callees on procedure " + procedure1_uri);
+                              } else {
+                                 console.log("No callees on procedure " + procedure1_uri);
+                              }
+                           },
+                           function (err) {
+                              console.log("Could not retrieve callee count on registration", err);
+                           }
+                        );
+                     } else {
+                        console.log("No registration for procedure " + procedure1_uri + " currently exists on dealer");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registration for procedure", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // topic1
+         //
+         var topic1_uri = "com.example.topic1";
          var topic1_options = {};
 
          function topic1_get_subscription () {
             if (session) {
-               session.call("wamp.broker.subscription.get", [topic1, topic1_options]).then(
+               session.call("wamp.broker.subscription.get", [topic1_uri, topic1_options]).then(
                   function (subscription) {
                      if (subscription) {
-                        console.log("Topic " + topic1 + " is managed via subscription", subscription);
+                        console.log("Topic " + topic1_uri + " is managed via subscription", subscription);
                      } else {
-                        console.log("No subscription for topic " + topic1 + " currently exists on broker");
+                        console.log("No subscription for topic " + topic1_uri + " currently exists on broker");
                      }
                   },
                   function (err) {
@@ -81,19 +170,19 @@
 
          function topic1_list_subscribers () {
             if (session) {
-               session.call("wamp.broker.subscription.get", [topic1, topic1_options]).then(
+               session.call("wamp.broker.subscription.get", [topic1_uri, topic1_options]).then(
                   function (subscription) {
                      if (subscription) {
                         session.call("wamp.broker.subscriber.list", [subscription.id]).then(
                            function (subscribers) {
-                              console.log("Subscribers on topic " + topic1 + " (subscription " + subscription.id + "):", subscribers);
+                              console.log("Subscribers on topic " + topic1_uri + " (subscription " + subscription.id + "):", subscribers);
                            },
                            function (err) {
                               console.log("Could not retrieve subscribers on subscription", err);
                            }
                         );
                      } else {
-                        console.log("No subscription for topic " + topic1 + " currently exists on broker");
+                        console.log("No subscription for topic " + topic1_uri + " currently exists on broker");
                      }
                   },
                   function (err) {
@@ -107,15 +196,15 @@
 
          function topic1_count_subscribers () {
             if (session) {
-               session.call("wamp.broker.subscription.get", [topic1, topic1_options]).then(
+               session.call("wamp.broker.subscription.get", [topic1_uri, topic1_options]).then(
                   function (subscription) {
                      if (subscription) {
                         session.call("wamp.broker.subscriber.count", [subscription.id]).then(
                            function (count) {
                               if (count) {
-                                 console.log("" + count + " subscribers on topic " + topic1);
+                                 console.log("" + count + " subscribers on topic " + topic1_uri);
                               } else {
-                                 console.log("No subscribers on topic " + topic1);
+                                 console.log("No subscribers on topic " + topic1_uri);
                               }
                            },
                            function (err) {
@@ -135,6 +224,8 @@
             }
          }
 
+         // connection
+         //
          connection.onopen = function (new_session, details) {
 
             session = new_session;
