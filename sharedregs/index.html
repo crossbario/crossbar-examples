@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>Example: WAMP Meta Events and Procedures - Client Component</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <button onclick="call_procedure()">Call Procedure</button>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+<!--
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+-->
+      <script src="autobahn.min.js"></script>
+
+      <script>
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         var session = null;
+
+         function call_procedure () {
+            if (session) {
+               var a = Math.random();
+               var b = Math.random();
+               session.call("com.example.add2", [a, b]).then(
+                  function (res) {
+                     console.log("Call succeeded: " + a + " + " + b + " = " + res);
+                  },
+                  function (err) {
+                     console.log("Call failed", err);
+                  }
+               );
+            } else {
+               console.log("not connected!");
+            }
+         }
+
+         connection.onopen = function (new_session, details) {
+
+            session = new_session;
+
+            console.log("Connected with session ID " + session.id);
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
