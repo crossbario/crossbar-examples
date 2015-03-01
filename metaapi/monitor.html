@@ -176,10 +176,28 @@
          var procedure1_uri = "com.example.procedure1";
          var procedure1_options = {};
 
+         function procedure1_fill_options () {
+            procedure1_uri = document.getElementById('registration_uri').value;
+            procedure1_options = {};
+
+            if (document.getElementById('registration_match_default').checked) {
+            }
+            else if (document.getElementById('registration_match_exact').checked) {
+               procedure1_options.match = 'exact';
+            }
+            else if (document.getElementById('registration_match_prefix').checked) {
+               procedure1_options.match = 'prefix';
+            }
+            else if (document.getElementById('registration_match_wildcard').checked) {
+               procedure1_options.match = 'wildcard';
+            }
+         }
+
          // wamp.registration.lookup
          // wamp.registration.get
          function procedure1_get_registration () {
             if (session) {
+               procedure1_fill_options();
                session.call("wamp.registration.lookup", [procedure1_uri, procedure1_options]).then(
                   function (registration_id) {
                      if (registration_id) {
@@ -208,6 +226,7 @@
          // wamp.registration.list_callees
          function procedure1_list_callees () {
             if (session) {
+               procedure1_fill_options();
                session.call("wamp.registration.lookup", [procedure1_uri, procedure1_options]).then(
                   function (registration_id) {
                      if (registration_id) {
@@ -236,6 +255,7 @@
          // wamp.registration.count_callees
          function procedure1_count_callees () {
             if (session) {
+               procedure1_fill_options();
                session.call("wamp.registration.lookup", [procedure1_uri, procedure1_options]).then(
                   function (registration_id) {
                      if (registration_id) {
@@ -312,10 +332,28 @@
          var topic1_uri = "com.example.topic1";
          var topic1_options = {};
 
+         function topic1_fill_options () {
+            topic1_uri = document.getElementById('subscription_uri').value;
+            topic1_options = {};
+
+            if (document.getElementById('subscription_match_default').checked) {
+            }
+            else if (document.getElementById('subscription_match_exact').checked) {
+               topic1_options.match = 'exact';
+            }
+            else if (document.getElementById('subscription_match_prefix').checked) {
+               topic1_options.match = 'prefix';
+            }
+            else if (document.getElementById('subscription_match_wildcard').checked) {
+               topic1_options.match = 'wildcard';
+            }
+         }
+
          // wamp.subscription.lookup
          // wamp.subscription.get
          function topic1_get_subscription () {
             if (session) {
+               topic1_fill_options();
                session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
                   function (subscription_id) {
                      if (subscription_id) {
@@ -344,6 +382,7 @@
          // wamp.subscription.list_subscribers
          function topic1_list_subscribers () {
             if (session) {
+               topic1_fill_options();
                session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
                   function (subscription_id) {
                      if (subscription_id) {
@@ -372,6 +411,7 @@
          // wamp.subscription.count_subscribers
          function topic1_count_subscribers () {
             if (session) {
+               topic1_fill_options();
                session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
                   function (subscription_id) {
                      if (subscription_id) {
