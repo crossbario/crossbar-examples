@@ -14,8 +14,7 @@ To give you a better idea of a small working WAMP application there is
 
 * [Hello](https://github.com/crossbario/crossbarexamples/tree/master/hello) with backends for the following languages/WAMP client libraries
    + [JavaScript (Node.js backend) - Autobahn|JS](https://github.com/crossbario/crossbarexamples/tree/master/hello/nodejs)
-   + [JavaScript (browser backend) - Autobahn|JS]([JavaScript (Node.js backend) - Autobahn|JS]()
-   + [JavaScript (browser backend) - Autobahn|JS]())
+   + [JavaScript (browser backend) - Autobahn|JS](https://github.com/crossbario/crossbarexamples/tree/master/hello/browser)
    + [Python - Autobahn|Python](https://github.com/crossbario/crossbarexamples/tree/master/hello/python)
    + [C++ - Autobahn|Cpp](https://github.com/crossbario/crossbarexamples/tree/master/hello/cpp)
    + [PHP - Thruway](https://github.com/crossbario/crossbarexamples/tree/master/hello/php)
