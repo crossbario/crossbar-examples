@@ -16,10 +16,10 @@
       </style>
    </head>
    <body>
-      <h1>Example: Shared Registrations - Client / Caller</h1>
+      <h1>Example: Pattern-based Subscriptions - Client / Publisher</h1>
       <p>Open JavaScript console to watch output.</p>
 
-      <button onclick="call_procedure()">Call Procedure</button>
+      <button onclick="publish_events()">Publish Events</button>
 
       <script>AUTOBAHN_DEBUG = false;</script>
 <!--
@@ -37,18 +37,32 @@
 
          var session = null;
 
-         function call_procedure () {
+         function publish_events () {
             if (session) {
-               var a = Math.random();
-               var b = Math.random();
-               session.call("com.example.add2", [a, b]).then(
-                  function (res) {
-                     console.log("Call succeeded: " + a + " + " + b + " = " + res.result, res.ident);
-                  },
-                  function (err) {
-                     console.log("Call failed", err);
-                  }
-               );
+
+               var topics = [
+                  "com.example.topic1",
+                  "com.example.topic123",
+                  "com.example.topic1.foobar",
+                  "com.example",
+                  "com.myapp.topic1",
+                  "com.myapp.topic123",
+               ];
+
+               for (var i = 0; i < topics.length; ++i) {
+                  (function (topic) {
+
+                     session.publish(topic, ["hello"], null, {acknowledge: true}).then(
+                        function (publication) {
+                           console.log("event published to " + topic + " with publication ID " + publication.id);
+                        },
+                        function (err) {
+                           console.log("could not publish event", err);
+                        }
+                     );
+
+                  })(topics[i]);
+               }
             } else {
                console.log("not connected!");
             }
