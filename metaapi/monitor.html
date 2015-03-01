@@ -1,33 +1,107 @@
 <!DOCTYPE html>
 <html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
    <body>
-      <h1>Hello WAMP</h1>
+      <h1>Example: WAMP Meta Events and Procedures - Meta API Monitor</h1>
       <p>Open JavaScript console to watch output.</p>
 
       <h2>Sessions</h2>
       <p>
-         <button onclick="list_sessions()">List Sessions</button>
-         <button onclick="count_sessions()">Count Sessions</button>
+         Retrieve information on currently connected sessions.
+         <div>
+            <button onclick="list_sessions()">List Sessions</button>
+            <button onclick="count_sessions()">Count Sessions</button>
+         </div>
       </p>
 
-      <h2>Topic 1</h2>
+
+      <h2>Publish and Subscribe</h2>
+
+      <h3>Lookup Subscription</h3>
       <p>
-         <button onclick="topic1_get_subscription()">Get Subscription</button>
-         <button onclick="topic1_list_subscribers()">List Subscribers</button>
-         <button onclick="topic1_count_subscribers()">Count Subscribers</button>
-         <button onclick="topic1_match_subscribers()">Match Subscribers</button>
+         Lookup a subscription and retrieve detail information.
+         <div>
+            URI: <input type="text" id="subscription_uri" name="subscription_uri" value="com.example.topic1"><br>
+            <div>
+               Match policy:
+               <input type="radio" id="subscription_match_default"  name="subscription_match" value="" checked>default
+               <input type="radio" id="subscription_match_exact"    name="subscription_match" value="exact">exact
+               <input type="radio" id="subscription_match_prefix"   name="subscription_match" value="prefix">prefix
+               <input type="radio" id="subscription_match_wildcard" name="subscription_match" value="wildcard">wildcard
+            </div><br>
+            <button onclick="topic1_get_subscription()">Get Subscription</button>
+            <button onclick="topic1_list_subscribers()">List Subscribers</button>
+            <button onclick="topic1_count_subscribers()">Count Subscribers</button>
+         </div>
       </p>
 
-      <h2>Procedure 1</h2>
+      <h3>Match Subscriptions</h3>
       <p>
-         <button onclick="procedure1_get_registration()">Get Registration</button>
-         <button onclick="procedure1_list_callees()">List Callees</button>
-         <button onclick="procedure1_count_callees()">Count Callees</button>
+         Match the given (concrete) topic URI to current subscriptions.
+         <div>
+            URI: <input type="text" id="match_subscriptions_uri" name="match_subscriptions_uri" value="com.example.topic1"><br>
+            <button onclick="match_subscriptions()">Match Subscriptions</button>
+         </div>
       </p>
 
-      <h2>Registrations</h2>
+      <h3>Get Subscriptions</h3>
       <p>
-         <button onclick="get_registrations()">Get Registrations</button>
+         Retrieve the list of subscriptions currently managed by the broker.
+         <div>
+            <button onclick="get_subscriptions()">Get Subscriptions</button>
+         </div>
+      </p>
+
+
+      <h2>Remote Procedure Calls</h2>
+
+      <h3>Lookup Registration</h3>
+      <p>
+         Lookup a registration and retrieve detail information.
+         <div>
+            URI: <input type="text" id="registration_uri" name="registration_uri" value="com.example.procedure1"><br>
+            <div>
+               Match policy:
+               <input type="radio" id="registration_match_default"  name="registration_match" value="" checked>default
+               <input type="radio" id="registration_match_exact"    name="registration_match" value="exact">exact
+               <input type="radio" id="registration_match_prefix"   name="registration_match" value="prefix">prefix
+               <input type="radio" id="registration_match_wildcard" name="registration_match" value="wildcard">wildcard
+            </div><br>
+            <button onclick="procedure1_get_registration()">Get Registration</button>
+            <button onclick="procedure1_list_callees()">List Callees</button>
+            <button onclick="procedure1_count_callees()">Count Callees</button>
+         </div>
+      </p>
+
+      <h3>Match Registrations</h3>
+      <p>
+         Match the given (concrete) procedure URI to the (best matching) registration.
+         <div>
+            URI: <input type="text" id="match_registrations_uri" name="match_registrations_uri" value="com.example.procedure1"><br>
+            <button onclick="match_registrations()">Match Callees</button>
+         </div>
+      </p>
+
+      <h3>Get Registrations</h3>
+      <p>
+         Retrieve the list of registrations currently managed by the dealer.
+         <div>
+            <button onclick="get_registrations()">Get Registrations</button>
+         </div>
       </p>
 
       <script>AUTOBAHN_DEBUG = false;</script>
@@ -299,38 +373,6 @@
          function topic1_count_subscribers () {
             if (session) {
                session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
-                  function (subscription) {
-                     if (subscription_id) {
-                        session.call("wamp.subscription.count_subscribers", [subscription_id]).then(
-                           function (count) {
-                              if (count) {
-                                 console.log("" + count + " subscribers on topic " + topic1_uri);
-                              } else {
-                                 console.log("No subscribers on topic " + topic1_uri);
-                              }
-                           },
-                           function (err) {
-                              console.log("Could not retrieve subscriber count on subscription", err);
-                           }
-                        );
-                     } else {
-                        console.log("No subscription for topic " + topic1 + " currently exists on broker");
-                     }
-                  },
-                  function (err) {
-                     console.log("Could not retrieve subscription for topic", err);
-                  }
-               );
-            } else {
-               console.log("not connected");
-            }
-         }
-
-         // wamp.subscription.match
-         // wamp.subscription.list_subscribers
-         function topic1_match_subscribers () {
-            if (session) {
-               session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
                   function (subscription_id) {
                      if (subscription_id) {
                         session.call("wamp.subscription.count_subscribers", [subscription_id]).then(
@@ -346,8 +388,28 @@
                            }
                         );
                      } else {
-                        console.log("No subscription for topic " + topic1 + " currently exists on broker");
+                        console.log("No subscription for topic " + topic1_uri + " currently exists on broker");
                      }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.subscription.match
+         // wamp.subscription.list_subscribers
+         function match_subscriptions () {
+            if (session) {
+
+               var match_subscriptions_uri = document.getElementById('match_subscriptions_uri').value;
+
+               session.call("wamp.subscription.match", [match_subscriptions_uri]).then(
+                  function (subscription_ids) {
+                     console.log(subscription_ids);
                   },
                   function (err) {
                      console.log("Could not retrieve subscription for topic", err);
@@ -364,7 +426,7 @@
             if (session) {
                session.call("wamp.subscription.list").then(
                   function (subscriptions) {
-                     console.log("Current subscription", subscriptions);
+                     console.log("Current subscriptions:", subscriptions);
                      var match_policies = ['exact', 'prefix', 'wildcard'];
 
                      // for each match policy ..
@@ -376,7 +438,7 @@
                            for (var i = 0; i < subscriptions[match_policy].length; ++i) {
                               (function (k) {
                                  session.call("wamp.subscription.get", [subscriptions[match_policy][k]]).then(
-                                    function (registration) {
+                                    function (subscription) {
                                        console.log("Subscription", subscription);
                                     },
                                     function (err) {

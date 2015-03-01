@@ -1,26 +1,60 @@
 <!DOCTYPE html>
 <html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
    <body>
-      <h1>WAMP application component</h1>
+      <h1>Example: WAMP Meta Events and Procedures - Client Component</h1>
       <p>Open JavaScript console to watch output.</p>
 
-      <h2>Topic 1</h2>
+      <h2>Publish and Subscribe</h2>
+
+      <h3>Subscribe/unsubscribe</h3>
       <p>
-         Topic "com.example.topic1" and match == "exact".
-      </p>
-      <p>
-         <button onclick="topic1_subscribe()">Subscribe</button>
-         <button onclick="topic1_unsubscribe()">Unsubscribe</button>
-         <button onclick="topic1_publish()">Publish</button>
+         Subscribe/unsubscribe to a topic.
+         <div>
+            Topic URI: <input type="text" id="subscribe_uri" name="subscribe_uri" value="com.example.topic1"><br>
+            <div>
+               Match policy:
+               <input type="radio" id="subscribe_match_default" name="subscribe_match" value="" checked>default
+               <input type="radio" id="subscribe_match_exact" name="subscribe_match" value="exact">exact
+               <input type="radio" id="subscribe_match_prefix" name="subscribe_match" value="prefix">prefix
+               <input type="radio" id="subscribe_match_wildcard" name="subscribe_match" value="wildcard">wildcard
+            </div>
+            <button onclick="topic1_subscribe()">Subscribe</button>
+            <button onclick="topic1_unsubscribe()">Unsubscribe</button>
+         </div>
       </p>
 
-      <h2>Procedure 1</h2>
+      <h3>Publish</h3>
       <p>
-         Actions for procedure 1.
-      </p>
-      <p>
+         Publish to a topic.
          <div>
-            Procedure URI: <input type="text" id="register_uri" name="register_uri" value="com.example.procedure1"><br>
+            Topic URI: <input type="text" id="publish_uri" name="publish_uri" value="com.example.topic1"><br>
+            <input type="checkbox" id="publish_disclose_me" name="publish_disclose_me" />Disclose Me<br>
+            <button onclick="topic1_publish()">Publish</button>
+         </div>
+      </p>
+
+      <h2>Remote Procedure Calls</h2>
+
+      <h3>Register/unregister</h3>
+      <p>
+         Register/unregister a procedure.
+         <div>
+            URI: <input type="text" id="register_uri" name="register_uri" value="com.example.procedure1"><br>
             <div>
                Match policy:
                <input type="radio" id="register_match_default" name="register_match" value="" checked>default
@@ -38,16 +72,21 @@
                <input type="radio" id="register_invoke_random" name="register_invoke" value="random">random
             </div>
             <button onclick="procedure1_register()">Register</button>
-         </div><br>
-         <div>
             <button onclick="procedure1_unregister()">Unregister</button>
-         </div><br>
-         <div>
-            <button onclick="procedure1_call()">Call</button>
-         </div><br>
+         </div>
       </p>
 
-      <script>AUTOBAHN_DEBUG = false;</script>
+      <h3>Call</h3>
+      <p>
+         Call a procedure.
+         <div>
+            Procedure URI: <input type="text" id="call_uri" name="call_uri" value="com.example.procedure1"><br>
+            <input type="checkbox" id="call_disclose_me" name="call_disclose_me" />Disclose Me<br>
+            <button onclick="procedure1_call()">Call</button>
+         </div>
+      </p>
+
+      <script>AUTOBAHN_DEBUG = true;</script>
 <!--
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 -->
@@ -65,27 +104,44 @@
 
          // topic1
          //
-         var topic1 = "com.example.topic1";
-         var topic1_options = {};
+         var topic1_subscribe_uri = "com.example.topic1";
+         var topic1_subscribe_options = {};
          var topic1_subscription = null;
          var topic1_received = 0;
          var topic1_sent = 0;
 
          function topic1_onevent (args, kwargs, details) {
             topic1_received += 1;
-            console.log("Received event " + topic1_received + " for topic " + topic1, args, kwargs, details);
+            console.log("Received event (topic1_onevent)", args, kwargs, details);
          }
 
          function topic1_subscribe () {
             if (session) {
-               console.log("Subscribing to topic " + topic1 + " ...");
-               session.subscribe(topic1, topic1_onevent, topic1_options).then(
+
+               topic1_subscribe_uri = document.getElementById('subscribe_uri').value;
+               topic1_subscribe_options = {};
+
+               if (document.getElementById('subscribe_match_default').checked) {
+               }
+               else if (document.getElementById('subscribe_match_exact').checked) {
+                  topic1_subscribe_options.match = 'exact';
+               }
+               else if (document.getElementById('subscribe_match_prefix').checked) {
+                  topic1_subscribe_options.match = 'prefix';
+               }
+               else if (document.getElementById('subscribe_match_wildcard').checked) {
+                  topic1_subscribe_options.match = 'wildcard';
+               }
+
+               console.log("Subscribing to " + topic1_subscribe_uri + " with options ", topic1_subscribe_options);
+
+               session.subscribe(topic1_subscribe_uri, topic1_onevent, topic1_subscribe_options).then(
                   function (subscription) {
-                     console.log("Subscribed to " + topic1 + " with subscription ID " + subscription.id);
+                     console.log("Subscribed to " + topic1_subscribe_uri + " with subscription ID " + subscription.id);
                      topic1_subscription = subscription;
                   },
                   function (err) {
-                     console.log("Could not subscribe to " + topic1, err);
+                     console.log("Could not subscribe to " + topic1_subscribe_uri, err);
                   }
                );
             } else {
@@ -95,14 +151,14 @@
 
          function topic1_unsubscribe () {
             if (session) {
-               console.log("Unsubscribing from topic " + topic1 + " / subscription " + topic1_subscription.id);
+               console.log("Unsubscribing from topic " + topic1_subscribe_uri + " / subscription " + topic1_subscription.id);
                session.unsubscribe(topic1_subscription).then(
                   function () {
-                     console.log("Unsubscribed from topic " + topic1 + " / subscription ID " + topic1_subscription.id);
+                     console.log("Unsubscribed from topic " + topic1_subscribe_uri + " / subscription ID " + topic1_subscription.id);
                      topic1_subscription = null;
                   },
                   function (err) {
-                     console.log("Could not unsubscribe from " + topic1, err);
+                     console.log("Could not unsubscribe from " + topic1_subscribe_uri, err);
                   }
                );
             } else {
@@ -110,15 +166,29 @@
             }
          }
 
+         var topic1_publish_uri = "com.example.topic1";
+         var topic1_publish_options = {};
+
          function topic1_publish () {
             if (session) {
+
+               topic1_publish_uri = document.getElementById('publish_uri').value;
+               topic1_publish_options = {acknowledge: true};
+
+               if (document.getElementById('publish_disclose_me').checked) {
+                  topic1_publish_options.disclose_me = true;
+               }
+
                topic1_sent += 1;
-               session.publish(topic1, ["hello", topic1_sent], {}, {acknowledge: true}).then(
+
+               console.log("Publishing to " + topic1_publish_uri + " with options ", topic1_publish_options);
+
+               session.publish(topic1_publish_uri, ["hello", topic1_sent], {}, topic1_publish_options).then(
                   function (publication) {
-                     console.log("Event published to topic " + topic1, publication.id);
+                     console.log("Event published to topic " + topic1_publish_uri, publication.id);
                   },
                   function (err) {
-                     console.log("Could not publish event to topic " + topic1, err);
+                     console.log("Could not publish event to topic " + topic1_publish_uri, err);
                   }
                );
             } else {
@@ -128,15 +198,15 @@
 
          // procedure1
          //
-         var procedure1_uri = "com.example.procedure1";
-         var procedure1_options = {};
+         var procedure1_register_uri = "com.example.procedure1";
+         var procedure1_register_options = {};
          var procedure1_registration = null;
          var procedure1_count_called = 0;
          var procedure1_count_calls = 0;
 
          function procedure1 (args, kwargs, details) {
             procedure1_count_called += 1;
-            console.log("Received call " + procedure1_count_called + " for procedure " + procedure1_uri, args, kwargs, details);
+            console.log("Received call " + procedure1_count_called + " for procedure " + procedure1_register_uri, args, kwargs, details);
             return procedure1_count_called;
          }
 
@@ -144,48 +214,48 @@
 
             if (session) {
 
-               procedure1_uri = document.getElementById('register_uri').value;
-
-               procedure1_options = {};
+               procedure1_register_uri = document.getElementById('register_uri').value;
+               procedure1_register_options = {};
 
                if (document.getElementById('register_invoke_default').checked) {
                }
                else if (document.getElementById('register_invoke_single').checked) {
-                  procedure1_options.invoke = 'single';
+                  procedure1_register_options.invoke = 'single';
                }
                else if (document.getElementById('register_invoke_first').checked) {
-                  procedure1_options.invoke = 'first';
+                  procedure1_register_options.invoke = 'first';
                }
                else if (document.getElementById('register_invoke_last').checked) {
-                  procedure1_options.invoke = 'last';
+                  procedure1_register_options.invoke = 'last';
                }
                else if (document.getElementById('register_invoke_roundrobin').checked) {
-                  procedure1_options.invoke = 'roundrobin';
+                  procedure1_register_options.invoke = 'roundrobin';
                }
                else if (document.getElementById('register_invoke_random').checked) {
-                  procedure1_options.invoke = 'random';
+                  procedure1_register_options.invoke = 'random';
                }
 
                if (document.getElementById('register_match_default').checked) {
                }
                else if (document.getElementById('register_match_exact').checked) {
-                  procedure1_options.match = 'exact';
+                  procedure1_register_options.match = 'exact';
                }
                else if (document.getElementById('register_match_prefix').checked) {
-                  procedure1_options.match = 'prefix';
+                  procedure1_register_options.match = 'prefix';
                }
                else if (document.getElementById('register_match_wildcard').checked) {
-                  procedure1_options.match = 'wildcard';
+                  procedure1_register_options.match = 'wildcard';
                }
 
-               console.log("Registering " + procedure1_uri + " with options ", procedure1_options);
-               session.register(procedure1_uri, procedure1, procedure1_options).then(
+               console.log("Registering " + procedure1_register_uri + " with options ", procedure1_register_options);
+
+               session.register(procedure1_register_uri, procedure1, procedure1_register_options).then(
                   function (registration) {
-                     console.log("Registered " + procedure1_uri + " with registration ID " + registration.id);
+                     console.log("Registered " + procedure1_register_uri + " with registration ID " + registration.id);
                      procedure1_registration = registration;
                   },
                   function (err) {
-                     console.log("Could not register procedure " + procedure1_uri, err);
+                     console.log("Could not register procedure " + procedure1_register_uri, err);
                   }
                );
             } else {
@@ -195,14 +265,14 @@
 
          function procedure1_unregister () {
             if (session) {
-               console.log("Unregistering procedure " + procedure1_uri + " / registration " + procedure1_registration.id);
+               console.log("Unregistering procedure " + procedure1_register_uri + " / registration " + procedure1_registration.id);
                session.unregister(procedure1_registration).then(
                   function () {
-                     console.log("Unregistered procedure " + procedure1_uri + " / registration ID " + procedure1_registration.id);
+                     console.log("Unregistered procedure " + procedure1_register_uri + " / registration ID " + procedure1_registration.id);
                      procedure1_registration = null;
                   },
                   function (err) {
-                     console.log("Could not unregister procedure " + procedure1_uri, err);
+                     console.log("Could not unregister procedure " + procedure1_register_uri, err);
                   }
                );
             } else {
@@ -210,15 +280,26 @@
             }
          }
 
+         var procedure1_call_uri = "com.example.procedure1";
+         var procedure1_call_options = {};
+
          function procedure1_call () {
             if (session) {
+
+               procedure1_call_uri = document.getElementById('call_uri').value;
+               procedure1_call_options = {};
+
+               if (document.getElementById('call_disclose_me').checked) {
+                  procedure1_call_options.disclose_me = true;
+               }
+
                procedure1_count_calls += 1;
-               session.call(procedure1_uri, ["hello", procedure1_count_calls], {}, {}).then(
+               session.call(procedure1_call_uri, ["hello", procedure1_count_calls], {}, procedure1_call_options).then(
                   function (result) {
-                     console.log("Call to " + procedure1_uri + " returned success", result);
+                     console.log("Call to " + procedure1_call_uri + " returned success", result);
                   },
                   function (err) {
-                     console.log("Call to " + procedure1_uri + " returned error", err);
+                     console.log("Call to " + procedure1_call_uri + " returned error", err);
                   }
                );
             } else {
