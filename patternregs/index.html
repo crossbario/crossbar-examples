@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>Example: Pattern-based Registrations - Client / Caller</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <button onclick="call_procedures()">Call Procedures</button>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+<!--
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+-->
+      <script src="autobahn.min.js"></script>
+
+      <script>
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         var session = null;
+
+         function call_procedures () {
+            if (session) {
+
+               var procedures = [
+                  "com.example.procedure1",
+                  "com.example.procedure123",
+                  "com.example.procedure1.foobar",
+                  "com.example",
+                  "com.myapp.procedure1",
+                  "com.myapp.procedure123",
+               ];
+
+               for (var i = 0; i < procedures.length; ++i) {
+                  (function (procedure) {
+
+                     session.call(procedure, ["hello"]).then(
+                        function () {
+                           console.log("procedure " + procedure + " called successfully");
+                        },
+                        function (err) {
+                           console.log("could not call procedure", err);
+                        }
+                     );
+
+                  })(procedures[i]);
+               }
+            } else {
+               console.log("not connected!");
+            }
+         }
+
+         connection.onopen = function (new_session, details) {
+
+            session = new_session;
+
+            console.log("Connected with session ID " + session.id);
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
