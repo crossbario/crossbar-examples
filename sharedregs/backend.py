@@ -27,12 +27,15 @@
 ###############################################################################
 
 import os
+import sys
 
+from twisted.python import log
 from twisted.internet.defer import inlineCallbacks
 
 from autobahn import wamp
 from autobahn.wamp.types import RegisterOptions
 from autobahn.twisted.wamp import ApplicationSession
+from autobahn.twisted.wamp import ApplicationRunner
 
 
 class MyComponent(ApplicationSession):
@@ -40,9 +43,15 @@ class MyComponent(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
         self._ident = "MyComponent (PID {}, Session {})".format(os.getpid(), details.session)
-        yield self.register(self.add2, u'com.example.add2', options = RegisterOptions(invoke = u'roundrobin'))
+        yield self.register(self.add2, u'com.example.add2', options=RegisterOptions(invoke=u'roundrobin'))
         print("MyComponent: add2() registered!")
 
     def add2(self, a, b):
         print("add2 called on {}".format(self._ident))
-        return a + b
+        return {'result': a + b, 'ident': self._ident}
+
+
+if __name__ == '__main__':
+    log.startLogging(sys.stdout)
+    runner = ApplicationRunner(url=u"ws://127.0.0.1:8080/ws", realm=u"realm1")
+    runner.run(MyComponent)

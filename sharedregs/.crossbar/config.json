@@ -131,6 +131,22 @@
                }
             }
          ]
+      },
+      {
+         "type": "guest",
+         "executable": "python",
+         "arguments": ["backend.py"],
+         "options": {
+            "workdir": ".."
+         }
+      },
+      {
+         "type": "guest",
+         "executable": "python",
+         "arguments": ["backend.py"],
+         "options": {
+            "workdir": ".."
+         }
       }
    ]
 }
