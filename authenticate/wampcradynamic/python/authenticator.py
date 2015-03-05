@@ -37,10 +37,18 @@ class MyAuthenticator(ApplicationSession):
 
    USERDB = {
       'joe': {
-         'secret': 'secret2',
+         # these are required:
+         'secret': 'secret2',  # the secret/password to be used
+         'role': 'frontend'    # the auth role to be assigned when authentication succeeds
+      },
+      'hans': {
+         'authid': 'ID09125',  # assign a different auth ID during authentication
+         'secret': '123456',
          'role': 'frontend'
       },
       'peter': {
+         # use salted passwords
+
          # autobahn.wamp.auth.derive_key(secret.encode('utf8'), salt.encode('utf8')).decode('ascii')
          'secret': 'prq7+YkJ1/KlW1X0YczMHw==',
          'role': 'frontend',
@@ -57,6 +65,7 @@ class MyAuthenticator(ApplicationSession):
          print("authenticate called: realm = '{}', authid = '{}', details = '{}'".format(realm, authid, details))
 
          if authid in self.USERDB:
+            # return a dictionary with authentication information ...
             return self.USERDB[authid]
          else:
             raise ApplicationError("com.example.no_such_user", "could not authenticate session - no such user {}".format(authid))
