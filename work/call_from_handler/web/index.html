@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Hello WAMP</h1>
+      <p>Open JavaScript console to watch output.</p>
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <button onclick="publish()">Publish</button>
+
+      <script>
+         var connection = new autobahn.Connection({
+            url: "ws://127.0.0.1:8080/ws",
+            realm: "realm1"
+         });
+
+         var session = null;
+
+         function publish() {
+            if (session) {
+               session.publish("com.example.topic1", [Math.random()]);
+            }
+         }
+
+         connection.onopen = function (new_session, details) {
+            console.log("Connected");
+            session = new_session;
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+            session = null;
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

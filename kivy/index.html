@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>Browser frontend talking to Kivy app</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <button onclick="send_message()">Send Message</button>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         var session = null;
+         var counter = 0;
+
+         function send_message () {
+            if (session) {
+               counter += 1;
+               var msg = "Hello " + counter;
+               session.publish("com.example.kivy", [msg]);
+               console.log("Message sent:", msg);
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         connection.onopen = function (new_session, details) {
+
+            session = new_session;
+
+            console.log("Connected with session ID " + session.id);
+
+            session.subscribe("com.example.kivy", function (args) {
+               var msg = args[0];
+               console.log("Received message:", msg);
+            });
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
