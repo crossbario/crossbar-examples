@@ -17,7 +17,10 @@
    </head>
    <body>
       <h1>Example: WAMP Meta Events and Procedures - Meta API Monitor</h1>
-      <p>Open JavaScript console to watch output.</p>
+      <p>
+         Open JavaScript console to watch output.
+         <button onclick="close_connection()">Close this connection</button>
+      </p>
 
       <h2>Sessions</h2>
 
@@ -589,6 +592,14 @@
                      console.log(err);
                   }
                );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function close_connection () {
+            if (session) {
+               session.leave();
             } else {
                console.log("not connected");
             }
