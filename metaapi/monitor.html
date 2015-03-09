@@ -20,11 +20,24 @@
       <p>Open JavaScript console to watch output.</p>
 
       <h2>Sessions</h2>
+
+      <h3>Session information</h3>
       <p>
          Retrieve information on currently connected sessions.
          <div>
             <button onclick="list_sessions()">List Sessions</button>
             <button onclick="count_sessions()">Count Sessions</button>
+         </div>
+      </p>
+
+      <h3>Kill Session</h3>
+      <p>
+         Actively end a session.
+         <div>
+            Session ID: <input type="text" id="kill_session_session_id" name="kill_session_session_id" value=""><br>
+            Reason: <input type="text" id="kill_session_reason" name="kill_session_reason" value="com.example.user_group_changed"><br>
+            Message: <input type="text" id="kill_session_message" name="kill_session_message" value="Your session was killed since your user group changed."><br>
+            <button onclick="kill_session()">Kill Session</button>
          </div>
       </p>
 
@@ -143,6 +156,26 @@
          //
          // Meta Procedures for Sessions
          //
+
+         // wamp.session.kill
+         function kill_session () {
+            if (session) {
+               var session_id = parseInt(document.getElementById('kill_session_session_id').value);
+               var reason = document.getElementById('kill_session_reason').value;
+               var message = document.getElementById('kill_session_message').value;
+
+               session.call("wamp.session.kill", [session_id, reason, message]).then(
+                  function () {
+                     console.log("session " + session_id + " killed!");
+                  },
+                  function (err) {
+                     console.log("could not kill session " + session_id, err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
 
          // wamp.session.list
          // wamp.session.get

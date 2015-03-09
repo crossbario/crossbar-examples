@@ -142,7 +142,7 @@
                      // our subscription might be actively revoked by the router later ...
                      subscription.on_unsubscribe.then(
                         function (reason) {
-                           console.log("subscription was revoked: ", reason);
+                           console.log("Subscription was revoked: ", reason);
                         }
                      );
 
@@ -264,7 +264,7 @@
                      // our subscription might be actively revoked by the router later ...
                      registration.on_unregister.then(
                         function (reason) {
-                           console.log("registration was revoked: ", reason);
+                           console.log("Registration was revoked: ", reason);
                         }
                      );
 
