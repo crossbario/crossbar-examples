@@ -87,7 +87,10 @@
       </p>
 
       <script>AUTOBAHN_DEBUG = false;</script>
+<!--      
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+-->      
+      <script src="autobahn.js"></script>
 
       <script>
          var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
@@ -135,6 +138,14 @@
                session.subscribe(topic1_subscribe_uri, topic1_onevent, topic1_subscribe_options).then(
                   function (subscription) {
                      console.log("Subscribed to " + topic1_subscribe_uri + " with subscription ID " + subscription.id);
+
+                     // our subscription might be actively revoked by the router later ...
+                     subscription.on_unsubscribe.then(
+                        function (reason) {
+                           console.log("subscription was revoked: ", reason);
+                        }
+                     );
+
                      topic1_subscription = subscription;
                   },
                   function (err) {
@@ -249,6 +260,14 @@
                session.register(procedure1_register_uri, procedure1, procedure1_register_options).then(
                   function (registration) {
                      console.log("Registered " + procedure1_register_uri + " with registration ID " + registration.id);
+
+                     // our subscription might be actively revoked by the router later ...
+                     registration.on_unregister.then(
+                        function (reason) {
+                           console.log("registration was revoked: ", reason);
+                        }
+                     );
+
                      procedure1_registration = registration;
                   },
                   function (err) {

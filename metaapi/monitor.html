@@ -66,6 +66,17 @@
          </div>
       </p>
 
+      <h3>Remove Subscriber</h3>
+      <p>
+         Actively remove a subscriber from a subscription.
+         <div>
+            Subscription ID: <input type="text" id="remove_subscriber_subscription_id" name="remove_subscriber_subscription_id" value=""><br>
+            Subscriber ID: <input type="text" id="remove_subscriber_subscriber_id" name="remove_subscriber_subscriber_id" value=""><br>
+            Reason: <input type="text" id="remove_subscriber_reason" name="remove_subscriber_reason" value="wamp.error.authorization_revoked"><br>
+            <button onclick="remove_subscriber()">Remove Subscriber</button>
+         </div>
+      </p>
+
 
       <h2>Remote Procedure Calls</h2>
 
@@ -103,6 +114,18 @@
             <button onclick="get_registrations()">Get Registrations</button>
          </div>
       </p>
+
+      <h3>Remove Callee</h3>
+      <p>
+         Actively remove a callee from a registration.
+         <div>
+            Registration ID: <input type="text" id="remove_callee_registration_id" name="remove_callee_registration_id" value=""><br>
+            Callee ID: <input type="text" id="remove_callee_callee_id" name="remove_callee_callee_id" value=""><br>
+            Reason: <input type="text" id="remove_callee_reason" name="remove_callee_reason" value="wamp.error.authorization_revoked"><br>
+            <button onclick="remove_callee()">Remove Callee</button>
+         </div>
+      </p>
+
 
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
@@ -320,6 +343,27 @@
             }            
          }
 
+         // wamp.registration.remove_callee
+         function remove_callee () {
+
+            var registration_id = parseInt(document.getElementById('remove_callee_registration_id').value);
+            var callee_id = parseInt(document.getElementById('remove_callee_callee_id').value);
+            var reason = document.getElementById('remove_callee_reason').value;
+
+            if (session) {
+               session.call("wamp.registration.remove_callee", [registration_id, callee_id, reason]).then(
+                  function (res) {
+                     console.log("callee removed from registration: ", res);
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
          //
          // Meta Procedures for Subscriptions
          //
@@ -494,6 +538,27 @@
             } else {
                console.log("not connected");
             }            
+         }
+
+         // wamp.subscription.remove_subscriber
+         function remove_subscriber () {
+
+            var subscription_id = parseInt(document.getElementById('remove_subscriber_subscription_id').value);
+            var subscriber_id = parseInt(document.getElementById('remove_subscriber_subscriber_id').value);
+            var reason = document.getElementById('remove_subscriber_reason').value;
+
+            if (session) {
+               session.call("wamp.subscription.remove_subscriber", [subscription_id, subscriber_id, reason]).then(
+                  function (res) {
+                     console.log("subscriber removed from subscription: ", res);
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
          }
 
          // connection
