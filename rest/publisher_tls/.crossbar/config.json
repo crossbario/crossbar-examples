@@ -44,16 +44,16 @@
                   "ws": {
                      "type": "websocket"
                   },
-                  "push": {
-                     "type": "pusher",
+                  "publish": {
+                     "type": "publisher",
                      "realm": "realm1",
                      "role": "anonymous",
                      "options": {
                         "debug": true
                      }
                   },
-                  "pushsigned": {
-                     "type": "pusher",
+                  "publish-signed": {
+                     "type": "publisher",
                      "realm": "realm1",
                      "role": "anonymous",
                      "options": {

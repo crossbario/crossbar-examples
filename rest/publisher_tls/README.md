@@ -1,8 +1,8 @@
-# Crossbar.io HTTP Pusher
+# Crossbar.io HTTP Publisher
 
-Crossbar includes a HTTP Pusher service that is able to receive PubSub events via plain-old HTTP/POST requests, and forward those via WAMP to connected subscribers.
+Crossbar includes a HTTP Publisher service that is able to receive PubSub events via plain-old HTTP/POST requests, and forward those via WAMP to connected subscribers.
 
-To configure the service, set up a Web transport with a path service of type `pusher` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](https://github.com/crossbario/crossbar/wiki/HTTP-Pusher-Service).
+To configure the service, set up a Web transport with a path service of type `publisher` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](http://crossbar.io/docs/HTTP-Bridge-Services/).
 
 ## Example
 
@@ -16,5 +16,5 @@ To publish using [curl](http://curl.haxx.se/) (unsigned publish):
 ```shell
 curl -H "Content-Type: application/json" \
 	-d '{"topic": "com.myapp.topic1", "args": ["Hello, world"]}' \
-	http://127.0.0.1:8080/push
+	http://127.0.0.1:8080/publish
 ```

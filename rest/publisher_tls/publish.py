@@ -33,21 +33,21 @@ import crossbarconnect
 
 if __name__ == '__main__':
 
-    ## create a new Crossbar.io push client (once)
-    ##
+    # create a new Crossbar.io push client (once)
+    #
     context = ssl._create_unverified_context() # we're using self-signed certs, so disable cert checking
-    client = crossbarconnect.Client("https://127.0.0.1:8080/push", context = context)
+    client = crossbarconnect.Client("https://127.0.0.1:8080/publish", context = context)
 
-    ## publish an event without payload
-    ##
+    # publish an event without payload
+    #
     client.publish("com.myapp.topic1")
 
-    ## publish an event with (positional) payload and get publication ID
-    ##
+    # publish an event with (positional) payload and get publication ID
+    #
     event_id = client.publish("com.myapp.topic1", "Hello, world!", 23)
     print("event published with ID {0}".format(event_id))
 
-    ## publish 5 events with complex payload
-    ##
+    # publish 5 events with complex payload
+    #
     for i in range(5):
         client.publish("com.myapp.topic1", i, sq=i * i, msg="Hello, world!")

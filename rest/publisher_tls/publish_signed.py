@@ -32,15 +32,15 @@ import crossbarconnect
 
 
 if __name__ == '__main__':
-    ## Create a new Crossbar.io push client (once), providing key/secret
-    ##
+    # Create a new Crossbar.io push client (once), providing key/secret
+    #
     context = ssl._create_unverified_context() # we're using self-signed certs, so disable cert checking
-    client = crossbarconnect.Client("https://127.0.0.1:8080/pushsigned",
+    client = crossbarconnect.Client("https://127.0.0.1:8080/publish-signed",
                                     key="foobar", secret="secret", context = context)
 
-    ## Publish an event with (positional) payload and get publication ID
-    ## Since we provided key/secret before, the request will be signed.
-    ##
+    # Publish an event with (positional) payload and get publication ID
+    # Since we provided key/secret before, the request will be signed.
+    #
     event_id = client.publish("com.myapp.topic1", "Hello, world!", 23)
 
     print("event published with ID {0}".format(event_id))
