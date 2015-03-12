@@ -58,7 +58,7 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "crossbar.adapter.rest.subscriber.MessageForwarder",
+                    "classname": "crossbar.adapter.rest.MessageForwarder",
                     "realm": "realm1",
                     "extra": {
                         "topic": "com.myapp.topic1",
