@@ -1,15 +1,15 @@
-# Crossbar.io HTTP Caller
+# Crossbar.io HTTP Callee
 
-Crossbar includes a HTTP Caller service that is able to perform WAMP calls from HTTP POST requests.
+Crossbar includes a HTTP Callee module that is able to perform HTTP requests from WAMP calls.
 
-To configure the service, set up a Web transport with a path service of type `caller` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](http://crossbar.io/docs/HTTP-Bridge-Services/).
+To configure the service, set up a component with the classname `crossbar.adapter.rest.RESTCallee` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](http://crossbar.io/docs/HTTP-Bridge-Services/).
 
 ## Example
 
-To call using [curl](http://curl.haxx.se/) (unsigned call):
+To test using [curl](http://curl.haxx.se/) (unsigned call):
 
 ```shell
 curl -H "Content-Type: application/json" \
-	-d '{"procedure": "com.example.add2", "args": [1, 2]}' \
+	-d '{"procedure": "com.myapp.rest", "kwargs": {"url": "get", "method": "GET"}}' \
 	http://127.0.0.1:8080/call
 ```

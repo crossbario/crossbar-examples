@@ -62,7 +62,7 @@
                     "realm": "realm1",
                     "extra": {
                         "procedure": "com.myapp.rest",
-                        "baseurl": "https://httpbin.org:8090/"
+                        "baseurl": "https://httpbin.org/"
                     },
                     "transport": {
                         "type": "websocket",
