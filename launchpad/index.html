@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+
+      <style>
+         body {
+            background-color: #000;
+            color: #fff;
+         }
+         #padswrapper {
+            position: relative;
+         }
+
+         #padscontainer {
+            position: relative;
+            width: 540px;
+            height: 540px;
+            margin: 20px;
+            padding: 0;
+         }
+
+         .pad {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: #000;
+         }
+
+         .padlow {
+            margin: 5px;
+            height: 50px;
+            width: 50px;
+            background-color: #333;
+         }
+      </style>
+
+      <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+      <script>
+
+         var sess = null;
+
+         window.onload = function() {
+            setupPads();
+            //ab._Deferred = jQuery.Deferred;
+            connect();
+         };
+
+         function connect() {
+
+            var wsuri = "ws://127.0.0.1/ws";
+            //var wsuri = "ws://webmqtest.tavendo.de/ws";
+
+            ab.connect(wsuri,
+
+               function (session) {
+                  sess = session;
+                  ab.log("connected to " + wsuri);
+                  onConnect0();
+               },
+
+               function (code, reason, detail) {
+
+                  sess = null;
+                  switch (code) {
+                     case ab.CONNECTION_UNSUPPORTED:
+                        window.location = "http://autobahn.ws/unsupportedbrowser";
+                        break;
+                     case ab.CONNECTION_CLOSED:
+                        window.location.reload();
+                        break;
+                     default:
+                        ab.log(code, reason, detail);
+                        break;
+                  }
+               },
+
+               {'maxRetries': 60, 'retryDelay': 2000}
+            );
+         }
+
+         function onConnect0() {
+            sess.authreq().then(function () {
+               sess.auth().then(onAuth, ab.log);
+            }, ab.log);
+         }
+
+         function setLight(x, y, r, g) {
+            if (r > 0 || g > 0) {
+               pads[8 - y][x].style.backgroundColor = "rgb(" + Math.floor(r*255/3) + "," + Math.floor(g*255/3) + ",0)";
+            } else {
+               pads[8 - y][x].style.backgroundColor = "#333";
+            }
+         }
+
+         function setPad(x, y, r, g) {
+            setLight(x, y, r, g);
+            sess.publish("launchpad:light", {x: x, y: y, r: r, g: g});
+         }
+
+         function clearPad(x, y) {
+            setLight(x, y, 0, 0);
+            sess.publish("launchpad:light", {x: x, y: y, r: 0, g: 0});
+         }
+
+         function onPad(topic, e) {
+            console.log("Pad: x = " + e.x + ", y = " + e.y + ": " + e.v + " (" + e.t + ")");
+            if (e.v == 1) {
+               setPad(e.x, e.y, 3, 3);
+            } else {
+               clearPad(e.x, e.y);
+            }
+         }
+
+         function onLight(topic, e) {
+            console.log("Light: x = " + e.x + ", y = " + e.y + ": r = " + e.r + ", g = " + e.g);
+            setLight(e.x, e.y, e.r, e.g);
+         }
+
+         function onAuth(permissions) {
+            ab.log("authenticated!", permissions);
+            sess.prefix("launchpad", "http://autobahn.tavendo.de/public/demo/launchpad#")
+            sess.subscribe("launchpad:pad", onPad);
+            sess.subscribe("launchpad:light", onLight);
+         };
+
+         function rint(upper) {
+            return Math.floor(Math.random() * (upper + 1));
+         }
+
+         function setSome() {
+            for (var i = 0; i < 10; ++i) {
+               var c = 0;
+               while (c == 0) {
+                  var r = rint(3);
+                  var g = rint(3);
+                  c = r + g;
+               }
+               setPad(rint(8), rint(8), r, g);
+            }
+         }
+
+         function reset() {
+            for (var y = 0; y < 9; ++y) {
+               for (var x = 0; x < 9; ++x) {
+                  pads[8 - y][x].style.backgroundColor = "#333";
+               }
+            }
+            sess.publish("launchpad:reset");
+         }
+
+         var pads;
+
+         function createPadMouseDown(x, y) {
+            return function() {
+               setPad(x, y, 3, 3);
+            }
+         }
+
+         function createPadMouseUp(x, y) {
+            return function() {
+               clearPad(x, y);
+            }
+         }
+
+         function setupPads() {
+            var pw = document.getElementById("padswrapper");
+
+            // remove previous container (if any)
+            while (pw.hasChildNodes()) {
+               pw.removeChild(pw.firstChild);
+            }
+
+            // create new pads container
+            var pc = document.createElement("div");
+            pc.setAttribute("id", "padscontainer");
+            pw.appendChild(pc);
+
+            // fill pad container with pad divs
+            pads = new Array(9);
+            for (var i = 0; i < 9; ++i) {
+
+               pads[i] = new Array(9);
+               for (var j = 0; j < 9; ++j) {
+
+                  el = document.createElement("div");
+
+                  //el.setAttribute("id", j + "-" + i);
+                  el.style.left = (j * 50 + 10) + "px";
+                  el.style.top = (i * 50 + 10) + "px";
+                  el.className = "pad";
+                  el.onmousedown = createPadMouseDown(j, 8 - i);
+                  el.onmouseup = createPadMouseUp(j, 8 - i);
+
+                  var cel = document.createElement("div");
+                  cel.className = "padlow";
+                  el.appendChild(cel);
+                  pc.appendChild(el);
+
+                  pads[i][j] = cel;
+               }
+            }
+         }
+      </script>
+   </head>
+   <body>
+      <h1>Novation Launchpad / Tavendo WebMQ</h1>
+      <button style="width: 120px; height: 30px;" onclick="setSome();">Randomize</button>
+      <button style="width: 120px; height: 30px;" onclick="reset();">Reset</button>
+      <br>
+      <div id="padswrapper"></div>
+   </body>
+</html>
