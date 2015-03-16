@@ -1,2 +1,4 @@
 *.pyc
 node.pid
+*~
+.DS_Store

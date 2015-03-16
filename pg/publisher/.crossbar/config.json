@@ -52,7 +52,7 @@
          "components": [
             {
                "type": "class",
-               "classname": "crossbar.adapter.PostgreSQLDatabasePublisher",
+               "classname": "crossbar.adapter.postgres.PostgreSQLDatabasePublisher",
                "realm": "realm1",
                "transport": {
                   "type": "websocket",
@@ -69,7 +69,7 @@
                      "port": 5432,
                      "database": "test",
                      "user": "testuser",
-                     "password": "testuser"      
+                     "password": "testuser"
                   }
                }
             }
