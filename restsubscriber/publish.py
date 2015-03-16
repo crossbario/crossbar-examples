@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     ## create a new Crossbar.io push client (once)
     ##
-    client = crossbarconnect.Client("http://127.0.0.1:8080/push")
+    client = crossbarconnect.Client("http://127.0.0.1:8080/publish")
 
     ## publish an event without payload
     ##

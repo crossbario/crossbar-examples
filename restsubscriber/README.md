@@ -1,15 +1,18 @@
-# Crossbar.io HTTP Caller
+# Crossbar.io HTTP Subscriber
 
-Crossbar includes a HTTP Caller service that is able to perform WAMP calls from HTTP POST requests.
+Crossbar includes a HTTP Subscriber which forwards WAMP PubSub messages to a HTTP server.
+The message is serialised to JSON and (by default) HTTP POSTed to a URL.
 
-To configure the service, set up a Web transport with a path service of type `caller` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](http://crossbar.io/docs/HTTP-Bridge-Services/).
+To configure the service, set up a component with the classname `crossbar.adapter.rest.MessageForwarder` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](http://crossbar.io/docs/HTTP-Bridge-Services/).
 
 ## Example
 
-To call using [curl](http://curl.haxx.se/) (unsigned call):
+To publish a message using [curl](http://curl.haxx.se/) (unsigned call):
 
 ```shell
 curl -H "Content-Type: application/json" \
-	-d '{"procedure": "com.example.add2", "args": [1, 2]}' \
-	http://127.0.0.1:8080/call
+	-d '{"topic": "com.myapp.topic1", "args": ["Hello, world"]}' \
+	http://127.0.0.1:8080/publish
 ```
+
+This example configuration will then forward the message to `httpbin.org/post` (which echos back what was sent to it) and print out the response in the controller's debug log.

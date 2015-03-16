@@ -38,8 +38,8 @@
                         "ws": {
                             "type": "websocket"
                         },
-                        "push": {
-                            "type": "pusher",
+                        "publish": {
+                            "type": "publisher",
                             "realm": "realm1",
                             "role": "anonymous",
                             "options": {
@@ -61,9 +61,11 @@
                     "classname": "crossbar.adapter.rest.MessageForwarder",
                     "realm": "realm1",
                     "extra": {
-                        "topic": "com.myapp.topic1",
+                        "subscriptions": [
+                            {"url": "https://httpbin.org/post",
+                             "topic": "com.myapp.topic1"}
+                        ],
                         "method": "POST",
-                        "url": "https://httpbin.org/post",
                         "expectedcode": 200,
                         "debug": true
                     },
