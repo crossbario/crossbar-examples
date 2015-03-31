@@ -74,11 +74,11 @@ int main () {
       // connect to this server/port
       //
       tcp::resolver resolver(io);
-      auto endpoint_iterator = resolver.resolve({"127.0.0.1", "8090"});
+      auto endpoint_iterator = resolver.resolve({"localhost", "8090"});
 
       // create a WAMP session that talks over TCP
       //
-      bool debug = false;
+      bool debug = true;
       autobahn::session<tcp::socket,
                         tcp::socket> session(io, socket, socket, debug);
 

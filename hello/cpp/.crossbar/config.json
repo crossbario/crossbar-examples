@@ -46,14 +46,9 @@
                   "type": "tcp",
                   "port": 8090
                },
-               "serializer": "msgpack"
+               "debug": true
             }
          ]
-      },
-      {
-         "type": "guest",
-         "executable": "../hello",
-         "arguments": []
       }
    ]
 }

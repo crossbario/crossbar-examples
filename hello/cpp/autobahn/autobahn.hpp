@@ -29,7 +29,19 @@
 #include <map>
 #include <functional>
 
+#if defined(_WIN32) || defined(WIN32)
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+// We don't need the following anymore, since
+// https://github.com/tavendo/AutobahnCpp/pull/33 was merged
+//#define MSGPACK_USE_LEGACY_NAME_AS_FLOAT
+
 #include <msgpack.hpp>
+
+#ifdef ERROR
+#undef ERROR
+#endif
 
 // http://stackoverflow.com/questions/22597948/using-boostfuture-with-then-continuations/
 #define BOOST_THREAD_PROVIDES_FUTURE
@@ -311,6 +323,10 @@ namespace autobahn {
          struct register_request_t {
             register_request_t() {};
             register_request_t(boost::any endpoint) : m_endpoint(endpoint) {};
+			register_request_t(register_request_t &&other)
+				: m_endpoint(std::move(other.m_endpoint))
+				, m_res(std::move(other.m_res))
+			{}
             boost::any m_endpoint;
             boost::promise<registration> m_res;
          };
@@ -374,6 +390,7 @@ namespace autobahn {
          /// Receive one message from istream in m_unpacker.
          inline void receive_msg();
 
+         void got_handshake_reply(const boost::system::error_code& error);
 
          void got_msg_header(const boost::system::error_code& error);
 

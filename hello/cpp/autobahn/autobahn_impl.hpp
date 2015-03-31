@@ -16,19 +16,17 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
+#if !(defined(_WIN32) || defined(WIN32))
 #include <arpa/inet.h>
 #include <unistd.h>
+#endif 
+
 #include <stdlib.h>
 
-
 #include <cstdint>
+#include <exception>
 #include <iostream>
-#include <vector>
-#include <map>
-#include <string>
 #include <sstream>
-#include <stdexcept>
-
 
 namespace autobahn {
 
@@ -59,9 +57,44 @@ namespace autobahn {
 
    template<typename IStream, typename OStream>
    void session<IStream, OStream>::start() {
-      receive_msg();
+
+      // Send the initial handshake packet informing the server which
+      // serialization format we wish to use, and our maximum message size
+      //
+      m_buffer_msg_len[0] = 0x7F; // magic byte
+      m_buffer_msg_len[1] = 0xF2; // we are ready to receive messages up to 2**24 octets and encoded using MsgPack
+      m_buffer_msg_len[2] = 0x00; // reserved
+      m_buffer_msg_len[3] = 0x00; // reserved
+      boost::asio::write(m_out, boost::asio::buffer(m_buffer_msg_len, sizeof(m_buffer_msg_len)));
+
+      // Read the 4-byte reply from the server
+      boost::asio::async_read(
+         m_in,
+         boost::asio::buffer(m_buffer_msg_len, sizeof(m_buffer_msg_len)),
+         bind(&session<IStream, OStream>::got_handshake_reply, this, boost::asio::placeholders::error)
+      );
    }
 
+   template<typename IStream, typename OStream>
+   void session<IStream, OStream>::got_handshake_reply(const boost::system::error_code& error) {
+      if (m_debug) {
+         std::cerr << "RawSocket handshake reply received" << std::endl;
+      }
+      if (m_buffer_msg_len[0] != 0x7F) {
+         throw protocol_error("invalid magic byte in RawSocket handshake response");
+      }
+      if (((m_buffer_msg_len[1] & 0x0F) != 0x02)) {
+         // FIXME: this isn't exactly a "protocol error" => invent new exception
+         throw protocol_error("RawSocket handshake reply: server does not speak MsgPack encoding");
+      }
+      if (m_debug) {
+         std::cerr << "RawSocket handshake reply is valid: start WAMP message send-receive loop" << std::endl;
+      }
+
+      // enter WAMP message send-receive ..
+      //
+      receive_msg();
+   }
 
    template<typename IStream, typename OStream>
    void session<IStream, OStream>::stop() {
@@ -75,7 +108,6 @@ namespace autobahn {
       } catch (...) {
       }
    }
-
 
    template<typename IStream, typename OStream>
    boost::future<uint64_t> session<IStream, OStream>::join(const std::string& realm) {
@@ -195,7 +227,7 @@ namespace autobahn {
       }
 
       m_request_id += 1;
-      m_register_requests[m_request_id] = register_request_t(endpoint);
+	  m_register_requests.emplace(m_request_id, register_request_t(endpoint));
 
       // [REGISTER, Request|id, Options|dict, Procedure|uri]
 
@@ -506,7 +538,7 @@ namespace autobahn {
 
    template<typename IStream, typename OStream>
    void session<IStream, OStream>::unpack_anyvec(std::vector<msgpack::object>& raw_args, anyvec& args) {
-      for (int i = 0; i < raw_args.size(); ++i) {
+      for (size_t i = 0; i < raw_args.size(); ++i) {
          args.push_back(unpack_any(raw_args[i]));
       }
    }
@@ -536,7 +568,7 @@ namespace autobahn {
          case msgpack::type::BOOLEAN:
             return boost::any(obj.as<bool>());
 
-         case msgpack::type::DOUBLE:
+         case msgpack::type::FLOAT:
             return boost::any(obj.as<double>());
 
          case msgpack::type::NIL:
@@ -778,9 +810,40 @@ namespace autobahn {
             }
 
          }
+
+         // [ERROR, INVOCATION, INVOCATION.Request|id, Details|dict, Error|uri]
+         // [ERROR, INVOCATION, INVOCATION.Request|id, Details|dict, Error|uri, Arguments|list]
+         // [ERROR, INVOCATION, INVOCATION.Request|id, Details|dict, Error|uri, Arguments|list, ArgumentsKw|dict]
+
+         // FIXME: implement Autobahn-specific exception with error URI
+         catch (const std::exception& e) {
+            // we can at least describe the error with e.what()
+            //
+            m_packer.pack_array(7);
+            m_packer.pack(static_cast<int> (msg_code::ERROR));
+            m_packer.pack(static_cast<int> (msg_code::INVOCATION));
+            m_packer.pack(request_id);
+            m_packer.pack_map(0);
+            m_packer.pack(std::string("wamp.error.runtime_error"));
+            m_packer.pack_array(0);
+
+            m_packer.pack_map(1);
+
+            m_packer.pack(std::string("what"));
+            m_packer.pack(std::string(e.what()));
+
+            send();
+         }
          catch (...) {
-            // FIXME: send ERROR
-            std::cerr << "INVOCATION failed" << std::endl;
+            // no information available on actual error
+            //
+            m_packer.pack_array(5);
+            m_packer.pack(static_cast<int> (msg_code::ERROR));
+            m_packer.pack(static_cast<int> (msg_code::INVOCATION));
+            m_packer.pack(request_id);
+            m_packer.pack_map(0);
+            m_packer.pack(std::string("wamp.error.runtime_error"));
+            send();
          }
 
       } else {
