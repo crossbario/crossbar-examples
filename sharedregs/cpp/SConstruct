@@ -116,5 +116,5 @@ env.Append(CPPPATH = ['#/autobahn'])
 
 ## Example
 ##
-hello = env.Program("hello.cpp", LIBS = ['boost_thread', 'boost_system', 'msgpack'],
+component = env.Program("component.cpp", LIBS = ['boost_thread', 'boost_system', 'msgpack'],
    variant_dir = 'build/examples', duplicate = 0)

@@ -33,10 +33,11 @@
                "paths": {
                   "/": {
                      "type": "static",
-                     "directory": "../web/"
+                     "directory": ".."
                   },
                   "ws": {
-                     "type": "websocket"
+                     "type": "websocket",
+                     "debug": false
                   }
                }
             },
@@ -46,7 +47,7 @@
                   "type": "tcp",
                   "port": 8090
                },
-               "debug": false
+               "debug": true
             }
          ]
       }
