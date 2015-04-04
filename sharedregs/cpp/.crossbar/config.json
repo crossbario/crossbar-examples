@@ -47,7 +47,7 @@
                   "type": "tcp",
                   "port": 8090
                },
-               "debug": true
+               "debug": false
             }
          ]
       }

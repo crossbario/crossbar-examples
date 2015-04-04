@@ -1,8 +1,15 @@
-# Hello WAMP in C++11
+# Shared Procedures
 
-A [C++11](http://en.wikipedia.org/wiki/C%2B%2B11) / [AutobahnCpp](https://github.com/tavendo/AutobahnCpp) based "Hello world!" example WAMP application.
+With shared procedures, a given URI is registered by multiple endpoints.
 
-**See: [Getting started with C++](https://github.com/crossbario/crossbar/wiki/Getting-started-with-C--)**
+The first registering callee defines the invocation policy for that URI. The invocation policy default is `single`, which provides the default WAMP behavior of only allowing a single callee registering a procedure.
+
+Other invocation policies are:
+
+* `first`
+* `last`
+* `roundrobin`
+* `random`
 
 ## How to run
 
@@ -18,8 +25,10 @@ Start Crossbar by doing:
 crossbar start
 ```
 
-Open [`http://localhost:8080/`](http://localhost:8080/) (or wherever Crossbar runs) in your browser.
+Start one or multiple backend components by starting in terminals:
 
-## How to hack
+```shell
+./component
+```
 
-All C++ backend code is in `hello.cpp`. All JavaScript frontend code is in `./web/index.html`.
+Open [`http://localhost:8080/`](http://localhost:8080/) (or wherever Crossbar runs) in your browser. Use the "call procedure" button and watch how the call is handled by one of the backends you started.
