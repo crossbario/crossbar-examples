@@ -111,5 +111,8 @@ else:
 
 ## Example
 ##
-hello = env.Program("hello.cpp", LIBS = ['boost_thread', 'boost_system', 'msgpack'],
+hello = env.Program("hello.cpp", LIBS = [
+   'boost_thread', 'boost_system', 'msgpack',
+   'ssl', 'crypto' # we need both: http://stackoverflow.com/questions/29118667/boost-and-ssl-client-server-building-issue-on-linux
+   ],
    variant_dir = 'build/examples', duplicate = 0)
