@@ -2,6 +2,13 @@
 
 A [C++11](http://en.wikipedia.org/wiki/C%2B%2B11) / [AutobahnCpp](https://github.com/tavendo/AutobahnCpp) based "Hello world!" example WAMP application.
 
+**This is running RawSocket over TLS**.
+
+Here are some pointers:
+
+* http://www.boost.org/doc/libs/1_57_0/doc/html/boost_asio/overview/ssl.html
+
+
 **See: [Getting started with C++](https://github.com/crossbario/crossbar/wiki/Getting-started-with-C--)**
 
 ## How to run
