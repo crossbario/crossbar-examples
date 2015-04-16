@@ -36,6 +36,9 @@ class BackendSession(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
 
+      def onhello(msg):
+         print("event received on {}: {}".format(topic, msg))
+
       ## SUBSCRIBE to a few topics we are allowed to subscribe to.
       ##
       for topic in [
