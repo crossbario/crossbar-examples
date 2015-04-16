@@ -32,8 +32,7 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 
-
-class MyAuthenticator(ApplicationSession):
+class AuthenticatorSession(ApplicationSession):
 
    PRINCIPALS_DB = {
       'joe': {
