@@ -130,7 +130,7 @@ int main () {
 
                   // REGISTER a procedure for remote calling
                   //
-                  auto r1 = session.provide("com.example.add2", &add2);
+                  auto r1 = session.provide("com.example.add2", static_cast<endpoint_t> (&add2));
 
                   r1.then([](future<registration> reg) {
                      cerr << "procedure add2() registered with registration ID " << reg.get().id << endl;
