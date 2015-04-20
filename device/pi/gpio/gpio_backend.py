@@ -17,11 +17,11 @@ from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.twisted.choosereactor import install_reactor
 
 
-class Gpio2Wamp(ApplicationSession):
+class GpioBackend(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        log.msg("Gpio2Wamp connected.")
+        log.msg("GpioBackend connected.")
 
         extra = self.config.extra
         self._id = extra['id']
@@ -49,7 +49,7 @@ class Gpio2Wamp(ApplicationSession):
             yield self.register(proc, uri)
             log.msg("Registered {}".format(uri))
 
-        log.msg("Gpio2Wamp ready.")
+        log.msg("GpioBackend ready.")
 
     def _check_led_arg(self, led):
         if led not in range(0, len(self._led_pins)):
@@ -147,7 +147,7 @@ if __name__ == '__main__':
                         help='The WAMP realm to join on the router.')
 
     parser.add_argument("--id", type=unicode, default=None,
-                        help='Client ID.')
+                        help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()
 
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     if args.id is None:
         args.id = get_serial()
 
-    log.msg("Gpio2Wamp bridge starting with ID {} ...".format(args.id))
+    log.msg("GpioBackend starting with ID {} ...".format(args.id))
 
     # install the "best" available Twisted reactor
     #
@@ -177,4 +177,4 @@ if __name__ == '__main__':
     }
 
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
-    runner.run(Gpio2Wamp)
+    runner.run(GpioBackend)

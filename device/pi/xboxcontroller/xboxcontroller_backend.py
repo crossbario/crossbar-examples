@@ -126,7 +126,7 @@ if __name__ == '__main__':
                         help='The WAMP realm to join on the router.')
 
     parser.add_argument("--id", type=unicode, default=None,
-                        help='Client ID.')
+                        help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()
 
@@ -135,7 +135,7 @@ if __name__ == '__main__':
     if args.id is None:
         args.id = get_serial()
 
-    log.msg("Xbox2Wamp bridge starting with ID {} ...".format(args.id))
+    log.msg("XboxBackend bridge starting with ID {} ...".format(args.id))
 
     # install the "best" available Twisted reactor
     #

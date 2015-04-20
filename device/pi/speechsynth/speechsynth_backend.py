@@ -93,7 +93,7 @@ if __name__ == '__main__':
                         help='The WAMP realm to join on the router.')
 
     parser.add_argument("--id", type=unicode, default=None,
-                        help='Client ID.')
+                        help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()
 
