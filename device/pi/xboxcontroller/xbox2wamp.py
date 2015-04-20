@@ -79,10 +79,13 @@ class XboxBridge(ApplicationSession):
     def onJoin(self, details):
         log.msg("XboxBridge connected.")
 
-        self._xbox = self.config.extra
+        extra = self.config.extra
+
+        self._id = extra['id']
+        self._xbox = extra['xbox']
         self._xbox._session = self
 
-        for proc in [self.get_gamepad]:
+        for proc in [self.get_data]:
             uri = u'com.example.device.{}.gamepad.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("Registered {}".format(uri))
@@ -143,5 +146,10 @@ if __name__ == '__main__':
     xbox = XboxdrvProtocol(topic=u"com.example.device.{}.gamepad.on_data".format(args.id), debug=args.debug)
     stdio.StandardIO(xbox)
 
-    runner = ApplicationRunner(url=args.router, realm=args.realm, extra=xbox, debug=args.debug)
+    extra = {
+        'id': args.id,
+        'xbox': xbox
+    }
+
+    runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
     runner.run(XboxBridge)
