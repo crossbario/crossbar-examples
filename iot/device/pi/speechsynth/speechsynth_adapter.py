@@ -14,28 +14,36 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
 
 
-class FliteBridge(ApplicationSession):
+class SpeechSynthAdapter(ApplicationSession):
     """
-    Connects Flite text-to-speech engine to WAMP.
+    Connects the Flite text-to-speech engine to WAMP.
     """
 
     @inlineCallbacks
     def onJoin(self, details):
-        log.msg("FliteBridge connected.")
+        # the component has now joined the realm on the WAMP router
+        log.msg("SpeechSynthAdapter connected.")
 
+        # get custom configuration
         extra = self.config.extra
 
+        # Device ID and auxiliary info
         self._id = extra['id']
         self._flite = extra['flite']
         self._voice = extra.get('voice', 'slt')
 
+        # becomes true when currently speaking
         self._is_busy = False
-        for proc in [self.say, self.is_busy]:
-            uri = u'com.example.device.{}.tts.{}'.format(self._id, proc.__name__)
-            yield self.register(proc, uri)
-            log.msg("Registered {}".format(uri))
 
-        log.msg("FliteBridge ready.")
+        # register methods on this object for remote calling via WAMP
+        for proc in [self.say, self.is_busy]:
+            uri = u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.{}'.format(self._id, proc.__name__)
+            yield self.register(proc, uri)
+            log.msg("SpeechSynthAdapter registered procedure {}".format(uri))
+
+        # signal we are done with initializing our component
+        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_ready'.format(self._id))
+        log.msg("SpeechSynthAdapter ready.")
 
     @inlineCallbacks
     def say(self, text):
@@ -47,14 +55,14 @@ class FliteBridge(ApplicationSession):
         else:
             # mark TTS engine as busy and publish event
             self._is_busy = True
-            self.publish(u'com.example.device.{}.tts.on_speech_start'.format(self._id), text)
+            self.publish(u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_speech_start'.format(self._id), text)
 
             # start TTS
             yield getProcessOutput(self._flite, ['-voice', self._voice, '-t', text])
 
             # mark TTS engine as free and publish event
-            self.publish(u'com.example.device.{}.tts.on_speech_end'.format(self._id))
             self._is_busy = False
+            self.publish(u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_speech_end'.format(self._id))
 
     def is_busy(self):
         """
@@ -97,12 +105,15 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # start logging to stdout
+    #
     log.startLogging(sys.stdout)
 
+    # get the Pi's serial number (allow override from command line)
+    #
     if args.id is None:
         args.id = get_serial()
-
-    log.msg("Flite2Wamp bridge starting with ID {} ...".format(args.id))
+    log.msg("SpeechSynthAdapter starting with Device ID {} ...".format(args.id))
 
     # install the "best" available Twisted reactor
     #
@@ -110,11 +121,20 @@ if __name__ == '__main__':
     reactor = install_reactor()
     log.msg("Running on reactor {}".format(reactor))
 
+    # custom configuration data
+    #
     extra = {
+        # device ID
         'id': args.id,
+
+        # full path to Flite executable
         'flite': '/usr/bin/flite',
+
+        # voice to use with Flite (list: flite -lv)
         'voice': 'slt'
     }
 
+    # create and start app runner for our app component ..
+    #
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
-    runner.run(FliteBridge)
+    runner.run(SpeechSynthAdapter)
