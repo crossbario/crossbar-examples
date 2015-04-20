@@ -6,6 +6,7 @@ import argparse
 
 import RPi.GPIO as GPIO
 
+from twisted.python import log
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet.task import LoopingCall
 
@@ -87,7 +88,7 @@ class Gpio2Wamp(ApplicationSession):
 
     def toggle_led(self, led):
         self._check_led_arg(led)
-        self.setLed(led, not self._led_status[led])
+        self.set_led(led, not self._led_status[led])
         return self._led_status[led]
 
     def _check_button_arg(self, button):
