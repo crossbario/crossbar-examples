@@ -4,9 +4,9 @@
 
 The Pi has a number of [GPIOs ](https://www.raspberrypi.org/documentation/usage/gpio/) which allow you to hook up actuators and sensors.
 
-The example shows how to expose two LEDs and a button via WAMP so you can turn on/off the LEDs and sense the button from any other WAMP component.
+The example shows how to expose two LEDs and a button wired to the Pi's GPIOs via WAMP so you can turn on/off the LEDs and sense the button from **any other** WAMP component.
 
-The code for the example consists of a backend written in Python and Autobahn using Twisted. The backend runs on the Pi and connects to Crossbar.io running on a network accessible from the Pi.
+The code for the example consists of a backend written in Python and AutobahnPython using Twisted. The backend runs on the Pi and connects to Crossbar.io running on a network accessible from the Pi.
 
 The backend exposes these procedures
 
@@ -19,6 +19,9 @@ and publishes event on these topics
 
 * `com.example.device.<DEVICE ID>.gpio.on_led_set`
 * `com.example.device.<DEVICE ID>.gpio.on_button`
+
+Included with a frontend running in browsers. The frontend is written in JavaScript using AutobahnJS and connects to the same Crossbar.io router instance as the backend connects to. Consequently, the frontend is able to invoke the procedures exposed on the Pi and subscribe to events generated from there.
+
 
 ## How to run
 
