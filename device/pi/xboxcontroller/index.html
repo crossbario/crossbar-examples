@@ -2,7 +2,7 @@
 <html>
    <body>
       <h1>Xbox Gamepad WAMP bridge</h1>
-      <b>Open JS console</b>
+      <b>Open JavaScript console to watch output ...</b>
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
       <script>
@@ -17,17 +17,17 @@
          connection.onopen = function (session, details) {
             console.log("Connected");
 
-            session.call("com.example.device." + device_id + ".gamepad.get_data").then(
+            session.call("com.example.device." + device + ".gamepad.get_data").then(
                function (data) {
-                  console.log("gamepad data:", data);
+                  console.log("gamepad data:", JSON.stringify(data));
                },
                function (err) {
                   console.log(err);
                }
             );
 
-            session.subscribe("com.example.device." + device_id + ".gamepad.on_data", function (data) {
-               console.log("gamepad data changed:", data);
+            session.subscribe("com.example.device." + device + ".gamepad.on_data", function (data) {
+               console.log("gamepad data changed:", JSON.stringify(data));
             });
          };
 

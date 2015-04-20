@@ -70,14 +70,14 @@ class XboxdrvProtocol(LineReceiver):
             self._last = data
 
 
-class XboxBridge(ApplicationSession):
+class Xbox2Wamp(ApplicationSession):
     """
     Connects Xbox gamepad controller to WAMP.
     """
 
     @inlineCallbacks
     def onJoin(self, details):
-        log.msg("XboxBridge connected.")
+        log.msg("Xbox2Wamp connected.")
 
         extra = self.config.extra
 
@@ -90,7 +90,7 @@ class XboxBridge(ApplicationSession):
             yield self.register(proc, uri)
             log.msg("Registered {}".format(uri))
 
-        log.msg("XboxBridge ready.")
+        log.msg("Xbox2Wamp ready.")
 
     def get_data(self):
         return self._xbox._last 
@@ -152,4 +152,4 @@ if __name__ == '__main__':
     }
 
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
-    runner.run(XboxBridge)
+    runner.run(Xbox2Wamp)
