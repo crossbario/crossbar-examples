@@ -32,8 +32,7 @@ X1:  1126 Y1:  4564  X2:  -131 Y2:  5788  du:0 dd:0 dl:0 dr:0  back:0 guide:0 st
 Run the Xbox2WAMP bridge:
 
 ```console
-pi@raspberrypi ~/scm/crossbarexamples/device/pi/xboxcontroller $ make
-sudo xboxdrv --quiet --detach-kernel-driver | python xbox2wamp.py --router ws://192.168.1.141:8080/ws
+pi@raspberrypi ~/scm/crossbarexamples/device/pi/xboxcontroller $ sudo xboxdrv --quiet --detach-kernel-driver | python xbox2wamp.py --router ws://192.168.1.141:8080/ws
 2015-04-20 14:30:00+0000 [-] Log opened.
 2015-04-20 14:30:00+0000 [-] Xbox2Wamp bridge starting with ID 6afe83b4 ...
 2015-04-20 14:30:05+0000 [-] Running on reactor <twisted.internet.epollreactor.EPollReactor object at 0x3090a30>
