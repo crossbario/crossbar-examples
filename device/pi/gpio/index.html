@@ -22,7 +22,7 @@
       </style>
    </head>
    <body>
-      <h1>RaspberryPi GPIO Demo</h1>
+      <h1>RaspberryPi - GPIO-2-WAMP Bridge</h1>
       <p>Open JavaScript console to watch output.</p>
 
       <div id="leds"></div><br>
@@ -32,21 +32,14 @@
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 
       <script>
-         // the URL of the WAMP Router (Crossbar.io)
+         // adjust these settings to fit your setup:
          //
-         var wsuri = "ws://" + document.location.host + "/ws";
+         var router = "ws://192.168.1.141:8080/ws";
+         var realm = "realm1";
+         var device = "6afe83b4";
 
+         var connection = new autobahn.Connection({url: router, realm: realm});
 
-         // the WAMP connection to the Router
-         //
-         var connection = new autobahn.Connection({
-            url: wsuri,
-            realm: "realm1"
-         });
-
-
-         // fired when connection is established and session attached
-         //
          connection.onopen = function (session, details) {
 
             console.log("Connected");
@@ -64,9 +57,10 @@
                   }
                }
             }
-            session.subscribe("com.example.on_led_set", on_led_change).then(
+
+            session.subscribe("com.example.device." + device + ".gpio.on_led_set", on_led_change).then(
                function () {
-                  console.log("ok, subcribed to com.example.on_led_set")
+                  console.log("ok, subcribed to event 'on_led_set'")
                },
                function (e) {
                   console.log(e);
@@ -78,7 +72,7 @@
                function onclick() {
                   console.log("LED button " + led + " clicked");
 
-                  session.call("com.example.toggle_led", [led]).then(
+                  session.call("com.example.device." + device + ".gpio.toggle_led", [led]).then(
                      function (res) {
                         if (res) {
                            console.log("ok, turned on LED " + led);
@@ -105,7 +99,7 @@
                ledButtonNodes.push(button);
             }
 
-            session.call("com.example.get_led").then(
+            session.call("com.example.device." + device + ".gpio.get_led").then(
                function (leds) {
                   var led = 0;
                   leds.forEach(function (status) {
@@ -133,9 +127,10 @@
                   }
                }
             }
-            session.subscribe("com.example.on_button", on_button_change).then(
+
+            session.subscribe("com.example.device." + device + ".gpio.on_button", on_button_change).then(
                function () {
-                  console.log("ok, subcribed to com.example.on_button")
+                  console.log("ok, subcribed to event 'on_button'")
                },
                function (e) {
                   console.log(e);
@@ -155,7 +150,7 @@
                buttonNodes.push(btn);
             }
 
-            session.call("com.example.get_button").then(
+            session.call("com.example.device." + device + ".gpio.get_button").then(
                function (buttons) {
                   var button = 0;
                   buttons.forEach(function (pressed) {
@@ -169,18 +164,10 @@
             );
          };
 
-
-         // fired when connection was lost (or could not be established)
-         //
          connection.onclose = function (reason, details) {
             console.log("Connection lost: " + reason, details);
          }
-
-
-         // now actually open the connection
-         //
          connection.open();
-
       </script>
    </body>
 </html>

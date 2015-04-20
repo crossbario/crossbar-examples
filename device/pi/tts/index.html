@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>RaspberryPi - TTS-2-WAMP Bridge</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <div>
+         Text to speak: <input type="text" id="text_to_speak" name="text_to_speak" value="Hello, my name is Susan. How can I help you?" size="80"><br>
+         <button onclick="speak_now()">Speak Now!</button><br>
+      </div>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         // adjust these settings to fit your setup:
+         //
+         var router = "ws://192.168.1.141:8080/ws";
+         var realm = "realm1";
+         var device = "6afe83b4";
+
+         var connection = new autobahn.Connection({url: router, realm: realm});
+
+         connection.onopen = function (new_session, details) {
+            console.log("Connected");
+            session = new_session;
+
+            session.subscribe("com.example.device." + device + ".tts.on_speech_start", function (args) {
+               var text_spoken = args[0];
+               console.log("speech started:", text_spoken);
+            });
+
+            session.subscribe("com.example.device." + device + ".tts.on_speech_end", function () {
+               console.log("speech stopped");
+            });
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+            session = null;
+         }
+
+         connection.open();
+
+         function speak_now() {
+            if (session) {
+               var text_to_speak = document.getElementById('text_to_speak').value;
+
+               session.call("com.example.device." + device + ".tts.say", [text_to_speak]).then(
+                  function () {
+                     console.log("ok, text spoken.");
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+      </script>
+   </body>
+</html>
