@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Xbox Gamepad WAMP bridge</h1>
+      <b>Open JS console</b>
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script>
+         // adjust these settings to fit your setup:
+         //
+         var router = "ws://192.168.1.141:8080/ws";
+         var realm = "realm1";
+         var device = "6afe83b4";
+
+         var connection = new autobahn.Connection({url: router, realm: realm});
+
+         connection.onopen = function (session, details) {
+            console.log("Connected");
+
+            session.call("com.example.device." + device_id + ".gamepad.get_data").then(
+               function (data) {
+                  console.log("gamepad data:", data);
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+
+            session.subscribe("com.example.device." + device_id + ".gamepad.on_data", function (data) {
+               console.log("gamepad data changed:", data);
+            });
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

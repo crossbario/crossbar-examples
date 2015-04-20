@@ -1,66 +1,60 @@
 # Copyright (C) Tavendo GmbH. Open-source licensed under the
 # MIT License (http://opensource.org/licenses/MIT)
 
-import re
 import sys
 import argparse
+import math
+import random
 
 from twisted.python import log
-from twisted.internet.utils import getProcessOutput
 from twisted.internet.defer import inlineCallbacks
+from twisted.internet.threads import deferToThread
+from twisted.internet.task import LoopingCall
 
-from autobahn import wamp
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
 
 
-class FliteBridge(ApplicationSession):
-    """
-    Connects Flite text-to-speech engine to WAMP.
-    """
+class PiMonitor(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        log.msg("FliteBridge connected.")
+        log.msg("PiMonitor connected")
 
         extra = self.config.extra
 
         self._id = extra['id']
-        self._flite = extra['flite']
-        self._voice = extra.get('voice', 'slt')
 
-        self._is_busy = False
-        for proc in [self.say, self.is_busy]:
-            uri = u'com.example.device.{}.tts.{}'.format(self._id, proc.__name__)
+        self._tick = 0
+        self._cpu_temp_celsius = None
+
+        def scanTemperature():
+            self._cpu_temp_celsius = float(open("/sys/class/thermal/thermal_zone0/temp").read()) / 1000.
+            self.publish(u'com.example.device.{}.monitor.on_temperature'.format(self._id), self._tick, self._cpu_temp_celsius)
+            self._tick += 1
+
+        scan = LoopingCall(scanTemperature)
+        scan.start(1)
+
+        for proc in [self.get_temperature, self.impose_stress]:
+            uri = u'com.example.device.{}.monitor.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("Registered {}".format(uri))
 
-        log.msg("FliteBridge ready.")
+        log.msg("PiMonitor ready.")
 
-    @inlineCallbacks
-    def say(self, text):
-        """
-        Speak text.
-        """
-        if self._is_busy:
-            raise Exception("already talking")
-        else:
-            # mark TTS engine as busy and publish event
-            self._is_busy = True
-            self.publish(u'com.example.device.{}.tts.on_speech_start'.format(self._id), text)
+    def get_temperature(self):
+        return self._cpu_temp_celsius
 
-            # start TTS
-            yield getProcessOutput(self._flite, ['-voice', self._voice, '-t', text])
 
-            # mark TTS engine as free and publish event
-            self.publish(u'com.example.device.{}.tts.on_speech_end'.format(self._id))
-            self._is_busy = False
+    def impose_stress(self, n):
+        def _stress():
+            val = 0
+            for _ in range(0, n):
+                val += math.sin(random.random())
+            return val / float(n)
 
-    def is_busy(self):
-        """
-        Check if TTS engine is currently busy speaking.
-        """
-        return self._is_busy
+        return deferToThread(_stress)
 
 
 def get_serial():
@@ -111,10 +105,8 @@ if __name__ == '__main__':
     log.msg("Running on reactor {}".format(reactor))
 
     extra = {
-        'id': args.id,
-        'flite': '/usr/bin/flite',
-        'voice': 'slt'
+        'id': args.id
     }
 
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
-    runner.run(FliteBridge)
+    runner.run(PiMonitor)

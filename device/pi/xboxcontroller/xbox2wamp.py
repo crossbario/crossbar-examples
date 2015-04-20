@@ -7,6 +7,7 @@ import argparse
 
 from twisted.python import log
 from twisted.internet import stdio
+from twisted.internet.defer import inlineCallbacks
 from twisted.internet.protocol import Protocol
 from twisted.protocols.basic import LineReceiver
 
@@ -74,10 +75,22 @@ class XboxBridge(ApplicationSession):
     Connects Xbox gamepad controller to WAMP.
     """
 
+    @inlineCallbacks
     def onJoin(self, details):
-        log.msg("Session ready: {}".format(details))
+        log.msg("XboxBridge connected.")
+
         self._xbox = self.config.extra
         self._xbox._session = self
+
+        for proc in [self.get_gamepad]:
+            uri = u'com.example.device.{}.gamepad.{}'.format(self._id, proc.__name__)
+            yield self.register(proc, uri)
+            log.msg("Registered {}".format(uri))
+
+        log.msg("XboxBridge ready.")
+
+    def get_data(self):
+        return self._xbox._last 
 
 
 def get_serial():
@@ -127,7 +140,7 @@ if __name__ == '__main__':
     reactor = install_reactor()
     log.msg("Running on reactor {}".format(reactor))
 
-    xbox = XboxdrvProtocol(topic=u"io.crossbar.xbox.{}.ondata".format(args.id), debug=args.debug)
+    xbox = XboxdrvProtocol(topic=u"com.example.device.{}.gamepad.on_data".format(args.id), debug=args.debug)
     stdio.StandardIO(xbox)
 
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=xbox, debug=args.debug)
