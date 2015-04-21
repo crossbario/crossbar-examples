@@ -37,7 +37,7 @@ class GpioAdapter(ApplicationSession):
         # Device ID and auxiliary info
         self._id = extra['id']
         self._digout_pins = extra.get("digout_pins", [])
-        self._digin_pins = extra.get("digin_pins"], [])
+        self._digin_pins = extra.get("digin_pins", [])
         self._scan_rate = extra.get("scan_rate", 30)
 
         # init GPIO
@@ -71,7 +71,7 @@ class GpioAdapter(ApplicationSession):
 
         # signal we are done with initializing our component
         self.publish(u'io.crossbar.examples.iot.devices.pi.{}.gpio.on_ready'.format(self._id))
-        log.msg("GpioBackend ready.")
+        log.msg("GpioAdapter ready.")
 
     def get_version(self):
         """
@@ -208,7 +208,7 @@ if __name__ == '__main__':
     #
     if args.id is None:
         args.id = get_serial()
-    log.msg("GpioBackend starting with Device ID {} ...".format(args.id))
+    log.msg("GpioAdapter starting with Device ID {} ...".format(args.id))
 
     # install the "best" available Twisted reactor
     #
@@ -237,4 +237,4 @@ if __name__ == '__main__':
     # create and start app runner for our app component ..
     #
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
-    runner.run(GpioBackend)
+    runner.run(GpioAdapter)
