@@ -19,7 +19,7 @@
          connection.onopen = function (session, details) {
             console.log("Connected");
 
-            session.call("com.example.device." + device + ".gamepad.get_data").then(
+            session.call("io.crossbar.examples.iot.devices.pi." + device + ".xboxcontroller.get_data").then(
                function (data) {
                   console.log("gamepad data:", JSON.stringify(data));
                },
@@ -28,7 +28,7 @@
                }
             );
 
-            session.subscribe("com.example.device." + device + ".gamepad.on_data", function (data) {
+            session.subscribe("io.crossbar.examples.iot.devices.pi." + device + ".xboxcontroller.on_data", function (data) {
                console.log("gamepad data changed:", JSON.stringify(data));
             });
          };
