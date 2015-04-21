@@ -88,6 +88,7 @@ class XboxControllerAdapter(ApplicationSession):
         # Device ID and auxiliary info
         self._id = extra['id']
         self._xbox = extra['xbox']
+        self._xbox._session = self
 
         # register methods on this object for remote calling via WAMP
         for proc in [self.get_data]:
@@ -103,14 +104,15 @@ class XboxControllerAdapter(ApplicationSession):
         """
         Get current controller state.
         """
-        return self._last 
+        return self._xbox._last 
 
     def on_data(self, data):
         """
         Hook that fires when controller state has changed.
         """
-        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_data'.format(self._id), data)
-        log.msg("XboxControllerAdapter event published to {}: {}".format(self._topic, changed))
+        uri = u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_data'.format(self._id)
+        self.publish(uri, data)
+        log.msg("XboxControllerAdapter event published to {}: {}".format(uri, data))
 
 
 def get_serial():
