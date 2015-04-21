@@ -12,7 +12,7 @@
          //
          var router = "ws://192.168.1.141:8080/ws";
          var realm = "realm1";
-         var device = "6afe83b4";
+         var device = "6afe83b4"; // on the Pi: cat /proc/cpuinfo | grep Serial
 
          var connection = new autobahn.Connection({url: router, realm: realm});
 

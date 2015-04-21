@@ -15,30 +15,27 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
 
 
-class XboxdrvProtocol(LineReceiver):
+class XboxdrvReceiver(LineReceiver):
     """
     Protocol for parsing output from Xboxdrv.
     """
 
     delimiter = '\n'
 
-    def __init__(self, topic, debug=False):
+    def __init__(self, debug=False):
         self._debug = debug
         self._session = None
         self._last = None
-        self._topic = topic
 
     def connectionMade(self):
-        log.msg('Xboxdrv connected')
+        log.msg('XboxdrvReceiver connected')
 
     def lineReceived(self, line):
         if self._debug:
-            log.msg("XboxdrvProtocol line received: {}".format(line))
+            log.msg("XboxdrvReceiver line received: {}".format(line))
 
         # Parse lines received from Xboxdrv. Lines look like:
-        #
         # X1:  -764 Y1:  4198  X2:   385 Y2:  3898  du:0 dd:0 dl:0 dr:0  back:0 guide:0 start:0  TL:0 TR:0  A:0 B:0 X:0 Y:0  LB:0 RB:0  LT:  0 RT:  0
-        #
         try:
             parts = re.split(r"[:\s]+", line)
 
@@ -52,8 +49,9 @@ class XboxdrvProtocol(LineReceiver):
 
         except Exception as e:
             if self._debug:
-                log.msg("Could not parse line: {}".format(e))
+                log.msg("XboxdrvReceiver: could not parse line '{}'".format(e))
         else:
+            # determine change set
             changed = {}
             if self._last:
                 for k in data:
@@ -62,38 +60,57 @@ class XboxdrvProtocol(LineReceiver):
             else:
                 changed = data
 
-            if self._session and len(changed):
-                self._session.publish(self._topic, data)
-                if True or self._debug:
-                    log.msg("XboxdrvProtocol event published to {}: {}".format(self._topic, changed))
+            # if WAMP session is active and change set is non-empty,
+            # forward the controller data to the WAMP session
+            if len(changed):
+                if self._session:
+                    self._session.on_data(data)
+    
+                if self._debug:
+                    log.msg("XboxdrvReceiver event data: {}".format(changed))
 
-            self._last = data
+                self._last = data
 
 
-class Xbox2Wamp(ApplicationSession):
+class XboxControllerAdapter(ApplicationSession):
     """
     Connects Xbox gamepad controller to WAMP.
     """
 
     @inlineCallbacks
     def onJoin(self, details):
-        log.msg("Xbox2Wamp connected.")
+        # the component has now joined the realm on the WAMP router
+        log.msg("XboxControllerAdapter connected.")
 
+        # get custom configuration
         extra = self.config.extra
 
+        # Device ID and auxiliary info
         self._id = extra['id']
         self._xbox = extra['xbox']
-        self._xbox._session = self
 
+        # register methods on this object for remote calling via WAMP
         for proc in [self.get_data]:
-            uri = u'com.example.device.{}.gamepad.{}'.format(self._id, proc.__name__)
+            uri = u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
-            log.msg("Registered {}".format(uri))
+            log.msg("XboxControllerAdapter registered procedure {}".format(uri))
 
-        log.msg("Xbox2Wamp ready.")
+        # signal we are done with initializing our component
+        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_ready'.format(self._id))
+        log.msg("XboxControllerAdapter ready.")
 
     def get_data(self):
-        return self._xbox._last 
+        """
+        Get current controller state.
+        """
+        return self._last 
+
+    def on_data(self, data):
+        """
+        Hook that fires when controller state has changed.
+        """
+        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_data'.format(self._id), data)
+        log.msg("XboxControllerAdapter event published to {}: {}".format(self._topic, changed))
 
 
 def get_serial():
@@ -130,12 +147,16 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # start logging to stdout
+    #
     log.startLogging(sys.stdout)
 
+    # get the Pi's serial number (allow override from command line)
+    #
     if args.id is None:
         args.id = get_serial()
 
-    log.msg("XboxBackend bridge starting with ID {} ...".format(args.id))
+    log.msg("XboxControllerAdapter starting with ID {} ...".format(args.id))
 
     # install the "best" available Twisted reactor
     #
@@ -143,13 +164,22 @@ if __name__ == '__main__':
     reactor = install_reactor()
     log.msg("Running on reactor {}".format(reactor))
 
-    xbox = XboxdrvProtocol(topic=u"com.example.device.{}.gamepad.on_data".format(args.id), debug=args.debug)
+    # used to receive and parse data from Xboxdrv
+    #
+    xbox = XboxdrvReceiver(debug=args.debug)
     stdio.StandardIO(xbox)
 
+    # custom configuration data
+    #
     extra = {
+        # device ID
         'id': args.id,
+
+        # our WAMP component needs access to the Xboxdrv receiver
         'xbox': xbox
     }
 
+    # create and start app runner for our app component ..
+    #
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
-    runner.run(Xbox2Wamp)
+    runner.run(XboxControllerAdapter)

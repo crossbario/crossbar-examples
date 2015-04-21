@@ -17,7 +17,7 @@
          //
          var router = "ws://192.168.1.141:8080/ws";
          var realm = "realm1";
-         var device = "6afe83b4";
+         var device = "6afe83b4"; // on the Pi: cat /proc/cpuinfo | grep Serial
 
          var connection = new autobahn.Connection({url: router, realm: realm});
 
@@ -25,12 +25,12 @@
             console.log("Connected");
             session = new_session;
 
-            session.subscribe("com.example.device." + device + ".tts.on_speech_start", function (args) {
+            session.subscribe("io.crossbar.examples.iot.devices.pi." + device + ".speechsynth.on_speech_start", function (args) {
                var text_spoken = args[0];
                console.log("speech started:", text_spoken);
             });
 
-            session.subscribe("com.example.device." + device + ".tts.on_speech_end", function () {
+            session.subscribe("io.crossbar.examples.iot.devices.pi." + device + ".speechsynth.on_speech_end", function () {
                console.log("speech stopped");
             });
          };
@@ -46,7 +46,7 @@
             if (session) {
                var text_to_speak = document.getElementById('text_to_speak').value;
 
-               session.call("com.example.device." + device + ".tts.say", [text_to_speak]).then(
+               session.call("io.crossbar.examples.iot.devices.pi." + device + ".speechsynth.say", [text_to_speak]).then(
                   function () {
                      console.log("ok, text spoken.");
                   },
