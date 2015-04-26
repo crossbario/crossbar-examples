@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>WAMP Remote Control Shell</title>
+</head>
+<body>
+   <h1>
+      WAMP browser remote control
+   </h1>
+
+   <p>You can</p>
+
+   <ul>
+      <li>
+         remotely trigger a reload of this page
+      </li>
+      <li>
+         remotely navigate to a new page of your choosing
+      </li>
+      <li>
+         open a new window from this page and decide its content
+      </li>
+   </ul>
+   <!-- You need to include this in your own pages in order to allow WAMP remote control -->
+   <!--<script>AUTOBAHN_DEBUG = true;</script>-->
+   <!-- loading from s3 only works for development (port & IP restrictions) - host your own for production  -->
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script src="js/remote.js"></script>
+   <!-- remote control includes end -->
+</body>
+</html>
