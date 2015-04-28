@@ -22,7 +22,7 @@ To give you a better idea of a small working WAMP application there is
    + [Java - jawampa](https://github.com/crossbario/crossbarexamples/tree/master/hello/java)
    + [Erlang - Erwa](https://github.com/crossbario/crossbarexamples/tree/master/hello/erlang)
 
-For a slightly more compley (and realistic) application:
+For a slightly more complex (and realistic) application:
 
 * [Votes](https://github.com/crossbario/crossbarexamples/tree/master/votes) - basic WAMP application using both PubSub and RPC, with a Web frontend. Comes with backends for 
    + [Python](https://github.com/crossbario/crossbarexamples/tree/master/votes/python)
@@ -54,7 +54,7 @@ And finally, there are examples using specific devices or technologies:
 
 Most of the examples are for Python and JavaScript, even though often what is shown would work with other languages and WAMP client libraries. This is purely due to lack of resources. We want you to use Crossbar.io with whatever language or languages you want.
 
-Anybody's highly welcome to adapt example code for other languages.
+Anybody is very welcome to adapt example code for other languages.
 
 Similarly, you're welcome to add examples that you think provide value to other users.
 
@@ -68,5 +68,4 @@ As you'll probably notice sooner or later, Crossbar.io is a work in progress. Co
 
 For historic reasons, the [Autobahn|Python repository](https://github.com/tavendo/AutobahnPython) also contains some examples for using WAMP. The most relevant to the general Crossbar.io user can be found in [this directory](https://github.com/tavendo/AutobahnPython/tree/master/examples/twisted/wamp). These are almost always for both Python and JavaScript (using Autobahn|JS).
 
-Some of the instructions here still assume a basic router in Autobahn|Python which has since been removed, but in principle they should run with Crossbar.io. Chances to happen across an outdated example are higher here, however. Should you find such an example, then please file an issue (or fix it and send us a pull request). 
-
+Some of the instructions here still assume a basic router in Autobahn|Python which has since been removed, but in principle they should run with Crossbar.io. The chance of running across an outdated example here are higher, however. Should you find such an example, please file an issue (or fix it and send us a pull request). 
