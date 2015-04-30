@@ -1,7 +1,7 @@
 // the URL of the WAMP Router (Crossbar.io)
 //
 var wsuri;
-if (document.location.origin == "file://") {
+if (document.location.origin === "null" || document.location.origin === "file://") {
    wsuri = "ws://127.0.0.1:8080/ws";
 
 } else {

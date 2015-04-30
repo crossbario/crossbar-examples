@@ -9,7 +9,7 @@
          },
          "realms": [
             {
-               "name": "realm1",
+               "name": "votesapp",
                "roles": [
                   {
                      "name": "anonymous",
@@ -48,7 +48,7 @@
             {
                "type": "class",
                "classname": "votes.VotesBackend",
-               "realm": "realm1",
+               "realm": "votesapp",
                "role": "anonymous"
             }
          ]
