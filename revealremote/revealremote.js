@@ -76,6 +76,9 @@ var navigate = function (args, kwargs, details) {
       case "first_slide":
          Reveal.slide(0);
          break;
+      case "pause":
+         Reveal.togglePause();
+         break;
       default:
          console.log("received unknown navigation command ", action);
          break;

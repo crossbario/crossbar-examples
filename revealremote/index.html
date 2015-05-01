@@ -82,6 +82,14 @@
    <button id="update_autoplay">Update Autoplay Settings</button>
 
 
+   <h3>
+      Presentation Controllers
+   </h3>
+
+   <p>
+      Presentation controller hardware which sends PAGE UP/PAGE DOWN events can also be used. (And adaption to others is trivial as long as they send key codes.)
+   </p>
+
 
    <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
    <script>
@@ -142,6 +150,8 @@
                }, session.log);
          })
 
+         window.addEventListener("keydown", handle_keys);
+
          
       };
 
@@ -154,6 +164,26 @@
       // now actually open the connection
       //
       connection.open();   
+
+      var handle_keys = function(evt) {
+         console.log("handle_keys", evt);
+         var keyCode = evt.keyCode;
+
+         switch (keyCode) {
+            case 33:
+               session.publish("control:navigate", ["prev"]);
+               break;
+            case 34:
+               session.publish("control:navigate", ["next"]);
+               break;
+            case 190:
+               session.publish("control:navigate", ["pause"])
+            default:
+               console.log("currently no handling for keyCode ", keyCode);
+            break;
+         }
+
+      }
 
 
       var navigate = function(evt) {
