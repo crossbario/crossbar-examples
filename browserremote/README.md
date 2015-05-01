@@ -7,4 +7,4 @@ Control your browser remotely via WAMP.
 
 When navigating to another page which is under your control, you can add the same code and keep control once the connection has been re-establishe on the new page.
 
-You can also open another page and load a received URL (requires allowing pop-ups from the domain the controlled page is served).
+You can also open another page and load a received URL (requires allowing pop-ups for the domain the controlled page is served from).

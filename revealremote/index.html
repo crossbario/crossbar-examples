@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Revealremote Controller</title>
+
+	<meta name="description" content="Basic remote controller for reveal presentations">
+	<meta name="author" content="Alexander Goedde">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
+
+	<link rel="shortcut icon" href="img/favicon.ico" />
+
+</head>
+<body>
+   <p>
+      Remote control a <a href="https://github.com/hakimel/reveal.js/">Reveal.js</a> presentation: <a href="/sample_presentation/index.html" target="_blank">open presentation</a>.
+   </p>
+   
+   <h2>
+      Manual Control
+   </h2>
+
+   <div>
+      <button id="prev">Previous</button>
+      <button id="next">Next</button>
+   </div>
+
+   <br>
+   <br>
+   <br>
+
+ 
+   <div id="buttoncontainer">
+      <button id="left">Left</button>
+      <button id="right">Right</button>
+      <button id="up">Up</button>
+      <button id="down">Down</button>
+   </div>
+   <style>
+      #buttoncontainer,
+      #left,
+      #right,
+      #up,
+      #down  {
+         position: relative;
+      }
+
+      #up {
+			left: -5em;
+			top: -2em;
+      }
+
+      #down {
+			left: -8em;
+			top: 2em;
+      }      
+   </style>   
+
+   <br>
+   <br>
+   <br>
+
+   <button id="first_slide">First Slide</button>
+
+   <br>
+
+   <h2>
+      Autoplay
+   </h2>   
+   
+   <div>
+      <label for="delay">Delay (ms) (0 to stop)</label>
+      <input type="text" id="delay" value="5000">
+   </div>
+   
+   <div>
+      <label for="loop">Loop presentation</label>
+      <input type="checkbox" id="loop" checked>    
+   </div>
+
+   <button id="update_autoplay">Update Autoplay Settings</button>
+
+
+
+   <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script>
+      // connect to a WAMP router
+      // user can configure router address, realm
+      // and a URL prefix part
+
+      var session = null;
+
+      // the URL of the WAMP Router (Crossbar.io)
+      //
+      var wsuri;
+      if (document.location.origin == "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws";
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws";
+      }
+
+      // the WAMP connection to the Router
+      //
+      var connection = new autobahn.Connection({
+         url: wsuri, // replace with URL of WAMP router if this doesn't serve the file!
+         realm: "remotecontrol"
+      });
+
+
+      // replace with a name or other identifier for your presentation
+      // if several presentations are to be controlled in the same realm
+      var presentation_name = "standard"; 
+
+      // fired when connection is established and session attached
+      //
+      connection.onopen = function (sess, details) {
+         console.log("connected");
+         session = sess;
+
+         session.prefix('control', 'io.crossbar.revealremote.' + presentation_name);
+
+         // connect the buttons
+         document.getElementById("next").addEventListener("click", navigate);
+         document.getElementById("prev").addEventListener("click", navigate);
+         
+         document.getElementById("left").addEventListener("click", navigate);
+         document.getElementById("right").addEventListener("click", navigate);
+         document.getElementById("up").addEventListener("click", navigate);
+         document.getElementById("down").addEventListener("click", navigate);
+
+         document.getElementById("first_slide").addEventListener("click", navigate);
+
+         // wire up the autoplay settings
+         document.getElementById("update_autoplay").addEventListener("click", function() {
+               var delay = document.getElementById("delay").value;
+               var loop = document.getElementById("loop").checked;
+
+               session.publish("control:autoplay", [delay, loop], {}, { acknowledge: true}).then(function(res) {
+                     console.log("autoplay update published");
+               }, session.log);
+         })
+
+         
+      };
+
+      // fired when connection was lost (or could not be established)
+      //
+      connection.onclose = function (reason, details) {
+         console.log("Connection lost: " + reason);
+      }
+
+      // now actually open the connection
+      //
+      connection.open();   
+
+
+      var navigate = function(evt) {
+         var action = evt.target.id;
+         session.publish("control:navigate", [action]);
+      }
+
+   </script>
+
+</body>
+</html>
