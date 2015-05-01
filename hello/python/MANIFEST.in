@@ -1,1 +1,1 @@
-recursive-include {{ appname }}/web *
+recursive-include hello/web *

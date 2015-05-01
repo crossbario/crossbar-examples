@@ -1,3 +1,3 @@
-# {{ appname }}
+# hello
 
-All Python application code is in `{{ appname }}/{{ appname }}.py`. The backend is called from JavaScript, which is in `{{ appname }}/web/index.html`.
+All Python application code is in `hello/hello.py`. The backend is called from JavaScript, which is in `hello/web/index.html`.
