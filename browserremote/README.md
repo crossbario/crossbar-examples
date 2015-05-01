@@ -4,7 +4,12 @@ Control your browser remotely via WAMP.
 
 * reloading the current page
 * navigating to another page
+* displaying a page in a second tab
 
-When navigating to another page which is under your control, you can add the same code and keep control once the connection has been re-establishe on the new page.
+**Reload** enables you to refresh content which is displayed remotely.
 
-You can also open another page and load a received URL (requires allowing pop-ups for the domain the controlled page is served from).
+**Navigating to another page** allows you to chain content, if you can modify all pages to load this control code.
+
+**Displaying a page in a second tab** enables you to sequence arbitrary web pages for display. This requires allowing pop-ups for the domain the controlled page is served from.
+
+These features are just a basic set, and can be easily extended to other control should you need this. For example, you could navigate the browser history or even modify page content.
