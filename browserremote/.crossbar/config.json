@@ -7,7 +7,7 @@
          "type": "router",
          "realms": [
             {
-               "name": "remotecontrol",
+               "name": "iot_cookbook",
                "roles": [
                   {
                      "name": "anonymous",
