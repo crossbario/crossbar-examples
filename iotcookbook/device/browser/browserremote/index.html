@@ -12,7 +12,7 @@
    <p>
       Launch a page which can be controlled (you may need to right-click and open in a new tab):
    </p>
-   <a href="remote.html">
+   <a href="remote.html" target="_blank">
       Launch Page
    </a>
 
@@ -45,13 +45,20 @@
    </h3>
 
    <p>
-      Enter the URL of a page to open in another tab:
+      Enter the URL of a page to display in a second tab:
       <input type="text" id="externalUrl">
       <button id="navigateExternal">Open page</button>
+      <button id="closeExternal">Close page</button>
       <p>
          This can used to display pages which you cannot modify to include WAMP code.
       </p>
-      <button id="closeExternal">Close page</button>
+      <p>
+         Only one additional tab is opened, so you can switch its contents by entering a new URL.
+      </p>
+      <p>
+         You may need to allow pop-ups from this page.
+      </p>
+      
    </p>
 
    <!--<script>AUTOBAHN_DEBUG = true;</script>-->
@@ -74,7 +81,7 @@
       //
       var connection = new autobahn.Connection({
          url: wsuri, // replace with URL of WAMP router if this doesn't serve the file!
-         realm: "remotecontrol"
+         realm: "iot_cookbook"
       });
 
 

@@ -33,6 +33,8 @@ AutobahnJS provides the WAMP connectivity, while `revealremote.js` actually esta
 
 This presently contains just basic navigation commands plus setup for autoplay, but can be trivially extended to support the entire Reveal.js API.
 
+> Note: Here AutobahnJS is loaded from our S3 storage. This is provided for development purposes only, and some restrictions regarding download IPs apply. For production, please host your own version!
+
 ## Links
 
 * [What's this WAMP?](http://wamp.ws)

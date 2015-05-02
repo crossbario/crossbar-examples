@@ -15,7 +15,7 @@ if (document.location.origin == "file://") {
 //
 var connection = new autobahn.Connection({
    url: wsuri, // replace with URL of WAMP router if this doesn't serve the file!
-   realm: "remotecontrol"
+   realm: "iot_cookbook"
 });
 
 
@@ -75,6 +75,9 @@ var navigate = function (args, kwargs, details) {
          break;
       case "first_slide":
          Reveal.slide(0);
+         break;
+      case "pause":
+         Reveal.togglePause();
          break;
       default:
          console.log("received unknown navigation command ", action);
