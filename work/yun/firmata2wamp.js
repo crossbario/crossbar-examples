@@ -17,7 +17,8 @@ var router = 'ws://192.168.1.136:8080/ws';
 var realm = 'realm1';
 var device_id = '123456';
 var device_port = '/dev/ttyATH0';
-var debug = true;
+//var debug = true;
+var debug = false;
 
 function make_uri (id) {
     return 'io.crossbar.examples.iot.devices.arduino.' + device_id + '.firmata.' + id;
@@ -46,23 +47,22 @@ arduino.on('connect', function () {
 
         arduino.on('analogChange', function (e) {
             if (monitored_pins[e.pin]) {
+                if (debug) {
+                    console.log("analogChange", e);
+                }
                 session.publish(make_uri("on_analog_changed"), [e.pin, e.old_value, e.value]);
             }
         });
-
+/*
         arduino.on('digitalChange', function (e) {
             if (monitored_pins[e.pin]) {
+                if (debug) {
+                    console.log("digitalChange", e);
+                }
                 session.publish(make_uri("on_digital_changed"), [e.pin, e.old_value, e.value]);
             }
         });
-
-        function set_monitored (args) {
-            var pin = args[0];
-            var is_monitored = args[1] == true;
-
-            monitored_pins[pin] = is_monitored;
-        }
-
+*/
         function set_mode (args) {
             var pin = args[0];
             var mode = args[1];
@@ -72,9 +72,20 @@ arduino.on('connect', function () {
             }
 
             if (mode == "in") {
+
                 arduino.pinMode(pin, firmata.INPUT);
+                monitored_pins[pin] = false;
+
+            } else if (mode == "watch") {
+
+                arduino.pinMode(pin, firmata.INPUT);
+                monitored_pins[pin] = true;
+
             } else if (mode == "out") {
+
                 arduino.pinMode(pin, firmata.OUTPUT);
+                monitored_pins[pin] = false;
+
             } else {
                 console.log("illegal pin mode", mode);
                 throw "illegal pin mode: " + mode;
@@ -190,7 +201,7 @@ arduino.on('connect', function () {
                 throw e;
             }
         }
-        reg_requests.push(session.register(make_uri('analog_write'), analog_write));
+        reg_requests.push(session.register(make_uri('servo_write'), servo_write));
 
         function reset(args) {
             var sync = args[0];

@@ -73,6 +73,24 @@
                   console.log(err);
                }
             );
+
+            function on_analog_changed (args) {
+               var pin = args[0];
+               var old_value = args[1];
+               var new_value = args[2];
+               console.log(pin, old_value, new_value);
+            }
+            session.subscribe(base_uri + "on_analog_changed", on_analog_changed);
+/*
+            session.call(base_uri + "set_mode", [tinker2pin['I1'], "watch"]).then(
+               function () {
+                  console.log("ok, pin mode set");
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+*/
          };
 
          connection.onclose = function (reason, details) {
