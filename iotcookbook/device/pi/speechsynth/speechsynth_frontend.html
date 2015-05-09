@@ -13,13 +13,24 @@
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 
       <script>
+         var wsuri;
+         // below sets the correct wsuri if the file is served by the Crossbar.io
+         // instance which also does the WAMP routing
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+         // else set explicitly
+         // wsuri = "ws://myWAMPRouterUrl:port/ws";
+
          // adjust these settings to fit your setup:
          //
-         var router = "ws://192.168.1.141:8080/ws";
-         var realm = "realm1";
-         var device = "6afe83b4"; // on the Pi: cat /proc/cpuinfo | grep Serial
+         var realm = "iot_cookbook";
+         var device = "6ec468fc"; // on the Pi: cat /proc/cpuinfo | grep Serial
 
-         var connection = new autobahn.Connection({url: router, realm: realm});
+         var connection = new autobahn.Connection({url: wsuri, realm: realm});
 
          connection.onopen = function (new_session, details) {
             console.log("Connected");

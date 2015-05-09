@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Tessel Camera</title>
+</head>
+<body>
+   <h1>
+      Tessel Camera
+   </h1>
+   <button id="shutter">Take Photo</button>
+
+
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script>
+      var session = null;
+
+      // the URL of the WAMP Router (Crossbar.io)
+      var wsuri;
+      if (document.location.origin == "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+      }
+
+      // the WAMP connection to the Router
+      //
+      var connection = new autobahn.Connection({
+         url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
+         realm: "iot_cookbook"
+      });
+
+      var requestPhoto = function () {
+         // call the camera and display the result
+         session.call("io.crossbar.iotberlin.alarmapp.take_picture", [], {}, {receive_progress: true}).then(
+            function (res) {
+               // var b64img = hexToBase64(res);
+               // self.currentImage("data:image/jpg;base64," + b64img);
+               // self.imageRequested(false);
+               // self.imageFeedback.transmitting(false);
+               console.log("image received", res);
+            }, 
+            function (err) {
+               console.log("requestImage failed", err);
+               // self.imageRequested(false);
+               // self.imageFeedback.requested(false);
+               // self.imageFeedback.taken(false);
+               // self.imageFeedback.encoding(false);
+               // self.imageFeedback.transmitting(true);
+            }, 
+            function (progress) {
+               console.log("camera", progress.args[0], progress.args[1]);
+               // self.progress(progress.args[0]);
+            }
+         );
+      };
+
+      // fired when connection is established and session attached
+      //
+      connection.onopen = function (sess, details) {
+
+         session = sess;
+
+         console.log("connected");
+
+         document.getElementById("shutter").addEventListener("click", requestPhoto);
+         
+
+      };
+
+      // fired when connection was lost (or could not be established)
+      //
+      connection.onclose = function (reason, details) {
+
+         console.log("Connection lost: " + reason);
+
+      }
+
+      // now actually open the connection
+      //
+      connection.open();
+   </script>
+</body>
+</html>

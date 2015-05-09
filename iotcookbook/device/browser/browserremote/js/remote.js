@@ -33,14 +33,16 @@ connection.onopen = function (session, details) {
       window.location.reload(true);
    }).then(session.log, session.log);
    
-
    // for this to work, you probably need to allow pop-ups from the domain this page is served from
    // permanently
    session.subscribe("io.crossbar.examples.remotecontrol.on_navigate_external", function(args) {
       console.log("on_navigate_external called", args);
+      
       var externalUrl = args[0];
+      
       externalUrlWindow = window.open(externalUrl, "externalWindow"); // opens a new window on first call, 
-      // else changes the location of the previously created window
+      // else changes the location of the previously created window        
+      
    }).then(session.log, session.log);
 
    session.subscribe("io.crossbar.examples.remotecontrol.on_close_external", function(args) {

@@ -60,7 +60,8 @@
       </p>
       
    </p>
-
+   
+  
    <!--<script>AUTOBAHN_DEBUG = true;</script>-->
    <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
    
@@ -120,9 +121,6 @@
          console.log("closeExternal clicked");
          session.publish("io.crossbar.examples.remotecontrol.on_close_external", [], {}, {acknowledge: true}).then(session.log, session.log);
       });
-
-
-
    </script>
 
 </body>
