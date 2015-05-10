@@ -331,7 +331,7 @@ arduino.on('connect', function () {
                         pressed = false;
                     };
                     debounce = false;
-                }, 200)
+                }, 100)
             } else if (analog_read([0]) < 500 && debounce === false) {
                 pressed = false;
             }
@@ -371,7 +371,7 @@ arduino.on('connect', function () {
                         pressed2 = false;
                     };
                     debounce2 = false;
-                }, 200)
+                }, 100)
             } else if (analog_read([1]) < 500 && debounce2 === false) {
                 pressed2 = false;
             }
