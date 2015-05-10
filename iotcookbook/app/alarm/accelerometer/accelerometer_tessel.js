@@ -37,7 +37,7 @@ function main () {
             z: xyz[2].toFixed(2)
          };
          console.log("sending accel data");
-         session.publish("io.crossbar.examples.iotcookbook.alarmapp.on_accelerometer_data", [data]);
+         session.publish("io.crossbar.examples.iotcookbook.alarmapp.on_accelerometer_data", ["tessel", data]);
       });
 
    };

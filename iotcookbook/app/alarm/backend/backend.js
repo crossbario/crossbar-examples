@@ -67,16 +67,31 @@ connection.onopen = function (session, details) {
       }
    );
 
-   var th = 0.1;
+   var th_tessel = 0.1; // threshold for tessel
+   var th_yun = 80; // threshold for yun
 
    function on_accelerometer (args) {
-      var data = args[0];
-      console.log(data);
 
-      var trigger =
-         (Math.abs(0 - data.x) > th) ||
-         (Math.abs(0 - data.y) > th) ||
-         (Math.abs(1 - data.z) > th);
+      var device = args[0];
+      var data = args[1];
+      var trigger = null;
+
+      if (device === "tessel") {
+
+         trigger =
+            (Math.abs(0 - data.x) > th_tessel) ||
+            (Math.abs(0 - data.y) > th_tessel) ||
+            (Math.abs(1 - data.z) > th_tessel);
+      
+      } else if (device === "yun") {
+      
+         trigger =
+            data.x > 550 + th_yun || data.x < 550 - th_yun || 
+            data.y > 550 + th_yun || data.y < 550 - th_yun;
+      
+      } else {
+         console.log("received accelerometer data from unknown device class");
+      }      
 
       if (trigger) {
          if (alarm_armed) {
@@ -86,6 +101,7 @@ connection.onopen = function (session, details) {
    }
 
    var accel_subscription = null;
+   var accel_subscription_yun = null;
 
    function set_alarm_armed (args) {
 
