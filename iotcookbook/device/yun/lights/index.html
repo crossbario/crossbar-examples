@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Arduino Yun Lights</title>
+</head>
+<body>
+   <h1>
+      Arduino Yun Lights
+   </h1>
+   <p>
+      Open dev tools console to view log output. 
+   </p>
+   <div class="buttonContainer">
+      <button id="O0">O0</button>
+      <button id="O1">O1</button>
+      <button id="O2">O2</button>
+      <button id="O3">O3</button>
+      <button id="O4">O4</button>
+      <button id="O5">O5</button>
+   </div>
+
+   <br>
+   <br>
+
+   <button id="disco">DISCO!!!</button>
+   
+   
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   
+   <script>
+      // the URL of the WAMP Router (Crossbar.io)
+      var wsuri;
+      var session = null;
+      if (document.location.origin == "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+      }
+
+      // the WAMP connection to the Router
+      //
+      var connection = new autobahn.Connection({
+         url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
+         realm: "iot_cookbook"
+      });
+
+      // fired when connection is established and session attached
+      //
+      connection.onopen = function (sess, details) {
+
+         session = sess;
+
+         console.log("connected");
+
+         var buttons = document.getElementsByClassName("buttonContainer")[0].getElementsByTagName("button");
+
+         for(var i = 0; i < buttons.length; i++) {
+            buttons[i].addEventListener("click", (function(i) {
+               return function() {
+                  console.log("pressed button O" + i);
+                  session.call("io.crossbar.examples.yun.lights.set_light_state", ["O" + i]);
+               }; 
+            })(i));
+         };
+
+         var disco = false;
+         var disco_interval_1 = null;
+         var disco_interval_2 = null;
+         var disco_interval_3 = null;
+
+         document.getElementById("disco").addEventListener("click", function() {
+            if (!disco) {
+               disco = true;
+               disco_interval_1 = setInterval(function() {
+                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O0"]);
+                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O1"]);
+                  }, 500);
+               disco_interval_2 = setInterval(function() {
+                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O2"]);
+                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O3"]);
+                  }, 250);
+               disco_interval_3 = setInterval(function() {
+                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O4"]);
+                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O5"]);
+                  }, 125);
+
+            } else {
+               disco = false;
+               clearInterval(disco_interval_1);
+               clearInterval(disco_interval_2);
+               clearInterval(disco_interval_3);
+            }
+            
+         })
+
+      };
+
+      // fired when connection was lost (or could not be established)
+      //
+      connection.onclose = function (reason, details) {
+
+         console.log("Connection lost: " + reason);
+
+      }
+
+      // now actually open the connection
+      //
+      connection.open();
+   </script>
+</body>
+</html>

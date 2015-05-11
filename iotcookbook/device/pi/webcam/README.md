@@ -1,1 +1,1 @@
-https://www.raspberrypi.org/documentation/usage/webcams/
+Raspberry Pi Camera component. Part of the [Crossbar.io IoT Cookbook](http://crossbar.io/iotcookbook/). For more information, including usage instructions, see the [component documentation](http://crossbar.io/iotcookbook/Raspberry-Pi-Camera/).

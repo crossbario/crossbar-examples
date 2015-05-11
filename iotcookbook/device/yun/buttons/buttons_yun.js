@@ -131,15 +131,15 @@ arduino.on('connect', function () {
                 pressed: false,
                 debounce: false
             },
-            {
-                pin: 1,
-                mode: "in",
-                action: function () {
-                    session.publish("io.crossbar.examples.yun.buttons.button_pressed", [1]);
-                },
-                pressed: false,
-                debounce: false
-            },
+            // {
+            //     pin: 1,
+            //     mode: "in",
+            //     action: function () {
+            //         session.publish("io.crossbar.examples.yun.buttons.button_pressed", [1]);
+            //     },
+            //     pressed: false,
+            //     debounce: false
+            // },
             // {
             //     pin: 2,
             //     mode: "in",
