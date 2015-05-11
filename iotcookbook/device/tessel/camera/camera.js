@@ -12,7 +12,9 @@ camera.on('ready', function() {
    
    console.log("camera ready");
 
-   camera.setResolution("qqvga");
+   // camera.setResolution("vga");
+   // camera.setResolution("qvga");
+   camera.setResolution("qqvga"); // gives you the (relatively) quickest response
 
    main();
 
@@ -42,8 +44,6 @@ function main () {
 
       session = sess;
 
-      session.publish("io.crossbar.iotberlin.alarmapp.cameralog", ["camera_ready"]);
-
       // send publishes to keep wifi alive (testing)
       setInterval(function() {
          session.publish("io.crossbar.examples.tessel.keepalive");
@@ -54,7 +54,7 @@ function main () {
          console.log("takePicture called");
 
          if (details.progress) {
-            details.progress(["takePicture called", 0]);
+            details.progress(["takePhoto called", 0]);
          }
 
          var cameraResult = when.defer();
