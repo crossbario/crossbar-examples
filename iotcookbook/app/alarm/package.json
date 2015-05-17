@@ -12,7 +12,7 @@
     "accel-mma84": "^0.2.4",
     "autobahn": "^0.9.5",
     "ble-ble113a": "^0.1.12",
-    "camera-vc0706": "^0.1.6",
-    "wamp-tessel": "^0.1.0"
+    "camera-vc0706": "^0.1.8",
+    "wamp-tessel": "^0.1.2"
   }
 }

@@ -48,7 +48,7 @@
       {
          "type": "guest",
          "executable": "node",
-         "arguments": ["backend.js"],
+         "arguments": ["backend_complete.js"],
          "options": {
             "workdir": "../backend",
             "watch": {

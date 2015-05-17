@@ -201,12 +201,7 @@ button:hover
   top: 4em;
 }
 
-.imageContainer {
-  height: 130px;
-  margin: 1em auto;
-  border: 1px solid #888;
-  width: 200px  ;
-}
+
 
 .alarmActions {
    height: 100px;
@@ -257,8 +252,16 @@ button:hover
 }
 
 .imageContainer {
+  margin: 1em auto;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 640px;
   text-align: center;
   position: relative;
+}
+
+#image {
+  width: 100%;
 }
 
 .imageContainer > span {

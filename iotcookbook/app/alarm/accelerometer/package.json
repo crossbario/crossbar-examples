@@ -1,0 +1,15 @@
+{
+  "name": "alarm_accelerometer_tessel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "accelerometer_tessel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "accel-mma84": "^0.2.4",
+    "wamp-tessel": "^0.1.2"
+  }
+}

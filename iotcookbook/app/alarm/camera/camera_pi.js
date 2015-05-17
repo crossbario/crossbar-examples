@@ -38,7 +38,7 @@ function main () {
          exec("fswebcam -d /dev/video0 -r 640x480 --no-banner --save '-' | uuencode --base64 /dev/stdout", function(err, stdout, stderr) {
             
             if (stdout != "") {
-               cameraResult.resolve(["pi", stdout);
+               cameraResult.resolve(["pi", stdout]);
             }
 
             if (stderr != "") {
@@ -55,9 +55,9 @@ function main () {
          return cameraResult.promise; 
       };
 
-      session.register("io.crossbar.examples.pi.camera.take_photo", takePhoto).then(
+      session.register("io.crossbar.examples.iot_cookbook.alarmapp.take_photo", takePhoto).then(
          function (registration) {
-            console.log("Procedure 'io.crossbar.examples.pi.camera.take_photo' registered:", registration.id);
+            console.log("Procedure 'io.crossbar.examples.iotcookbook.alarmapp.take_photo' registered:", registration.id);
          },
          function (error) {
             console.log("Registration failed:", error);
