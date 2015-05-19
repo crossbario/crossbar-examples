@@ -42,7 +42,7 @@
                      "debug": false
                   },
                   "notify": {
-                     "type": "pusher",
+                     "type": "publisher",
                      "realm": "realm1",
                      "role": "anonymous"
                   },
