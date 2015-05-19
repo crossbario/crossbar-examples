@@ -83,7 +83,7 @@
          "components": [
             {
                "type": "class",
-               "classname": "backend.AppSession",
+               "classname": "backend.BackendSession",
                "realm": "realm1",
                "role": "backend"
             }

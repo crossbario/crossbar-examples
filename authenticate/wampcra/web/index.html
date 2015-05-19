@@ -79,25 +79,45 @@
                   }
                );
 
-            // (try to) publish to some topics
+            // publish to some topics we are allowed to publish to.
             //
-            var topics = [
+            var allowed_topics = [
                'com.example.topic1',
+               'com.foobar.topic1'
+            ];
+
+            for (var i = 0; i < allowed_topics.length; ++i) {
+
+               (function (j) {
+                  session.publish(allowed_topics[j], ['hello'], null, {acknowledge: true})
+                     .then(
+                        function (pub) {
+                           console.log("event published to topic", allowed_topics[j]);
+                        },
+                        function (err) {
+                           console.log("publication to topic " + allowed_topics[j] + " failed", err);
+                        }
+                     );
+               })(i);
+            }
+
+            // (try to) publish to some topics we are not allowed to publish to (so this should fail)
+            //
+            var disallowed_topics = [
                'com.example.topic2',
-               'com.foobar.topic1',
                'com.foobar.topic2'
             ];
 
-            for (var i = 0; i < topics.length; ++i) {
+            for (var i = 0; i < disallowed_topics.length; ++i) {
 
                (function (j) {
-                  session.publish(topics[j], null, null, {acknowledge: true})
+                  session.publish(disallowed_topics[j], ['hello'], null, {acknowledge: true})
                      .then(
                         function (pub) {
-                           console.log("event published to topic", topics[j]);
+                           console.log("event published to topic", disallowed_topics[j]);
                         },
                         function (err) {
-                           console.log("publication to topic " + topics[j] + " failed", err);
+                           console.log("publication to topic " + disallowed_topics[j] + " failed - this is expected", err);
                         }
                      );
                })(i);

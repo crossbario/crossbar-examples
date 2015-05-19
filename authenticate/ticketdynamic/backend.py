@@ -28,36 +28,47 @@
 
 from twisted.internet.defer import inlineCallbacks
 
+from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 
+class BackendSession(ApplicationSession):
 
-class MyAuthenticator(ApplicationSession):
+    @inlineCallbacks
+    def onJoin(self, details):
 
-   PRINCIPALS_DB = {
-      'joe': {
-         'ticket': 'secret!!!',
-         'role': 'frontend'
-      }
-   }
+      def onhello(msg):
+         print("event received on {}: {}".format(topic, msg))
 
-   @inlineCallbacks
-   def onJoin(self, details):
+      ## SUBSCRIBE to a few topics we are allowed to subscribe to.
+      ##
+      for topic in [
+         'com.example.topic1',
+         'com.foobar.topic1',
+         'com.foobar.topic2']:
 
-      def authenticate(realm, authid, ticket):
-         print("MyAuthenticator.authenticate called: realm = '{}', authid = '{}', ticket = '{}'".format(realm, authid, ticket))
+         try:
+            sub = yield self.subscribe(onhello, topic)
+            print("ok, subscribed to topic {}".format(topic))
+         except Exception as e:
+            print("could not subscribe to {}: {}".format(topic, e))
 
-         if authid in self.PRINCIPALS_DB:
-            if ticket == self.PRINCIPALS_DB[authid]['ticket']:
-               return self.PRINCIPALS_DB[authid]['role']
-            else:
-               raise ApplicationError("com.example.invalid_ticket", "could not authenticate session - invalid ticket '{}' for principal {}".format(ticket, authid))
-         else:
-            raise ApplicationError("com.example.no_such_user", "could not authenticate session - no such principal {}".format(authid))
+      ## SUBSCRIBE to a topic we are not allowed to subscribe to (so this should fail).
+      ##
+      try:
+         sub = yield self.subscribe(onhello, "com.example.topic2")
+      except Exception as e:
+         print("subscription failed - this is expected: {}".format(e))
+
+      ## REGISTER a procedure for remote calling
+      ##
+      def add2(x, y):
+         print("add2() called with {} and {}".format(x, y))
+         return x + y
 
       try:
-         yield self.register(authenticate, 'com.example.authenticate')
-         print("custom Ticket-based authenticator registered")
+         reg = yield self.register(add2, 'com.example.add2')
+         print("procedure add2() registered")
       except Exception as e:
-         print("could not register custom Ticket-based authenticator: {0}".format(e))
+         print("could not register procedure: {}".format(e))

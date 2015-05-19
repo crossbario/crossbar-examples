@@ -87,13 +87,13 @@
          "components": [
             {
                "type": "class",
-               "classname": "authenticator.MyAuthenticator",
+               "classname": "authenticator.AuthenticatorSession",
                "realm": "realm1",
                "role": "authenticator"
             },
             {
                "type": "class",
-               "classname": "backend.AppSession",
+               "classname": "backend.BackendSession",
                "realm": "realm1",
                "role": "backend"
             }

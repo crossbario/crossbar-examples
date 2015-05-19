@@ -28,14 +28,10 @@
 
 import sys
 
-from twisted.python import log
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
-from twisted.internet.endpoints import clientFromString
 
-from autobahn.twisted import wamp, websocket
-from autobahn.wamp import types
-from autobahn.wamp import auth
+from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.types import PublishOptions
 
 
@@ -43,7 +39,7 @@ PRINCIPAL = u'joe'
 TICKET = u'secret!!!'
 
 
-class MyFrontendComponent(wamp.ApplicationSession):
+class ClientSession(ApplicationSession):
 
    def onConnect(self):
       print("connected. joining realm {}, performing Ticket-based authentication as principal {} ...".format(self.config.realm, PRINCIPAL))
@@ -75,21 +71,27 @@ class MyFrontendComponent(wamp.ApplicationSession):
       except Exception as e:
          print("registration failed - this is expected: {}".format(e))
 
-      ## (try to) publish to some topics
+      ## publish to a couple of topics we are allowed to publish to.
       ##
-      topics = [
+      for topic in [
          u'com.example.topic1',
-         u'com.example.topic2',
-         u'com.foobar.topic1',
-         u'com.foobar.topic2'
-      ]
-
-      for topic in topics:
+         u'com.foobar.topic1']:
          try:
-            yield self.publish(topic, options = PublishOptions(acknowledge = True))
+            yield self.publish(topic, "hello", options = PublishOptions(acknowledge = True))
             print("ok, event published to topic {}".format(topic))
          except Exception as e:
             print("publication to topic {} failed: {}".format(topic, e))
+
+      ## (try to) publish to a couple of topics we are not allowed to publish to (so this should fail)
+      ##
+      for topic in [
+         u'com.example.topic2',
+         u'com.foobar.topic2']:
+         try:
+            yield self.publish(topic, "hello", options = PublishOptions(acknowledge = True))
+            print("ok, event published to topic {}".format(topic))
+         except Exception as e:
+            print("publication to topic {} failed - this is expected: {}".format(topic, e))
 
       self.leave()
 
@@ -106,4 +108,4 @@ if __name__ == '__main__':
    from autobahn.twisted.wamp import ApplicationRunner
 
    runner = ApplicationRunner(url = "ws://localhost:8080/ws", realm = "realm1")
-   runner.run(MyFrontendComponent)
+   runner.run(ClientSession)
