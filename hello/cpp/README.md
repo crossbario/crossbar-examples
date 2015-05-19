@@ -18,6 +18,12 @@ Start Crossbar by doing:
 crossbar start
 ```
 
+Start the C++ client by doing:
+
+```shell
+./hello
+```
+
 Open [`http://localhost:8080/`](http://localhost:8080/) (or wherever Crossbar runs) in your browser.
 
 ## How to hack
