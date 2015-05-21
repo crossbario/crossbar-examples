@@ -1,0 +1,1 @@
+Arduino Yun Ambient Light (LDR) Sensor component. Part of the [Crossbar.io IoT Cookbook](http://crossbar.io/iotcookbook/). For more information, including usage instructions, see the [component documentation](http://crossbar.io/iotcookbook/Arduino-Yun-Ambient-Light-Sensor/).
