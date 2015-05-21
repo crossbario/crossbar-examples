@@ -1,0 +1,15 @@
+{
+  "name": "alarm_camera_tessel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "camera_tessel.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "camera-vc0706": "^0.1.8",
+    "wamp-tessel": "^0.1.2"
+  }
+}

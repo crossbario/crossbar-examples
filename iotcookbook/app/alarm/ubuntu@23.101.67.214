@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="shortcut icon" href="img/favicon.ico">
+   <title>Tessel Alarm</title>
+   <link rel="stylesheet" href="css/alarm.css">
+</head>
+<body>
+
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>Tessel Alarm</span>
+         </div>
+         <a class="navbar-brand" href="/">
+            <img src="img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+            <span class="fontFace">
+               <span>Crossbar</span><span>.io</span>
+            </span>
+         </a>
+      </div>
+   </header>
+
+   <div id="demo_body">
+
+      <div class="armamentAndAlarm">
+         
+         <div class="alarmContainer">
+            <div class="alarm"  data-bind="visible: isActive">
+               Alarm!!!
+            </div>   
+         </div> 
+         
+         <div class="alarmArmedIndicator" data-bind="style: { backgroundColor: isArmed() ? 'red' : 'green' }">
+            <div class="armament">
+               <button data-bind="visible: !isArmed(), click: arm">
+                  Arm
+               </button>
+               <button data-bind="visible: isArmed(), click: disarm">
+                  Disarm
+               </button>
+            </div>
+         </div>
+
+         
+
+      </div>
+
+       
+            
+
+      
+      
+
+      
+
+      <div class="imageContainer">
+         <img data-bind="attr: { src: currentImage }" width="160" height="120">
+         <span data-bind="visible: imageFeedback.requested()">Image Requested!</span>
+         <span data-bind="visible: imageFeedback.taken()">Image has been taken!</span>
+         <span data-bind="visible: imageFeedback.encoding()">Image is being encoded!</span>
+         <span data-bind="visible: imageFeedback.transmitting()">Image is being transmitted!</span> 
+      </div>
+
+      <button id="requestImage" data-bind="click: requestImage, css: { hidden: imageRequested }">
+         Request Image
+      </button>
+
+      <div class="alarmActions" data-bind="visible: isActive">
+         <button id="cancelAlarm"  data-bind="click: cancelAlarm">
+            Cancel Alarm
+         </button>
+      </div>
+
+      <div class="trigger">
+         <button data-bind="click: triggerAlarm, visible: !isActive()">
+            Trigger Alarm
+         </button>
+      </div>    
+      
+      
+   </div>
+
+   <script>AUTOBAHN_DEBUG = true;</script>
+   <!-- // <script src="js/autobahn.min.js"></script> -->
+   <script src="js/autobahn.min.jgz"></script>>
+   <script src="js/knockout-3.1.0.js"></script>
+   <script src="js/frontend.js"></script>
+
+</body>
+</html>

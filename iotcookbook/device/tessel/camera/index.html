@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Tessel Camera</title>
+</head>
+<body>
+   <h1>
+      Tessel Camera
+   </h1>
+
+   <div class="imageContainer">
+      <img id="image" src="burglar.png">
+      <div id="imageProgress"></div>
+   </div>
+
+   <button id="shutter">Take Photo</button>
+
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script>
+      var session = null;
+      var image = document.getElementById("image");
+      var imageProgress = document.getElementById("imageProgress");
+
+      // the URL of the WAMP Router (Crossbar.io)
+      var wsuri;
+      if (document.location.origin == "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+      }
+
+      // the WAMP connection to the Router
+      //
+      var connection = new autobahn.Connection({
+         url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
+         realm: "iot_cookbook"
+      });
+
+      var requestPhoto = function () {
+
+         session.call("io.crossbar.examples.tessel.camera.take_photo", [], {}, {receive_progress: true}).then(
+            function (res) {
+               var b64img = hexToBase64(res);
+               image.src = "data:image/jpg;base64," + b64img;
+               imageProgress.innerHTML = "";
+               console.log("image received");
+            }, 
+            function (err) {
+               console.log("requestImage failed", err);
+               imageProgress.innerHTML = "Error getting image!";
+            }, 
+            function (progress) {
+               console.log("camera", progress.args[0], progress.args[1]);
+               var progressText = "";
+               switch (progress.args[0]) {
+                  case "takePhoto called":
+                     imageProgress.innerHTML = "Photo triggered."
+                  case "taken":
+                     imageProgress.innerHTML = "Photo has been taken."
+                     break;
+                  case "encoding":
+                     imageProgress.innerHTML = "Photo is being encoded."
+                     break;
+                  case "transmitting":
+                     imageProgress.innerHTML = "Photo is being transmitted."
+                     break;
+                  default:
+                     console.log("unknown tranmission state received!");
+                     break;
+               }
+            }
+         );
+      };
+
+      // fired when connection is established and session attached
+      //
+      connection.onopen = function (sess, details) {
+
+         session = sess;
+
+         console.log("connected");
+
+         document.getElementById("shutter").addEventListener("click", requestPhoto);
+         
+
+      };
+
+      // fired when connection was lost (or could not be established)
+      //
+      connection.onclose = function (reason, details) {
+
+         console.log("Connection lost: " + reason);
+
+      }
+
+      // now actually open the connection
+      //
+      connection.open();
+
+
+      function hexToBase64(str) {
+        return btoa(String.fromCharCode.apply(null,
+          str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" "))
+        );
+      }
+   </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Raspberry Pi Camera</title>
+</head>
+<body>
+   <h1>
+      Raspberry Pi Camera
+   </h1>
+
+   <div class="imageContainer">
+      <img id="image" src="burglar.png">
+      <div id="imageProgress"></div>
+   </div>
+
+   <button id="shutter">Take Photo</button>
+
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script>
+      var session = null;
+      var image = document.getElementById("image");
+      var imageProgress = document.getElementById("imageProgress");
+
+      // the URL of the WAMP Router (Crossbar.io)
+      var wsuri;
+      if (document.location.origin == "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+      }
+
+      // the WAMP connection to the Router
+      //
+      var connection = new autobahn.Connection({
+         url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
+         realm: "iot_cookbook"
+      });
+
+      var cameraResult = null;
+
+      var requestPhoto = function () {
+
+         session.call("io.crossbar.examples.pi.camera.take_photo").then(
+            function (res) {
+               
+               imageProgress.innerHTML = "";
+
+               base64image = res;
+               // need to remove the header and footer which uuencode adds
+               base64image = base64image.slice(29);
+               base64image = base64image.slice(0, -6);
+
+               image.src = "data:image/jpg;base64," + base64image;
+
+            }, 
+            function (err) {
+               console.log("requestImage failed", err);
+               imageProgress.innerHTML = "Error getting image!";
+            }
+         );
+      };
+
+      // fired when connection is established and session attached
+      //
+      connection.onopen = function (sess, details) {
+
+         session = sess;
+
+         console.log("connected");
+
+         document.getElementById("shutter").addEventListener("click", requestPhoto);
+         
+
+      };
+
+      // fired when connection was lost (or could not be established)
+      //
+      connection.onclose = function (reason, details) {
+
+         console.log("Connection lost: " + reason);
+
+      }
+
+      // now actually open the connection
+      //
+      connection.open();
+
+   </script>
+</body>
+</html>

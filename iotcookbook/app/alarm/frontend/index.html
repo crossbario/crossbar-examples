@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="shortcut icon" href="img/favicon.ico">
+   <title>WAMP Alarm</title>
+   <link rel="stylesheet" href="css/alarm.css">
+</head>
+<body>
+
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>WAMP Alarm</span>
+         </div>
+         <a class="navbar-brand" href="/">
+            <img src="img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+            <span class="fontFace">
+               <span>Crossbar</span><span>.io</span>
+            </span>
+         </a>
+      </div>
+   </header>
+
+   <div id="demo_body">
+
+      <p id="connectingIndicator">
+         Connecting to backend...
+      </p>
+
+      <div class="armamentAndAlarm">
+         
+         <div class="alarmContainer">
+            <div class="alarm" id="alarmIndicator">
+               Alarm!!!
+            </div>   
+         </div> 
+         
+         <div class="alarmArmedIndicator" id="alarmArmedIndicator">
+            <div class="armament">
+               <button id="armButton">
+                  Arm
+               </button>
+               <button id="disarmButton">
+                  Disarm
+               </button>
+            </div>
+         </div>        
+
+      </div>
+
+      <div class="alarmActions" id="alarmActions">
+         <button id="cancelButton">
+            Cancel Alarm
+         </button>
+         <button id="triggerButton">
+            Trigger Alarm
+         </button>
+      </div>
+      
+   </div>
+
+   
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script src="js/frontend.js"></script>
+
+</body>
+</html>
