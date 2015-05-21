@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Raspberry Pi Audio Output</title>
+</head>
+<body>
+   <h1>
+      Raspberry Pi Audio Output
+   </h1>
+
+
+   <h2>
+      Trigger Sample
+   </h2>
+
+   <label for="sampleName">
+      Sample Name:
+   </label>
+   <input type="text" id="sampleName" value="test_01">
+   
+   <button id="triggerSample">
+      Trigger Sample
+   </button>
+
+   <button id="stopSample">
+      Stop Sample
+   </button>
+   
+
+
+   <h2>
+      Add Sample
+   </h2>
+
+   <p>
+      Add a sample in WAV or OGG format from an URL
+   </p>
+
+   <p>
+      <label for="uploadUrl">
+         Upload URL (file name may not contain any '.' except to separate the file type):
+      </label>
+      <input type="text" id="uploadUrl" value="http://192.168.1.134:8080/samples/test_03.wav" size="60">
+   </p>
+
+   <p>
+      <label for="uploadName">
+         Sample Name (used for triggering above)
+      </label>
+      <input type="text" id="uploadName" value="test">
+   </p>
+   
+
+  
+
+   <button id="addButton">
+      Add Sample
+   </button>
+
+
+
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script>
+      var session = null;
+      var sampleName = document.getElementById("sampleName");
+      var uploadUrl = document.getElementById("uploadUrl");
+      var uploadName = document.getElementById("uploadName");
+
+      // the URL of the WAMP Router (Crossbar.io)
+      var wsuri;
+      if (document.location.origin == "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+      }
+
+
+      var triggerSample = function () {
+         session.call("io.crossbar.examples.iot.devices.pi.6ec468fc.audioout.trigger_sample", [sampleName.value]).then(session.log, session.log);
+      };
+
+      var stopSample = function () {
+         session.call("io.crossbar.examples.iot.devices.pi.6ec468fc.audioout.stop_sample", [sampleName.value]).then(session.log, session.log);
+      };
+
+      var addSample = function () {
+         session.call("io.crossbar.examples.iot.devices.pi.6ec468fc.audioout.add_sample", [uploadUrl.value, uploadName.value]).then(session.log, session.log);
+      };
+
+      // the WAMP connection to the Router
+      //
+      var connection = new autobahn.Connection({
+         url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
+         realm: "iot_cookbook"
+      });
+
+
+      // fired when connection is established and session attached
+      //
+      connection.onopen = function (sess, details) {
+
+         session = sess;
+
+         console.log("connected");
+
+         document.getElementById("triggerSample").addEventListener("click", triggerSample);
+
+         document.getElementById("stopSample").addEventListener("click", stopSample);
+         
+         document.getElementById("addButton").addEventListener("click", addSample);
+
+      };
+
+      // fired when connection was lost (or could not be established)
+      //
+      connection.onclose = function (reason, details) {
+
+         console.log("Connection lost: " + reason);
+
+      }
+
+      // now actually open the connection
+      //
+      connection.open();
+
+   </script>
+</body>
+</html>
