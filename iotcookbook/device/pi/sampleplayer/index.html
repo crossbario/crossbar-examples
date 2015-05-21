@@ -66,6 +66,7 @@
       var sampleName = document.getElementById("sampleName");
       var uploadUrl = document.getElementById("uploadUrl");
       var uploadName = document.getElementById("uploadName");
+      var piSerial = "6ec468fc";
 
       // the URL of the WAMP Router (Crossbar.io)
       var wsuri;
@@ -78,15 +79,15 @@
 
 
       var triggerSample = function () {
-         session.call("io.crossbar.examples.iot.devices.pi.6ec468fc.audioout.trigger_sample", [sampleName.value]).then(session.log, session.log);
+         session.call("io.crossbar.examples.iot.devices.pi." + piSerial + ".audioout.trigger_sample", [sampleName.value]).then(session.log, session.log);
       };
 
       var stopSample = function () {
-         session.call("io.crossbar.examples.iot.devices.pi.6ec468fc.audioout.stop_sample", [sampleName.value]).then(session.log, session.log);
+         session.call("io.crossbar.examples.iot.devices.pi." + piSerial + ".audioout.stop_sample", [sampleName.value]).then(session.log, session.log);
       };
 
       var addSample = function () {
-         session.call("io.crossbar.examples.iot.devices.pi.6ec468fc.audioout.add_sample", [uploadUrl.value, uploadName.value]).then(session.log, session.log);
+         session.call("io.crossbar.examples.iot.devices.pi." + piSerial + ".audioout.add_sample", [uploadUrl.value, uploadName.value]).then(session.log, session.log);
       };
 
       // the WAMP connection to the Router
