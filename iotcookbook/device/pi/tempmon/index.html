@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Raspberry Pi Temperatur Monitor</title>
+   <style>
+      #thresholdIndicator {
+         display: inline-block;
+         width: 1em;
+         height: 1em;
+         border: 1px solid black;
+         background-color: #eee;
+         margin-left: 2em;
+      }
+
+      #thresholdIndicator.on {
+         background-color: red;
+      }
+   </style>
+</head>
+<body>
+   <h1>
+      Raspberry Pi Temperatur Monitor
+   </h1>
+
+   <span id="currentTemp">acquiring temperature reading</span><span id="thresholdIndicator"></span>
+   <br>
+   <button id="togglePublish">Toggle Temperature Publication</button>
+   
+
+   <p>
+      To increase the temperature you can 
+   </p>
+   <button id="stressPi">Stress the Pi</button>
+
+   <p>
+      You can also set a temperature threshold and be alerted once this has been crossed. (0 cancels this)
+   </p>
+   <input type="text" id="threshold" value="44">
+   <button id="setThreshold">Set Threshold</button>
+
+
+
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script>
+      var session = null;
+      var piSerial = "6ec468fc";
+      var currentThreshold = 0;
+      var thresholdIndicator = document.getElementById("thresholdIndicator");
+
+      // the URL of the WAMP Router (Crossbar.io)
+      var wsuri;
+      if (document.location.origin == "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+      }
+
+      // the WAMP connection to the Router
+      //
+      var connection = new autobahn.Connection({
+         url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
+         realm: "iot_cookbook"
+      });
+
+      // fired when connection is established and session attached
+      //
+      connection.onopen = function (sess, details) {
+
+         session = sess;
+
+         console.log("connected");
+
+         document.getElementById("stressPi").addEventListener("click", stressPi);
+
+         document.getElementById("togglePublish").addEventListener("click", togglePublish);
+
+         document.getElementById("setThreshold").addEventListener("click", setThreshold);
+
+
+         session.call("io.crossbar.examples.pi." + piSerial + ".tempmon.get_temperature").then(updateTemperature, session.log);
+
+         session.subscribe("io.crossbar.examples.pi." + piSerial + ".tempmon.on_temperature", function (args) {
+            console.log("temperature publish received", args);
+            var temperature = args[1];
+
+            if (temperature < currentThreshold) {
+               thresholdIndicator.classList.remove("on");
+            }
+
+            updateTemperature(temperature);
+         });
+
+         session.subscribe("io.crossbar.examples.pi." + piSerial + ".tempmon.on_threshold_exceeded", function (args) {
+            var temperature = args[1];
+            var tick = args[0];
+            
+            console.log("on_threshold_exceeded received", currentThreshold, temperature, temperature > currentThreshold);
+
+            if (currentThreshold > 0 && temperature > currentThreshold) {
+               console.log("threshold on");
+               thresholdIndicator.classList.add("on");
+            }
+            updateTemperature(args[1]);
+         });
+
+      };
+
+      // fired when connection was lost (or could not be established)
+      //
+      connection.onclose = function (reason, details) {
+
+         console.log("Connection lost: " + reason);
+
+      }
+
+      // now actually open the connection
+      //
+      connection.open();
+
+      var stressPi = function () {
+         session.call("io.crossbar.examples.pi." + piSerial + ".tempmon.impose_stress", [1000000]).then(session.log, session.log);
+      };
+
+      var togglePublish = function () {
+         session.call("io.crossbar.examples.pi." + piSerial + ".tempmon.toggle_publish").then(session.log, session.log);
+      };
+
+      var threshold = document.getElementById("threshold");
+      var setThreshold = function () {
+         var thresholdValue = parseInt(threshold.value);
+         currentThreshold = thresholdValue;
+         session.call("io.crossbar.examples.pi." + piSerial + ".tempmon.set_threshold", [thresholdValue]).then(session.log, session.log);
+      };
+
+      var currentTemp = document.getElementById("currentTemp");
+      var updateTemperature = function (temp) {
+         console.log("temperature value received: ", currentTemp);
+         currentTemp.innerHTML = temp;
+      };
+   </script>
+</body>
+</html>
