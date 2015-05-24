@@ -17,6 +17,7 @@
       // the URL of the WAMP Router (Crossbar.io)
       var wsuri;
       var session = null;
+      var potentiometer_pins = [0, 1]; // adapt to fit the number of potentiometers + pins they're connected to
       if (document.location.origin == "file://") {
          wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
       } else {
@@ -39,13 +40,15 @@
 
          console.log("connected");
 
-         session.call("io.crossbar.examples.yun.potentiometer.get_potentiometer_value").then(function (res) {
-            console.log("potentiometer value currently is: ", res);
-         },
-         session.log);
-
+         potentiometer_pins.forEach(function(pin) {
+            session.call("io.crossbar.examples.yun.potentiometer.get_potentiometer_value", [pin]).then(function (res) {
+               console.log("potentiometer value currently is: ", pin, res);
+            },
+            session.log);
+         })
+         
          session.subscribe("io.crossbar.examples.yun.potentiometer.on_value_change", function (args) {
-            console.log("Value changed to: ", args[0]);
+            console.log("Potentiometer value change: ", args);
          });
 
       };

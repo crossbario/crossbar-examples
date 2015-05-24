@@ -91,47 +91,53 @@ arduino.on('connect', function () {
         *     Potentiometer Code     *
         *****************************/
 
-        var pot_pin = 0; // change to suit your requirements: 'I0': 0, 'I1': 1, 'I2': 2, 'I3': 3, 'I4': 4, 'I5': 5,
+
+
+        // 'I0': 0, 'I1': 1, 'I2': 2, 'I3': 3, 'I4': 4, 'I5': 5,
         var pot_min = 13; // minimum value the potentiometer produces
         var pot_max = 868; // max value the potentiomenter produces
-        var pot_last = 0;
         var pot_smoothe = 1; // offset below which no value changes are sent
 
-        set_mode([pot_pin, "watch"]);
-
-        var get_potentiometer_value = function () {
-
-            set_mode([pot_pin, "in"]);
-
-            var normValue = normalizeValue(analog_read([pot_pin]));
-            
-            set_mode([pot_pin, "watch"]);
-
-            pot_last = normValue;
-            
-            return normValue;
+        // add entries as needed: key is the pin the potentiometer is connected to
+        //  'source' = key
+        var potentiometers = {
+            0: {
+                type: "publish",
+                url: "io.crossbar.examples.yun.potentiometer.on_value_change",
+                source: 0,
+                lastValue: null
+            },
+            // 1: {
+            //     type: "publish",
+            //     url: "io.crossbar.examples.yun.potentiometer.on_value_change",
+            //     source: 1,
+            //     lastValue: null
+            // }
         };
+
+        // initialize the potentiometers for watching
+        for (pin in potentiometers) {
+            if (potentiometers.hasOwnProperty(pin)) {
+                set_mode([pin, "watch"]);
+            }
+        }
 
         var normalizeValue = function (rawValue) {
             return parseInt(((rawValue - pot_min) / (pot_max - pot_min)) * 100);
         };
 
-        arduino.on('analogChange', function (e) {
-            if (pot_pin === e.pin) {
+        var get_potentiometer_value = function (pin) {
 
-                normValue = normalizeValue(e.value);
+            set_mode([pin, "in"]);
 
-                if (debug) {
-                    console.log("light level changed", e.value, normValue, pot_last);
-                }
+            var normValue = normalizeValue(analog_read([pin]));
+            
+            set_mode([pin, "watch"]);
 
-                // constant value wanted, differs from previous value by more than smoothe value
-                if (normValue > pot_last + pot_smoothe || normValue < pot_last - pot_smoothe) {
-                    pot_last = normValue;
-                    session.publish("io.crossbar.examples.yun.potentiometer.on_value_change", [normValue]);    
-                }              
-            }
-        });
+            potentiometers[pin].lastValue = normValue;
+            
+            return normValue;
+        };
 
         session.register("io.crossbar.examples.yun.potentiometer.get_potentiometer_value", get_potentiometer_value).then(function() {
             console.log("io.crossbar.examples.yun.potentiometer.get_potentiometer_value registered");
@@ -139,6 +145,25 @@ arduino.on('connect', function () {
         function () {
             console.log("io.crossbar.examples.yun.potentiometer.get_potentiometer_value - registration error");
         });
+        
+        arduino.on('analogChange', function (e) {
+            if (e.pin in potentiometers) {
+
+                normValue = normalizeValue(e.value);
+                var lastValue = potentiometers[e.pin].lastValue;
+
+                if (debug) {
+                    console.log("light level changed", e.pin, normValue);
+                }
+
+                // constant value wanted, differs from previous value by more than smoothe value
+                if (normValue > lastValue + pot_smoothe || normValue < lastValue - pot_smoothe) {
+                    potentiometers[e.pin].lastValue = normValue; // can't use 'lastValue' since this is not a reference
+                    session.publish("io.crossbar.examples.yun.potentiometer.on_value_change", [e.pin, normValue]);    
+                }              
+            }
+        });
+
     };
 
     connection.onclose = function (reason, details) {
