@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>Example: WAMP Meta Events and Procedures - Meta API Monitor</h1>
+      <p>
+         Open JavaScript console to watch output.
+         <button onclick="close_connection()">Close this connection</button>
+      </p>
+
+      <h2>Sessions</h2>
+
+      <h3>Session information</h3>
+      <p>
+         Retrieve information on currently connected sessions.
+         <div>
+            <button onclick="list_sessions()">List Sessions</button>
+            <button onclick="count_sessions()">Count Sessions</button>
+         </div>
+      </p>
+
+      <h3>Kill Session</h3>
+      <p>
+         Actively end a session.
+         <div>
+            Session ID: <input type="text" id="kill_session_session_id" name="kill_session_session_id" value=""><br>
+            Reason: <input type="text" id="kill_session_reason" name="kill_session_reason" value="com.example.user_group_changed"><br>
+            Message: <input type="text" id="kill_session_message" name="kill_session_message" value="Your session was killed since your user group changed."><br>
+            <button onclick="kill_session()">Kill Session</button>
+         </div>
+      </p>
+
+
+      <h2>Publish and Subscribe</h2>
+
+      <h3>Lookup Subscription</h3>
+      <p>
+         Lookup a subscription and retrieve detail information.
+         <div>
+            URI: <input type="text" id="subscription_uri" name="subscription_uri" value="com.example.topic1"><br>
+            <div>
+               Match policy:
+               <input type="radio" id="subscription_match_default"  name="subscription_match" value="" checked>default
+               <input type="radio" id="subscription_match_exact"    name="subscription_match" value="exact">exact
+               <input type="radio" id="subscription_match_prefix"   name="subscription_match" value="prefix">prefix
+               <input type="radio" id="subscription_match_wildcard" name="subscription_match" value="wildcard">wildcard
+            </div><br>
+            <button onclick="topic1_get_subscription()">Get Subscription</button>
+            <button onclick="topic1_list_subscribers()">List Subscribers</button>
+            <button onclick="topic1_count_subscribers()">Count Subscribers</button>
+         </div>
+      </p>
+
+      <h3>Match Subscriptions</h3>
+      <p>
+         Match the given (concrete) topic URI to current subscriptions.
+         <div>
+            URI: <input type="text" id="match_subscriptions_uri" name="match_subscriptions_uri" value="com.example.topic1"><br>
+            <button onclick="match_subscriptions()">Match Subscriptions</button>
+         </div>
+      </p>
+
+      <h3>Get Subscriptions</h3>
+      <p>
+         Retrieve the list of subscriptions currently managed by the broker.
+         <div>
+            <button onclick="get_subscriptions()">Get Subscriptions</button>
+         </div>
+      </p>
+
+      <h3>Remove Subscriber</h3>
+      <p>
+         Actively remove a subscriber from a subscription.
+         <div>
+            Subscription ID: <input type="text" id="remove_subscriber_subscription_id" name="remove_subscriber_subscription_id" value=""><br>
+            Subscriber ID: <input type="text" id="remove_subscriber_subscriber_id" name="remove_subscriber_subscriber_id" value=""><br>
+            Reason: <input type="text" id="remove_subscriber_reason" name="remove_subscriber_reason" value="wamp.error.authorization_revoked"><br>
+            <button onclick="remove_subscriber()">Remove Subscriber</button>
+         </div>
+      </p>
+
+
+      <h2>Remote Procedure Calls</h2>
+
+      <h3>Lookup Registration</h3>
+      <p>
+         Lookup a registration and retrieve detail information.
+         <div>
+            URI: <input type="text" id="registration_uri" name="registration_uri" value="com.example.procedure1"><br>
+            <div>
+               Match policy:
+               <input type="radio" id="registration_match_default"  name="registration_match" value="" checked>default
+               <input type="radio" id="registration_match_exact"    name="registration_match" value="exact">exact
+               <input type="radio" id="registration_match_prefix"   name="registration_match" value="prefix">prefix
+               <input type="radio" id="registration_match_wildcard" name="registration_match" value="wildcard">wildcard
+            </div><br>
+            <button onclick="procedure1_get_registration()">Get Registration</button>
+            <button onclick="procedure1_list_callees()">List Callees</button>
+            <button onclick="procedure1_count_callees()">Count Callees</button>
+         </div>
+      </p>
+
+      <h3>Match Registrations</h3>
+      <p>
+         Match the given (concrete) procedure URI to the (best matching) registration.
+         <div>
+            URI: <input type="text" id="match_registrations_uri" name="match_registrations_uri" value="com.example.procedure1"><br>
+            <button onclick="match_registrations()">Match Callees</button>
+         </div>
+      </p>
+
+      <h3>Get Registrations</h3>
+      <p>
+         Retrieve the list of registrations currently managed by the dealer.
+         <div>
+            <button onclick="get_registrations()">Get Registrations</button>
+         </div>
+      </p>
+
+      <h3>Remove Callee</h3>
+      <p>
+         Actively remove a callee from a registration.
+         <div>
+            Registration ID: <input type="text" id="remove_callee_registration_id" name="remove_callee_registration_id" value=""><br>
+            Callee ID: <input type="text" id="remove_callee_callee_id" name="remove_callee_callee_id" value=""><br>
+            Reason: <input type="text" id="remove_callee_reason" name="remove_callee_reason" value="wamp.error.authorization_revoked"><br>
+            <button onclick="remove_callee()">Remove Callee</button>
+         </div>
+      </p>
+
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         var connection = new autobahn.Connection({
+            url: "ws://localhost:9000",
+            realm: "cdc-oberstet-1"
+         });
+
+         var session = null;
+
+         //
+         // Meta Procedures for Sessions
+         //
+
+         // wamp.session.kill
+         function kill_session () {
+            if (session) {
+               var session_id = parseInt(document.getElementById('kill_session_session_id').value);
+               var reason = document.getElementById('kill_session_reason').value;
+               var message = document.getElementById('kill_session_message').value;
+
+               session.call("wamp.session.kill", [session_id, reason, message]).then(
+                  function () {
+                     console.log("session " + session_id + " killed!");
+                  },
+                  function (err) {
+                     console.log("could not kill session " + session_id, err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.session.list
+         // wamp.session.get
+         function list_sessions () {
+            if (session) {
+               session.call("wamp.session.list").then(
+                  function (sessions) {
+                     console.log("Current session IDs on realm", sessions);
+                     for (var i = 0; i < sessions.length; ++i) {
+                        session.call("wamp.session.get", [sessions[i]]).then(
+                           function (session_details) {
+                              console.log(session_details);
+                           },
+                           function (err) {
+                              console.log(err);
+                           }
+                        );
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.session.count
+         function count_sessions () {
+            if (session) {
+               session.call("wamp.session.count").then(
+                  function (session_count) {
+                     console.log("Current number of sessions joined on the realm: " + session_count);
+                  },
+                  function (err) {
+                     console.log("Could not retrieve number of sessions", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         //
+         // Meta Procedures for Registrations
+         //
+
+         // procedure1
+         //
+         var procedure1_uri = "com.example.procedure1";
+         var procedure1_options = {};
+
+         function procedure1_fill_options () {
+            procedure1_uri = document.getElementById('registration_uri').value;
+            procedure1_options = {};
+
+            if (document.getElementById('registration_match_default').checked) {
+            }
+            else if (document.getElementById('registration_match_exact').checked) {
+               procedure1_options.match = 'exact';
+            }
+            else if (document.getElementById('registration_match_prefix').checked) {
+               procedure1_options.match = 'prefix';
+            }
+            else if (document.getElementById('registration_match_wildcard').checked) {
+               procedure1_options.match = 'wildcard';
+            }
+         }
+
+         // wamp.registration.lookup
+         // wamp.registration.get
+         function procedure1_get_registration () {
+            if (session) {
+               procedure1_fill_options();
+               session.call("wamp.registration.lookup", [procedure1_uri, procedure1_options]).then(
+                  function (registration_id) {
+                     if (registration_id) {
+                        session.call("wamp.registration.get", [registration_id]).then(
+                           function (registration) {
+                              console.log("Procedure " + procedure1_uri + " is managed via registration", registration);
+                           },
+                           function (err) {
+                              console.log("Could not retrieve registration", err);
+                           }
+                        );
+                     } else {
+                        console.log("No registration for procedure " + procedure1_uri + " currently exists on dealer");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registration for procedure", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.registration.lookup
+         // wamp.registration.list_callees
+         function procedure1_list_callees () {
+            if (session) {
+               procedure1_fill_options();
+               session.call("wamp.registration.lookup", [procedure1_uri, procedure1_options]).then(
+                  function (registration_id) {
+                     if (registration_id) {
+                        session.call("wamp.registration.list_callees", [registration_id]).then(
+                           function (callees) {
+                              console.log("Callees on procedure " + procedure1_uri + " (registration " + registration_id + "):", callees);
+                           },
+                           function (err) {
+                              console.log("Could not retrieve calless on registration", err);
+                           }
+                        );
+                     } else {
+                        console.log("No registration for procedure " + procedure1_uri + " currently exists on dealer");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registration for procedure", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.registration.lookup
+         // wamp.registration.count_callees
+         function procedure1_count_callees () {
+            if (session) {
+               procedure1_fill_options();
+               session.call("wamp.registration.lookup", [procedure1_uri, procedure1_options]).then(
+                  function (registration_id) {
+                     if (registration_id) {
+                        session.call("wamp.registration.count_callees", [registration_id]).then(
+                           function (count) {
+                              if (count) {
+                                 console.log("" + count + " callees on procedure " + procedure1_uri);
+                              } else {
+                                 console.log("No callees on procedure " + procedure1_uri);
+                              }
+                           },
+                           function (err) {
+                              console.log("Could not retrieve callee count on registration", err);
+                           }
+                        );
+                     } else {
+                        console.log("No registration for procedure " + procedure1_uri + " currently exists on dealer");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registration for procedure", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.registration.list
+         // wamp.registration.get
+         function get_registrations () {
+            if (session) {
+               session.call("wamp.registration.list").then(
+                  function (registrations) {
+                     console.log("Current registrations", registrations);
+                     var match_policies = ['exact', 'prefix', 'wildcard'];
+
+                     // for each match policy ..
+                     for (var j = 0; j < match_policies.length; ++j) {
+                        (function (l) {
+                           var match_policy = match_policies[l];
+
+                           // .. get the registrations
+                           for (var i = 0; i < registrations[match_policy].length; ++i) {
+                              (function (k) {
+                                 session.call("wamp.registration.get", [registrations[match_policy][k]]).then(
+                                    function (registration) {
+                                       console.log("Registration", registration);
+                                    },
+                                    function (err) {
+                                       console.log(err);
+                                    }
+                                 );
+                              })(i);
+                           }
+                        })(j);
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve registrations", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }            
+         }
+
+         // wamp.registration.remove_callee
+         function remove_callee () {
+
+            var registration_id = parseInt(document.getElementById('remove_callee_registration_id').value);
+            var callee_id = parseInt(document.getElementById('remove_callee_callee_id').value);
+            var reason = document.getElementById('remove_callee_reason').value;
+
+            if (session) {
+               session.call("wamp.registration.remove_callee", [registration_id, callee_id, reason]).then(
+                  function (res) {
+                     console.log("callee removed from registration: ", res);
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         //
+         // Meta Procedures for Subscriptions
+         //
+
+         // topic1
+         //
+         var topic1_uri = "com.example.topic1";
+         var topic1_options = {};
+
+         function topic1_fill_options () {
+            topic1_uri = document.getElementById('subscription_uri').value;
+            topic1_options = {};
+
+            if (document.getElementById('subscription_match_default').checked) {
+            }
+            else if (document.getElementById('subscription_match_exact').checked) {
+               topic1_options.match = 'exact';
+            }
+            else if (document.getElementById('subscription_match_prefix').checked) {
+               topic1_options.match = 'prefix';
+            }
+            else if (document.getElementById('subscription_match_wildcard').checked) {
+               topic1_options.match = 'wildcard';
+            }
+         }
+
+         // wamp.subscription.lookup
+         // wamp.subscription.get
+         function topic1_get_subscription () {
+            if (session) {
+               topic1_fill_options();
+               session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
+                  function (subscription_id) {
+                     if (subscription_id) {
+                        session.call("wamp.subscription.get", [subscription_id]).then(
+                           function (subscription) {
+                              console.log("Topic " + topic1_uri + " is managed via subscription", subscription);
+                           },
+                           function (err) {
+                              console.log("Could not retrieve subscription", err);
+                           }
+                        );
+                     } else {
+                        console.log("No subscription for topic " + topic1_uri + " currently exists on broker");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.subscription.lookup
+         // wamp.subscription.list_subscribers
+         function topic1_list_subscribers () {
+            if (session) {
+               topic1_fill_options();
+               session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
+                  function (subscription_id) {
+                     if (subscription_id) {
+                        session.call("wamp.subscription.list_subscribers", [subscription_id]).then(
+                           function (subscribers) {
+                              console.log("Subscribers on topic " + topic1_uri + " (subscription " + subscription_id + "):", subscribers);
+                           },
+                           function (err) {
+                              console.log("Could not retrieve subscribers on subscription", err);
+                           }
+                        );
+                     } else {
+                        console.log("No subscription for topic " + topic1_uri + " currently exists on broker");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.subscription.lookup
+         // wamp.subscription.count_subscribers
+         function topic1_count_subscribers () {
+            if (session) {
+               topic1_fill_options();
+               session.call("wamp.subscription.lookup", [topic1_uri, topic1_options]).then(
+                  function (subscription_id) {
+                     if (subscription_id) {
+                        session.call("wamp.subscription.count_subscribers", [subscription_id]).then(
+                           function (count) {
+                              if (count) {
+                                 console.log("" + count + " subscribers on topic " + topic1_uri);
+                              } else {
+                                 console.log("No subscribers on topic " + topic1_uri);
+                              }
+                           },
+                           function (err) {
+                              console.log("Could not retrieve subscriber count on subscription", err);
+                           }
+                        );
+                     } else {
+                        console.log("No subscription for topic " + topic1_uri + " currently exists on broker");
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.subscription.match
+         // wamp.subscription.list_subscribers
+         function match_subscriptions () {
+            if (session) {
+
+               var match_subscriptions_uri = document.getElementById('match_subscriptions_uri').value;
+
+               session.call("wamp.subscription.match", [match_subscriptions_uri]).then(
+                  function (subscription_ids) {
+                     console.log(subscription_ids);
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscription for topic", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.subscription.list
+         // wamp.subscription.get
+         function get_subscriptions () {
+            if (session) {
+               session.call("wamp.subscription.list").then(
+                  function (subscriptions) {
+                     console.log("Current subscriptions:", subscriptions);
+                     var match_policies = ['exact', 'prefix', 'wildcard'];
+
+                     // for each match policy ..
+                     for (var j = 0; j < match_policies.length; ++j) {
+                        (function (l) {
+                           var match_policy = match_policies[l];
+
+                           // .. get the registrations
+                           for (var i = 0; i < subscriptions[match_policy].length; ++i) {
+                              (function (k) {
+                                 session.call("wamp.subscription.get", [subscriptions[match_policy][k]]).then(
+                                    function (subscription) {
+                                       console.log("Subscription", subscription);
+                                    },
+                                    function (err) {
+                                       console.log(err);
+                                    }
+                                 );
+                              })(i);
+                           }
+                        })(j);
+                     }
+                  },
+                  function (err) {
+                     console.log("Could not retrieve subscriptions", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }            
+         }
+
+         // wamp.subscription.remove_subscriber
+         function remove_subscriber () {
+
+            var subscription_id = parseInt(document.getElementById('remove_subscriber_subscription_id').value);
+            var subscriber_id = parseInt(document.getElementById('remove_subscriber_subscriber_id').value);
+            var reason = document.getElementById('remove_subscriber_reason').value;
+
+            if (session) {
+               session.call("wamp.subscription.remove_subscriber", [subscription_id, subscriber_id, reason]).then(
+                  function (res) {
+                     console.log("subscriber removed from subscription: ", res);
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         function close_connection () {
+            if (session) {
+               session.leave();
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // connection
+         //
+         connection.onopen = function (new_session, details) {
+
+            session = new_session;
+
+            console.log("Connected with session ID " + session.id, details);
+
+            var meta_topics = [
+               // Meta Events for Sessions
+               "wamp.session.on_join",
+               "wamp.session.on_leave",
+
+               // Meta Events for Subscriptions
+               "wamp.subscription.on_create",
+               "wamp.subscription.on_subscribe",
+               "wamp.subscription.on_unsubscribe",
+               "wamp.subscription.on_delete",
+
+               // Meta Events for Registrations
+               "wamp.registration.on_create",
+               "wamp.registration.on_register",
+               "wamp.registration.on_unregister",
+               "wamp.registration.on_delete",
+
+               // Meta Events for Schemas
+               "wamp.schema.on_define",
+               "wamp.schema.on_undefine",
+            ];
+
+            // subscribe to all of above WAMP meta events
+            for (var i = 0; i < meta_topics.length; ++i) {
+
+               (function subscribe (topic) {
+
+                  function on_meta_event (args, kwargs) {
+                     console.log("WAMP meta event " + topic + " received", args, kwargs);
+                  }
+
+                  session.subscribe(topic, on_meta_event).then(
+                     function (sub) {
+                        console.log('Subscribed to meta topic ' + topic);
+                     },
+                     function (err) {
+                        console.log('Failed to subscribe to meta topic ' + topic, err);
+                     }
+                  );
+
+               })(meta_topics[i]);
+            }
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

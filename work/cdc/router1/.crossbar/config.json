@@ -1,0 +1,16 @@
+{
+   "manager": {
+      "id": "mynode1",
+      "key": "rffeuCOKDeeKDzIDFo+v2PG8/n9rtSSa8PLQOMiL1ZM=",
+      "realm": "cdc-oberstet-1",
+      "transport": {
+         "type": "websocket",
+         "url": "ws://localhost:9000",
+         "endpoint": {
+            "type": "tcp",
+            "host": "127.0.0.1",
+            "port": 9000
+         }
+      }
+   }
+}
