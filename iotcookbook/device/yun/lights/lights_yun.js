@@ -97,45 +97,43 @@ arduino.on('connect', function () {
         *           Lights Code         *
         *********************************/
 
-        set_mode([11, "out"]); // Tinkerkit shield: 'O0'
-        set_mode([10, "out"]); // Tinkerkit shield: 'O1'
-        set_mode([9, "out"]); // Tinkerkit shield: 'O2'
-        set_mode([6, "out"]); // Tinkerkit shield: 'O3'
-        set_mode([5, "out"]); // Tinkerkit shield: 'O4'
-        set_mode([3, "out"]); // Tinkerkit shield: 'O5'
 
-        var pinMap = {
-            O0: 11,
-            O1: 10,
-            O2: 9,
-            O3: 6,
-            O4: 5,
-            O5: 3
-        }
+        // pin 11 = Tinkerkit shield: 'O0'
+        // pin 10 = Tinkerkit shield: 'O1'
+        // pin 9 = Tinkerkit shield: 'O2'
+        // pin 6 = Tinkerkit shield: 'O3'
+        // pin 5 = Tinkerkit shield: 'O4'
+        // pin 3 = Tinkerkit shield: 'O5'
 
-        var pinState = {
-            O0: false,
-            O1: false,
-            O2: false,
-            O3: false,
-            O4: false,
-            O5: false
-        }
+        // comment out light pins as needed
+        var lights = {
+            11: false,
+            10: false,
+            9: false,
+            6: false,
+            5: false,
+            3: false
+        };
 
-        var setLightState = function (args) {
-            console.log("setLightState called", args);
-            var light = args[0];
-            // var state = args[1];
+        // set the correct mode for the light pins
+        for (pin in lights) {
+            if (lights.hasOwnProperty(pin)) {
+                set_mode([pin, "out"]);
+            }
+        };
 
-            pinState[light] = !pinState[light];
-            digital_write([pinMap[light], pinState[light]]);
+        var toggleLight = function (args) {
+            var pin = args[0];
+            console.log("toggleLights called", pin);
+            lights[pin] = !lights[pin];
+            digital_write([pin, lights[pin]]);
 
             return true;
         };
-
-        session.register("io.crossbar.examples.yun.lights.set_light_state", setLightState).then(
+        
+        session.register("io.crossbar.examples.yun.lights.toggle_light", toggleLight).then(
             function() {
-                console.log("procedure 'io.crossbar.examples.yun.lights.set_light_state' registered");
+                console.log("procedure 'io.crossbar.examples.yun.lights.toggle_light' registered");
             },
             session.log
         );

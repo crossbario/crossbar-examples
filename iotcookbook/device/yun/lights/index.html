@@ -9,15 +9,18 @@
       Arduino Yun Lights
    </h1>
    <p>
+      (or any other modules which get addressed via digitial write)
+   </p>
+   <p>
       Open dev tools console to view log output. 
    </p>
    <div class="buttonContainer">
-      <button id="O0">O0</button>
-      <button id="O1">O1</button>
-      <button id="O2">O2</button>
-      <button id="O3">O3</button>
-      <button id="O4">O4</button>
-      <button id="O5">O5</button>
+      <button id="11">O0</button>
+      <button id="10">O1</button>
+      <button id="9">O2</button>
+      <button id="6">O3</button>
+      <button id="5">O4</button>
+      <button id="3">O5</button>
    </div>
 
    <br>
@@ -60,7 +63,7 @@
             buttons[i].addEventListener("click", (function(i) {
                return function() {
                   console.log("pressed button O" + i);
-                  session.call("io.crossbar.examples.yun.lights.set_light_state", ["O" + i]);
+                  session.call("io.crossbar.examples.yun.lights.toggle_light", ["O" + i]);
                }; 
             })(i));
          };
@@ -74,16 +77,16 @@
             if (!disco) {
                disco = true;
                disco_interval_1 = setInterval(function() {
-                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O0"]);
-                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O1"]);
+                     session.call("io.crossbar.examples.yun.lights.toggle_light", ["11"]);
+                     session.call("io.crossbar.examples.yun.lights.toggle_light", ["10"]);
                   }, 500);
                disco_interval_2 = setInterval(function() {
-                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O2"]);
-                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O3"]);
+                     session.call("io.crossbar.examples.yun.lights.toggle_light", ["9"]);
+                     session.call("io.crossbar.examples.yun.lights.toggle_light", ["6"]);
                   }, 250);
                disco_interval_3 = setInterval(function() {
-                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O4"]);
-                     session.call("io.crossbar.examples.yun.lights.set_light_state", ["O5"]);
+                     session.call("io.crossbar.examples.yun.lights.toggle_light", ["5"]);
+                     session.call("io.crossbar.examples.yun.lights.toggle_light", ["3"]);
                   }, 125);
 
             } else {
