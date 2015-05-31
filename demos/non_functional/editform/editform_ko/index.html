@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+
+      <link rel="shortcut icon" href="../../../../img/favicon.ico">
+
+      <title>Form with Oracle</title>
+
+      <link rel="stylesheet" href="../../../demo.css">
+      <link rel="stylesheet" href="css/editform.css">
+
+      <!-- Include Flash WebSocket via Conditional Comment: http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+   </head>
+
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Form</span>
+               <span>with Oracle backend</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="../../../../img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+               <span class="fontFace">
+                  <span>Crossbar</span><span>.io</span>
+               </span>
+            </a>
+         </div>
+
+         <center>A simple editable KnockoutJS-based Form with Oracle PL/SQL backend that synchronizes in real-time - <a href="http://crossbar.io/howitworks/">no application server</a> involved!</center>
+         <center>
+            <a id="new-window" href="" target="_blank">Open 2nd instance</a>
+            <a href="http://crossbar.io/howitworks/">How it works</a>
+            <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/form/knockout/editform">Source Code</a>
+         </center>
+
+      </header>
+
+      <div id="demo_body">
+         <div id="list">
+            <table id="listTable">
+               <thead id="list_headers">
+                  <tr>
+                     <th class="item_orderNumber">
+                        Order
+                        <br />
+                         Number
+                     </th>
+                     <th class="item_name">
+                        Name
+                     </th>
+                     <th class="item_price">
+                        Price
+                     </th>
+                  </tr>
+               </thead>
+
+               <tbody data-bind="foreach: listData">
+
+                  <tr data-bind="click: $parent.switchDetailsDisplayed,
+                     css: {
+                     isBeingDisplayed: itemState() === 'isBeingDisplayed',
+                     isBeingEdited: itemState() === 'isBeingEdited',
+                     isBeingDeleted: itemState() === 'isBeingDeleted',
+                     isBeingCancelled: itemState() === 'isBeingCancelled',
+                     hasBeenEdited: itemState() === 'hasBeenEdited',
+                     hasBeenCreated: itemState() === 'hasBeenCreated',
+                     isNew: itemState() === 'isNew',
+                     nonDisplay: itemState() === 'nonDisplay'
+                     },
+                     setIndex: 'index'">
+
+                     <td class="listOrderNumber" data-bind="text: orderNumber"></td>
+                     <td class="listName" data-bind="text: name"></td>
+                     <!--<td class="listPrice" data-bind="text: price"></td>-->
+                     <td class="listPrice">
+                        <div class="relativeContainer"> <!--needed since FF doesn't do absolute positioning from TDs-->
+                           <button class="deleteButton" data-bind="click: $parent.deleteListItem, visible: itemState() ==='isBeingDisplayed'">X</button>
+                           <span data-bind="text: price"></span>
+                        </div>
+                     </td>
+
+                  </tr>
+
+               </tbody>
+             </table>
+
+            <button class="addButton" data-bind="click: addListItem, visible: addButtonVisible">Add Item</button>
+            <!--<button class="deleteButton" data-bind="click: deleteListItem, visible: deleteButtonVisible">Delete Highlighted Item</button>-->
+
+          </div>
+
+          <div id="details" data-bind="css: {highlighted: switchWarning}">
+             <div id="detailsTable">
+                <div>
+                   <div>
+                      Order Number
+                   </div>
+                   <div>
+                      <input id="orderNumber" type="text" size="15" maxlength="15" data-bind="
+                         value: detailsEditable.orderNumber,
+                         valueUpdate: 'afterkeydown',
+                         event: { keydown: mangleInputs, keyup: checkForValueChange },
+                         css: { isChanged: detailsEditable.fieldValueChanged.orderNumber, hasBeenEdited: detailsEditable.hasBeenEdited.orderNumber },
+                         hasfocus: focusOnOrderNumber"/>
+                   </div>
+                   <div class="requiredField" data-bind="visible: orderNumberMissing">
+                      *
+                   </div>
+                </div>
+                <div>
+                   <div>
+                     Name
+                   </div>
+                   <div>
+                    <input id="name" type="text" size="20" maxlength="20" data-bind="
+                       value: detailsEditable.name,
+                       valueUpdate: 'afterkeydown',
+                       event: { keydown: mangleInputs, keyup: checkForValueChange },
+                       css: { isChanged: detailsEditable.fieldValueChanged.name, hasBeenEdited: detailsEditable.hasBeenEdited.name}" />
+                   </div>
+                   <div class="requiredField" data-bind="visible: nameMissing">
+                      *
+                   </div>
+                </div>
+                <div>
+                   <div>
+                     Weight
+                   </div>
+                   <div>
+                     <input id="weight" type="text" size="6" maxlength="6" data-bind="
+                        value: detailsEditable.weight,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs, keyup: checkForValueChange },
+                        css: { isChanged: detailsEditable.fieldValueChanged.weight, hasBeenEdited: detailsEditable.hasBeenEdited.weight}" />
+                   </div>
+                </div>
+                <div>
+                   <div>
+                   Size
+                   </div>
+                   <div>
+                     <input id="size" type="text" size="6" maxlength="6" data-bind="
+                        value: detailsEditable.size,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs, keyup: checkForValueChange },
+                        css: { isChanged: detailsEditable.fieldValueChanged.size, hasBeenEdited: detailsEditable.hasBeenEdited.size}" />
+                   </div>
+                </div>
+                <div>
+                   <div>
+                     In Stock
+                   </div>
+                   <div>
+                     <input id="inStock" type="text" size="8" maxlength="8" data-bind="
+                        value: detailsEditable.inStock,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs, keyup: checkForValueChange },
+                        css: { isChanged: detailsEditable.fieldValueChanged.inStock, hasBeenEdited: detailsEditable.hasBeenEdited.inStock}" />
+                   </div>
+                </div>
+                <div>
+                   <div>
+                     Price
+                   </div>
+                   <div>
+                     <input id="price" type="text" size="8" maxlength="8" data-bind="
+                        value: detailsEditable.price,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs, keyup: checkForValueChange },
+                        css: { isChanged: detailsEditable.fieldValueChanged.price, hasBeenEdited: detailsEditable.hasBeenEdited.price}"/>
+                   </div>
+                </div>
+             </div>
+             <button data-bind="click: saveDetailsEdits, style: { visibility: saveButtonVisible() ? 'visible' : 'hidden' }">Save</button>
+             <button data-bind="click: cancelDetailsEdits, style: { visibility: cancelButtonVisible() ? 'visible' : 'hidden' }">Cancel</button>
+             <div data-bind="visible: switchWarning" class="switchWarning">
+                Unsaved data would be lost on switching. Please 'Save' or 'Cancel' before switching to another item.
+             </div>
+          </div>
+
+         <button id="helpButton" class="webmq_demo_button button">?</button>
+
+         <div class="status_line statusline_outside">
+            Status: <span id="statusline">Not connected.</span>
+         </div>
+
+         <div class="info_bar" style="display: none;">
+
+            <p class="info_bar_heading">
+               Edit demo data in an Oracle database.
+            </p>
+            <ul>
+               <li>
+                  The demo is connected to the Oracle database via Crossbar.io.
+               </li>
+               <li>
+                  All client logic is local to the browser, all business logic is in the database. Crossbar.io manages only the messaging interaction between the two.
+               </li>
+               <li>
+   	            Committed changes to the data are synched in real-time between multiple clients - just open the demo in an additional browser window.
+               </li>
+            </ul>
+
+         </div>
+
+            <div id="error_overlay" class="error_overlay" style="display:none;">
+
+               <div id="non_specific_error" class="error_overlay_content_block">
+                  <p>
+                     The necessary connection to an Oracle database with an installed demo schema could not be established.
+                  </p>
+                  <p>
+                     Please make sure that the following requirements are met:
+                  </p>
+                  <ul>
+                     <li>
+                        an Oracle connect has been created
+                     </li>
+                     <li>
+                        there is a remote for this connect
+                     </li>
+                     <li>
+                        the Oracle database is reachable
+                     </li>
+                     <li>
+                        the repository schema and the demo schema have been installed
+                     </li>
+                  </ul>
+                  <p>
+                     Whether the Oracle database is reachable and the necessary schemas have been installed
+                     can easily be checked by using the 'Test' buttons next to the respective schema login data
+                     on the Oracle Connects tab.
+                  </p>
+                  <p>
+                     To check whether any changes you've made have solved the encountered problem(s) just reload the page.
+                  </p>
+               </div>
+
+               <div id="working_version" class="error_overlay_content_block">
+                  Insert link to hosted demo on Crossbar website once this is up.
+               </div>
+            </div>
+         </div>
+
+      </div>
+
+      <script src="../../../../js/jquery.min.js"></script>
+      <script src="../../../../js/knockout.min.js"></script>
+      <script src="../../../../js/autobahn.min.js"></script>
+      <script src="js/editform.js"></script>
+
+   </body>
+</html>

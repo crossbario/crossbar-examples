@@ -1,0 +1,16 @@
+{
+  "name": "visitors_widget",
+  "version": "1.0.0",
+  "description": "current visitors counter as web component",
+  "main": "index.js",
+  "dependencies": {
+    "autobahn": "^0.9.6",
+    "bower": "^1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

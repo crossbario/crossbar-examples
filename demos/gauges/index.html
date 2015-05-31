@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="shortcut icon" href="favicon.ico">
+      <title>Gauges</title>
+      <link rel="stylesheet" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css">
+      <link rel="stylesheet" href="css/gauges.css">
+   </head>
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Gauges</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+
+      </header>
+      <div class="demo_links">
+         <p>
+            Gauge state synched across all browser tabs subscribed to the same channel.<br>
+            Built with <a href="http://justgage.com/">JustGage</a>.
+         </p>
+         <div>
+            <a id="secondInstance" href="" target="_blank">Open 2nd instance</a>
+            <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/gauges">Source Code</a>
+            <a href="http://crossbar.io">
+               Crossbar.io Homepage
+            </a>
+         </div>
+      </div>
+
+      <div id="demo_body">
+         <div id="bigGauge">
+            <div id="g0"></div>
+            <div id="s0" class="bigSlider"></div>
+         </div>
+
+         <div id="smallGauges">
+            <div id="gauges">
+               <div id="g1"></div>
+               <div id="g2"></div>
+               <div id="g3"></div>
+            </div>
+            <div id="eqSliders">
+               <span id="s1"></span>
+               <span id="s2"></span>
+               <span id="s3"></span>
+            </div>
+            <div>
+               Controller Channel: <input type="text" id="controller-channel" size="6" maxlength="6" value="{{channel}}">
+               <button id="controller-channel-switch" class="button">Switch</button>
+               <button id="controller-channel-cancel" class="button">Cancel</button>
+            </div>
+         </div>
+
+
+
+          <div class="status_line noContainer">
+            Status: <span class="statusline"></span>
+         </div>
+
+
+      </div>
+
+
+
+
+      <!-- jQuery -->
+      <script type="text/javascript" src="js/jquery.min.js"></script>
+      <script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+
+      <!-- JustGage -->
+      <script src="js/raphael.2.1.0.min.js"></script>
+      <script src="js/justgage.1.0.1.min.js"></script>
+
+      <!-- AutobahnJS -->
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <!-- Demo code -->
+      <script src="js/gauges.js"></script>
+
+
+      <!-- community widget iframe -->
+
+      <!-- general styles for the widget -->
+      <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+      <!-- local stylesheet -->
+      <!--     - ensures non-Display if nothing loads -->
+      <!--     - site-specific positioning of widget -->
+      <style>
+         #communityWidget.nonDisplay {
+            display: none;
+         }
+
+         #communityWidget {
+            top: 111px;
+            right: 0px;
+            box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+         }
+      </style>
+
+      <!-- IFrame itself -->
+      <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+      <!-- the parent page connecting code -->
+      <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+   </body>
+</html>

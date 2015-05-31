@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+
+      <link rel="shortcut icon" href="favicon.ico">
+
+      <title>Publish &amp; Subscribe</title>
+
+      <link rel="stylesheet" href="css/pubsub.css">
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+      <script type="text/javascript" src="js/jquery.min.js"></script>
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script type="text/javascript" src="js/pubsub.js"></script>
+
+   </head>
+
+   <body>
+
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>Publish &amp; Subscribe</span>
+            </div>
+
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+      </div>
+   </header>
+
+   <div class="demo_links">
+      <p>
+         Publish on a channel and receive published events in any browser subscribed to the same channel.
+      </p>
+      <div>
+         <a href="" target="_blank" id="secondInstance">Open 2nd instance</a>
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/pubsub">
+            Source Code
+         </a>
+         <a href="http://crossbar.io">
+            Crossbar.io Homepage
+         </a>
+      </div>
+   </div>
+
+   <div id="pubsub_wrapper" class="content_wrapper">
+            <div id="pub_sub_wrapper">
+               <div id="central_table_wrapper">
+
+                  <div id="alt_1_wrapper">
+
+                     <div id="pub_alt_1_wrapper" class="column column_left">
+                        <div class="box box_pubsub_left">
+                           <div class="box_heading"><strong>Publish</strong> from this browser</div>
+
+                           <div class="box_content box_content_alt_1">
+                              <p class="box_caption">Publication Topic</p>
+                              <input type="text" id="pub_topic" class="textbox_active" size="6" maxlength="6" value="{{channel}}"><br/>
+                              <p class="pubsub_topic_full">URI: <span id="pub_topic_full"></span></p>
+                              <p class="box_caption box_second">Message</p>
+                              <textarea id="pub_message" spellcheck="false" class="textbox_active" cols="38" rows="6" style="resize: none;"></textarea>
+                              <button id="pub_publish" class="button">Publish</button>
+                              <div class="status_line pubsub_status_line">
+                                 Status: <span class="statusline"></span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div id="alt_1_spacer" class="spacer"></div>
+
+                     <div id="sub_alt_1_wrapper" class="column column_right">
+                        <div class="box box_pubsub_right">
+                           <div class="box_heading"><strong>Subscribe</strong> in this browser</div>
+
+                           <div class="box_content box_content_alt_1">
+                              <p class="box_caption">Subscription Topic</p>
+                              <input type="text" id="controller-channel" class="textbox_active" size="6" maxlength="6" value="{{channel}}">
+                              <button id="controller-channel-switch" class="button">Subscribe</button>
+                              <button id="controller-channel-cancel" class="button">Cancel</button><br/>
+                              <p class="pubsub_topic_full">URI: <span id="sub_topic_full"></span></p>
+                              <p class="box_caption box_second">Received Messages</p>
+                              <textarea id="sub_message" spellcheck="false" cols="38" rows="7" style="resize: none;"></textarea>
+                              <button id="sub_message_clear" class="button">Clear</button><br/>
+                              <div id="sub_message_details" class="box_caption">Round-trip time / size <span id="last_message">(last message)</span>: <span id="sub_message_details_time"></span></div>
+                              <div class="status_line pubsub_status_line">
+                                 Status: <span class="statusline"></span>
+                              </div>
+                            </div>
+                        </div>
+                     </div>
+
+                  </div>
+
+                  
+               </div>
+
+
+
+
+            </div>
+
+      <div class="info_bar" style="display: none;">
+
+         <p class="info_bar_heading">
+            Publish and subscribe using Crossbar.io
+         </p>
+         <ul>
+            <li>
+               All interactions on this demo occur in response to messages routed through the instance of Crossbar.io displayed in the status line at the bottom of the demo box.
+            </li>
+            <li>
+               Messages can be published from any application or platform that supports HTTP/POST.
+            </li>
+         </ul>
+
+      </div>
+
+
+      <!-- community widget iframe -->
+
+      <!-- general styles for the widget -->
+      <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+      <!-- local stylesheet -->
+      <!--     - ensures non-Display if nothing loads -->
+      <!--     - site-specific positioning of widget -->
+      <style>
+         #communityWidget.nonDisplay {
+            display: none;
+         }
+
+         #communityWidget {
+            top: 111px;
+            right: 0px;
+            box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+         }
+      </style>
+
+      <!-- IFrame itself -->
+      <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+      <!-- the parent page connecting code -->
+      <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+
+   </div>
+   </body>
+</html>

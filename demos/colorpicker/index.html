@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <meta charset="utf-8" />
+
+   <link rel="shortcut icon" href="favicon.ico">
+
+   <title>Collaborative Colorpicker</title>
+
+   <link rel="stylesheet" href="css/colorpicker.css">
+   <link rel="stylesheet" href="js/farbtastic/farbtastic.css">
+
+   <!-- Include Flash WebSocket via Conditional Comment:
+        http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+   <!--[if lte IE 9]>
+      <script type="text/javascript">
+        WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+      </script>
+      <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+      <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+   <![endif]-->
+
+   <script type="text/javascript" src="js/jquery.min.js"></script>
+   <script type="text/javascript" src="js/farbtastic/farbtastic.js"></script>
+   <script>
+      AUTOBAHN_DEBUG = true;
+   </script>
+    <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+   <script type="text/javascript" src="js/colorpicker.js"></script>
+</head>
+
+<body>
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>&nbsp; &nbsp; Collaborative Colorpicker</span>
+         </div>
+         <a class="navbar-brand" href="/">
+            <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+         </a>
+      </div>
+   </header>
+
+   <div class="demo_links">
+      <p>
+         Synchronize colorpicker changes across any browser tab subscribed to the same channel.
+      </p>
+      <div>
+         <a href="" target="_blank" id="secondInstance">Open 2nd instance</a>
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/colorpicker">
+            Source Code
+         </a>
+         <a href="http://crossbar.io">
+            Crossbar.io Homepage
+         </a>
+      </div>
+   </div>
+
+   <div id="demo_body">
+      <div class="box colorpicker_box">
+
+         <div class="box_heading">Color Picker Demo</div>
+
+         <div class="box_content">
+
+            <div>
+               Controller Channel:
+               <input id="controller-channel" maxlength="6" size="6" type="text" value="{{channel}}">
+               <button id="controller-channel-switch" class="button">Switch</button>
+               <button id="controller-channel-cancel" class="button">Cancel</button>
+            </div>
+
+            <div class="colorwrappers_grouped">
+               <div class="colorwrapper">
+                  <div id="colorvalue0" class="colorvalue">#??????</div>
+                  <div id="color0" class="colorbox">
+                     <div id="picker0" class="colorpicker"></div>
+                  </div>
+               </div>
+
+               <div class="colorwrapper">
+                  <div id="colorvalue1" class="colorvalue">#??????</div>
+                  <div id="color1" class="colorbox">
+                     <div id="picker1" class="colorpicker"></div>
+                  </div>
+               </div>
+
+               <div class="colorwrapper">
+                  <div id="colorvalue2" class="colorvalue">#??????</div>
+                  <div id="color2" class="colorbox">
+                     <div id="picker2" class="colorpicker"></div>
+                  </div>
+               </div>
+            </div>
+
+            <div class="cb"></div>
+
+            <div id="colorresults">
+
+               <div class="cbwrapper">
+                  <div id="c0a" class="cba"></div>
+                  <div id="c1a" class="cba"></div>
+               </div>
+
+               <div class="cbwrapper">
+                  <div id="c0b" class="cba"></div>
+                  <div id="c2a" class="cba"></div>
+               </div>
+
+               <div class="cbwrapper">
+                  <div id="c1b" class="cba"></div>
+                  <div id="c2b" class="cba"></div>
+               </div>
+
+               <div class="cb"></div>
+
+               <div id="colortext0" class="colortextwrapper">
+                  <div id="colortext1a">This is a test text.</div>
+                  <div id="colortext2a">This is a test text.</div>
+               </div>
+
+               <div id="colortext1" class="colortextwrapper">
+                  <div id="colortext0b">This is a test text.</div>
+                  <div id="colortext2b">This is a test text.</div>
+               </div>
+
+               <div id="colortext2" class="colortextwrapper">
+                  <div id="colortext0c">This is a test text.</div>
+                  <div id="colortext1c">This is a test text.</div>
+               </div>
+
+            </div>
+
+            <div id="colorpicker_status_line" class="status_line">
+               Status: <span class="statusline"></span>
+            </div>
+
+            <button id="helpButton" class="button">?</button>
+         </div>
+      </div>
+
+      <div class="info_bar info_bar_colorpicker" style="display: none">
+         <p class="info_bar_heading">
+            This is a demonstration of using Crossbar.io to enable live synching of UI elements for collaboration.
+         </p>
+         <ul>
+            <li>
+               Works across several tabs or browsers by setting a common controller
+               channel in all instances.
+            </li>
+            <li>
+               All interactions on this demo occur in response to messages routed through the instance of Crossbar.io displayed in the status line at the bottom of the demo box.
+            </li>
+            <li>
+               The demo uses <a href="http://www.acko.net/dev/farbtastic">Farbtastic</a> color picker
+            created by Steven Wittens and licensed under GPL 2. <i>The Farbtastic code was slightly
+            modified allowing to suppress color change events being generated when color is set externally
+            instead of by the user from within the control.</i>
+            </li>
+         </ul>
+      </div>
+   </div>
+
+   <!-- community widget iframe -->
+
+   <!-- general styles for the widget -->
+   <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+   <!-- local stylesheet -->
+   <!--     - ensures non-Display if nothing loads -->
+   <!--     - site-specific positioning of widget -->
+   <style>
+      #communityWidget.nonDisplay {
+         display: none;
+      }
+
+      #communityWidget {
+         top: 111px;
+         right: 0px;
+         box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+      }
+   </style>
+
+   <!-- IFrame itself -->
+   <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+   <!-- the parent page connecting code -->
+   <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+
+</body>
+</html>

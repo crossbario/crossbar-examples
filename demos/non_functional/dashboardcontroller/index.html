@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+
+      <link rel="shortcut icon" href="../../img/favicon.ico">
+      <title>Dashboard Controls</title>
+
+
+      <link href="../demo.css" rel="stylesheet">
+      <link rel="stylesheet" href="css/dashboardcontroller.css" type="text/css" />
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+      <script type="text/javascript" src="../../js/jquery.min.js"></script>
+
+      <link type="text/css" href="../../jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+      <script type="text/javascript" src="../../jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+
+      <script type="text/javascript" src="../../js/autobahn.min.js"></script>
+
+      <script type="text/javascript" src="js/dashboardcontroller.js"></script>
+
+
+   </head>
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Dashboard Controls</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="../../img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+               <span class="fontFace">
+                  <span>Crossbar</span><span>.io</span>
+               </span>
+            </a>
+         </div>
+         <center>
+            <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/dashboardcontroller">Source Code</a>
+         </center>
+      </header>
+
+      <div id="webmq_demo_sliders_wrapper" class="webmq_demo_content_wrapper">
+
+         <div class="eq_container">
+            <p class="ui-state-default ui-corner-all uisync_header">
+               <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                     Switch Dashboards
+            </p>
+            <div>
+               <button onclick="switch_dashboard(0)" class="button switch_button">5 x 2 arrangement</button>
+               <br />
+               <button onclick="switch_dashboard(1)" class="button switch_button">3 x 3 arrangement</button>
+               <!--<button onclick="switch_dashboard(2)">3 x 3 - numbers</button>-->
+            </div>
+         </div>
+         <div class="clearboth"></div>
+
+
+         <div class="slidersContainer">
+
+            <div class="webmq_demo_box_content">
+
+               <div id="demo_container" class="demo">
+
+                  <div class="eq_container">
+                    <p class="ui-state-default ui-corner-all ui-helper-clearfix uisync_header">
+                        <span class="ui-icon ui-icon-volume-on uisync_header_content"></span>
+                        Total Revenue
+                     </p>
+
+                     <div id="eq_tr" class="eq">
+                        <span>88</span>
+                        <span>77</span>
+                     </div>
+
+                     <div class="clearboth spacer_20"></div>
+                  </div>
+
+                  <div class="eq_container">
+                     <p class="ui-state-default ui-corner-all uisync_header">
+                        <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                        Revenue by Product
+                     </p>
+
+                     <div id="eq_rbp" class="eq">
+                        <span>88</span>
+                        <span>77</span>
+                        <span>55</span>
+                     </div>
+
+                     <div class="clearboth spacer_20"></div>
+                  </div>
+
+                  <div class="eq_container">
+                     <p class="ui-state-default ui-corner-all uisync_header">
+                        <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                        Units by Product
+                     </p>
+
+                     <div id="eq_ubp" class="eq">
+                        <span>88</span>
+                        <span>77</span>
+                        <span>55</span>
+                     </div>
+
+                     <div class="clearboth spacer_20"></div>
+                  </div>
+
+                  <div class="eq_container">
+                     <p class="ui-state-default ui-corner-all uisync_header">
+                        <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                        ASP by Region
+                     </p>
+
+                     <div id="eq_abr" class="eq">
+                        <span>88</span>
+                        <span>77</span>
+                        <span>55</span>
+                        <span>55</span>
+                     </div>
+
+                     <div class="clearboth spacer_20"></div>
+                  </div>
+
+                  <div class="eq_container">
+                     <p class="ui-state-default ui-corner-all uisync_header">
+                        <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                        Revenue by Region
+                     </p>
+
+                     <div id="eq_rbr" class="eq">
+                        <span>88</span>
+                        <span>77</span>
+                        <span>55</span>
+                        <span>55</span>
+                     </div>
+
+                     <div class="clearboth spacer_20"></div>
+                  </div>
+
+                  <div class="clearboth spacer_20"></div>
+
+
+                  <div class="eq_container">
+                     <p class="ui-state-default ui-corner-all uisync_header activity_stream_event_header">
+                        <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                        Activity Stream Event
+                     </p>
+
+                     <div id="activity_stream_controls">
+                        <div>
+                           Produkt:
+                           <select id="product_select" name="product_select">
+                              <option value="Product A">Product A</option>
+                              <option value="Product B">Product B</option>
+                              <option value="Product C">Product C</option>
+                           </select>
+                        </div>
+                        <div>
+                           Units:
+                           <input id="units" type="range" min="1" max="10" value="1"/>
+                        </div>
+                        <div>
+                           Region:
+                           <select id="region_select" name="region_select">
+                              <option value="North">North</option>
+                              <option value="East">East</option>
+                              <option value="South">South</option>
+                              <option value="West">West</option>
+                           </select>
+                        </div>
+                        <div>
+                           Revenue:
+                           <input id="revenue" type="text" value="1000"/> $
+                        </div>
+
+
+                        <div>
+                           <br>
+                           <button id="activity_send" onclick="send_activity()" class="button">Send</button>
+                        </div>
+                     </div>
+                   </div>
+               </div>
+
+                  <div class="clearboth spacer_20"></div>
+
+
+
+               <div id="webmq_demo_sliders_status_line" class="webmq_demo_status_line">
+                  Status: <span class="statusline"></span>
+               </div>
+
+               <button id="helpButton" class="button">?</button>
+
+            </div>
+         </div>
+
+         <div class="info_bar" style="display: none;">
+
+         <p class="info_bar_heading">Controls for the Dashboard Demo
+         </p>
+         <ul>
+            <li>
+               All control input is routed through the instance of Crossbar.io displayed in the status line at the bottom of the demo box.
+            </li>
+            <li>
+               The input controls the display of data on the Dashboard (previous item on the demo overview page).
+            </li>
+         </ul>
+
+      </div>
+
+      </div>
+
+   </body>
+</html>

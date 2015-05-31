@@ -1,0 +1,395 @@
+/* Segoe UI */
+/* define here for used weights & styles so that
+font-weight & style declarations work for this + the fallback
+web font */
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI');
+   font-weight: normal;
+}
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI Italic');
+   font-weight: normal;
+   font-style: italic;
+}
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI Bold');
+   font-weight: bold;
+}
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI Light');
+   font-weight: 300;
+}
+
+
+html {
+   overflow-y: scroll;
+}
+
+body {
+   width: 100%;
+   /*color: #1F1F1F;*/
+   
+   font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+   font-size: 16px;
+   line-height: 1.428571429;
+   background-color: #fcfcfc;   
+   color: #333;
+
+   margin: 0;
+   font-size: 14px;
+   background-color: #fafafa;
+   background-color: #ececec;
+
+   width: auto;
+}
+
+pre,
+.syntaxhighlighter * {
+   font-family: Consolas, Menlo, 'DejaVu Sans Mono', 'Courier New', monospace;
+   font-size: 13px;
+}
+
+body.wide
+{
+   width: 1280px;
+   margin: 0 auto;
+}
+
+a
+{
+   color: #555;
+}
+a:hover
+{
+   color: #f60;
+}
+a > img
+{
+   border-style: none;
+}
+
+section
+{
+   margin: 3em 5em 0 3em;
+
+}
+
+
+header {
+   position: relative;
+   width: 100%;
+   height: 103px;
+   background-color: #222;
+}
+
+#header_inner
+{
+   position: relative;
+   width: 90%;
+   height: 100%;
+   margin:auto;
+   padding: 0;
+   color: #666;
+   text-align: center;
+}
+
+@media (max-width: 1100px) {
+   #header_inner {
+      text-align: right;
+   }
+}
+
+@media (max-width: 610px) {
+   .page-wrap .navbar-brand,
+   #demo_title {
+      float: left;
+      position: relative;
+   }
+
+   header {
+      height: auto;
+   }
+
+   .page-wrap #demo_title {
+    padding-bottom: 1em;
+
+
+    text-align: center;
+}
+}
+
+#demo_title
+{
+   font-size: 27px;
+   /*font-weight: bold;*/
+   color: rgb(95, 95, 95);
+   display: inline-block;
+   text-align: right;
+   line-height: 11px;
+   padding-top: 32px;
+}
+#demo_title > span
+{
+   display: block;
+}
+#demo_title > span:first-child
+{
+   font-size: 45px;
+   line-height: 38px;
+}
+
+/*#crossbar_logo
+{
+   position: absolute;
+   left: 20px;
+   bottom: 17px;
+}*/
+
+.navbar-brand {
+    position: absolute;
+    top: 21px;
+    left: 0;
+    text-decoration: none;
+}
+
+.navbar-brand > span.fontFace {
+   font-size: 52px;
+   position: relative;
+   top: -19px;
+   text-decoration: none;
+   border: none;
+}
+
+.navbar-brand > span.fontFaceDemo {
+   font-size: 35px;
+   font-family: "Play", sans-serif;
+   position: absolute;
+   top: 33px;
+   left: 199px;
+   color: #D2C501;
+}
+
+.navbar-brand > span > span:first-of-type {
+  font-family: 'Play', sans-serif;
+  font-weight: bold;
+  color: rgb(162, 162, 162);
+  padding: 0 0 0 6px;
+}
+.navbar-brand > span > span:last-of-type {
+  font-family: 'Play', sans-serif;
+  color: rgb(240, 240, 240);
+}
+
+h2 {
+   text-align: center;
+   font-size: 30px;
+}
+
+.comingSoon {
+   font-size: 20px;
+   text-align: center;
+}
+
+.callForDemos {
+   text-align: center;
+   border: 1px solid #999;
+   width: 80%;
+   max-width: 500px;
+   margin: 4em auto 1em;
+   padding: 1em 0;
+   font-size: 16px;
+   background-color: #D5D5D5;
+}
+
+#demos_cta
+{
+   color: #444;
+
+   text-align: center;
+   font-size: 22px;
+   margin-bottom: 1em;
+   margin-top: 1em;
+}
+#demos_cta  a {
+   text-decoration: none;
+   color: #BEA600;
+}
+#demos_cta  a:visited {
+   text-decoration: none;
+   color: #fff;
+   color: #BEA600;
+}
+#demos_cta  a:hover {
+   text-decoration: underline;
+}
+#demos_cta .orange a
+{
+   color: #f60;
+
+   color: #BEA600;
+}
+
+#demo_body
+{
+   width: 100%;
+   margin: 2em auto;
+}
+.wide #demo_body
+{
+   width: 1280px;
+
+}
+
+.demos_list
+{
+   list-style: none;
+   margin: 0 auto;
+   min-height: 100px;
+   text-align: center;
+   max-width: 1507px;
+   max-width: 80%;
+   padding: 0;
+}
+
+.demos_list > li
+{
+   /* float: left; */
+   width: 280px;
+   height: 280px;
+/*
+   width: 33%;
+   height: 290px;
+   */
+   margin: 8px;
+   position: relative;
+   color: #444;
+   margin-bottom: 16px;
+   margin: 8px auto 16px;
+   padding: 8px;
+   display: inline-block;
+}
+
+.wide .demos_list > li
+{
+   /*width: 25%;*/
+}
+/*.demos_list > li:last-of-type
+{
+   float: none;
+   clear: both;
+   margin: 0 auto;
+}*/
+
+.demos_list > li  a
+{
+   display: block;
+
+   background-color: #f0f0f0;
+   color: #333;
+
+   background-color: #444;
+   color: #fff;
+
+   border-radius: 3px;
+   border: solid 1px #000;
+
+   padding: 10px 0;
+   width: 280px;
+   height: 250px;
+   margin: 0 auto;
+
+
+   font-size: 20px;
+   text-align: center;
+   vertical-align: middle;
+   text-decoration: none;
+   /*filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1,startColorstr='#cccccc', endColorstr='#aaaaaa');*/
+   /*box-shadow: 0 0 12px 2px rgba(255,255,255, 0.6);*/
+}
+
+.demos_list > li  a:hover
+{
+   background-color: #999;
+}
+
+.demos_list > li > .link_disable > a
+{
+
+}
+.demos_list > li > .link_disable > a:hover
+{
+   background-color: #aaa;
+}
+
+.demos_list > li > img
+{
+   display: block;
+   margin: 1em auto;
+   width: 280px;
+   height: auto;
+   box-shadow: 0px 0px 20px 2px rgba(0, 0, 0, 0.5);
+}
+
+.demos_list > li > img.noresize
+{
+   width: auto;
+}
+
+.demo_not_working
+{
+   background-color: #fff;
+   border: 1px solid grey;
+   color: #f60;
+
+   text-align: center;
+
+   width: 20em;
+   padding: 1em;
+   margin: auto;
+
+   position: relative;
+   bottom: 11em;
+}
+
+
+/* sticky footer rules */
+html,
+body
+{
+   height: 100%;
+}
+
+.page-wrap
+{
+   min-height: 100%;
+}
+
+#demo_body
+{
+   overflow: auto;
+   padding-bottom: 150px;
+   margin-bottom: 6em;
+}
+
+.site-footer
+{
+   position: relative;
+   margin-top: -150px;
+   height: 150px;
+   clear: both;
+
+   background-color: #000;
+}
+
+.clearboth {
+   float: none;
+   clear: both;
+}

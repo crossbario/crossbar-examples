@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Document</title>
+   <style>
+      body {
+         font-family: cursive;
+         text-decoration: underline;
+      }
+      span {
+         font-size: 22px;
+         color: red;
+      }
+
+      /* stlye content in the widget shadow DOM from host page */
+      crossbar-visitors::shadow  h1 {
+         text-decoration: underline;
+      }
+
+   </style>
+
+   <script src="../js/components/platform/platform.js"></script>
+
+</head>
+<body>
+
+   <style>
+      /* on supporting browsers, this hides the undeclared custom element */
+      /* plus any valid content */
+      crossbar-visitors:unresolved {
+         opacity: 0;
+      }
+
+      crossbar-visitors {
+         /*width: 100px;*/
+         /*height: 100px;*/
+         /*border: 1px solid #f60;*/
+         /*background-color: red;*/
+      }
+
+
+   </style>
+
+   <template id="crossbar-visitors">
+      <style>
+         /*body {
+            font-family: sans-serif;
+         }*/
+         /* body does not work, since the shadow DOM is not a full HTML document tree */
+         /* i.e. it has no body */
+
+         * {
+            font-family: sans-serif;
+         }
+
+
+         .widget {
+            width: 300px;
+            height: 200px;
+            background-color: #e5e5e5;
+            border: 1px solid #f60;
+         }
+
+
+         h1 {
+            color: purple;
+            font-family: serif;
+         }
+         p {
+            color: green;
+            font-size: 18px; /* does not apply to the inserted content from host!!! */
+         }
+
+         ::content > span {
+            font-size: 30px;
+            color: blue;
+         };
+
+         :host {
+            border: 1px solid green; /* lower specificity than anything set for the host element in the host page*/
+            text-transform: uppercase; /* applies - including to replacement text inserted via JS for any of the nodes! */
+         }
+      </style>
+
+      <div class="widget">
+         <h1>
+            <content select=".heading">.heading</content>
+            <!-- content inside the 'content' tag is displayed if nothing to replace is  -->
+            <!-- found inside the attaching custom element tag = this is the default -->
+         </h1>
+         <p>
+            <content select=".site">.site</content>
+         </p>
+         <p>
+            <content select=".page">.page</content>
+         </p>
+      </div>
+
+
+
+      <script>
+         console.log("template script executed");
+      </script>
+
+   </template>
+
+   <script>AUTOBAHN_DEBUG = true;</script>
+   <script src="../js/autobahn.min.js"></script>
+
+
+   <script>
+
+      var elementContent = null;
+
+      // Grab our template full of slider markup and styles
+      var tmpl = document.querySelector("#crossbar-visitors");
+
+      // Create a prototype for a new element that extends HTMLElement
+      var VisitorsProto = Object.create(HTMLElement.prototype);
+
+      // Setup our Shadow DOM and clone the template
+      VisitorsProto.createdCallback = function() {
+         var root = this.createShadowRoot();
+         root.appendChild(document.importNode(tmpl.content, true));
+         console.log("created");
+         console.log(autobahn.version);
+
+         // connection code can go here
+      };
+
+      VisitorsProto.attachedCallback = function() {
+         console.log("attached");
+         console.log(this);
+         var self = this;
+         setTimeout(function() {
+            console.log("self", self);
+            console.log(self.shadowRoot.getElementsByTagName("h1")[0]);
+            self.shadowRoot.getElementsByTagName("h1")[0].innerHTML = "test";
+            // self.shadowRoot.getElementsByTagName("h1")[0].innerHTML = "test - set lowercase, but styling from previous external content still applies!";
+         }, 1000);
+         elementContent = self;
+
+         // process the config values for the text
+         var config = JSON.parse(self.getAttribute("data-config"));
+         self.shadowRoot.getElementsByTagName("h1")[0].innerHTML = config.heading;
+         self.shadowRoot.getElementsByTagName("p")[0].innerHTML = config.site;
+         self.shadowRoot.getElementsByTagName("p")[1].innerHTML = config.page;
+
+
+      };
+
+      VisitorsProto.foo = function() {
+         console.log("foo!");
+      }
+
+      // Register our new element
+      var VisitorElement = document.registerElement('crossbar-visitors', {
+        prototype: VisitorsProto
+      });
+
+      // While the custom element tag gets ignored, content inside gets rendered
+      // setTimeout(function() {
+      //    document.registerElement('crossbar-visitors', {
+      //       prototype: VisitorsProto
+      //    });
+      // }, 10)
+
+
+
+      // document.registerElement('crossbar-visitors', {
+      //    prototype: VisitorsProto
+      // });
+   </script>
+
+   <!-- renders with the default values for the text-->
+   <!-- <crossbar-visitors></crossbar-visitors> -->
+
+   <!-- set custom values for the text -->
+   <!-- <crossbar-visitors>
+      <span class="heading">
+         Current visitors:
+      </span>
+      <span class="site">
+         Site:
+      </span>
+      <span class="page">
+         Page:
+      </span>
+   </crossbar-visitors> -->
+
+    <crossbar-visitors data-config='{ "heading": "Current Visitors", "site": "SITE", "page": "page" }'></crossbar-visitors>
+
+   <p>
+      Some other content to see how placement is affected by shadow DOM elements.
+   </p>
+
+</body>
+</html>

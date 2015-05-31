@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="UTF-8">
+
+      <link rel="shortcut icon" href="../../img/favicon.ico">
+      <title>Dashboard</title>
+      <link href='http://fonts.googleapis.com/css?family=Quattrocento:400,700|Quattrocento+Sans:400,400italic,700' rel='stylesheet' type='text/css'>
+
+      <link rel="stylesheet" href="../demo.css">
+      <link rel="stylesheet" href="css/dashboard.css" type="text/css">
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+      <script type="text/javascript" src="../../js/jquery.min.js"></script>
+
+      <link type="text/css" href="../../jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+      <script type="text/javascript" src="../../jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+
+      <script type="text/javascript" src="../../js/autobahn.min.js"></script>
+      <script type="text/javascript" src="../../js/knockout.min.js"></script>
+
+      <script type="text/javascript" src="js/dashboard.js"></script>
+
+   </head>
+   <body>
+      <div id="container" class="background_gradient">
+         <header>
+            <div id="header_inner">
+               <div id="demo_title">
+                  <span>Dashboard</span>
+               </div>
+               <a class="navbar-brand" href="/">
+               <img src="../../img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+               <span class="fontFace">
+                  <span>Crossbar</span><span>.io</span>
+               </span>
+            </a>
+            </div>
+            <center class="githubwrapper">
+               <a class="github" href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/dashboard">Source Code</a>
+            </center>
+         </header>
+         <div id="dashboard_01"  data-bind="style: { display: dashboard_01_display }">
+
+            <table id="dashboard_01_table">
+               <tbody>
+                  <tr>
+                     <td>
+
+                        <div id="simple_indicator" class="widget simple_indicator">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 Total Revenue
+                              </div>
+
+                              <div class="big_number" >
+                                 <span class="number_container" data-bind="text: simpleIndicatorBigNumberDisplay">dummy</span>
+                              </div>
+
+
+                              <div class="small_number valueGreen" data-bind="css: { valueRed: ( simpleIndicatorTrend() < 0 ) }">
+                                 <span class="change_percent" data-bind="text: simpleIndicatorTrendDisplay">dummy</span>%
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                     <td>
+
+                        <!-- bar chart -->
+                        <div id="bar_chart" class="widget bar_chart">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 Revenue by Product
+                              </div>
+                              <div class="bar_chart_wrapper">
+                                 <div class="bar_chart_scale_container" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                    <div class="bar_chart_scale_max_value_container">
+                                       <div data-bind="text: bar_scale_max_value"></div>
+                                    </div>
+                                 </div>
+                                 <div class="bar_chart_container">
+                                    <div class="bar_chart_element" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                       <div data-bind="style: { height: (bar_01_height() + 'px'), backgroundColor: barColor01 }" class="bar_chart_element_bar"></div>
+                                       <div class="bar_chart_element_label">
+                                          One
+                                       </div>
+                                    </div>
+                                    <div class="bar_chart_element" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                       <div data-bind="style: { height: (bar_02_height() + 'px'), backgroundColor: barColor02 }" class="bar_chart_element_bar"></div>
+                                       <div class="bar_chart_element_label">
+                                          Two
+                                       </div>
+                                    </div>
+                                    <div class="bar_chart_element" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                       <div data-bind="style: { height: (bar_03_height() + 'px'), backgroundColor: barColor03 }" class="bar_chart_element_bar"></div>
+                                       <div class="bar_chart_element_label" >
+                                          Three
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+
+                        <!-- hundred bar -->
+                        <div id="hundred_bar" class="widget hundred_bar">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 Units by Product
+                              </div>
+                              <div class="hundred_bar_bar" data-bind="foreach: hundred_bar_sections, style: { width: (hundred_bar_width + 'px' ) }">
+
+                                 <div class="hundred_bar_section" data-bind="style: { width: (width() + 'px'), backgroundColor: section_color }">
+                                    <div class="hundred_bar_section_value" data-bind="text: hundred_width"></div>
+                                 </div>
+
+                              </div>
+                              <div class="hundred_bar_legend" data-bind="foreach: hundred_bar_sections">
+
+                                 <div class="hundred_bar_legend_entry" data-bind="style: { backgroundColor: section_color }">
+                                    <div class="hundred_bar_legend_label" data-bind="text: legend_label">
+                                       dummy
+                                       </div>
+                                 </div>
+
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                     <td rowspan="4">
+
+                        <!-- activity stream -->
+                        <div id="activity_stream" class="widget activity_stream">
+                           <div class="widget_content_container activity_stream_content_container">
+                              <div class="widget_label">
+                                 Sales Events
+                              </div>
+
+                              <div class="activity_stream_window">
+                                 <div  data-bind="foreach: activity_stream_events">
+                                    <div class="activity_event">
+                                       <div class="activity_timestamp" data-bind="text: activity_timestamp"></div>
+                                       <div class="activity_event_bottom_border"></div>
+
+                                       <div class="activity_content">
+                                          <div class="activity_line">
+                                             <div class="event_product" data-bind="text: product">Produkt A</div>
+                                             <div class="event_units"><span data-bind="text: units">12</span>   units</div>
+                                          </div>
+                                          <div class="activity_line">
+                                             <div class="event_region">Region: <span data-bind="text: region"> West</span></div>
+                                             <div class="event_revenue" data-bind="text: revenue">24.000 $</div>
+                                          </div>
+                                          <!--<img class="activity_image" data-bind="attr: { src: activity_icon }">-->
+                                       </div>
+
+                                       <div class="activity_space"></div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                           <div class="activity_threshold_slider_wrapper">
+                              <span>Revenue</span>
+                              <span class="revenue_threshold_value">0</span>
+                              <div id="revenue_threshold" class="activity_threshold_slider"></div>
+                           </div>
+                           <div class="activity_threshold_slider_wrapper">
+                              <span>Units</span>
+                              <span class="unit_threshold_value">0</span>
+                              <div id="unit_threshold" class="activity_threshold_slider"></div>
+                           </div>
+
+                           </div>
+                        </div>
+                     </td>
+
+                  </tr>
+                  <tr>
+                     <td>
+
+                        <!-- bullet graph -->
+                        <div id="bullet_graph" class="widget bullet_graph">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 ASP by Region
+                              </div>
+                              <div class="container">
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar01_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget01_position() + 'px') }"></div>
+                                    <div class="mylabel">North</div>
+                                 </div>
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar02_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget02_position() + 'px') }"></div>
+                                    <div class="mylabel">East</div>
+                                 </div>
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar03_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget03_position() + 'px') }"></div>
+                                    <div class="mylabel">South</div>
+                                 </div>
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar04_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget04_position() + 'px') }"></div>
+                                    <div class="mylabel">West</div>
+                                 </div>
+
+                                 <div class="scale-tb1">
+                                    <div class="sc sc21">
+                                       <div class="cap cap21">0</div>
+                                    </div>
+                                    <div class="sc sc22">
+                                       <div class="cap cap22">30 &euro;</div>
+                                    </div>
+                                    <div class="sc sc23">
+                                       <div class="cap cap23">60 &euro;</div>
+                                    </div>
+                                    <div class="sc sc24">
+                                       <div class="cap cap24">90 &euro;</div>
+                                    </div>
+                                    <div class="sc sc25">
+                                       <div class="cap cap25">120 &euro;</div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="2" id="pie_td">
+
+                        <!-- SVG pie chart --->
+                        <div id="pie_chart" class="widget pie_chart">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                    Revenue by Region
+                              </div>
+                              <div id="pie_chart_content_container" class="pie_chart_content_container">
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+
+                  </tr>
+                  <tr>
+                     <td>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+
+         <div id="dashboard_02" data-bind="style: { display: dashboard_02_display }">
+
+            <table id="dashboard_02_table">
+               <tbody>
+                  <tr>
+                     <td>
+
+                        <div id="simple_indicator_02" class="widget simple_indicator">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 Total Revenue
+                              </div>
+
+                              <div class="big_number" >
+                                 <span class="number_container" data-bind="text: simpleIndicatorBigNumberDisplay">dummy</span>
+                              </div>
+
+
+                              <div class="small_number valueGreen" data-bind="css: { valueRed: ( simpleIndicatorTrend() < 0 ) }">
+                                 <span class="change_percent" data-bind="text: simpleIndicatorTrendDisplay">dummy</span>%
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                     <td>
+
+                        <!-- bar chart -->
+                        <div id="bar_chart_02" class="widget bar_chart">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 Revenue by Product
+                              </div>
+                              <div class="bar_chart_wrapper">
+                                 <div class="bar_chart_scale_container" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                    <div class="bar_chart_scale_max_value_container">
+                                       <div data-bind="text: bar_scale_max_value"></div>
+                                    </div>
+                                 </div>
+                                 <div class="bar_chart_container">
+                                    <div class="bar_chart_element" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                       <div data-bind="style: { height: (bar_01_height() + 'px'), backgroundColor: barColor01 }" class="bar_chart_element_bar"></div>
+                                       <div class="bar_chart_element_label">
+                                          One
+                                       </div>
+                                    </div>
+                                    <div class="bar_chart_element" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                       <div data-bind="style: { height: (bar_02_height() + 'px'), backgroundColor: barColor02 }" class="bar_chart_element_bar"></div>
+                                       <div class="bar_chart_element_label">
+                                          Two
+                                       </div>
+                                    </div>
+                                    <div class="bar_chart_element" data-bind="style: { height: (bar_chart_total_height() + 'px') }">
+                                       <div data-bind="style: { height: (bar_03_height() + 'px'), backgroundColor: barColor03 }" class="bar_chart_element_bar"></div>
+                                       <div class="bar_chart_element_label" >
+                                          Three
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                     <td rowspan="3">
+
+                        <!-- activity stream -->
+                        <div id="activity_stream_02" class="widget activity_stream">
+                           <div class="widget_content_container activity_stream_content_container">
+                              <div class="widget_label">
+                                 Sales Events
+                              </div>
+
+                              <div class="activity_stream_window">
+                                 <div  data-bind="foreach: activity_stream_events">
+                                    <div class="activity_event">
+                                       <div class="activity_timestamp" data-bind="text: activity_timestamp"></div>
+                                       <div class="activity_event_bottom_border"></div>
+
+                                       <div class="activity_content">
+                                          <div class="activity_line">
+                                             <div class="event_product" data-bind="text: product">Produkt A</div>
+                                             <div class="event_units"><span data-bind="text: units">12</span>   units</div>
+                                          </div>
+                                          <div class="activity_line">
+                                             <div class="event_region">Region: <span data-bind="text: region"> West</span></div>
+                                             <div class="event_revenue" data-bind="text: revenue">24.000 $</div>
+                                          </div>
+                                          <!--<img class="activity_image" data-bind="attr: { src: activity_icon }">-->
+                                       </div>
+
+                                       <div class="activity_space"></div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                           <div class="activity_threshold_slider_wrapper">
+                              <span>Revenue</span>
+                              <span class="revenue_threshold_value">0</span>
+                              <div id="revenue_threshold_02" class="activity_threshold_slider"></div>
+                           </div>
+                           <div class="activity_threshold_slider_wrapper">
+                              <span>Units</span>
+                              <span class="unit_threshold_value">0</span>
+                              <div id="unit_threshold_02" class="activity_threshold_slider"></div>
+                           </div>
+
+                           </div>
+                        </div>
+
+                     </td>
+                  </tr>
+                  <tr>
+                     <td rowspan="2" id="pie_td_02">
+
+                        <!-- SVG pie chart --->
+                        <div id="pie_chart_02" class="widget pie_chart">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                    Revenue by Region
+                              </div>
+                              <div id="pie_chart_content_container_02" class="pie_chart_content_container">
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                     <td>
+
+                        <!-- hundred bar -->
+                        <div id="hundred_bar_02" class="widget hundred_bar">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 Units by Product
+                              </div>
+                              <div class="hundred_bar_bar" data-bind="foreach: hundred_bar_sections, style: { width: (hundred_bar_width + 'px' ) }">
+
+                                 <div class="hundred_bar_section" data-bind="style: { width: (width() + 'px'), backgroundColor: section_color }">
+                                    <div class="hundred_bar_section_value" data-bind="text: hundred_width"></div>
+                                 </div>
+
+                              </div>
+                              <div class="hundred_bar_legend" data-bind="foreach: hundred_bar_sections">
+
+                                 <div class="hundred_bar_legend_entry" data-bind="style: { backgroundColor: section_color }">
+                                    <div class="hundred_bar_legend_label" data-bind="text: legend_label">
+                                       dummy
+                                       </div>
+                                 </div>
+
+                              </div>
+                           </div>
+                        </div>
+
+                     </td>
+                  </tr>
+                  <tr>
+                     <td>
+                        <!-- bullet graph -->
+                        <div id="bullet_graph_02" class="widget bullet_graph">
+                           <div class="widget_content_container">
+                              <div class="widget_label">
+                                 ASP by Region
+                              </div>
+                              <div class="container">
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar01_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget01_position() + 'px') }"></div>
+                                    <div class="mylabel">North</div>
+                                 </div>
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar02_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget02_position() + 'px') }"></div>
+                                    <div class="mylabel">East</div>
+                                 </div>
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar03_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget03_position() + 'px') }"></div>
+                                    <div class="mylabel">South</div>
+                                 </div>
+
+                                 <div class="abox-wrap">
+                                    <div class="abox abox1" data-bind="style: { backgroundColor: bulletColor01, width: bulletSection01 }"></div>
+                                    <div class="abox abox2" data-bind="style: { backgroundColor: bulletColor02, width: bulletSection02 }"></div>
+                                    <div class="abox abox3" data-bind="style: { backgroundColor: bulletColor03, width: bulletSection03 }"></div>
+                                    <div class="abox abox4" data-bind="style: { backgroundColor: bulletColor04, width: bulletSection04 }"></div>
+                                    <div class="actual" data-bind="style: { width: ( bulletBar04_length() + 'px') }"></div>
+                                    <div class="target" data-bind="style: { left: (bulletTarget04_position() + 'px') }"></div>
+                                    <div class="mylabel">West</div>
+                                 </div>
+
+                                 <div class="scale-tb1">
+                                    <div class="sc sc21">
+                                       <div class="cap cap21">0</div>
+                                    </div>
+                                    <div class="sc sc22">
+                                       <div class="cap cap22">30 &euro;</div>
+                                    </div>
+                                    <div class="sc sc23">
+                                       <div class="cap cap23">60 &euro;</div>
+                                    </div>
+                                    <div class="sc sc24">
+                                       <div class="cap cap24">90 &euro;</div>
+                                    </div>
+                                    <div class="sc sc25">
+                                       <div class="cap cap25">120 &euro;</div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+
+         </div>
+
+         <div class="dashboard_status_line">
+            Status: <span class="statusline"></span>
+         </div>
+
+         <button id="helpButton" class="button">?</button>
+
+         <div class="info_bar" style="display: none;">
+
+         <p class="info_bar_heading">A sample live business intelligence dashboard.
+         </p>
+         <ul>
+            <li>
+               All changes in the dashboard occur in response to messages routed through the instance of Crossbar.io
+               displayed in the status line at the bottom of the demo box.
+            </li>
+            <li>
+               The dashboard can receive data from the Dashboard Controls (next item on the demo overview page).
+            </li>
+         </ul>
+
+      </div>
+
+      </div>
+
+   </body>
+</html>

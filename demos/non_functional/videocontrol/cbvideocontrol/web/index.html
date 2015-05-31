@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Video</title>
+   <meta charset='utf-8'>
+   <!-- Chargement des dépendances : autobahn pour WAMP
+   et qrcode pour générer le QR code. Bien entendu, je
+   vous invite à ne pas les hotlinker dans vos projets,
+   mais pour la démo c'est plus simple. -->
+   <script src="autobahn.min.js"></script>
+   <script src="qrcode.min.js"></script>
+   <script src="URI.js"></script>
+
+   <style type="text/css">
+      #vid {
+         /* Taille de la video */
+         width:427px;
+         height:240px;
+      }
+      /* Centrage avec la méthode Rache */
+      #container {
+          width:427px;
+          margin:auto;
+      }
+      #ctrllink {
+          display:block;
+          width:256px;
+          margin:auto;
+      }
+   </style>
+
+</head>
+<body>
+<div id="container">
+  <p>
+
+   <!-- Pareil, je hotlink la video, mais ne faites pas ça
+   à la maison les enfants. Surtout que les perfs du
+   serveur du W3C sont merdiques et ça bufferise à mort. -->
+    <video id="vid"
+           class="video-js vjs-default-skin"
+           controls preload="auto"
+           poster="http://media.w3.org/2010/05/sintel/poster.png" >
+    <source id='ogv'
+      src="http://media.w3.org/2010/05/sintel/trailer.ogv"
+      type='video/ogg'>
+    <source id='mp4'
+      src="http://media.w3.org/2010/05/sintel/trailer.mp4"
+      type='video/mp4'>
+    <source id='webm'
+      src="http://media.w3.org/2010/05/sintel/trailer.webm"
+      type='video/webm'>
+    </video>
+  </p>
+  <p>
+    <a id="ctrllink" href="#" target="_blank">
+      <span id="qrcode"></span>
+    </a>
+  </p>
+ </div>
+ <center>Read more in the <a href="http://sametmax.com/introduction-a-wamp-en-python/">original post</a> and the <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/videocontrol">code</a> on GitHub.</center>
+</body>
+
+<script>
+  var player = {};
+
+  /* On va utiliser du pur JS histoire de pas mélanger
+    des notions de jQuery dans le tas. Je ne vais
+    PAS utiliser les best practices sinon vous allez
+    être noyés dans des détails */
+
+  /* Lancer le code une fois que la page est chargée */
+  window.addEventListener("load", function(){
+
+    // the URL of the WAMP Router (Crossbar.io)
+    //
+    var wsuri;
+    if (document.location.origin == "file://") {
+      wsuri = "ws://127.0.0.1:8080/ws";
+    } else {
+      wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                 document.location.host + "/ws";
+    }
+
+    /* Connexion au serveur WAMP. J'utiliser
+       les valeurs par défaut du serveur de
+       dev. On ouvre explicitement la connection
+       à la fin du script. */
+    var connection = new autobahn.Connection({
+       url: wsuri,
+       realm: 'crossbardemo'
+    });
+
+    /* Lancer ce code une fois que la connexion
+       est réussie. Notez que je ne gère pas
+       les erreurs dans dans une APP JS, c'est
+       un puits sans fond. */
+    connection.onopen = function (session) {
+
+      console.log("connected");
+
+      session.prefix('demo', 'io.crossbar.demo.videocontroller');
+
+      /* Appel de la fonction ip() sur le serveur */
+      session.call('demo:uuid')
+
+      /* Une fois qu'on a l'UUID, on peut commencer
+         à gérer la partie télécommande */
+      .then(function(uuid){
+
+        /* Création du QR code avec le lien pointant
+           sur la bonne URL. On met l'ID dans le hash. */
+        var controlUrl = URI("control.html").absoluteTo(document.location.href) + '#' + uuid;
+        var codeDiv = document.getElementById("qrcode");
+        new QRCode(codeDiv, controlUrl);
+        var ctrllink = document.getElementById("ctrllink");
+        ctrllink.href = controlUrl;
+
+        /* Notre travail consiste essentiellement à
+           manipuler cet élément */
+        var video = document.getElementById("vid");
+
+        /* On attache déclare 4 fonctions comme étant
+           appelable à distance. Ces fonctions sont
+           appelable en utilisant le nom composé
+           de notre ID et de l'action qu'on souhaite
+           faire. Ex:
+           'b27f7e9360c04efabfae5ac21a8f4e3c.play'
+           pour appeler "play" sur notre session. */
+        session.register('demo:' + uuid + '.play', function(){
+           video.play();
+        });
+
+        session.register('demo:' + uuid + '.pause', function(){
+           video.pause();
+        });
+
+        session.register('demo:' + uuid + '.volume', function(val){
+           video.volume = val[0];
+        });
+
+        session.register('demo:' + uuid + '.status', function(val){
+          return {
+            'playing': !video.paused,
+            'volume': video.volume
+          };
+        });
+
+
+
+       /* Quelqu'un peut très bien
+           appuyer sur play directement sur cette page.
+
+          Il faut donc réagir si l'utilisateur le fait,
+          publier un événement via WAMP pour permettre
+          à notre télécommande de se mettre à jour
+          */
+       video.addEventListener('play', function(){
+         /* On publie un message indiquant que
+            le player a recommencé à lire la vidéo.
+            */
+         session.publish('demo:' + uuid + '.play');
+       });
+
+        video.addEventListener('pause', function(){
+          session.publish('demo:' + uuid + '.pause');
+        });
+
+        video.addEventListener('volumechange', function(){
+          session.publish('demo:' + uuid + '.volume', [video.volume]);
+        });
+
+     });
+    };
+
+    /* Ouverture de la connection une fois que tous les
+       callbacks sont bien en place.*/
+    connection.open();
+  });
+
+</script>
+
+</html>
+
