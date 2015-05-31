@@ -147,87 +147,77 @@ Above config enables debug mode, and sets a fixed transport ID `kjmd3sBLOUnb3Fyr
 
 ### Subscribing
 
-Open a **first terminal**, and issue the following commands.
-
-First, **open** a new transport session
+We first **open** a new transport session
 
 ```console
-curl -H "Content-Type: application/json" -d '{"protocols": ["wamp.2.json"]}' http://127.0.0.1:8080/lp/open
+curl -H "Content-Type: application/json" \
+    -d '{"protocols": ["wamp.2.json"]}' \
+    http://127.0.0.1:8080/lp/open
 ```
 
-then **join** a realm
+This will return the **tranport ID** `kjmd3sBLOUnb3Fyr` which we subsequently use in our request.
+
+We **join** a realm by sending a WAMP `HELLO` message
 
 ```console
-curl -H "Content-Type: application/json" -d '[1, "realm1", {"roles": {"subscriber": {}, "publisher": {}}}]' http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/send
+curl -H "Content-Type: application/json" \
+    -d '[1, "realm1", {"roles": {"subscriber": {}, "publisher": {}}}]' \
+    http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/send
 ```
 
-and fetch the Welcome from the router:
+and fetch the WAMP `WELCOME` message sent to us by the router
 
 ```console
-curl -H "Content-Type: application/json" -d "" http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/receive
+curl -H "Content-Type: application/json" \
+    -d '' \
+    http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/receive
 ```
 
-Then **subscribe** to a topic
+We then **subscribe** to a topic by sending a WAMP `SUBSCRIBE` message
 
 ```console
-curl -H "Content-Type: application/json" -d '[32, 1, {}, "com.myapp.topic1"]' http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/send
+curl -H "Content-Type: application/json" \
+    -d '[32, 1, {}, "com.myapp.topic1"]' \
+    http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/send
 ```
 
-and fetch the Subscribe acknowledge from the router:
+and fetch the WAMP `SUBSCRIBED` message acknowledge from the router:
 
 ```console
-curl -H "Content-Type: application/json" -d "" http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/receive
+curl -H "Content-Type: application/json" \
+    -d '' \
+    http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/receive
 ```
 
-And finally long-poll for receiving events
+Finally we long-poll to receive events (actually, we wait for any WAMP message for us to become available)
 
 ```console
-curl -H "Content-Type: application/json" -d "" http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/receive
+curl -H "Content-Type: application/json" \
+    -d '' \
+    http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/receive
 ```
 
 The latter request will not return until there is a WAMP message available to be received (such as an event published on the topic we subscribed to).
 
-Here is a complete log of the session:
-
-```console
-```
-
 
 ### Publishing
 
-Open a **second terminal**, and issue the following commands.
-
-First, **open** a new transport session
+The first couple of steps are identical to above. Where it differs is when we **publish** a message instead of subscribing:
 
 ```console
-curl -H "Content-Type: application/json" -d '{"protocols": ["wamp.2.json"]}' http://127.0.0.1:8080/lp/open
-```
-
-then **join** a realm
-
-```console
-curl -H "Content-Type: application/json" -d '[1, "realm1", {"roles": {"subscriber": {}, "publisher": {}}}]' http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/send
-```
-
-and fetch the Welcome from the router:
-
-```console
-curl -H "Content-Type: application/json" -d "" http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/receive
-```
-
-Then **publish** to a topic
-
-```console
-curl -H "Content-Type: application/json" -d '[16, 1, {}, "com.myapp.topic1", ["Hello, world!", 23, 666]]' http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/send
+curl -H "Content-Type: application/json" \
+    -d '[16, 1, {}, "com.myapp.topic1", ["Hello, world!", 23, 666]]' \
+    http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/send
 ```
 
 After publishing the event, the long-poll request in the first terminal will return with the event.
 
-Finally, close the session
+Finally, to close the session
 
 ```
-curl -H "Content-Type: application/json" -d '' http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/close
+curl -H "Content-Type: application/json" \
+    -d '' \
+    http://127.0.0.1:8080/lp/kjmd3sBLOUnb3Fyr/close
 ```
 
 > Note: Normally, the two sessions above would have had different transport IDs. Since we use a fixed transport ID (via the `debug_transport_id` option), *both* sessions will be closed!
-
