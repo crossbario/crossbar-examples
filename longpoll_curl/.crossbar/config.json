@@ -34,7 +34,7 @@
                "paths": {
                   "/": {
                      "type": "static",
-                     "directory": "../web"
+                     "directory": ".."
                   },
                   "ws": {
                      "type": "websocket"
@@ -43,18 +43,11 @@
                      "type": "longpoll",
                      "options": {
                         "debug": true,
-                        "session_timeout": 30
+                        "debug_transport_id": "kjmd3sBLOUnb3Fyr",
+                        "session_timeout": 0
                      }
                   }
                }
-            }
-         ],
-         "components": [
-            {
-               "type": "class",
-               "classname": "backend.AppSession",
-               "realm": "realm1",
-               "role": "anonymous"
             }
          ]
       }

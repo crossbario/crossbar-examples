@@ -1,4 +1,4 @@
-This version of the Votes demo offers a frontend written using [kivy](http://kivy.org/#home) in addition to the browser frontend.
+This version of the Votes demo offers a frontend written using [Kivy](http://kivy.org/#home), in addition to a browser frontend.
 
 ## Regular startup
 
@@ -20,25 +20,25 @@ to see the browser frontend.
 
 For the kivy frontend you need to install kivy (big surprise) - follow the instructions at the [project website](http://kivy.org/docs/gettingstarted/installation.html).
 
-You then need to install Autobahn|Python and its dependencies - for kivy (.
+You then need to install Autobahn|Python and its dependencies - for kivy:
 
 In the `kivy` folder, using the Python as setup by kivy, do
 
 * on Mac OSX
 
 ```
-kivy -m pip install -r requirements-tavendo.txt
+kivy -m pip install -r requirements.txt
 ```
 
 * on other systems
 
 ```
-python -m pip install -r requirements-tavendo.txt
+python -m pip install -r requirements.txt
 ```
 
-> Note: To use Python with kivy's setup e.g. on Windows go to the kivy folder, execute `kivy-X.x.bat` ( where `X.x` = the Python version you downloaded kivy for), which opens a command shell with the environment set to use the correct Python. Then navigate to the votes demo folder and execute the above commands.
+> Note: To use Python with kivy's setup e.g. on Windows go to the kivy folder, execute `kivy-X.x.bat` ( where `X.x` is the Python version you downloaded kivy for), which opens a command shell with the environment set to use the correct Python. Then navigate to the Votes demo folder and execute the above command.
 
-Then start the kivy votes frontend by doing
+Then start the kivy Votes frontend by doing
 
 (Mac OSX)
 
@@ -52,14 +52,10 @@ kivy main.py
 python main.py
 ```
 
-This connects to the locally running Crossbar.io.
+This connects to the locally running Crossbar.io and backend, just like the browser frontend mentioned above.
 
-You can get the additional browser frontend by opening
+Use either frontend to increase/reset the vote count, and see this updated immediately in the other frontend.
 
-```
-http://localhost:8080
-```
-
-Use either to increase/reset the vote count, and see this updated immediately in the other.
+The code has proven to run as an Android app as well. Refer to [Create a package for Android](http://kivy.org/docs/guide/packaging-android.html) and [buildozer docs](http://buildozer.readthedocs.org/en/latest/) to find out how.
 
 > Thanks to [Roger Erens](https://github.com/rogererens) for providing this example!
