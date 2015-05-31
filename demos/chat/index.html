@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+
+      <link rel="shortcut icon" href="favicon.ico">
+
+      <title>Chat</title>
+
+      <link rel="stylesheet" href="css/chat.css">
+
+   </head>
+
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Chat</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+      </header>
+
+      <div class="demo_links">
+         <p>
+            Chat with any browser tab set to the same channel.
+         </p>
+         <div>
+            <a href="" target="_blank" id="secondInstance">Open 2nd instance</a>
+            <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/chat">
+               Source Code
+            </a>
+            <a href="http://crossbar.io">
+               Crossbar.io Homepage
+            </a>
+         </div>
+      </div>
+
+      <div id="demo_body">
+         <div class="chat_channel_selector">
+            <a href="#ch1">Channel 1</a>
+         </div>
+         <div class="chat_channel_selector">
+            <a href="#ch2">Channel 2</a>
+         </div>
+         <div class="chat_channel_selector">
+            <a href="#ch3">Channel 3</a>
+         </div>
+         <div class="chat_channel_selector">
+            <a href="#ch4">Channel 4</a>
+         </div>
+         <div class="chat_channel_selector">
+            <a href="#ch5">Channel 5</a>
+         </div>
+         <button id="helpButton" class="webmq_demo_button button">?</button>
+
+         <div class="status_line">
+            Status: <span class="statusline"></span>
+         </div>
+      </div>
+      <div style="clear: both"></div>
+
+
+
+      <button class="flatButton" id="show_chat_window">Chat</button>
+
+      <div id="chat_window">
+         <button class="flatButton" id="hide_chat_window">X</button>
+         <div id="channel_title">Channel 1</div>
+         <div class="content">
+            <div>
+               <span id="my_nick">My Nick </span><input type="text" id="nick" size="15" maxlength="15" />
+               <!--<button id="choose_color"></button>-->
+               <!--<button id="choose_icon"></button>-->
+            </div>
+            <div id="messages_box">
+
+            </div>
+            <div>
+               <textarea id="message_input" rows="2" placeholder="Type your chat message here"></textarea>
+               <!--<button id="send_message" onclick="send_message()">Send</button>-->
+            </div>
+          </div>
+      </div>
+
+      <div class="info_bar" style="display: none;">
+
+         <p class="info_bar_heading">
+            Simple chat powered by Crossbar.io
+         </p>
+         <ul>
+            <li>
+               All interactions on this demo occur in response to messages routed through the instance of Crossbar.io displayed in the status line at the bottom of the demo box.
+            </li>
+            <li>
+               All users on the same channel are connected.
+            </li>
+            <li>
+               Nicks are picked randomly from a set of presets, but can be changed.
+            </li>
+         </ul>
+
+      </div>
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+      <script type="text/javascript" src="js/jquery.min.js"></script>
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script type="text/javascript" src="js/chat.js"></script>
+
+      <!-- community widget iframe -->
+
+      <!-- general styles for the widget -->
+      <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+      <!-- local stylesheet -->
+      <!--     - ensures non-Display if nothing loads -->
+      <!--     - site-specific positioning of widget -->
+      <style>
+         #communityWidget.nonDisplay {
+            display: none;
+         }
+
+         #communityWidget {
+            top: 111px;
+            right: 0px;
+            box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+         }
+      </style>
+
+      <!-- IFrame itself -->
+      <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+      <!-- the parent page connecting code -->
+      <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+
+
+
+   </body>
+</html>

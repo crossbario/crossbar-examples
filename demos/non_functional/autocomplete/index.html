@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta charset="utf-8" />
+
+   <link rel="shortcut icon" href="../../img/favicon.ico">
+
+   <title>Autocomplete with Oracle</title>
+
+   <link rel="stylesheet" href="../demo.css">
+   <link rel="stylesheet" href="css/autocomplete.css">
+
+   <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+   <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+   <script src="../../js/jquery.min.js"></script>
+   <script src="../../js/knockout.min.js"></script>
+   <script type="text/javascript" src="../../js/autobahn.min.js"></script>
+
+   <script type="text/javascript" src="js/autocomplete.js"></script>
+
+</head>
+
+<body>
+
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>Autocomplete</span><br>
+            <span>with Oracle Database</span>
+         </div>
+         <a class="navbar-brand" href="/">
+            <img src="../../img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+            <span class="fontFace">
+               <span>Crossbar</span><span>.io</span>
+            </span>
+         </a>
+      </div>
+      <center>
+         <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/autocomplete">Source Code</a>
+      </center>
+   </header>
+
+   <div id="demo_body" class="oracle_demo">
+
+      <div id="autocompleteSelect">
+
+
+         <div id="autocompleteInterface" class="autcompleteBox">
+            <span>Enter Name</span>
+            <br />
+            <span>e.g. 'Gauss, Johann'</span>
+            <br />
+            <input id="enteredName" type="text" data-bind="value: enteredName, valueUpdate: 'afterkeydown', event: { keydown: handleCursor, keyup: handleCursor }"/>
+
+            <div id="autocompleteBox">
+
+               <div id="moreAbove" class="moreIndicator">
+                  <img src="img/triangle_up_40_grey.png" width="15" height="15"/>
+               </div>
+
+               <ul id="suggestionsList" data-bind="foreach: autocompleteSuggestions">
+                  <li data-bind="text: name, attr: { id: id }, click: $parent.suggestionClicked "></li>
+               </ul>
+
+
+               <div id="moreBelow" class="moreIndicator">
+                  <img src="img/triangle_down_40_grey.png" width="15" height="15" />
+               </div>
+
+            </div>
+
+         </div>
+
+         <div id="searchWithin">
+            Search within<br>
+            <span data-bind="text: totalRecords"></span> records.
+         </div>
+
+         <div id="autcompleteBackgroundData">
+            <div class="backgroundInfo">
+               Current matches: <span data-bind="text: currentMatches"></span>
+            </div>
+            <div class="backgroundInfo">
+               Requests sent: <span data-bind="text: requestsForAutocompleteSuggestions"></span>
+            </div>
+            <div class="backgroundInfo">
+               Items received: <span data-bind="text: receivedAutocompleteSuggestions"></span>
+            </div>
+            <div class="backgroundInfo">
+               Items cached: <span data-bind="text: currentCacheSize"></span>
+            </div>
+         </div>
+
+
+      </div>
+
+      <div id="dataDisplay" class="autcompleteBox">
+
+
+         <div>
+            <span>Name</span>
+            <span data-bind="text: name, css: { greyedOut: detailsGreyedOut }"></span>
+         </div>
+         <div>
+            <span>Born:</span>
+            <span data-bind="text: birthdate,  css: { greyedOut: detailsGreyedOut }"></span>
+         </div>
+         <div>
+            <span>Place of birth</span>
+            <span data-bind="text: birthplace, css: { greyedOut: detailsGreyedOut }"></span>
+         </div>
+         <div>
+            <span>Died:</span>
+            <span data-bind="text: deathdate,  css: { greyedOut: detailsGreyedOut }"></span>
+         </div>
+         <div>
+            <span>Place of death:</span>
+            <span data-bind="text: deathplace,  css: { greyedOut: detailsGreyedOut }"></span>
+         </div>
+         <div>
+            <span>Description:</span>
+            <span data-bind="text: descr,  css: { greyedOut: detailsGreyedOut }"></span>
+         </div>
+
+         <div id="requestedDetailsStatic" class="requestedDetails backgroundInfo">
+               Requests sent:
+               <span  data-bind="text: requestedDetailsStatic"></span>
+         </div>
+
+
+      </div>
+
+
+      <button id="helpButton" class="button webmq_demo_button">?</button>
+
+
+
+
+      <div class="status_line">
+         Status: <span class="statusline"></span>
+      </div>
+
+      <div class="info_bar" style="display: none;">
+
+         <p class="info_bar_heading">
+            Autocompletion of name data from an Oracle database.
+         </p>
+         <ul>
+            <li>
+               The demo is connected to the Oracle database via Crossbar.io.
+            </li>
+            <li>
+               All client logic is local to the browser, all business logic is in the database. Crossbar.io  manages only the messaging interaction between the two.
+            </li>
+            <li>
+               Each change of the search string in the autocomplete box results in a call to the Oracle database.
+            </li>
+            <li>
+               Requests for full person details are separate.
+            </li>
+            <li>
+               Since this demo uses person data from DBPedia, <strong>it requires setting up the demo data</strong>
+               <ol>
+                  <li>
+                     Download the pre-peared person data as <a href="--ADD ME---">a CSV file</a>, as well as <a href="--add me--">the SQL instructions file</a> to generate the index.
+                  </li>
+                  <li>
+                     Import the data into your Oracle database:
+                     <br />
+                     <pre>
+      sqlldr crossbardemo/crossbardemo@192.168.1.100:1521/orcl
+                     control=persondata.ctl data=persondata_en.csv
+                     </pre>
+                     (single line, change to the IP of your Oracle (or Crossbar.io with Oracle XE) instance, adjust file paths if necessary)
+                  </li>
+                  <li>
+                     Generate the index:
+                     <br />
+                     <pre>
+      sqlplus crossbardemo/crossbardemo@192.168.1.118:1521/orcl @person_index.sql
+                     </pre>
+                     (adjust the IP and file path if necessary)
+                  </li>
+
+               </ol>
+            </li>
+
+         </ul>
+
+
+   </div>
+
+      <div id="error_overlay" class="error_overlay" style="display:none;">
+
+         <div id="non_specific_error" class="error_overlay_content_block">
+            <p>
+               The necessary connection to an Oracle database with an installed demo schema could not be established.
+            </p>
+            <p>
+               Please make sure that the following requirements are met:
+            </p>
+            <ul>
+               <li>
+                  an Oracle connect has been created
+               </li>
+               <li>
+                  there is a remote for this connect
+               </li>
+               <li>
+                  the Oracle database is reachable
+               </li>
+               <li>
+                  the repository schema and the demo schema have been installed
+               </li>
+            </ul>
+            <p>
+               Whether the Oracle database is reachable and the necessary schemas have been installed
+               can easily be checked by using the 'Test' buttons next to the respective schema login data
+               on the Oracle Connects tab.
+            </p>
+            <p>
+               To check whether any changes you've made have solved the encountered problem(s) just reload the page.
+            </p>
+         </div>
+
+         <div id="working_version" class="error_overlay_content_block">
+            Insert link to hostd demo on the Crossbar website once this is up.
+         </div>
+      </div>
+
+
+   </div>
+
+</body>
+</html>

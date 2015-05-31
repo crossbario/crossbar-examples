@@ -1,0 +1,59 @@
+
+{
+   "controller": {
+   },
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "name": "crossbardemo",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": "../web"
+                  },
+                  "ws": {
+                     "type": "websocket"
+                  }
+               }
+            }
+         ]
+      },
+      {
+         "type": "guest",
+         "executable": "node",
+         "arguments": ["editform_backend.js"],
+         "options": {
+            "workdir": "../node",
+            "watch": {
+               "directories": ["../node"],
+               "action": "restart"
+            }
+         }
+      }
+   ]
+}

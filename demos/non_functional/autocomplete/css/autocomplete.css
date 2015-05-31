@@ -1,0 +1,240 @@
+/********** web fonts locally *******/
+
+
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../../fonts/opensans-regular-webfont.eot');
+    src: url('../../fonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../../fonts/opensans-regular-webfont.woff') format('woff'),
+         url('../../fonts/opensans-regular-webfont.ttf') format('truetype'),
+         url('../../fonts/opensans-regular-webfont.svg#open_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+html {
+   overflow-y: scroll;
+}
+
+body {
+
+   color: #1F1F1F;
+   font-family: 'open_sansregular', sans-serif;
+   /*font-family: Arial;*/
+   margin: 0;
+   font-size: 14px;
+   background-color: #fafafa;
+   position: relative;
+   
+}
+
+a
+{
+   color: #555;
+}
+a:hover
+{
+   color: #f60;
+}
+
+a > img
+{
+   border-style: none;
+}
+
+#demo_title
+{
+   padding-top: 12px;
+}
+
+
+#demo_body
+{
+   width: 900px;
+   margin: 5em auto;
+}
+
+#enteredName
+{
+   width: 200px;
+   margin: 7px 0 0;
+}
+
+#autocompleteInterface
+{
+   position: relative;
+}
+
+#searchWithin
+{
+   font-size: 18px;
+   margin: 2em 0 0 2em;
+}
+#searchWithin > span
+{
+   color: #f60;
+}
+
+#autcompleteBackgroundData
+{
+ margin: 7em 0 0;
+}
+
+
+#autocompleteBox
+{
+   width: 200px;
+   position: absolute;
+   top: 81px;
+   left: 15px;
+   
+   border-bottom: 1px solid #7F9DB9;
+   border-left: 1px solid #7F9DB9;
+   border-right: 1px solid #7F9DB9;
+   border-top: 1px solid #ABADB3;
+   /*border-top: none;*/
+   background-color: white;
+   color: black;
+   font-family: Arial;
+   font-size: 13px;
+   
+   /*position: relative;*/
+   /*top: -1px;*/
+}
+#autocompleteBox ul
+{
+   padding: 0 5px 0 3px;
+   margin: 0;
+   overflow: hidden;
+}
+#autocompleteBox li
+{
+   list-style: none;
+   margin: 0 15px 0 0;
+   white-space: nowrap;
+}
+
+/* highlighting is */
+
+#autocompleteBox li.highlighted
+{
+   background-color: #3399FF;
+   color: white;
+}
+
+
+.moreIndicator
+{
+   position: absolute; 
+   right: 2px;
+}
+#moreAbove
+{
+   top: 1px;
+}
+#moreBelow
+{
+   bottom: -1px;
+}
+
+
+#dataDisplay,
+#autocompleteSelect
+{
+   float: left;
+   margin: 0 3em 3em 0;
+}
+
+#dataDisplay > div
+{
+   margin: 3px auto;
+   height: 28px;
+   position: relative;
+}
+
+#dataDisplay > div > span:first-of-type
+{
+   display: inline-block;
+   width: 10em;
+   vertical-align: top;
+}
+#dataDisplay > div > span:nth-of-type(2)
+{
+   display: inline-block;
+   width: 28em;
+   height: 22px;
+   border: 1px solid #888;
+   padding: 1px 5px 1px 10px;
+   /*text-align: right*/;
+}
+
+#dataDisplay > div > span:nth-of-type(2).greyedOut
+{
+   background-color: #ABADB3;
+}
+
+#dataDisplay .separate
+{
+   margin: 1.5em 0 0;
+}
+
+#dataDisplay >div > span.lastTweet
+{
+   display: inline-block;
+   height: 4em;
+}
+
+.requestedDetails
+{
+   position: absolute;
+   top: 58px;
+   left: 440px;
+   margin-left: 10px;
+   width: 100%;
+
+   
+}
+.backgroundInfo
+{
+}
+
+
+#helpButton
+{
+   position: absolute;
+   margin: 0 0 0 1em;
+   left: 95%;
+   bottom: -20px;
+}
+
+
+.status_line
+{
+   clear: both;
+   position: initial;
+}
+
+
+/** info box ***/
+.info_bar > ul > li > ol
+{
+   padding: 1em 0 0 15px;
+}
+.info_bar > ul > li > ol > li
+{
+   list-style-type: decimal;
+}
+.info_bar > ul > li > ol > li > pre
+{
+   margin-left: -33px;
+}
+
+.autcompleteBox
+{
+    background-color: #F4F4F4;
+
+    border-radius: 3px;
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);
+    padding: 1em;
+}

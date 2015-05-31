@@ -1,0 +1,150 @@
+<head>
+</head>
+
+<body>
+
+   <template id="crossbar-visitors">
+      <style>
+
+         /* scoping CSS necessary since styles otherwise leak
+         when using Polymer to polyfill */
+
+         .crossbar-visitors-widget * {
+            font-family: sans-serif;
+         }
+
+         div.crossbar-visitors-widget {
+            width: 180px;
+            height: 32px;
+            background-color: #e5e5e5;
+            border: 1px solid #aaa;
+            margin: 1em;
+            box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.3);
+         }
+         div.crossbar-visitors-widget.hidden {
+            display: none;
+         }
+
+         div.crossbar-visitors-widget span:first-of-type {
+            padding: 7px 1em 0 1em;
+            display: inline-block;
+         }
+
+         .crossbar-visitors-widget span:last-of-type {
+            font-weight: bold;
+         }
+
+         /* works in Chrome, but not in browsers which need Polymer */
+         /* is overwritten by any stlyes declared in the host page */
+         :host {
+            position: fixed;
+            right: 5px;
+            top: 5px;
+         }
+
+      </style>
+
+      <div id="crossbar-visitors-widget" class="crossbar-visitors-widget hidden">
+         <span id="label">site</span><span id="count">23</span>
+      </div>
+
+   </template>
+
+   <script>AUTOBAHN_DEBUG = true;</script>
+   <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+
+   <script>
+
+   (function() {
+
+      var processSubscriptionEvents = false;
+
+      // Get the template
+      var cb_widget_import = document.querySelector("#crossbar-widget-import").import;
+      var tmpl = cb_widget_import.querySelector("#crossbar-visitors");
+
+      // Create a prototype for a new element that extends HTMLElement
+      var VisitorsProto = Object.create(HTMLElement.prototype);
+
+      // Setup our Shadow DOM and clone the template
+      VisitorsProto.createdCallback = function() {
+         var self = this; // the host custom element + contents
+
+         var root = self.createShadowRoot();
+         root.appendChild(document.importNode(tmpl.content, true));
+
+         var counter = self.shadowRoot.getElementById("count");
+
+         // process the config values
+         var config = JSON.parse(self.getAttribute("data-config"));
+         self.shadowRoot.getElementById("label").innerHTML = config.label;
+         var wsuri = config.routerUrl;
+
+         // the WAMP connection to the Router
+         //
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "crossbardemo"
+         });
+
+         // fired when connection is established and session attached
+         //
+         connection.onopen = function (session, details) {
+
+            console.log("onopen");
+
+            // get the current visitors count
+            session.call("io.crossbar.demo.crossbardemo.get-current-visitor-count").then(
+                  function(res) {
+                     // set the received count
+                     counter.innerHTML = res;
+
+                     // enable updates via subscription
+                     processSubscriptionEvents = true;
+
+                     // show the widget now that we have something to display
+                     self.shadowRoot.getElementById("crossbar-visitors-widget").classList.remove("hidden");
+
+                  },
+                  session.log
+               );
+
+            // subscribe to count updates
+            session.subscribe("io.crossbar.demo.crossbardemo.on-visitor-count-update", function(args) {
+               if (processSubscriptionEvents) {
+                  counter.innerHTML = args[0];
+               }
+            })
+
+         };
+
+         // fired when connection was lost (or could not be established)
+         //
+         connection.onclose = function (reason, details) {
+
+            console.log("Connection lost: " + reason, details);
+
+         };
+
+
+         // now actually open the connection
+         //
+         connection.open();
+
+      };
+
+      VisitorsProto.attachedCallback = function() {
+         var self = this; // the host custom element + contents
+
+      };
+
+      // Register our new element
+      document.registerElement('crossbar-visitors', {
+        prototype: VisitorsProto
+      });
+   })();
+
+   </script>
+</body>
+

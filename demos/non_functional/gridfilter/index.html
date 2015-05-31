@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+
+      <link rel="shortcut icon" href="../../../../img/favicon.ico">
+
+      <title>Gridfilter with Oracle</title>
+      <link rel="stylesheet" href="../../../demo.css">
+      <link rel="stylesheet" href="css/gridfilter.css">
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+              http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+            <script type="text/javascript">
+              WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+            </script>
+            <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+            <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+         <![endif]-->
+
+      <script src="../../../../js/jquery.min.js"></script>
+      <script src="../../../../js/knockout.min.js"></script>
+      <script type="text/javascript" src="../../../../js/autobahn.min.js"></script>
+
+      <script type="text/javascript" src="js/gridfilter.js"></script>
+
+   </head>
+
+   <body>
+
+      <header>
+         <div id="header_inner">
+
+            <div id="demo_title">
+               <span>Gridfilter</span>
+               <span>with Oracle Datbase</span>
+            </div>
+
+            <a class="navbar-brand" href="/">
+               <img src="../../../../img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+               <span class="fontFace">
+                  <span>Crossbar</span><span>.io</span>
+               </span>
+            </a>
+
+         </div>
+
+         <center>A simple KnockoutJS-based grid with Oracle PL/SQL backend which delivers results for setting filters in real-time - <a href="http://crossbar.io/howitworks/">no application server</a> involved!</center>
+         <center>
+            <a id="new-window" href="" target="_blank">Open 2nd instance</a>
+            <a href="http://crossbar.io/howitworks/">How it works</a>
+            <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/form/knockout/gridfilter">Source Code</a>
+         </center>
+      </header>
+
+      <div id="demo_body" class="oracle_demo">
+
+         <div class="tableContainer">
+            <table id="table" class="table">
+               <colgroup>
+                  <col class="nameColumn"/>
+                  <col class="orderNumberColumn"/>
+                  <col class="shortValuesColumn" span="3" />
+                  <col class="priceColumn"/>
+               </colgroup>
+               <thead>
+                  <tr>
+                     <th>
+                        Name
+                     </th>
+                     <th>
+                        Order Number
+                     </th>
+                     <th>
+                        Weight
+                     </th>
+                     <th>
+                        Size
+                     </th>
+                     <th>
+                        In Stock
+                     </th>
+                     <th>
+                        Price
+                        <div class="relativeContainer"><!--needed since FF doesn't do absolute positioning from TDs-->
+                           <div class="clearFilterButton" data-bind="click: resetFilter, visible: currentFilterValues">Reset Filter</div>
+                        </div>
+                     </th>
+                  </tr>
+                  <tr>
+                     <th>
+                        <input id="filterByName" type="text" data-bind="event: { keydown: mangleInputs }, value: name, valueUpdate: 'afterkeydown'"/>
+                     </th>
+                     <th>
+                        <input id="filterByOrderNumber" type="text" data-bind="event: { keydown: mangleInputs }, value: orderNumber, valueUpdate: 'afterkeydown'"/>
+                     </th>
+                     <th>
+                        <input id="filterByWeight" type="text" data-bind="event: { keydown: mangleInputs }, value: weight, valueUpdate: 'afterkeydown'"/>
+                     </th>
+                     <th>
+                        <input id="filterBySize" type="text" data-bind="event: { keydown: mangleInputs }, value: size, valueUpdate: 'afterkeydown'"/>
+                     </th>
+                     <th>
+                        <input id="filterByInStock" type="text" data-bind="event: { keydown: mangleInputs }, value: inStock, valueUpdate: 'afterkeydown'"/>
+                     </th>
+                     <th>
+                        <input id="filterByPrice" type="text" data-bind="event: { keydown: mangleInputs }, value: price, valueUpdate: 'afterkeydown'"/>
+                     </th>
+                  </tr>
+                  <tr>
+                     <th>
+                        <input type="radio" name="filterByName" value="prefix" data-bind="checked: nameType"/>Prefix
+                        <input type="radio" name="filterByName" value="includes" data-bind="checked: nameType"/>Includes
+                     </th>
+                     <th>
+                        <input type="radio" name="filterByOrderNumber" value="prefix" data-bind="checked: orderNumberType"/>Prefix
+                        <input type="radio" name="filterByOrderNumber" value="includes" data-bind="checked: orderNumberType"/>Includes
+                     </th>
+                     <th>
+                        <input type="radio" name="filterByWeight" value="lte" data-bind="checked: weightType"/><=
+                        <input type="radio" name="filterByWeight" value="gte" data-bind="checked: weightType"/>>=
+                     </th>
+                     <th>
+                        <input type="radio" name="filterBySize" value="lte" data-bind="checked: sizeType"/><=
+                        <input type="radio" name="filterBySize" value="gte" data-bind="checked: sizeType"/>>=
+                     </th>
+                     <th>
+                        <input type="radio" name="filterByInStock" value="lte" data-bind="checked: inStockType"/><=
+                        <input type="radio" name="filterByInStock" value="gte" data-bind="checked: inStockType"/>>=
+                     </th>
+                     <th>
+                        <input type="radio" name="filterByPrice" value="lte" data-bind="checked: priceType"/><=
+                        <input type="radio" name="filterByPrice" value="gte" data-bind="checked: priceType"/>>=
+                     </th>
+                  </tr>
+               </thead>
+               <tbody id="gridbody" data-bind="foreach: tableData">
+                  <tr data-bind="css: {
+                  isBeingDeleted: itemState() === 'isBeingDeleted',
+                  hasBeenEdited: itemState() === 'hasBeenEdited',
+                  hasBeenCreated: itemState() === 'hasBeenCreated'}">
+                     <td data-bind="text: name"></td>
+                     <td data-bind="text: orderNumber"></td>
+                     <td data-bind="text: weight"></td>
+                     <td data-bind="text: size"></td>
+                     <td data-bind="text: inStock"></td>
+                     <td data-bind="text: price"></td>
+                  </tr>
+               </tbody>
+            </table>
+            <div id="noEntries" data-bind="visible: noEntries">
+               There are no entries that match your current filter criteria.
+            </div>
+            <div id="requestCounter">
+               Requests sent to Oracle:
+               <span data-bind="text: requestsSent"></span>
+            </div>
+         </div>
+
+         <!--<div data-bind="text: filterSet"></div>-->
+
+         <button id="helpButton" class="webmq_demo_button button">?</button>
+
+
+         <div class="status_line statusline_outside">
+            Status: <span class="statusline"></span>
+         </div>
+
+         <div class="info_bar" style="display: none;">
+
+            <p class="info_bar_heading">
+               Filter data from an Oracle database
+            </p>
+            <ul>
+               <li>
+                  The demo is connected to the Oracle database via Crossbar.io.
+               </li>
+               <li>
+                  All client logic is local to the browser, all business logic is in the database. Crossbar.io  manages only the messaging interaction between the two.
+               </li>
+               <li>
+                  Filtering is done within the Oracle database, with a simple display of the result set in the browser.
+               </li>
+            </ul>
+
+         </div>
+
+         <div id="error_overlay" class="error_overlay" style="display:none;">
+
+            <div id="non_specific_error" class="error_overlay_content_block">
+               <p>
+                  The necessary connection to an Oracle database with an installed demo schema could not be established.
+               </p>
+               <p>
+                  Please make sure that the following requirements are met:
+               </p>
+               <ul>
+                  <li>
+                     an Oracle connect has been created
+                  </li>
+                  <li>
+                     there is a remote for this connect
+                  </li>
+                  <li>
+                     the Oracle database is reachable
+                  </li>
+                  <li>
+                     the repository schema and the demo schema have been installed
+                  </li>
+               </ul>
+               <p>
+                  Whether the Oracle database is reachable and the necessary schemas have been installed
+                  can easily be checked by using the 'Test' buttons next to the respective schema login data
+                  on the Oracle Connects tab.
+               </p>
+               <p>
+                  To check whether any changes you've made have solved the encountered problem(s) just reload the page.
+               </p>
+            </div>
+
+            <div id="working_version" class="error_overlay_content_block">
+
+               Insert link to hosted demo on Crossbar website once this is up and running
+            </div>
+         </div>
+      </div>
+   </body>
+</html>

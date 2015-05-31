@@ -1,0 +1,127 @@
+
+
+html {
+   overflow-y: scroll;
+}
+
+
+
+#webmq_text
+{
+   font-family: sans-serif;
+   font-size: 32px; 
+   color: #f60;
+   position: absolute;
+   left: 23px;
+   bottom: 12px;
+   text-decoration: none;
+}
+#webmq_text:hover
+{
+   text-decoration: underline;
+   color: #CC5200;
+}
+
+
+#webmq_demo_sliders_wrapper
+{
+   width: 880px;
+   margin: 3em auto;
+}
+
+/****** slider specific ****/
+.eq
+{
+   margin: 0 0 0 3em;
+}
+
+/*#master
+{
+   margin: 25px 15px 0px 3em;
+}*/
+
+
+
+
+
+.eq span
+{
+   height: 120px;
+   float: left;
+   margin: 15px
+}
+
+.uisync_header
+{
+   width: 250px;
+   padding: 4px;
+   margin-top: 0em;
+}
+
+.activity_stream_event_header
+{
+   width: 400px;
+}
+
+.uisync_header_content
+{
+   float:left;
+   margin:-2px 5px 0 0;
+}
+
+.eq_container
+{
+   float: left;
+   margin: 2em 2em 0 0;
+   background-color: #eee;
+   border-radius: 4px;
+}
+
+/*#master
+{
+   width:260px;
+}*/
+
+.clearboth
+{
+   clear: both;
+}
+
+.spacer_20
+{
+   height: 20px;
+}
+
+
+.activity_color_indicator
+{
+   display: inline-block;
+   width: 20px;
+   height: 1em;
+}
+
+
+#activity_text
+{
+   width: 380px;
+}
+
+#activity_stream_controls > div
+{
+   margin: .5em 0;
+}
+
+.slidersContainer
+{
+   position: relative;
+}
+
+
+#activity_stream_controls
+{
+   padding: 0 0 0 1em;
+}
+
+.switch_button {
+margin: 0 1em 1em 1em;
+}

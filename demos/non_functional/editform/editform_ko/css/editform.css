@@ -1,0 +1,377 @@
+/********** web fonts locally *******/
+
+
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../../../../../fonts/opensans-regular-webfont.eot');
+    src: url('../../../../../fonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../../../../../fonts/opensans-regular-webfont.woff') format('woff'),
+         url('../../../../../fonts/opensans-regular-webfont.ttf') format('truetype'),
+         url('../../../../../fonts/opensans-regular-webfont.svg#open_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+html {
+   overflow-y: scroll;
+}
+
+body {
+
+   color: #1F1F1F;
+   font-family: 'open_sansregular', sans-serif;
+   /*font-family: Arial;*/
+   margin: 0;
+   font-size: 14px;
+   background-color: #fafafa;
+   position: relative;
+   
+}
+
+a
+{
+   color: #555;
+}
+a:hover
+{
+   color: #f60;
+}
+
+a > img
+{
+   border-style: none;
+}
+
+
+#demo_title 
+{
+    text-align: left;
+
+    padding-top: 14px;
+}
+#demo_title > span:first-child
+{
+    line-height: 54px;
+
+}
+#demo_body
+{
+   width: 850px;
+   margin: 5em auto 2em;
+   position: relative;
+}
+
+
+.notextselect {
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+
+   cursor: default;
+}
+
+
+
+
+/** info box for the demo ***/
+
+.info_bar
+{
+   clear: both;
+    /*float: right;*/
+   width: 80%;
+
+   background-color: #DFF7FB;
+   background-color: #f4f4f4;
+   color: #888;
+
+   border-radius: 3px;
+
+   font-size: 13px;
+
+   padding: 1em 2em;
+   margin: 0em auto;
+
+   line-height: 16px;
+}
+
+.info_bar ul
+
+{
+   line-height: 16px;
+   padding-left: 3em;
+}
+
+.info_bar li
+{
+   list-style-type: decimal;
+   background-image: none;
+   padding-left: 0;
+   margin-bottom: 10px;
+   width: 90%;
+}
+
+.info_bar_heading
+{
+   margin-bottom: 25px;
+}
+
+/*** for position on all demos with a central demo box ****************/
+
+#helpButton
+{
+   position: absolute;
+   left: 100%;
+   bottom: 0;
+   margin: 0 0 0 1em;
+}
+
+
+button
+{
+   background-color: #e1e1e1;
+   
+   color: #666;
+
+   font-weight: 600;
+   text-align: center;
+   
+   padding: 3px 5px;
+   margin: 2px;
+
+
+   border: none;
+   -webkit-border-radius: 4px;
+   border-radius: 4px;
+   
+
+   
+   box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.3);
+}
+
+
+button:hover
+{
+   background-color: #777;
+   color: #fff;
+}
+
+
+/* demo-specific formatting */
+
+
+#list,
+#details
+{
+   float: left;
+   
+}
+#list
+{
+   margin: 0 4em 0 0;
+   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5); /* set here, since IE doesn't render it on the table with border-collapse: collapsed */
+}
+
+#listTable
+{
+   border-collapse: collapse;
+   width: 400px;
+   /*box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);*/
+}
+
+#listTable th,
+#listTable td
+{
+   text-align: left;
+   padding: 3px 10px;
+   min-width: 4em;
+   height: 22px;
+   position: relative;
+   word-break: break-all;
+   background-color: #fff;
+}
+
+#listTable th
+{
+   
+   background-color: #888;
+   color: #fff;
+
+   
+}
+#listTable th:first-of-type
+{
+   width: 6em;
+}
+#listTable th
+{
+   width: 5em;
+}
+#listTable th:last-of-type
+{
+   border-right: 1px solid #888;
+   width: 5em;
+}
+
+
+
+#listTable > tbody > tr > td:last-of-type
+{
+   
+   text-align: right;
+}
+
+.relativeContainer
+{
+   position: relative;
+   height: 19px; /* line height at current font size, needs adjustment should this be changed*/
+}
+.deleteButton
+{
+   position: absolute;
+   left: 115%;
+   top: -3px;
+   /*color: #f60;
+   border-color: #f60;*/
+  
+}
+
+
+#listTable  td
+{   
+   
+  -webkit-transition: all 0.2s ease-out; 
+     -moz-transition: all 0.2s ease-out; 
+       -o-transition: all 0.2s ease-out; 
+          transition: all 0.2s ease-out; 
+}
+
+#listTable .isBeingDisplayed td
+{
+   background-color: #ddd;
+   color: #000;
+}
+
+#listTable .isBeingDeleted td
+{
+   background-color: #FF7C1D;
+   color: white;
+}
+
+#listTable .hasBeenEdited td
+{
+   background-color: #bbb;
+   color: #f60;
+}
+input.hasBeenEdited {
+   border: 2px solid #f60;
+   background-color: #ddd;
+   color: #f60;
+}
+
+#listTable .hasBeenCreated td
+{
+   background-color: #ddd;
+   color: #f60;
+}
+
+/* newly added, but presently empty list item */
+#listTable .isNew td
+{
+   background-color: #bbb;
+   color: white;
+   border: 1px solid #DFDFDF;
+}
+#listTable .isNew  td:last-of-type
+{
+   border-right: none;
+}
+
+/* currently not used highlights */
+#listTable .isBeingEdited td
+{
+   background-color: #f60;
+   color: #fff;
+}
+#listTable .isBeingCancelled td
+{
+   background-color: green;
+   color: yellow;
+}
+
+#listTable .nonDisplay
+{
+   opacity: 0;
+   height: 0;
+}
+
+
+
+
+
+.status_line
+{
+   clear: both;
+   padding: 3em 0 0 0;
+}
+
+
+#details
+{
+   padding: 1em 1em 1em 1.3em;
+   background-color: #DDD; /* same as for 'currently displayed' */
+;
+   border-radius: 3px;
+   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);
+   width: 300px;
+}
+
+
+#detailsTable
+{
+   display: table;
+}
+#detailsTable > div
+{
+   display: table-row;
+}
+#detailsTable > div > div
+{
+   display: table-cell;
+   padding: 5px 10px 0 0;
+}
+
+.isChanged
+{
+   border: 2px solid #f60;
+
+}
+
+#details.highlighted
+{
+   border: 1px solid #f60;
+}
+.switchWarning
+{
+   color: #f60;
+   width: 300px;
+   margin: 1em 0 0;
+   font-size: 13px;
+}
+
+.addButton
+{
+   margin: 1em 40%;
+   box-shadow: 0 0 13px 2px rgba(0, 0, 0, 0.3);
+}
+
+.new_window
+{
+    clear: both;
+    padding: 1em 0;
+    margin: 0 35%;
+}

@@ -1,0 +1,677 @@
+
+/*********************************
+*        demo css content        *
+*********************************/
+
+
+/* Segoe UI */
+/* define here for used weights & styles so that
+font-weight & style declarations work for this + the fallback
+web font */
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI');
+   font-weight: normal;
+}
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI Italic');
+   font-weight: normal;
+   font-style: italic;
+}
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI Bold');
+   font-weight: bold;
+}
+
+
+@font-face {
+   font-family: 'Segoe UI';
+   src: local('Segoe UI Light');
+   font-weight: 300;
+}
+html {
+   /*overflow-y: scroll;*/
+   min-height: 100%;
+   /*height: 100%;*/
+   width: 100%;
+   overflow-y: scroll;
+}
+
+body {
+
+   font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+   font-size: 16px;
+   line-height: 1.428571429;
+   background-color: #fcfcfc;
+   color: #333;
+   
+   margin: 0;
+   background-color: #fafafa;
+   position: relative;
+   
+}
+
+a
+{
+   color: #555;
+}
+a:hover
+{
+   color: #f60;
+}
+
+a > img
+{
+   border-style: none;
+}
+
+.info_bar {
+  display: none;
+}
+
+.displayed {
+  display: block;
+}
+
+#demo_title 
+{
+    text-align: left;
+
+    padding-top: 14px;
+}
+#demo_title > span:first-child
+{
+    line-height: 54px;
+
+}
+#demo_body
+{
+   width: 850px;
+   margin: 5em auto 2em;
+   position: relative;
+}
+
+
+.notextselect {
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+
+   cursor: default;
+}
+
+body {
+
+   height: 100%;
+   margin: 0;
+   background-repeat: no-repeat;
+   background-attachment: fixed;
+
+   background-color: #fafafa;
+
+}
+
+a
+{
+   color: #555;
+}
+a:hover
+{
+   color: #f60;
+   color: #D0B800;
+}
+
+a > img
+{
+   border-style: none;
+}
+
+.githubwrapper {
+padding: 20px;
+}
+
+.github {
+   color: rgb(226, 181, 0);
+   height: 60px;
+}
+.github:hover {
+   color: #fff;
+}
+.github:visited {
+   color: rgb(226, 181, 0);
+}
+
+section
+{
+   margin: 3em 5em 0 3em;
+
+}
+
+
+header {
+   position: relative;
+   width: 100%;
+   height: 103px;
+   background-color: #1b1b1b;
+}
+
+#header_inner
+{
+   position: relative;
+   min-width: 960px;
+   max-width: 64%;
+   height: 100%;
+   margin:auto;
+   padding: 0;
+   color: #666;
+   text-align: right;
+}
+
+#demo_title
+{
+   font-size: 27px;
+   font-weight: bold;
+   color: rgb(95, 95, 95);
+   display: inline-block;
+   text-align: right;
+   line-height: 11px;
+   padding-top: 32px;
+}
+#demo_title > span
+{
+   display: block;
+}
+#demo_title > span:first-child
+{
+   font-size: 45px;
+   line-height: 38px;
+}
+
+.navbar-brand {
+    position: absolute;
+
+    top: 21px;
+    left: 0px;
+    text-decoration: none;
+}
+
+.navbar-brand > span {
+   font-size: 52px;
+   position: relative;
+   top: -13px;
+   text-decoration: none;
+   border: none;
+}
+
+.navbar-brand > span > span:first-of-type {
+  font-family: 'Play', sans-serif;
+  font-weight: bold;
+  color: rgb(162, 162, 162);
+  padding: 0 0 0 6px;
+}
+.navbar-brand > span > span:last-of-type {
+  font-family: 'Play', sans-serif;
+  color: rgb(240, 240, 240);
+}
+
+.demo_links
+{
+   text-align: center;
+}
+.demo_links > div > a
+{
+   padding: 0 2em 0 0;
+   font-size: 19px;
+   text-decoration: none;
+   color: #f60;
+   color: #d0b800;
+}
+
+
+#demo_body,
+.demo_links
+{
+   width: 850px;
+   height: 100%;
+   margin: 4em auto;
+   position: relative;
+}
+
+.notextselect {
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+
+   cursor: default;
+}
+
+
+
+
+
+
+
+.button
+{
+
+   background-color: #D9D9D9;
+   background: -webkit-linear-gradient(top, #fff, #e1e1e1);
+   background:    -moz-linear-gradient(top, #fff, #e1e1e1);
+   background:     -ms-linear-gradient(top, #fff, #e1e1e1);
+   background:      -o-linear-gradient(top, #fff, #e1e1e1);
+   background:         linear-gradient(to bottom, #fff, #e1e1e1);
+   /*filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#ffffff', endColorstr='#e1e1e1');*/
+
+   color: #111;
+
+   font-weight: 600;
+   text-align: center;
+   padding:0 13px;
+   margin-left: 1px;
+
+
+   border: none;
+   -webkit-border-radius: 4px;
+   border-radius: 4px;
+
+
+   border: 1px solid rgb(121, 121, 121);
+
+   -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 0px;
+   -moz-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 0px;
+   box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 0px;
+
+   padding: 3px 6px;
+   margin: 2px;
+}
+
+
+.button:hover
+{
+   background-color: #777;
+   background: -webkit-linear-gradient(top, #e8e8e8, #8d8d8d);
+   background:    -moz-linear-gradient(top, #e8e8e8, #8d8d8d);
+   background:     -ms-linear-gradient(top, #e8e8e8, #8d8d8d);
+   background:      -o-linear-gradient(top, #e8e8e8, #8d8d8d);
+   background:         linear-gradient(to bottom, #e8e8e8, #8d8d8d);
+   /*filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#e8e8e8', endColorstr='#8d8d8d');*/
+
+   color: #fff;
+
+   -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 0px;
+   -moz-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 0px;
+   box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px 0px;
+}
+
+
+.button:disabled
+{
+   background-color: #ddd;
+
+   color: #aaa;
+}
+
+
+
+
+
+
+
+/** info box for the demo ***/
+
+.info_bar
+{
+   clear: both;
+    /*float: right;*/
+   width: 80%;
+
+   background-color: #DFF7FB;
+   background-color: #f4f4f4;
+   color: #888;
+
+   border-radius: 3px;
+
+   font-size: 13px;
+
+   padding: 1em 2em;
+   margin: 0em auto;
+
+   line-height: 16px;
+}
+
+.info_bar ul
+
+{
+   line-height: 16px;
+   padding-left: 3em;
+}
+
+.info_bar li
+{
+   list-style-type: decimal;
+   background-image: none;
+   padding-left: 0;
+   margin-bottom: 10px;
+   width: 90%;
+}
+
+.info_bar_heading
+{
+   margin-bottom: 25px;
+}
+
+/*** for position on all demos with a central demo box ****************/
+
+#helpButton
+{
+   position: absolute;
+   left: 100%;
+   bottom: 0;
+   margin: 0 0 0 1em;
+}
+
+
+button
+{
+   background-color: #e1e1e1;
+   
+   color: #666;
+
+   font-weight: 600;
+   text-align: center;
+   
+   padding: 3px 5px;
+   margin: 2px;
+
+
+   border: none;
+   -webkit-border-radius: 4px;
+   border-radius: 4px;
+   
+
+   
+   box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.3);
+}
+
+
+button:hover
+{
+   background-color: #777;
+   color: #fff;
+}
+
+
+/* demo-specific formatting */
+
+
+#list,
+#details
+{
+   float: left;
+   
+}
+#list
+{
+   margin: 0 4em 0 0;
+   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5); /* set here, since IE doesn't render it on the table with border-collapse: collapsed */
+}
+
+#listTable
+{
+   border-collapse: collapse;
+   width: 400px;
+   /*box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);*/
+}
+
+#listTable th,
+#listTable td
+{
+   text-align: left;
+   padding: 3px 10px;
+   min-width: 4em;
+   height: 22px;
+   position: relative;
+   word-break: break-all;
+   background-color: #fff;
+}
+
+#listTable th
+{
+   
+   background-color: #888;
+   color: #fff;
+
+   
+}
+#listTable th:first-of-type
+{
+   width: 6em;
+}
+#listTable th
+{
+   width: 5em;
+}
+#listTable th:last-of-type
+{
+   border-right: 1px solid #888;
+   width: 5em;
+}
+
+
+
+#listTable > tbody > tr > td:last-of-type
+{
+   
+   text-align: right;
+}
+
+.relativeContainer
+{
+   position: relative;
+   height: 19px; /* line height at current font size, needs adjustment should this be changed*/
+}
+.deleteButton
+{
+   position: absolute;
+   left: 115%;
+   top: -3px;
+   /*color: #f60;
+   border-color: #f60;*/
+  
+}
+
+
+#listTable  td
+{   
+   
+  -webkit-transition: all 0.2s ease-out; 
+     -moz-transition: all 0.2s ease-out; 
+       -o-transition: all 0.2s ease-out; 
+          transition: all 0.2s ease-out; 
+}
+
+#listTable .isBeingDisplayed td
+{
+   background-color: #ddd;
+   color: #000;
+}
+
+#listTable .isBeingDeleted td
+{
+   background-color: #FF7C1D;
+   color: white;
+}
+
+#listTable .hasBeenEdited td
+{
+   background-color: #bbb;
+   color: #f60;
+}
+input.hasBeenEdited {
+   border: 2px solid #f60;
+   background-color: #ddd;
+   color: #f60;
+}
+
+#listTable .hasBeenCreated td
+{
+   background-color: #ddd;
+   color: #f60;
+}
+
+/* newly added, but presently empty list item */
+#listTable .isNew td
+{
+   background-color: #bbb;
+   color: white;
+   border: 1px solid #DFDFDF;
+}
+#listTable .isNew  td:last-of-type
+{
+   border-right: none;
+}
+
+/* currently not used highlights */
+#listTable .isBeingEdited td
+{
+   background-color: #f60;
+   color: #fff;
+}
+#listTable .isBeingCancelled td
+{
+   background-color: green;
+   color: yellow;
+}
+
+#listTable .nonDisplay
+{
+   opacity: 0;
+   height: 0;
+}
+
+
+
+
+
+.status_line
+{
+   clear: both;
+   padding: 3em 0 0 0;
+}
+
+
+#details
+{
+   padding: 1em 1em 1em 1.3em;
+   background-color: #DDD; /* same as for 'currently displayed' */
+;
+   border-radius: 3px;
+   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);
+   width: 310px;
+}
+
+
+#detailsTable
+{
+   display: table;
+}
+#detailsTable > div
+{
+   display: table-row;
+}
+#detailsTable > div > div
+{
+   display: table-cell;
+   padding: 5px 10px 0 0;
+}
+
+.isChanged
+{
+   border: 2px solid #f60;
+
+}
+
+.isDirty {
+   color: red;
+}
+
+#details.highlighted
+{
+   border: 1px solid #f60;
+}
+.switchWarning
+{
+   color: #f60;
+   width: 300px;
+   margin: 1em 0 0;
+   font-size: 13px;
+   display: none;
+}
+
+.switchWarning.visible {
+   display: inherit;
+}
+
+.addButton
+{
+   margin: 1em 40%;
+   box-shadow: 0 0 13px 2px rgba(0, 0, 0, 0.3);
+}
+
+.new_window
+{
+    clear: both;
+    padding: 1em 0;
+    margin: 0 35%;
+}
+
+
+.resetBox {
+    float: left;
+
+    width: 286px;
+    margin: 12em 1em 1em;
+    background-color: #eee;
+    padding: 1em;
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.resetBox p {
+
+}
+
+.resetBox button {
+   
+}
+
+.resetNotice {
+    position: absolute;
+
+    top: 18%;
+    left: 26%;
+    background-color: #eee;
+    color:  #f60;
+    border: 1px solid #f60;
+    padding: 1em;
+    border-radius: 3px;
+    box-shadow: 0 0 20px 4px rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+}
+.nonDisplay {
+   display: none;
+}
+.displayed {
+   display: inherit;
+}

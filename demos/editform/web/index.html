@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+   <head>
+   <meta charset="utf-8" />
+
+   <link rel="shortcut icon" href="img/favicon.ico">
+
+   <title>Edit Form</title>
+
+   <!-- <link rel="stylesheet" href="../../../demo.css"> -->
+   <link rel="stylesheet" href="css/editform.css">
+
+   <!-- Include Flash WebSocket via Conditional Comment: http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+   <!--[if lte IE 9]>
+      <script type="text/javascript">
+        WEB_SOCKET_SWF_LOCATION = "../../../../flashws/WebSocketMain.swf";
+      </script>
+      <script type="text/javascript" src="../../../../flashws/swfobject.js"></script>
+      <script type="text/javascript" src="../../../../flashws/web_socket.js"></script>
+   <![endif]-->
+
+   </head>
+
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Edit Form</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>        
+
+      </header>
+
+      <div class="demo_links">
+            <p>
+               A simple editable KnockoutJS-based Form with a Node.js that synchronizes in real-time.
+            </p>
+            <div>
+               <a id="secondInstance" href="" target="_blank">
+                  Open 2nd instance
+               </a>
+               <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/editform">
+                  Source Code
+               </a>
+               <a href="http://crossbar.io">
+                  Crossbar.io Homepage
+               </a>
+            </div>
+         </div>
+
+      <div id="demo_body">
+         <div id="list">
+            <table id="listTable">
+               <thead id="list_headers">
+                  <tr>
+                     <th class="item_orderNumber">
+                        Order
+                        <br />
+                         Number
+                     </th>
+                     <th class="item_name">
+                        Name
+                     </th>
+                     <th class="item_price">
+                        Price
+                     </th>
+                  </tr>
+               </thead>
+
+               <tbody data-bind="foreach: listData">
+
+                  <tr data-bind="click: $parent.switchDetailsDisplayed,
+                     css: {
+                     isBeingDisplayed: itemState() === 'isBeingDisplayed',
+                     isBeingEdited: itemState() === 'isBeingEdited',
+                     isBeingDeleted: itemState() === 'isBeingDeleted',
+                     isBeingCancelled: itemState() === 'isBeingCancelled',
+                     hasBeenEdited: itemState() === 'hasBeenEdited',
+                     hasBeenCreated: itemState() === 'hasBeenCreated',
+                     isNew: itemState() === 'isNew',
+                     nonDisplay: itemState() === 'nonDisplay'
+                     },
+                     setIndex: 'index'">
+
+                     <td class="listOrderNumber" data-bind="text: orderNumber"></td>
+                     <td class="listName" data-bind="text: name"></td>
+                     <!--<td class="listPrice" data-bind="text: price"></td>-->
+                     <td class="listPrice">
+                        <div class="relativeContainer"> <!--needed since FF doesn't do absolute positioning from TDs-->
+                           <button class="deleteButton" data-bind="click: $parent.triggerDelete, visible: itemState() ==='isBeingDisplayed'">X</button>
+                           <span data-bind="text: price"></span>
+                        </div>
+                     </td>
+
+                  </tr>
+
+               </tbody>
+             </table>
+
+            <button class="addButton" data-bind="click: addListItem, visible: addButtonVisible">Add Item</button>
+            
+         </div>
+
+         <div id="details" data-bind="css: {highlighted: switchWarning}">
+            <div id="detailsTable">
+               <div>
+                  <div>
+                     Order Number
+                  </div>
+                  <div>
+                     <input id="orderNumber" type="text" size="15" maxlength="15" data-bind="
+                         value: detailsEditable.orderNumber.displayedValue,
+                         valueUpdate: 'afterkeydown',
+                         event: { keydown: mangleInputs },
+                         css: { isChanged: detailsEditable.orderNumber.isDirty, hasBeenEdited: detailsEditable.orderNumber.hasBeenUpdated, isDirty: detailsEditable.orderNumber.isDirty2 },
+                         hasfocus: focusOnOrderNumber"/>
+                  </div>
+                  <div class="requiredField" data-bind="visible: orderNumberMissing">
+                      *
+                  </div>
+               </div>
+               <div>
+                  <div>
+                     Name
+                  </div>
+                  <div>
+                     <input id="name" type="text" size="20" maxlength="20" data-bind="
+                       value: detailsEditable.name.displayedValue,
+                       valueUpdate: 'afterkeydown',
+                       event: { keydown: mangleInputs },
+                       css: { isChanged: detailsEditable.name.isDirty, hasBeenEdited: detailsEditable.name.hasBeenUpdated}" />
+                  </div>
+                  <div class="requiredField" data-bind="visible: nameMissing">
+                      *
+                  </div>
+               </div>
+               <div>
+                  <div>
+                     Weight
+                  </div>
+                  <div>
+                     <input id="weight" type="text" size="6" maxlength="6" data-bind="
+                        value: detailsEditable.weight.displayedValue,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs },
+                        css: { isChanged: detailsEditable.weight.isDirty, hasBeenEdited: detailsEditable.weight.hasBeenUpdated}" />
+                  </div>
+               </div>
+               <div>
+                  <div>
+                    Size
+                  </div>
+                  <div>
+                     <input id="size" type="text" size="6" maxlength="6" data-bind="
+                        value: detailsEditable.size.displayedValue,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs },
+                        css: { isChanged: detailsEditable.size.isDirty, hasBeenEdited: detailsEditable.size.hasBeenUpdated}" />
+                  </div>
+               </div>
+               <div>
+                  <div>
+                     In Stock
+                  </div>
+                  <div>
+                     <input id="inStock" type="text" size="8" maxlength="8" data-bind="
+                        value: detailsEditable.inStock.displayedValue,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs },
+                        css: { isChanged: detailsEditable.inStock.isDirty, hasBeenEdited: detailsEditable.inStock.hasBeenUpdated}" />
+                  </div>
+               </div>
+               <div>
+                  <div>
+                     Price
+                  </div>
+                  <div>
+                     <input id="price" type="text" size="8" maxlength="8" data-bind="
+                        value: detailsEditable.price.displayedValue,
+                        valueUpdate: 'afterkeydown',
+                        event: { keydown: mangleInputs },
+                        css: { isChanged: detailsEditable.price.isDirty, hasBeenEdited: detailsEditable.price.hasBeenUpdated}"/>
+                  </div>
+               </div>
+            </div>
+            <button data-bind="click: saveDetailsEdits, style: { visibility: saveButtonVisible() ? 'visible' : 'hidden' }">Save</button>
+            <button data-bind="click: cancelDetailsEdits, style: { visibility: cancelButtonVisible() ? 'visible' : 'hidden' }">Cancel</button>
+            <div data-bind="css: { visible: switchWarning }" class="switchWarning">
+               Unsaved data would be lost on switching. Please 'Save' or 'Cancel' before switching to another item.
+            </div>
+         </div>
+
+         <div class="resetBox">
+            <p>
+               Reset the demo data set to its default and discard any user additions, deletions or changes.
+            </p>
+            <button data-bind="click: requestDataReset">
+               Reset
+            </button>
+
+         
+
+
+         <button class="webmq_demo_button button" data-bind="click: toggleHelp">?</button>
+
+         <div class="status_line statusline_outside">
+            Status: <span data-bind="text: connectionStatus"></span>
+         </div>
+
+         <div class="resetNotice nonDisplay" data-bind="css: { displayed: displayResetNotice }">
+            Backend data has been reset to defaults.
+         </div>
+
+      </div>
+
+      <div class="info_bar" data-bind="css: { displayed: helpShown }">
+
+            <p class="info_bar_heading">
+               Edit demo data in a Node.js backend.
+            </p>
+            <ul>
+               <li>
+                  The demo is connected to the Node.js backend via Crossbar.io.
+               </li>
+               <li>
+                  Committed changes to the data are synched in real-time between multiple clients - just open the demo in an additional browser window.
+               </li>
+            </ul>
+      </div>
+
+      
+
+      <script src="js/knockout-3.2.0.js"></script>
+      <script>AUTOBAHN_DEBUG = true;</script>
+      <script src="js/autobahn.min.js"></script>
+      <script src="js/editform.js"></script>
+      <script src="js/testing.js"></script>
+
+</body>
+</html>

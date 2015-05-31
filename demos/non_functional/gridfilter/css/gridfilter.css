@@ -1,0 +1,214 @@
+/********** web fonts locally *******/
+
+
+@font-face {
+    font-family: 'open_sansregular';
+    src: url('../../../../../fonts/opensans-regular-webfont.eot');
+    src: url('../../../../../fonts/opensans-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../../../../../fonts/opensans-regular-webfont.woff') format('woff'),
+         url('../../../../../fonts/opensans-regular-webfont.ttf') format('truetype'),
+         url('../../../../../fonts/opensans-regular-webfont.svg#open_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+html {
+   overflow-y: scroll;
+}
+
+body {
+
+   color: #1F1F1F;
+   font-family: 'open_sansregular', sans-serif;
+   /*font-family: Arial;*/
+   margin: 0;
+   font-size: 14px;
+   background-color: #fafafa;
+   position: relative;   
+}
+
+a
+{
+   color: #555;
+}
+a:hover
+{
+   color: #f60;
+}
+
+a > img
+{
+   border-style: none;
+}
+
+#demo_title
+{
+    padding-top: 20px;
+
+    text-align: left;
+}
+#demo_title > span:first-child
+{
+    line-height: 52px;
+  
+}
+
+
+#demo_body
+{
+   width: 850px;
+   margin: 5em auto;
+}
+
+table
+{
+   border-collapse: collapse;
+   border-radius: 5px;
+   margin: 0 auto;
+   empty-cells: show;
+   box-shadow: 0 0 20px 2px rgba(0, 0, 0, 0.5);
+}
+
+table th,
+table td
+{
+   border: 1px solid #8A8A8A;   
+}
+
+table th
+{
+   background-color: #8A8A8A;
+   color: #f1f1f1;
+}
+
+table th>input
+{
+   width: 5em;
+}
+#filterByName
+{
+   width: 9em;
+}
+
+.relativeContainer
+{
+   position: relative;
+   height: 19px; /* line height at current font size, needs adjustment should this be changed*/
+}
+
+.clearFilterButton
+{
+   position: absolute;
+   left: 115%;
+   top: -3px;
+   
+   background-color: #c1c1c1;
+   color: #666;
+
+   text-align: center;
+   font-weight: 600;
+   padding: 3px 5px;
+   margin: 2px;
+   border: none;
+   border-radius: 4px;
+   box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.3);
+}
+.clearFilterButton:hover
+{
+   background-color: #777;
+   color: #fff;
+}
+
+table > thead > tr:nth-of-type(3) > th > input
+{
+
+    width: 1em;
+}
+
+
+table td
+{
+   padding: 5px 10px;
+   height: 1.4em;
+   text-align: right;
+   
+   background-color: #fff;
+}
+table tr > td:first-of-type
+{
+   text-align: left;
+}
+
+/* columns formatting */
+/* only width, background color and border can be used here */
+
+.nameColumn
+{
+   width: 12em;
+   background-color: #eee;
+}
+.orderNumberColumn
+{
+   width: 12em;
+}
+.shortValuesColumn
+{
+   width: 8em;
+}
+.priceColumn
+{
+   width: 8em;
+}
+
+#noEntries
+{
+   position: relative;
+   bottom: 25px;
+   left: 253px;
+   background-color: white;
+   width: 29em;
+}
+
+#requestCounter
+{
+   margin: 2em 0 2em 2em;
+   color: #fff;
+}
+#requestCounter > span
+{
+   padding: 0 0 0 1em;
+}
+
+
+#gridbody  td
+{      
+  -webkit-transition: all 0.2s ease-out; 
+     -moz-transition: all 0.2s ease-out; 
+       -o-transition: all 0.2s ease-out; 
+          transition: all 0.2s ease-out; 
+}
+
+#gridbody .isBeingDeleted td
+{
+   background-color: #FF7C1D;
+   color: white;
+}
+
+#gridbody .hasBeenEdited td
+{
+   background-color: #bbb;
+   color: #f60;
+}
+
+#gridbody .hasBeenCreated td
+{
+   background-color: #ddd;
+   color: #f60;
+}
+
+#gridbody .nonDisplay td
+{
+   opacity: 0;
+   height: 0;
+}

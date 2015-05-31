@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>AutobahnJS PubSub Publisher</title>
+</head>
+<body>
+
+   <h1>AutobahnJS PubSub Publisher</h1>
+
+   <p>
+      Open the JavaScript console to watch output.
+   </p>
+
+   <button id="send">Publish</button>
+
+   <script type="text/javascript" src="../../js/autobahn.min.js"></script>
+   <script>
+      // Make code portable to Node.js without any changes
+      // try {
+      //    var autobahn = require('autobahn');
+      // } catch (e) {
+      //    // when running in browser, AutobahnJS will
+      //    // be included without a module system
+      // }
+
+      // Set up WAMP connection to router
+      var connection = new autobahn.Connection({
+         url: 'ws://localhost:8080/ws',
+         realm: 'realm1'}
+      );
+
+      // Set up 'onopen' handler
+      connection.onopen = function (session) {
+         console.log("onopen");
+         // Start publishing events
+         var counter = 0;
+
+         document.getElementById("send").addEventListener("click", function() {
+            console.log("publishing to topic 'com.myapp.topic2': " + counter);
+            session.publish('com.myapp.topic2', [counter], {}, {acknowledge: true}).then(function(publication) {
+                  console.log("publication", publication);
+               },
+               function(error) {
+                  console.log("publication error ", error)
+               });
+            counter += 1;
+         })
+
+         session.subscribe('com.myapp.topic2', function() {
+            console.log("received text", arguments);
+         })
+
+      };
+
+      connection.onclose = function() {
+         console.log("close", arguments);
+      }
+
+      // Open connection
+      connection.open();
+   </script>
+
+</body>
+</html>

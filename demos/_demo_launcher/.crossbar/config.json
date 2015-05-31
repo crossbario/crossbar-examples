@@ -1,0 +1,123 @@
+
+{
+   "controller": {
+   },
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "name": "crossbardemo",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": ".."
+                  },
+                  "ws": {
+                     "type": "websocket"
+                  },
+                  "beatbox": {
+                     "type": "static",
+                     "directory": "../../beatbox"
+                  },
+                  "chat": {
+                     "type": "static",
+                     "directory": "../../chat"
+                  },
+                  "colorpicker": {
+                     "type": "static",
+                     "directory": "../../colorpicker"
+                  },
+                  "editform": {
+                     "type": "static",
+                     "directory": "../../editform/web"
+                  },
+                  "gauges": {
+                     "type": "static",
+                     "directory": "../../gauges"
+                  },
+                  "notification": {
+                     "type": "static",
+                     "directory": "../../notification"
+                  },
+                  "pubsub": {
+                     "type": "static",
+                     "directory": "../../pubsub"
+                  },
+                  "sliders": {
+                     "type": "static",
+                     "directory": "../../sliders"
+                  },
+                  "votes": {
+                     "type": "static",
+                     "directory": "../../votes/nodejs/web"
+                  },
+                  "visitors_counter": {
+                     "type": "static",
+                     "directory": "../../visitors_counter"
+                  }
+               }
+            }
+         ]
+      },
+      {
+         "type": "guest",
+         "executable": "node",
+         "arguments": ["backend.js"],
+         "options": {
+            "workdir": "../../votes/nodejs/node",
+            "watch": {
+               "directories": ["../../votes/nodejs/node"],
+               "action": "restart"
+            }
+         }
+      },
+      {
+         "type": "guest",
+         "executable": "node",
+         "arguments": ["editform_backend.js"],
+         "options": {
+            "workdir": "../../editform/node",
+            "watch": {
+               "directories": ["../../editform/node"],
+               "action": "restart"
+            }
+         }
+      },
+      {
+         "type": "guest",
+         "executable": "node",
+         "arguments": ["backend.js"],
+         "options": {
+            "workdir": "../../visitors_counter/js",
+            "watch": {
+               "directories": ["../../visitors_counter/js"],
+               "action": "restart"
+            }
+         }
+      }
+   ]
+}

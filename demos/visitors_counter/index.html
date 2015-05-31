@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+
+      <link rel="shortcut icon" href="favicon.ico">
+
+      <title>Visitors</title>
+
+      <link rel="stylesheet" href="css/visitors_counter.css">
+
+   </head>
+
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Visitors Counter</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+      </header>
+
+      <div class="demo_links">
+         <p>
+            See the number of visitors currently accessing the page.
+         </p>
+         <div>
+            <a href="" target="_blank" id="secondInstance">Open 2nd instance</a>
+            <a href="https://github.com/crossbario/crossbardexamples/tree/master/demos/visitors_counter">
+               Source Code
+            </a>
+            <a href="http://crossbar.io">
+               Crossbar.io Homepage
+            </a>
+         </div>
+      </div>
+
+      <div id="demo_body">
+
+         <p>
+            This is the host page for a visitors counter.
+         </p>
+         <p>
+            The counter is implemented as a <strong>Web component</strong>. Integration is via the minimal code you see below this paragraph in source view.
+         </p>         
+
+
+         <!-- Visitors widget embedding code starts here -->
+
+         <crossbar-visitors data-config='{ "routerUrl": "ws://192.168.1.134:8080/ws", "label": "Current Visitors" }'></crossbar-visitors>
+
+         <!-- // <script src="js/components/platform/platform.js"></script> -->
+          <!-- 1. Load platform support before any code that touches the DOM. -->
+          <script src="bower_components/webcomponentsjs/webcomponents.min.js"></script>
+         <link id="crossbar-widget-import" rel="import" href="widget.html">
+         <!-- need to apply this in the host page, since using ':host' declaration -->
+         <!-- does not work using Polymer. -->
+         <!-- this takes precedence over anything declared in our component via ':host' -->
+         <style>
+            crossbar-visitors {
+               position: fixed;
+               right: 5px;
+               top: 100px;
+            }
+         </style>
+
+         <!-- end of Visitors widget embedding code -->
+
+         
+
+         <p>
+            The counter connects to a WAMP backend (JavaScript/Node.js, but it could be written in any of <a href="http://wamp.ws/implementations">8 other languages</a>).
+         </p>
+         <p>
+            The component just queries for the number of currently connected visitors on load, and subscribes to updates of this number.
+         </p>
+         <p>
+            The backend gets notified of sessions connecting and leaving via <a href="http://crossbar.io/docs/Session-Metaevents-and-Procedures/">session meta-events</a>.
+         </p>
+
+      </div>
+      <div style="clear: both"></div>
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+      <!-- community widget iframe -->
+
+      <!-- general styles for the widget -->
+      <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+      <!-- local stylesheet -->
+      <!--     - ensures non-Display if nothing loads -->
+      <!--     - site-specific positioning of widget -->
+      <style>
+         #communityWidget.nonDisplay {
+            display: none;
+         }
+
+         #communityWidget {
+            top: 111px;
+            right: 0px;
+            box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+         }
+      </style>
+
+      <!-- IFrame itself -->
+      <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+      <!-- the parent page connecting code -->
+      <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+   </body>
+</html>
