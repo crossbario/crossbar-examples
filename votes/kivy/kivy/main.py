@@ -16,7 +16,9 @@ Open up a browser window with another front end component to see the numbers
 change.
 """
 
-# Kivy's install_twisted_rector MUST be called early on!
+# copyright Roger Erens, the Apache 2.0 license applies
+
+# Kivy's install_twisted_reactor MUST be called early on!
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 

@@ -1,10 +1,26 @@
 This version of the Votes demo offers a frontend written using [kivy](http://kivy.org/#home) in addition to the browser frontend.
 
+## Regular startup
+
+In the demo folder do 
+
+```
+crossbar start
+```
+
+and then open 
+
+```
+http://localhost:8080
+```
+
+to see the browser frontend.
+
 ## Additional Requirements
 
-You need to install kivy - follow the instructions at the [project website](http://kivy.org/docs/gettingstarted/installation.html).
+For the kivy frontend you need to install kivy (big surprise) - follow the instructions at the [project website](http://kivy.org/docs/gettingstarted/installation.html).
 
-You then need to install Autobahn|Python and its dependencies.
+You then need to install Autobahn|Python and its dependencies - for kivy (.
 
 In the `kivy` folder, using the Python as setup by kivy, do
 
