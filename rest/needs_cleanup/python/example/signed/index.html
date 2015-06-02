@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Publishing via Crossbar.io HTTP Bridge</h1>
+      <p>Open JavaScript console to watch output.</p>
+      <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script>
+         var connection = new autobahn.Connection({
+            url: 'ws://127.0.0.1:8080/ws',
+            realm: 'realm1'}
+         );
+
+         connection.onopen = function (session) {
+
+            console.log("connected!");
+
+            function onevent1 (args, kwargs) {
+               console.log("Got event:", args, kwargs);
+            }
+
+            session.subscribe('com.myapp.topic1', onevent1);
+         };
+
+         connection.open();
+      </script>
+   </body>
+</html>

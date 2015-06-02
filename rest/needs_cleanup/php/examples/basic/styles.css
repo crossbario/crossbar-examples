@@ -1,0 +1,39 @@
+body {
+   background-color: #fff;
+   color: #333;
+   font-family: "Segoe UI", "Lucida Grande", "Helvetica Neue", Helvetica, Arial, sans-serif;
+   font-weight: normal;
+   font-size: 16px;
+}
+
+h1.title {
+   color: #ff6600;
+   font-weight: normal;
+}
+
+ul {
+   font-size: 20px;
+   line-height: 1.8em;
+}
+
+#evts {
+   background-color: #eee;
+   color: #333;
+   width: 100%;
+   font-size: 14px;
+   padding: 12px;
+   font-family: Consolas, monospace;
+}
+
+form {
+   background-color: #eee;
+   padding: 30px;
+   margin: 16px;
+}
+
+form > h1 {
+   margin: 0;
+   padding: 0;
+   color: #ff6600;
+   font-size: 18px;
+}

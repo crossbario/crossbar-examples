@@ -1,0 +1,26 @@
+<?php
+$API = array(
+    'TestAction'=>array(
+        'methods'=>array(
+            'doEcho'=>array(
+                'len'=>1
+            ),
+            'doEchoSlow'=>array(
+                'len'=>1
+            ),
+            'add'=>array(
+                'len'=>2
+            ),
+            'square'=>array(
+                'len'=>1
+            )
+        )
+    ),
+    'SecuredAction'=>array(
+        'methods'=>array(
+            'doEcho'=>array(
+                'len'=>1
+            )
+        )
+    )
+);

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <script>
+         window.onload = function () {
+            var sessid = document.cookie.match(/FLASKSESSID=[^;]+/)[0].substr(12);
+            document.getElementById('sessid').innerHTML = "Session Cookie: " + sessid;
+         }
+      </script>
+   </head>
+   <body>
+      <h1>Wiki REST Service</h1>
+      <p id="sessid"></p>
+   </body>
+</html>

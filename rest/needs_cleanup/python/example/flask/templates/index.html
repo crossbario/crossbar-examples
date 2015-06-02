@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block body %}
+   <h1>Using Crossbar.io with Flask</h1>
+   <p>
+      This example demonstrates how to push data submitted via a HTML form
+      in real-time from a classical web application
+      (based on <a href="http://flask.pocoo.org/">Flask</a>).
+   </p>
+
+   <p>
+      <a href="/" target="_blank">Open this demo in a 2nd tab</a>. Then (while viewing both
+      tabs concurrently), submit data in the form. You should see the submitted data
+      immediately in the "Last Submissions" section.
+   </p>
+
+   <h1>Enter and submit data</h1>
+   <form action="form1" method="post">
+      <p>Your name: <input type="text" name="name" value="{{ name }}" /></p>
+      <p>Your age: <input type="text" name="age" value="{{ age }}" /></p>
+      <p><input type="submit" /></p>
+   </form>
+
+   <h1>Last Submissions</h1>
+   <pre id="submissions"></pre>
+
+   <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+   <script>
+      var connection = new autobahn.Connection({
+         url: "{{ router }}",
+         realm: "{{ realm }}"
+      });
+
+      connection.onopen = function (session) {
+
+         console.log("connected!");
+
+         function onevent1 (args, kwargs) {
+            console.log("Got event:", args, kwargs);
+            var e = document.getElementById('submissions');
+            e.innerHTML += "Name: " + kwargs.name + ", Age: " + kwargs.age + "\n";
+         }
+
+         session.subscribe("{{ topic }}", onevent1);
+      };
+
+      connection.open();
+   </script>
+{% endblock %}
