@@ -20,7 +20,7 @@ to see the browser frontend.
 
 ## Additional Requirements
 
-For the kivy frontend you need to install kivy (big surprise) - follow the instructions at the [project website](http://kivy.org/docs/gettingstarted/installation.html).
+For the kivy frontend you need to install kivy (big surprise, although take care to choose a Python2.7 version since this demo uses Twisted, currently Python2 only) - follow the instructions at the [project website](http://kivy.org/docs/gettingstarted/installation.html).
 
 You then need to install Autobahn|Python and its dependencies - for kivy:
 
