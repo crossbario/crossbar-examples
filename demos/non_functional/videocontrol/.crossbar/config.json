@@ -10,7 +10,7 @@
          },
          "realms": [
             {
-               "name": "realm1",
+               "name": "crossbardemo",
                "roles": [
                   {
                      "name": "anonymous",
@@ -37,8 +37,7 @@
                "paths": {
                   "/": {
                      "type": "static",
-                     "package": "cbvideocontrol",
-                     "resource": "web"
+                     "directory": "../web"
                   },
                   "ws": {
                      "type": "websocket"
@@ -54,10 +53,9 @@
          },
          "components": [
             {
-               "type": "wamplet",
-               "package": "cbvideocontrol",
-               "entrypoint": "backend",
-               "realm": "realm1",
+               "type": "class",
+               "classname": "backend.AppSession",
+               "realm": "crossbardemo",
                "transport": {
                   "type": "websocket",
                   "endpoint": {

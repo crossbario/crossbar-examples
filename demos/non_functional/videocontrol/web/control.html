@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Remote Control</title>
+  <meta charset='utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/videocontrol.css">
+  <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"
+         type="text/javascript"></script>
+  <style type="text/css">
+    #controls {
+      width:300px;
+      margin:auto;
+    }
+    #controls button {
+      font-size: 1em;
+    }
+    #controls input {
+      vertical-align:middle;
+       width: 200px;
+       height:20px;
+   }
+  </style>
+</head>
+<body>
+  <body>
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>Videocontrol</span>
+         </div>
+         <a class="navbar-brand" href="/">
+            <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+            <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+         </a>
+      </div>
+
+   </header>
+   <div class="demo_links">
+      <p>
+         Controller for the Videocontrol demo
+      </p>
+      <div>
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/videocontrol">Source Code</a>
+         <a href="http://crossbar.io">
+            Crossbar.io Homepage
+         </a>
+      </div>
+   </div>
+
+   <div id="demo_body">
+
+
+      <p id="controls">
+         <!-- It's ironic to think in 2000, inline JS was considered evil, and now with
+       angularjs and all, it's exactly what everybody's doing. So far so good, we attach
+       an handler to the click event on our controls and bind it to a Javascript methods
+       that will handle all our logic -->
+
+        <button id="play" onclick="control.togglePlay()" class="button">Play</button>
+        <br>
+        <br>
+        Volume <input id="volume"
+                        onchange="control.volume(this.value)"
+                        type="range">
+      </p>
+
+   </div>
+</body>
+
+<script>
+/* This is the object holding the logic
+   for our play/pause and volume controls.
+   Nothing crazy, it updates the button
+   and slide display according to
+   the play/pause state and the volume
+   value .*/
+var control = {
+   playing: false,
+   setPlaying: function(val){
+      control.playing = val;
+      var button = window.document.getElementById('play');
+      if (!val){
+         button.innerHTML = 'Play'
+      } else {
+         button.innerHTML = 'Pause';
+      }
+   },
+   setVolume: function(val){
+      var slider = window.document.getElementById('volume');
+      slider.value = val;
+   },
+   togglePlay: function(){
+      // placeholder since we bind to this before the correct function is set
+   },
+   volume: function() {
+      // placeholder since we bind to this before the correct function is set
+   } 
+};
+window.onload = function(){
+  // the URL of the WAMP Router (Crossbar.io)
+  //
+  var wsuri;
+  if (document.location.origin == "file://") {
+    wsuri = "ws://127.0.0.1:8080/ws";
+  } else {
+    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+               document.location.host + "/ws";
+  }
+
+  console.log("wsuri", wsuri);
+
+  var connection = new autobahn.Connection({
+    url: wsuri,
+    realm: 'crossbardemo'
+  });
+
+  connection.onopen = function (session) {
+
+    console.log("connected");
+
+    session.prefix('demo', 'io.crossbar.demo.videocontroller');
+
+    /* We get the ID from the URL hash */
+    var uuid = window.location.hash.replace('#', '');
+
+    /* Updating the controls according to the current
+       player state using a RPC call to the other
+       page. */
+    session.call('demo:' + uuid + '.status').then(function(status){
+
+      control.setPlaying(status['playing']);
+      control.setVolume(status['volume'] * 100);
+
+      /* We bind the button click event to
+         a call to the play() function on
+         the remote player. The uuid allows
+         us to only send the event to the
+         right player. */
+      control.togglePlay = function() {
+        if (control.playing){
+          session.call('demo:' + uuid + '.pause');
+          control.setPlaying(false);
+        } else {
+          session.call('demo:' + uuid + '.play');
+          control.setPlaying(true);
+        }
+      };
+
+      control.volume = function(val){
+        session.call('demo:' + uuid + '.volume', [val / 100]);
+      };
+
+       /* We add a callback to react to events like
+         the player state changing. If somebody
+         clic on play/pause or change the volume,
+         we want to update this page. */
+      session.subscribe('demo:' + uuid + '.play', function(){
+        control.setPlaying(true);
+      });
+
+      session.subscribe('demo:' + uuid + '.pause', function(){
+        control.setPlaying(false);
+      });
+
+      session.subscribe('demo:' + uuid + '.volume', function(val){
+        control.setVolume(val[0] * 100);
+      });
+    });
+  };
+
+  connection.open();
+};
+
+</script>
+
+</html>
+
