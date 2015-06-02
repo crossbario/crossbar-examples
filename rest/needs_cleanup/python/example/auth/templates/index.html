@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block header %}
+   <!-- AutobahnJS client library -->
+   <script src="http://autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+
+   <script>
+
+      // Tavendo WebMQ WebSocket/WAMP URL - this gets filled from Flask
+      var wsuri = "{{ server }}";
+
+      // The topic we use - this gets filled from Flask
+      var topic = "{{ topic }}"
+
+      // will hold our WAMP client session
+      var session = null;
+
+      window.onload = function() {
+         // connect upon window load
+         connect();
+      };
+
+      function connect() {
+
+         // connect to WebMQ
+         ab.connect(wsuri,
+
+            // called when connection has been established
+            function (sess) {
+               log("connected", wsuri);
+               session = sess;
+               onConnect();
+            },
+
+            // called when connection was lost, failed or on reconnects
+            function (code, reason, detail) {
+               log("connection lost", code, reason, detail);
+            }
+         );
+      }
+
+      function authsignremote(url, challenge) {
+
+         var res = new XMLHttpRequest();
+         res.open('POST', url, false);
+         res.send(challenge);
+
+         if (res.status == 200) {
+            try {
+               var r = res.responseText;
+               console.log(r);
+               return r;
+            } catch (e) {
+               return null;
+            }
+         } else {
+            return null;
+         }
+      };
+
+      function onConnect() {
+         session.authreq("foobar").then(function (challenge) {
+
+            console.log(challenge);
+
+            console.log(session.authsign(challenge, "secret"));
+
+            // direct sign or AJAX to 3rd party
+            var signature = authsignremote("/authsign", challenge);
+
+            console.log(signature);
+
+            session.auth(signature).then(onAuth, ab.log);
+         }, ab.log);
+      };
+
+      // we are now authenticated
+      function onAuth(permissions) {
+         log("authenticated", permissions);
+         session.subscribe(topic, onMyEvent);
+      };
+
+      // we received an event
+      function onMyEvent(topic, event) {
+         log("event", topic, event);
+      };
+
+      function log() {
+         var l = document.getElementById("evts")
+         for (var i = 0; i < arguments.length; ++i) {
+            if (i > 0) {
+               l.innerHTML += ", ";
+            }
+            l.innerHTML += JSON.stringify(arguments[i]);
+         }
+         l.innerHTML += "\n";
+      };
+   </script>
+{% endblock %}
+{% block body %}
+   <h1>Authentication to WebMQ from Flask</h1>
+   <pre id="evts" style="background-color: #333; color: #fff; width: 100%; font-size: 11px; padding: 12px; min-height: 300px;"></pre>
+{% endblock %}
