@@ -3,11 +3,10 @@
    <head>
       <meta charset="UTF-8">
 
-      <link rel="shortcut icon" href="../../img/favicon.ico">
+      <link rel="shortcut icon" href="../favicon.ico">
       <title>Dashboard</title>
       <link href='http://fonts.googleapis.com/css?family=Quattrocento:400,700|Quattrocento+Sans:400,400italic,700' rel='stylesheet' type='text/css'>
 
-      <link rel="stylesheet" href="../demo.css">
       <link rel="stylesheet" href="css/dashboard.css" type="text/css">
 
       <!-- Include Flash WebSocket via Conditional Comment:
@@ -20,13 +19,17 @@
          <script type="text/javascript" src="../../flashws/web_socket.js"></script>
       <![endif]-->
 
-      <script type="text/javascript" src="../../js/jquery.min.js"></script>
+      <script type="text/javascript" src="js/jquery.min.js"></script>
 
-      <link type="text/css" href="../../jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
-      <script type="text/javascript" src="../../jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+      <link type="text/css" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+      <script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
 
-      <script type="text/javascript" src="../../js/autobahn.min.js"></script>
-      <script type="text/javascript" src="../../js/knockout.min.js"></script>
+      
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>      
+      <script type="text/javascript" src="js/knockout-3.2.0.js"></script>
 
       <script type="text/javascript" src="js/dashboard.js"></script>
 
@@ -39,14 +42,18 @@
                   <span>Dashboard</span>
                </div>
                <a class="navbar-brand" href="/">
-               <img src="../../img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
                <span class="fontFace">
                   <span>Crossbar</span><span>.io</span>
                </span>
             </a>
             </div>
+            <div style="text-align: center">
+               <a href="/dashboardcontroller/index.html" target="_blank" class="openController">Open Controller</a>
+            </div>
+
             <center class="githubwrapper">
-               <a class="github" href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/dashboard">Source Code</a>
+               <a class="github" href="https://github.com/crossbario/crossbarexamples/tree/master/demos/dashboard">Source Code</a>
             </center>
          </header>
          <div id="dashboard_01"  data-bind="style: { display: dashboard_01_display }">
@@ -175,7 +182,7 @@
                                  </div>
                               </div>
 
-                           <div class="activity_threshold_slider_wrapper">
+<!--                            <div class="activity_threshold_slider_wrapper">
                               <span>Revenue</span>
                               <span class="revenue_threshold_value">0</span>
                               <div id="revenue_threshold" class="activity_threshold_slider"></div>
@@ -184,7 +191,7 @@
                               <span>Units</span>
                               <span class="unit_threshold_value">0</span>
                               <div id="unit_threshold" class="activity_threshold_slider"></div>
-                           </div>
+                           </div> -->
 
                            </div>
                         </div>
@@ -386,7 +393,7 @@
                                  </div>
                               </div>
 
-                           <div class="activity_threshold_slider_wrapper">
+                           <!-- <div class="activity_threshold_slider_wrapper">
                               <span>Revenue</span>
                               <span class="revenue_threshold_value">0</span>
                               <div id="revenue_threshold_02" class="activity_threshold_slider"></div>
@@ -395,7 +402,7 @@
                               <span>Units</span>
                               <span class="unit_threshold_value">0</span>
                               <div id="unit_threshold_02" class="activity_threshold_slider"></div>
-                           </div>
+                           </div> -->
 
                            </div>
                         </div>

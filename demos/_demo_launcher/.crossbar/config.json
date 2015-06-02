@@ -78,6 +78,14 @@
                   "visitors_counter": {
                      "type": "static",
                      "directory": "../../visitors_counter"
+                  },
+                  "dashboard": {
+                     "type": "static",
+                     "directory": "../../dashboard/board" 
+                  },
+                  "dashboardcontroller": {
+                     "type": "static",
+                     "directory": "../../dashboard/controller" 
                   }
                }
             }

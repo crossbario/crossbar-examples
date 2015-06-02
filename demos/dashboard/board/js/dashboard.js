@@ -82,82 +82,95 @@ $(document).ready(function() {
    updateStatusline("Not connected.");
 
    // set up knockout.js view model
-   ko.applyBindings(vm);
-
-   // turn on WAMP debug output
-   // ab.debug(true, false, false);
-
-   // use jQuery deferreds
-   ab.Deferred = $.Deferred;
+   ko.applyBindings(vm);  
 
    // Connect to Crossbar.io ..
    //
-   ab.launch(
-      // WAMP app configuration
-      {
-         // Crossbar.io server URL
-         wsuri: ab.getServerUrl("ws", "ws://127.0.0.1:8080/ws"),
-         // authentication info
-         appkey: null, // authenticate as anonymous
-         appsecret: null,
-         appextra: null,
-         // additional session configuration
-         sessionConfig: {maxRetries: 10,
-                         sessionIdent: "Vote"}
-      },
-      // session open handler
-      function (newSession) {
-         session = newSession;
-         // main(session);
-         updateStatusline("Connected to " + session.wsuri() + " in session " + session.sessionid());
+   var demoRealm = "crossbardemo";
+   var demoPrefix = "io.crossbar.demo.dashboard";
 
-         ///** define session prefixes ***/
-         session.prefix("event", "http://crossbar.io/crossbar/demo/dashboard#");
-         session.prefix("sales", "http://crossbar.io/crossbar/demo/dashboard#");
+   var wsuri;
+   if (document.location.origin == "file://") {
+      wsuri = "ws://127.0.0.1:8080/ws";
 
+   } else {
+      wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                  document.location.host + "/ws";
+   }
 
-         // subscribe to events
-         session.subscribe("event:switch-dashboard", onDashboardSwitch)
-
-         // sales events
-         session.subscribe("sales:revenue", onRevenue);
-         session.subscribe("sales:revenue-by-product", onRevenueByProduct);
-         session.subscribe("sales:units-by-product", onUnitsByProduct);
-         session.subscribe("sales:revenue-by-region", onRevenueByRegion);
-         session.subscribe("sales:asp-by-region", onAspByRegion);
-         session.subscribe("sales:sale", onSale);
-
-         session.subscribe("sales:revenue-threshold", onRevenueThresholdChanged);
-         session.subscribe("sales:unit-threshold", onUnitThresholdChanged);
-
-         onDashboardSwitch(null, 1);
-
-
-         // Oracle Dashboard Demo
-         session.prefix("orasales", "http://crossbar.io/crossbar/demo/dashboard#");
-
-         // sales events
-         session.subscribe("orasales:totalRevenue", onRevenue);
-         session.subscribe("orasales:revenueByProduct", onRevenueByProduct);
-         session.subscribe("orasales:unitsByProduct", onUnitsByProduct);
-         session.subscribe("orasales:revenueByRegion", onRevenueByRegion);
-         session.subscribe("orasales:aspByRegion", onAspByRegion);
-         session.subscribe("orasales:onSale", onSale);
-
-         session.subscribe("orasales:revenue-threshold", onRevenueThresholdChanged);
-         session.subscribe("orasales:unit-threshold", onUnitThresholdChanged);
-
-         initialize();
-      },
-      // session close handler
-      function (code, reason, detail) {
-         session = null;
-         updateStatusline(reason);
+   connection = new autobahn.Connection({
+      url: wsuri,
+      realm: demoRealm,
+      max_retries: 30,
+      initial_retry_delay: 2
       }
    );
+
+
+   connection.onopen = function (sess) {
+
+      session = sess;
+
+      console.log("connected");
+
+      // main(session);
+      updateStatusline("Connected to " + wsuri + " in session " + session.id);
+
+      ///** define session prefixes ***/
+      session.prefix("event", demoPrefix);
+      session.prefix("sales", demoPrefix);
+
+
+      // subscribe to events
+      session.subscribe("event:switch-dashboard", onDashboardSwitch);
+
+      // sales events
+      session.subscribe("sales:revenue", onRevenue);
+      session.subscribe("sales:revenue-by-product", onRevenueByProduct);
+      session.subscribe("sales:units-by-product", onUnitsByProduct);
+      session.subscribe("sales:revenue-by-region", onRevenueByRegion);
+      session.subscribe("sales:asp-by-region", onAspByRegion);
+      session.subscribe("sales:sale", onSale);
+
+      session.subscribe("sales:revenue-threshold", onRevenueThresholdChanged);
+      session.subscribe("sales:unit-threshold", onUnitThresholdChanged);
+
+      onDashboardSwitch([1]);
+
+      // // Oracle Dashboard Demo
+      // session.prefix("orasales", "io.crossbar.demo.dashboard");
+
+      // // sales events
+      // session.subscribe("orasales:totalRevenue", onRevenue);
+      // session.subscribe("orasales:revenueByProduct", onRevenueByProduct);
+      // session.subscribe("orasales:unitsByProduct", onUnitsByProduct);
+      // session.subscribe("orasales:revenueByRegion", onRevenueByRegion);
+      // session.subscribe("orasales:aspByRegion", onAspByRegion);
+      // session.subscribe("orasales:onSale", onSale);
+
+      // session.subscribe("orasales:revenue-threshold", onRevenueThresholdChanged);
+      // session.subscribe("orasales:unit-threshold", onUnitThresholdChanged);
+
+      initialize();
+
+      console.log("post-initialize");
+
+   };
+
+   connection.onclose = function(reason, details) {
+      session = null;
+      updateStatusline(reason);
+      console.log("connection closed ", arguments);
+   }
+
+   connection.open();
+
 })
 
 function initialize() {
+
+   console.log("initialize called");
+
    // set up the sliders for the activity stream
    $("#revenue_threshold").slider({
       value: 0,
@@ -177,7 +190,7 @@ function initialize() {
       slide: function(event, ui) {
          revenue_threshold = parseInt(ui.value * 100);
          $(".revenue_threshold_value").text(thousand_formatted(revenue_threshold));
-         session.publish("sales:revenue-threshold-changed", revenue_threshold);
+         session.publish("sales:revenue-threshold-changed", [revenue_threshold]);
       }
    });
 
@@ -185,7 +198,7 @@ function initialize() {
       slide: function(event, ui) {
          unit_threshold = parseInt(ui.value / 10);
          $(".unit_threshold_value").text(unit_threshold);
-         session.publish("sales:unit-threshold-changed", unit_threshold);
+         session.publish("sales:unit-threshold-changed", [unit_threshold]);
       }
    });
 
@@ -207,7 +220,7 @@ function initialize() {
       slide: function(event, ui) {
          revenue_threshold = parseInt(ui.value * 100);
          $(".revenue_threshold_value").text(thousand_formatted(revenue_threshold));
-         session.publish("sales:revenue-threshold-changed", revenue_threshold);
+         session.publish("sales:revenue-threshold-changed", [revenue_threshold]);
       }
    });
 
@@ -215,9 +228,11 @@ function initialize() {
       slide: function(event, ui) {
          unit_threshold = parseInt(ui.value / 10);
          $(".unit_threshold_value").text(unit_threshold);
-         session.publish("sales:unit-threshold-changed", unit_threshold);
+         session.publish("sales:unit-threshold-changed", [unit_threshold]);
       }
    });
+
+   console.log("pre-pie chart");
 
    // generate SVG canvases for pie charts and draw charts with initial settings
    document.getElementById("pie_chart_content_container").appendChild(SVG.makeCanvas("pieChart1", 350, 300, 350, 300));
@@ -258,8 +273,8 @@ function DashboardViewModel () {
    self.simpleIndicatorBigNumber = ko.observable(45);
    self.simpleIndicatorComparisonValue = ko.observable(34);
    self.simpleIndicatorTrend = ko.computed(function() {
-      //ab.log("simpleIndicatorTrend", parseInt((self.simpleIndicatorBigNumber() / self.simpleIndicatorComparisonValue() - 1) * 100));
-      // ab.log("the parts", self.simpleIndicatorBigNumber(), self.simpleIndicatorComparisonValue());
+      //session.log("simpleIndicatorTrend", parseInt((self.simpleIndicatorBigNumber() / self.simpleIndicatorComparisonValue() - 1) * 100));
+      // session.log("the parts", self.simpleIndicatorBigNumber(), self.simpleIndicatorComparisonValue());
       return (parseInt(( self.simpleIndicatorBigNumber() / self.simpleIndicatorComparisonValue() - 1 ) * 100));
    },self);
    self.simpleIndicatorTrendDisplay = ko.computed(function() {
@@ -427,7 +442,7 @@ function activity_stream_event (product, units, region, revenue, icon) {
       "news":"img/wireless.png"
    }
    this.activity_icon = this.iconmap[icon];
-   ab.log(this.activity_icon);
+   session.log(this.activity_icon);
 }
 
 
@@ -460,6 +475,7 @@ function highlightTimer ( timer ) {
 }
 
 function drawPieChart () {
+   console.log("drawPieChart called");
    // arguments:
       // id of svg element, [ values for section size, get normalized ], center_x, center_y, radius, [ colors ], [ legend labels ], legend_x, legend_y
    pieChart("pieChart1", [parseInt(vm.pieSection01()), parseInt(vm.pieSection02()), parseInt(vm.pieSection03()), parseInt(vm.pieSection04())], 125, 170, 125, [chartColor01, chartColor02, chartColor03, chartColor04], ["North", "East", "South", "West"], 265, 0);
@@ -468,11 +484,11 @@ function drawPieChart () {
 
 // subscription event handling
 
-function onDashboardSwitch ( topicuri, event ) {
-  ab.log( event);
+function onDashboardSwitch (args) {
+  session.log("onDashboardSwitch", args );
    var dashboards = [ vm.dashboard_01_display, vm.dashboard_02_display, vm.dashboard_03_display];
    for ( var i = 0; i < dashboards.length; i++) {
-      if ( i === event ) {
+      if ( i === args[0] ) {
          dashboards[i]("block");
       }
       else {
@@ -487,173 +503,173 @@ function onDashboardSwitch ( topicuri, event ) {
 /*********************************
  *    DEMO EVENTS       *
  *********************************/
-// evetn with 'idx' is sent by the dashboard controller
-function onRevenue (topicURI, event) {
-   //ab.log(topicURI, event);
-   if (event["idx"]) {
-      switch (event["idx"]) {
+// event with 'idx' is sent by the dashboard controller
+function onRevenue (args, kwargs) {
+   //session.log(topicURI, event);
+   if (kwargs["idx"]) {
+      switch (kwargs["idx"]) {
          case 1:
-            vm.simpleIndicatorBigNumber(event["val"]);
+            vm.simpleIndicatorBigNumber(kwargs["val"]);
             break;
          case 2:
-            vm.simpleIndicatorComparisonValue(event["val"]);
+            vm.simpleIndicatorComparisonValue(kwargs["val"]);
             break;
          default:
-            ab.log("uncovered value", topicURI, event);
+            session.log("uncovered value", topicURI, kwargs);
             break;
       }
    }
    else {
-      vm.simpleIndicatorBigNumber(event[0]);
-      vm.simpleIndicatorComparisonValue(event[1]);
+      vm.simpleIndicatorBigNumber(kwargs[0]);
+      vm.simpleIndicatorComparisonValue(kwargs[1]);
    }
    highlightTimer(simple_timer);
 }
-function onRevenueByProduct (topicURI, event) {
-   // session.log(topicURI, event);
-   if (event["idx"]) {
-      switch (event["idx"]) {
+function onRevenueByProduct (args, kwargs) {
+   // session.log(args, kwargs);
+   if (kwargs["idx"]) {
+      switch (kwargs["idx"]) {
          case 1:
-            vm.bar_01_value(event["val"]);
+            vm.bar_01_value(kwargs["val"]);
             break;
          case 2:
-            vm.bar_02_value(event["val"]);
+            vm.bar_02_value(kwargs["val"]);
             break;
          case 3:
-            vm.bar_03_value(event["val"]);
+            vm.bar_03_value(kwargs["val"]);
             break;
          default:
-            ab.log("uncovered value", topicURI, event);
+            session.log("uncovered value", topicURI, kwargs);
             break;
       }
    }
    else {
-      if(event["Product A"]) {
-         vm.bar_01_value(event["Product A"][0]);
+      if(kwargs["Product A"]) {
+         vm.bar_01_value(kwargs["Product A"][0]);
       }
-      if(event["Product B"]) {
-         vm.bar_02_value(event["Product B"][0]);
+      if(kwargs["Product B"]) {
+         vm.bar_02_value(kwargs["Product B"][0]);
       }
-      if(event["Product C"]) {
-         vm.bar_03_value(event["Product C"][0]);
+      if(kwargs["Product C"]) {
+         vm.bar_03_value(kwargs["Product C"][0]);
       }
    }
    highlightTimer( bars_timer );
 }
-function onUnitsByProduct (topicURI, event) {
-   // session.log(topicURI, event);
-   if (event["idx"]) {
-      switch (event["idx"]) {
+function onUnitsByProduct (args, kwargs) {
+   // session.log(topicURI, kwargs);
+   if (kwargs["idx"]) {
+      switch (kwargs["idx"]) {
          case 1:
-            vm.hundred_bar_sections()[0].hundred_width(event["val"]);
+            vm.hundred_bar_sections()[0].hundred_width(kwargs["val"]);
             break;
          case 2:
-            vm.hundred_bar_sections()[1].hundred_width(event["val"]);
+            vm.hundred_bar_sections()[1].hundred_width(kwargs["val"]);
             break;
          case 3:
-            vm.hundred_bar_sections()[2].hundred_width(event["val"]);
+            vm.hundred_bar_sections()[2].hundred_width(kwargs["val"]);
             break;
          default:
-            ab.log("uncovered value", topicURI, event);
+            session.log("uncovered value", topicURI, kwargs);
             break;
       }
    }
    else {
-      if(event["Product A"]) {
-         vm.hundred_bar_sections()[0].hundred_width(event["Product A"][0]);
+      if(kwargs["Product A"]) {
+         vm.hundred_bar_sections()[0].hundred_width(kwargs["Product A"][0]);
       }
-      if(event["Product B"]) {
-         vm.hundred_bar_sections()[1].hundred_width(event["Product B"][0]);
+      if(kwargs["Product B"]) {
+         vm.hundred_bar_sections()[1].hundred_width(kwargs["Product B"][0]);
       }
-      if(event["Product C"]) {
-         vm.hundred_bar_sections()[2].hundred_width(event["Product C"][0]);
+      if(kwargs["Product C"]) {
+         vm.hundred_bar_sections()[2].hundred_width(kwargs["Product C"][0]);
       }
    }
    highlightTimer ( hundred_timer );
 }
-function onRevenueByRegion (topicURI, event) {
-   // session.log(topicURI, event);
-   if (event["idx"]) {
-      switch (event["idx"]) {
+function onRevenueByRegion (args, kwargs) {
+   // session.log(topicURI, kwargs);
+   if (kwargs["idx"]) {
+      switch (kwargs["idx"]) {
          case 1:
-            vm.pieSection01(event["val"]);
+            vm.pieSection01(kwargs["val"]);
             break;
          case 2:
-            vm.pieSection02(event["val"]);
+            vm.pieSection02(kwargs["val"]);
             break;
          case 3:
-            vm.pieSection03(event["val"]);
+            vm.pieSection03(kwargs["val"]);
             break;
          case 4:
-            vm.pieSection04(event["val"]);
+            vm.pieSection04(kwargs["val"]);
             break;
          default:
-            ab.log("uncovered value", topicURI, event);
+            session.log("uncovered value", topicURI, kwargs);
             break;
       }
    }
    else {
-      if(event["North"]) {
-         vm.pieSection01(event["North"][0]);
+      if(kwargs["North"]) {
+         vm.pieSection01(kwargs["North"][0]);
       }
-      if(event["East"]) {
-         vm.pieSection02(event["East"][0]);
+      if(kwargs["East"]) {
+         vm.pieSection02(kwargs["East"][0]);
       }
-      if(event["South"]) {
-         vm.pieSection03(event["South"][0]);
+      if(kwargs["South"]) {
+         vm.pieSection03(kwargs["South"][0]);
       }
-      if(event["West"]) {
-         vm.pieSection04(event["West"][0]);
+      if(kwargs["West"]) {
+         vm.pieSection04(kwargs["West"][0]);
       }
    }
    drawPieChart();
    highlightTimer ( pie_timer );
 }
-function onAspByRegion (topicURI, event) {
-   // session.log(topicURI, event);
-   if (event["idx"]) {
-      switch (event["idx"]) {
+function onAspByRegion (args, kwargs) {
+   // session.log(topicURI, kwargs);
+   if (kwargs["idx"]) {
+      switch (kwargs["idx"]) {
          case 1:
-            vm.bulletBar01(event["val"]);
+            vm.bulletBar01(kwargs["val"]);
             break;
          case 2:
-            vm.bulletBar02(event["val"]);
+            vm.bulletBar02(kwargs["val"]);
             break;
          case 3:
-            vm.bulletBar03(event["val"]);
+            vm.bulletBar03(kwargs["val"]);
             break;
          case 4:
-            vm.bulletBar04(event["val"]);
+            vm.bulletBar04(kwargs["val"]);
             break;
          default:
-            ab.log("uncovered value", topicURI, event);
+            session.log("uncovered value", topicURI, kwargs);
             break;
       }
    }
    else {
-      if(event["North"]) {
-         vm.bulletBar01(event["North"][0] * .2);
-         vm.bulletTarget01(event["North"][1] * .2);
+      if(kwargs["North"]) {
+         vm.bulletBar01(kwargs["North"][0] * .2);
+         vm.bulletTarget01(kwargs["North"][1] * .2);
       }
-      if(event["East"]) {
-         vm.bulletBar02(event["East"][0] * .2);
-         vm.bulletTarget02(event["East"][1] * .2);
+      if(kwargs["East"]) {
+         vm.bulletBar02(kwargs["East"][0] * .2);
+         vm.bulletTarget02(kwargs["East"][1] * .2);
       }
-      if(event["South"]) {
-         vm.bulletBar03(event["South"][0] * .2);
-         vm.bulletTarget03(event["South"][1] * .2);
+      if(kwargs["South"]) {
+         vm.bulletBar03(kwargs["South"][0] * .2);
+         vm.bulletTarget03(kwargs["South"][1] * .2);
       }
-      if(event["West"]) {
-         vm.bulletBar04(event["West"][0] * .2);
-         vm.bulletTarget04(event["West"][1] * .2);
+      if(kwargs["West"]) {
+         vm.bulletBar04(kwargs["West"][0] * .2);
+         vm.bulletTarget04(kwargs["West"][1] * .2);
       }
    }
 
 
-   //vm.bulletTarget01(event["North"][1]);
-   //vm.bulletTarget02(event["East"][1]);
-   //vm.bulletTarget03(event["South"][1]);
-   //vm.bulletTarget04(event["West"][1]);
+   //vm.bulletTarget01(kwargs["North"][1]);
+   //vm.bulletTarget02(kwargs["East"][1]);
+   //vm.bulletTarget03(kwargs["South"][1]);
+   //vm.bulletTarget04(kwargs["West"][1]);
 
    highlightTimer ( bullet_timer );
 
@@ -661,15 +677,15 @@ function onAspByRegion (topicURI, event) {
 
 // var onSaleTest = { "revenue": 2000, "units": 3, "product": "Hummer", "region": "moon"};
 
-function onSale(topicURI, event) {
-   //ab.log(topicURI, event);
+function onSale(args, kwargs) {
+   session.log("onSale", kwargs, kwargs.revenue > revenue_threshold);
 
-   if (event["revenue"] > revenue_threshold || event["units"] > unit_threshold) {
+   if (kwargs["revenue"] > revenue_threshold || kwargs["units"] > unit_threshold) {
 
       var icon = "sale";
 
-      vm.activity_stream_events.push(new activity_stream_event(event["product"], event["units"], event["region"], event["revenue"]));
-      session.publish("sales:activity-display-threshold-exceeded", event);
+      vm.activity_stream_events.push(new activity_stream_event(kwargs["product"], kwargs["units"], kwargs["region"], kwargs["revenue"]));
+      session.publish("sales:activity-display-threshold-exceeded", [], kwargs);
       highlightTimer ( activity_timer );
       $(".activity_stream_window").each(function() {
          this.scrollTop = this.scrollHeight;
@@ -679,15 +695,15 @@ function onSale(topicURI, event) {
 
 };
 
-function onRevenueThresholdChanged ( topicURI, event) {
+function onRevenueThresholdChanged (args) {
    $("#revenue_threshold").slider({
-      value: event
+      value: args[0]
    });
 };
 
-function onUnitThresholdChanged ( topicURI, event ) {
+function onUnitThresholdChanged (args) {
    $("#unit_threshold").slider({
-      value: event
+      value: args[0]
    });
 };
 
@@ -733,7 +749,7 @@ SVG.makeCanvas = function(id, pixelWidth, pixelHeight, userWidth, userHeight) {
  *   lx, ly: the upper-left corner of the chart legend
  */
 function pieChart(canvas, data, cx, cy, r, colors, labels, lx, ly) {
-    //ab.log(arguments);
+    //session.log(arguments);
     // Locate canvas if specified by id instead of element
     if (typeof canvas == "string") canvas = document.getElementById(canvas);
 

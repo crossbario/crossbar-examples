@@ -3,11 +3,10 @@
    <head>
       <meta charset="UTF-8">
 
-      <link rel="shortcut icon" href="../../img/favicon.ico">
+      <link rel="shortcut icon" href="favicon.ico">
       <title>Dashboard Controls</title>
 
 
-      <link href="../demo.css" rel="stylesheet">
       <link rel="stylesheet" href="css/dashboardcontroller.css" type="text/css" />
 
       <!-- Include Flash WebSocket via Conditional Comment:
@@ -20,12 +19,15 @@
          <script type="text/javascript" src="../../flashws/web_socket.js"></script>
       <![endif]-->
 
-      <script type="text/javascript" src="../../js/jquery.min.js"></script>
+      <script type="text/javascript" src="js/jquery.min.js"></script>
 
-      <link type="text/css" href="../../jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
-      <script type="text/javascript" src="../../jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+      <link type="text/css" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css" rel="stylesheet" />
+      <script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
 
-      <script type="text/javascript" src="../../js/autobahn.min.js"></script>
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 
       <script type="text/javascript" src="js/dashboardcontroller.js"></script>
 
@@ -38,14 +40,14 @@
                <span>Dashboard Controls</span>
             </div>
             <a class="navbar-brand" href="/">
-               <img src="../../img/crossbar_icon_inverted.png" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
                <span class="fontFace">
                   <span>Crossbar</span><span>.io</span>
                </span>
             </a>
          </div>
          <center>
-            <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/dashboardcontroller">Source Code</a>
+            <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/dashboard">Source Code</a>
          </center>
       </header>
 
@@ -61,6 +63,17 @@
                <br />
                <button onclick="switch_dashboard(1)" class="button switch_button">3 x 3 arrangement</button>
                <!--<button onclick="switch_dashboard(2)">3 x 3 - numbers</button>-->
+            </div>
+         </div>
+
+
+         <div class="eq_container toggleRandomContainer">
+            <p class="ui-state-default ui-corner-all uisync_header">
+               <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                     Send Random Stream of Data
+            </p>
+            <div>
+               <button id="toggleRandomDataSend" class="button switch_button">Start</button>               
             </div>
          </div>
          <div class="clearboth"></div>
