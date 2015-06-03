@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <script src="bower_components/resumablejs/resumable.js"></script>
+   <script src="bower_components/autobahn/autobahn.min.js"></script>
+</head>
+Hello World
+
+<body>
+   <a href="#" id="browseButton">Select files</a>
+
+
+   <script>
+   var connection = new autobahn.Connection({
+      url: 'ws://127.0.0.1:8089/ws',
+      realm: 'realm1'
+   });
+
+   connection.onopen = function(session, details) {
+      console.log("Connected", details);
+      absession = session;
+
+      absession.subscribe('re.upload', function(res) {
+         absession.log('upload event received', res);
+      });
+
+
+
+      var r = new Resumable({
+         target: 'upload',
+         chunkSize: 10 * 1024 * 1024,
+         simultaneousUploads: 4,
+         testChunks: true,
+         query:{
+            progress_uri: 're.upload'
+         }
+      });
+
+      r.assignBrowse(document.getElementById('browseButton'));
+
+      r.on('fileSuccess', function(file) {
+         console.debug(r.files);
+
+         // enable repeated upload since other user can delete the file on the server
+         // and this user might want to reupload the file
+         file.cancel();
+      });
+      r.on('fileProgress', function(file) {
+         // console.debug(file);
+      });
+      r.on('fileAdded', function(file, event) {
+         r.upload();
+         // console.debug(file, event);
+      });
+      r.on('filesAdded', function(array) {
+         // console.debug(array);
+      });
+      r.on('fileRetry', function(file) {
+         // console.debug(file);
+      });
+      r.on('fileError', function(file, message) {
+         // console.debug(file, message);
+      });
+      r.on('uploadStart', function() {
+         // console.debug();
+      });
+      r.on('complete', function() {
+         // console.debug();
+      });
+      r.on('progress', function() {
+         // console.debug();
+      });
+      r.on('error', function(message, file) {
+         // console.debug(message, file);
+      });
+      r.on('pause', function() {
+         // console.debug();
+      });
+      r.on('cancel', function() {
+         // console.debug();
+      });
+
+   };
+
+   connection.open();
+   </script>
+
+
+</body>
+
+</html>
