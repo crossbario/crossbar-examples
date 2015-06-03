@@ -5,7 +5,7 @@
    <script src="bower_components/resumablejs/resumable.js"></script>
    <script src="bower_components/autobahn/autobahn.min.js"></script>
 </head>
-Hello World
+
 
 <body>
    <a href="#" id="browseButton">Select files</a>
@@ -25,15 +25,13 @@ Hello World
          absession.log('upload event received', res);
       });
 
-
-
       var r = new Resumable({
          target: 'upload',
          chunkSize: 10 * 1024 * 1024,
          simultaneousUploads: 4,
          testChunks: true,
-         query:{
-            progress_uri: 're.upload'
+         query: {
+            progress_uri: 'my.upload'
          }
       });
 
@@ -46,47 +44,11 @@ Hello World
          // and this user might want to reupload the file
          file.cancel();
       });
-      r.on('fileProgress', function(file) {
-         // console.debug(file);
-      });
-      r.on('fileAdded', function(file, event) {
-         r.upload();
-         // console.debug(file, event);
-      });
-      r.on('filesAdded', function(array) {
-         // console.debug(array);
-      });
-      r.on('fileRetry', function(file) {
-         // console.debug(file);
-      });
-      r.on('fileError', function(file, message) {
-         // console.debug(file, message);
-      });
-      r.on('uploadStart', function() {
-         // console.debug();
-      });
-      r.on('complete', function() {
-         // console.debug();
-      });
-      r.on('progress', function() {
-         // console.debug();
-      });
-      r.on('error', function(message, file) {
-         // console.debug(message, file);
-      });
-      r.on('pause', function() {
-         // console.debug();
-      });
-      r.on('cancel', function() {
-         // console.debug();
-      });
 
    };
 
    connection.open();
    </script>
-
-
 </body>
 
 </html>
