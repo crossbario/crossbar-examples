@@ -149,7 +149,7 @@
          We assume that the player page and the controller are served on the same port
          */
         var uuid = connection_data.uuid;
-        var controlUrl = "http://" + connection_data.ip + ":" + document.location.port + document.location.pathname +  "control.html#" + connection_data.uuid;
+        var controlUrl = document.location.protocol + "//" + connection_data.ip + ":" + document.location.port + document.location.pathname +  "control.html#" + connection_data.uuid;
         var codeDiv = document.getElementById("qrcode");
         new QRCode(codeDiv, controlUrl);
         var ctrllink = document.getElementById("ctrllink");
