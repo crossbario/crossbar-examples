@@ -94,8 +94,6 @@
        <center>Read more in the <a href="http://tavendo.com/blog/post/small-demo-of-a-pragmatic-use-of-wamp-in-python/">blog post in English</a> or <a href="http://sametmax.com/introduction-a-wamp-en-python/">French</a> .
    </div>
 
-
-
 </body>
 
 <script>
@@ -136,20 +134,12 @@
 
       session.prefix('demo', 'io.crossbar.demo.videocontroller');
 
-      /* Calling the get_connection_data() function on the server */
-      session.call('demo:get_connection_data')
- 
-      /* Once you got the IP and UUID, you can build our
-       project URL and call the get_uuid() function
-       on the server */
-      .then(function(connection_data){
-
          /* Creating the QR code with a link targetting
          the right URL. We put the ID in the hash. 
          We assume that the player page and the controller are served on the same port
          */
-        var uuid = connection_data.uuid;
-        var controlUrl = document.location.protocol + "//" + connection_data.ip + ":" + document.location.port + document.location.pathname +  "control.html#" + connection_data.uuid;
+        var uuid = Math.floor(Math.random() * 9007199254740992);
+        var controlUrl = document.location.origin + document.location.pathname + "control.html#" + uuid;
         var codeDiv = document.getElementById("qrcode");
         new QRCode(codeDiv, controlUrl);
         var ctrllink = document.getElementById("ctrllink");
@@ -211,7 +201,6 @@
           session.publish('demo:' + uuid + '.volume', [video.volume]);
         });
 
-     });
     };
 
     /* Opening the connection once all the callbacks are set */

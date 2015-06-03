@@ -191,28 +191,6 @@
                "action": "restart"
             }
          }
-      },
-      {
-         "type": "container",
-         "options": {
-            "pythonpath": ["..", "../../videocontrol"]
-         },
-         "components": [
-            {
-               "type": "class",
-               "classname": "backend.AppSession",
-               "realm": "crossbardemo",
-               "transport": {
-                  "type": "websocket",
-                  "endpoint": {
-                     "type": "tcp",
-                     "host": "127.0.0.1",
-                     "port": 8080
-                  },
-                  "url": "ws://127.0.0.1:8080/ws"
-               }
-            }
-         ]
       }
    ]
 }
