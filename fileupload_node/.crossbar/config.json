@@ -26,9 +26,8 @@
                "type": "static",
                "directory": ".."
             },
-            "bla": {
-               "type": "json",
-               "value": "yay"
+            "ws": {
+               "type": "websocket"
             },
             "upload": {
                "type": "fileupload",
@@ -49,9 +48,6 @@
                "max_file_size": 209715200,
                "file_types": [".csv", ".txt"],
                "progress_realm": "realm1"
-            },
-            "ws": {
-               "type": "websocket"
             }
          }
       }]
