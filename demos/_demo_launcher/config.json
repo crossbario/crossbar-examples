@@ -1,0 +1,122 @@
+{
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "id": "io.crossbar.demo",
+               "name": "crossbardemo",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "io.crossbar.demo.*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "id": "io.crossbar.publictest",
+               "name": "realm1",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "websocket",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 9000
+               }
+            },
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 80
+               },
+               "paths": {
+                  "/": {
+                     "type": "redirect",
+                     "url": "https://demo.crossbar.io"
+                  }
+               }
+            },
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 443,
+                  "tls": {
+                     "key": "demo_crossbar_io_key.pem",
+                     "certificate": "demo_crossbar_io_cert.pem",
+                     "dhparam": "dhparam.pem"
+                  }
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "package": "crossbardemo",
+                     "resource": "web"
+                  },
+                  "ws": {
+                     "type": "websocket",
+                     "url": "wss://demo.crossbar.io/ws",
+                     "options": {
+                        "enable_webstatus": true,
+                        "enable_hixie76": false,
+                        "max_frame_size": 1048576,
+                        "max_message_size": 1048576,
+                        "auto_fragment_size": 65536,
+                        "fail_by_drop": true,
+                        "open_handshake_timeout": 2500,
+                        "close_handshake_timeout": 1000,
+                        "compression": {
+                           "deflate": {
+                              "request_no_context_takeover": false,
+                              "request_max_window_bits": 13,
+                              "no_context_takeover": false,
+                              "max_window_bits": 13,
+                              "memory_level": 5
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         ]
+      },
+      {
+         "type": "guest",
+         "executable": "/usr/local/bin/node",
+         "arguments": ["backend.js", "ws://127.0.0.1:9000", "crossbardemo"],
+         "options": {
+            "workdir": "/home/ec2-user/scm/crossbardemo/crossbardemo/crossbardemo/web/demo/vote/node",
+            "env": {
+               "vars": {
+                  "NODE_PATH": "/usr/local/lib/node_modules"
+               }
+            }
+         }
+      }
+   ]
+}
