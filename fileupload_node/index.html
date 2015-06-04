@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <script src="bower_components/resumablejs/resumable.js"></script>
+   <script src="bower_components/autobahn/autobahn.min.js"></script>
+</head>
+
+
+<body>
+   <a href="#" id="browseButton">Select files</a>
+
+
+   <script>
+   var connection = new autobahn.Connection({
+      url: 'ws://127.0.0.1:8089/ws',
+      realm: 'realm1'
+   });
+
+   connection.onopen = function(session, details) {
+      console.log("Connected", details);
+      absession = session;
+
+      absession.subscribe('re.upload', function(res) {
+         absession.log('upload event received', res);
+      });
+
+      var r = new Resumable({
+         target: 'upload',
+         chunkSize: 10 * 1024 * 1024,
+         simultaneousUploads: 4,
+         testChunks: true,
+         query: {
+            progress_uri: 'my.upload'
+         }
+      });
+
+      r.assignBrowse(document.getElementById('browseButton'));
+
+      r.on('fileSuccess', function(file) {
+         console.debug(r.files);
+
+         // enable repeated upload since other user can delete the file on the server
+         // and this user might want to reupload the file
+         file.cancel();
+      });
+
+   };
+
+   connection.open();
+   </script>
+</body>
+
+</html>
