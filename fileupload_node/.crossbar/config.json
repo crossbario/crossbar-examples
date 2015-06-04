@@ -19,7 +19,7 @@
          "type": "web",
          "endpoint": {
             "type": "tcp",
-            "port": 8089
+            "port": 8080
          },
          "paths": {
             "/": {
@@ -44,7 +44,7 @@
                },
                "directory": "../web_upload",
                "temp_directory": "../temp",
-               "file_permissions": "0444",
+               "file_permissions": "0644",
                "max_file_size": 209715200,
                "file_types": [".csv", ".txt"],
                "progress_realm": "realm1"

@@ -13,7 +13,7 @@
 
    <script>
    var connection = new autobahn.Connection({
-      url: 'ws://127.0.0.1:8089/ws',
+      url: 'ws://127.0.0.1:8080/ws',
       realm: 'realm1'
    });
 
@@ -39,12 +39,16 @@
 
       r.on('fileSuccess', function(file) {
          console.debug(r.files);
-
          // enable repeated upload since other user can delete the file on the server
          // and this user might want to reupload the file
          file.cancel();
       });
 
+      r.on('fileAdded', function(file, event) {
+         r.upload();
+         //console.debug(file, event);
+      });
+     
    };
 
    connection.open();
