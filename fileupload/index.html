@@ -7,8 +7,8 @@
 </head>
 
 <body>
-   <a href="#" id="browseButton">Select files</a><br><br>
-   <div id="dropFiles" style="background-color: #aaf; width: 200px; height: 200px" >Drop files</div>
+   <a href="#" id="browseButton">Select files to upload</a><br><br>
+   <div id="dropFiles" style="background-color: #aaf; width: 200px; height: 200px" >Drop files here to upload</div>
 
    <script>
       // the URL of the WAMP Router (Crossbar.io)
@@ -30,17 +30,20 @@
       connection.onopen = function (session, details) {
          console.log("Connected", details);
 
-         session.subscribe('com.example.upload.on_progress', function(res) {
-            session.log('upload event received', res);
+         session.subscribe('com.example.upload.on_progress', function (args) {
+            var pinfo = args[0];
+            console.log('upload event received', pinfo.status, pinfo.chunk, pinfo.remaining, pinfo.total, pinfo.progress);
          });
 
          var r = new Resumable({
             target: 'upload',
             chunkSize: 1 * 1024 * 1024,
+            forceChunkSize: true, // https://github.com/23/resumable.js/issues/51
             simultaneousUploads: 4,
-            testChunks: true,
+            testChunks: false,
             query: {
-               on_progress: 'com.example.upload.on_progress'
+               on_progress: 'com.example.upload.on_progress',
+               session: session.id
             }
          });
 

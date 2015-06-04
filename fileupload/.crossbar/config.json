@@ -42,12 +42,12 @@
                   "chunk_size": "resumableChunkSize",
                   "total_chunks": "resumableTotalChunks",
                   "content": "file",
-                  "on_progress": "on_progress"
+                  "on_progress": "on_progress",
+                  "session": "session"
                },
                "options": {
-                  "file_permissions": "0444",
-                  "max_file_size": 209715200,
-                  "file_types": [".csv", ".txt"],
+                  "max_file_size": 200000000,
+                  "file_types": [".csv", ".txt", ".pdf", ".img"],
                   "debug": true
                }
             }
