@@ -29,7 +29,10 @@
                "type": "websocket"
             },
             "upload": {
-               "type": "fileupload",
+               "type": "upload",
+               "realm": "realm1",
+               "role": "anonymous",
+               "directory": "../uploaded",
                "form_fields": {
                   "file_id": "resumableIdentifier",
                   "file_name": "resumableFilename",
@@ -39,14 +42,14 @@
                   "chunk_size": "resumableChunkSize",
                   "total_chunks": "resumableTotalChunks",
                   "content": "file",
-                  "progress_uri": "progress_uri"
+                  "on_progress": "on_progress"
                },
-               "directory": "../web_upload",
-               "temp_directory": "../temp",
-               "file_permissions": "0444",
-               "max_file_size": 209715200,
-               "file_types": [".csv", ".txt"],
-               "progress_realm": "realm1"
+               "options": {
+                  "file_permissions": "0444",
+                  "max_file_size": 209715200,
+                  "file_types": [".csv", ".txt"],
+                  "debug": true
+               }
             }
          }
       }]

@@ -7,7 +7,8 @@
 </head>
 
 <body>
-   <a href="#" id="browseButton">Select files</a>
+   <a href="#" id="browseButton">Select files</a><br><br>
+   <div id="dropFiles" style="background-color: #aaf; width: 200px; height: 200px" >Drop files</div>
 
    <script>
       // the URL of the WAMP Router (Crossbar.io)
@@ -29,29 +30,45 @@
       connection.onopen = function (session, details) {
          console.log("Connected", details);
 
-         session.subscribe('re.upload', function(res) {
+         session.subscribe('com.example.upload.on_progress', function(res) {
             session.log('upload event received', res);
          });
 
          var r = new Resumable({
             target: 'upload',
-            chunkSize: 10 * 1024 * 1024,
+            chunkSize: 1 * 1024 * 1024,
             simultaneousUploads: 4,
             testChunks: true,
             query: {
-               progress_uri: 'my.upload'
+               on_progress: 'com.example.upload.on_progress'
             }
          });
 
-         r.assignBrowse(document.getElementById('browseButton'));
+         if (!r.support) {
+            console.log("Fatal: ResumableJS not supported!");
+         } else {
 
-         r.on('fileSuccess', function(file) {
-            console.debug(r.files);
+            r.assignBrowse(document.getElementById('browseButton'));
+            r.assignDrop(document.getElementById('dropFiles'));
 
-            // enable repeated upload since other user can delete the file on the server
-            // and this user might want to reupload the file
-            file.cancel();
-         });
+            r.on('fileAdded', function (file) {
+               console.log('fileAdded', file);
+               r.upload();
+            });
+
+            r.on('fileSuccess', function (file, message) {
+               console.log('fileSuccess', file, message);
+               console.log(r.files);
+
+               // enable repeated upload since other user can delete the file on the server
+               // and this user might want to reupload the file
+               file.cancel();
+            });
+
+            r.on('fileError', function (file, message) {
+               console.log('fileError', file, message);
+            });
+         }
       };
 
       connection.open();

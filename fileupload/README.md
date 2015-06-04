@@ -1,6 +1,6 @@
 # File upload with Crossbar
 
-This example shows how to use Crossbar.io web server with file upload. The file upload resource in crossbar accepts chunked file POSTs and publishes progress on a configurable topic. Crossbar also provides a GET response on the same resource which tells the client if a chunk has been downloaded already. So the client can easily implement resumable uploads. The demo here uses [www.resumablejs.com](www.resumablejs.com) for that.
+This example shows how to use Crossbar.io web server with file upload. The file upload resource in crossbar accepts chunked file POSTs and publishes progress on a configurable topic. Crossbar also provides a GET response on the same resource which tells the client if a chunk has been downloaded already. So the client can easily implement resumable uploads. The demo here uses [http://www.resumablejs.com/](http://www.resumablejs.com/) for that.
 
 ## Prerequisites
 
