@@ -1,0 +1,20 @@
+{
+  "name": "fileupload",
+  "version": "0.0.0",
+  "homepage": "https://github.com/crossbario/crossbarexamples",
+  "authors": [
+    "Tobias Oberstein <tobias.oberstein@tavendo.de>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "autobahn": "~0.9.6",
+    "resumablejs": "~1.0.2"
+  }
+}

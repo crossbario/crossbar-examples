@@ -6,48 +6,55 @@
    <script src="bower_components/autobahn/autobahn.min.js"></script>
 </head>
 
-
 <body>
    <a href="#" id="browseButton">Select files</a>
 
-
    <script>
-   var connection = new autobahn.Connection({
-      url: 'ws://127.0.0.1:8089/ws',
-      realm: 'realm1'
-   });
+      // the URL of the WAMP Router (Crossbar.io)
+      //
+      var wsuri;
+      if (document.location.origin === "null" || document.location.origin === "file://") {
+         wsuri = "ws://127.0.0.1:8080/ws";
 
-   connection.onopen = function(session, details) {
-      console.log("Connected", details);
-      absession = session;
+      } else {
+         wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                     document.location.host + "/ws";
+      }
 
-      absession.subscribe('re.upload', function(res) {
-         absession.log('upload event received', res);
+      var connection = new autobahn.Connection({
+         url: wsuri,
+         realm: 'realm1'
       });
 
-      var r = new Resumable({
-         target: 'upload',
-         chunkSize: 10 * 1024 * 1024,
-         simultaneousUploads: 4,
-         testChunks: true,
-         query: {
-            progress_uri: 'my.upload'
-         }
-      });
+      connection.onopen = function (session, details) {
+         console.log("Connected", details);
 
-      r.assignBrowse(document.getElementById('browseButton'));
+         session.subscribe('re.upload', function(res) {
+            session.log('upload event received', res);
+         });
 
-      r.on('fileSuccess', function(file) {
-         console.debug(r.files);
+         var r = new Resumable({
+            target: 'upload',
+            chunkSize: 10 * 1024 * 1024,
+            simultaneousUploads: 4,
+            testChunks: true,
+            query: {
+               progress_uri: 'my.upload'
+            }
+         });
 
-         // enable repeated upload since other user can delete the file on the server
-         // and this user might want to reupload the file
-         file.cancel();
-      });
+         r.assignBrowse(document.getElementById('browseButton'));
 
-   };
+         r.on('fileSuccess', function(file) {
+            console.debug(r.files);
 
-   connection.open();
+            // enable repeated upload since other user can delete the file on the server
+            // and this user might want to reupload the file
+            file.cancel();
+         });
+      };
+
+      connection.open();
    </script>
 </body>
 

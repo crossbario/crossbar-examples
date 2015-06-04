@@ -1,5 +1,4 @@
 {
-   "controller": {},
    "workers": [{
       "type": "router",
       "realms": [{
@@ -19,7 +18,7 @@
          "type": "web",
          "endpoint": {
             "type": "tcp",
-            "port": 8089
+            "port": 8080
          },
          "paths": {
             "/": {
