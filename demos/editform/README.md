@@ -1,3 +1,15 @@
-# hello
+# Edit Form
 
-All Python application code is in `hello/hello.py`. The backend is called from JavaScript, which is in `hello/web/index.html`.
+List & details view form with all changes to data synched across all frontends via a backend running in Node.js.
+
+
+# Setup
+
+You need Node.js installed. 
+
+Install the dependencies by doing
+
+```console
+npm install
+```
+

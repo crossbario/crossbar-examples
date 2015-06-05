@@ -13,11 +13,15 @@
                      "name": "anonymous",
                      "permissions": [
                         {
-                           "uri": "*",
+                           "uri": "io.crossbar.demo.*",
                            "publish": true,
                            "subscribe": true,
                            "call": true,
                            "register": true
+                        },
+                        {
+                           "uri": "wamp.*",
+                           "subscribe": true
                         }
                      ]
                   }

@@ -54,7 +54,7 @@ var createItem = function (args, kwargs, details) {
    data.items.push(newItem);
 
    // notify subscribers
-   session.publish('io.crossbar.crossbar.demo.product.oncreate', [], newItem, { exclude: caller });
+   session.publish('io.crossbar.demo.product.oncreate', [], newItem, { exclude: caller });
 
    // return the item
    return newItem;
@@ -76,14 +76,14 @@ var deleteItem = function (args, kwargs, details) {
       }
    });
    if (index === null ) {
-      throw new autobahn.Error('io.crossbar.crossbar.demo.product.error', ['tried to delete non-existent item'], { name: "tried to delete non-existent item" });
+      throw new autobahn.Error('io.crossbar.demo.product.error', ['tried to delete non-existent item'], { name: "tried to delete non-existent item" });
    }
 
    // delete item from backend
    data.items.splice(index, 1);
 
    // notify subscribers
-   session.publish('io.crossbar.crossbar.demo.product.ondelete', [id], {}, { exclude: caller });
+   session.publish('io.crossbar.demo.product.ondelete', [id], {}, { exclude: caller });
 
    // return success
    return id;
@@ -111,7 +111,7 @@ var updateItem = function (args, kwargs, details) {
       }
    });
    if (index === null ) {
-      throw new autobahn.Error('io.crossbar.crossbar.demo.product.error', ['tried to update non-existent item'], { name: "tried to update non-existent item" });
+      throw new autobahn.Error('io.crossbar.demo.product.error', ['tried to update non-existent item'], { name: "tried to update non-existent item" });
    }
 
    var item = data.items[index];
@@ -120,7 +120,7 @@ var updateItem = function (args, kwargs, details) {
    }
 
    // notify subscribers
-   session.publish('io.crossbar.crossbar.demo.product.onupdate', [], update, { exclude: caller });
+   session.publish('io.crossbar.demo.product.onupdate', [], update, { exclude: caller });
 
    // return success
    return update;
@@ -163,7 +163,7 @@ var resetData = function (args, kwargs, details) {
 
    var set = readItems([], { start: 0, limit: 25 });
 
-   session.publish('io.crossbar.crossbar.demo.product.onreset', set, {}, { exclude: caller });
+   session.publish('io.crossbar.demo.product.onreset', set, {}, { exclude: caller });
 
    return set;
 };
@@ -177,7 +177,7 @@ connection.onopen = function (sess) {
 
    // REGISTER procedures
 
-   session.register('io.crossbar.crossbar.demo.product.read', readItems).then(
+   session.register('io.crossbar.demo.product.read', readItems).then(
       function (reg) {
          console.log("procedure read registered");
       },
@@ -186,7 +186,7 @@ connection.onopen = function (sess) {
       }
    );
 
-   session.register('io.crossbar.crossbar.demo.product.create', createItem).then(
+   session.register('io.crossbar.demo.product.create', createItem).then(
       function (reg) {
          console.log("procedure create registered");
       },
@@ -195,7 +195,7 @@ connection.onopen = function (sess) {
       }
    );
 
-   session.register('io.crossbar.crossbar.demo.product.delete', deleteItem).then(
+   session.register('io.crossbar.demo.product.delete', deleteItem).then(
       function (reg) {
          console.log("procedure delete registered");
       },
@@ -204,7 +204,7 @@ connection.onopen = function (sess) {
       }
    );
 
-   session.register('io.crossbar.crossbar.demo.product.update', updateItem).then(
+   session.register('io.crossbar.demo.product.update', updateItem).then(
       function (reg) {
          console.log("procedure update registered");
       },
@@ -213,7 +213,7 @@ connection.onopen = function (sess) {
       }
    );
 
-   session.register('io.crossbar.crossbar.demo.product.filter', filterItems).then(
+   session.register('io.crossbar.demo.product.filter', filterItems).then(
       function (reg) {
          console.log("procedure filter registered");
       },
@@ -223,7 +223,7 @@ connection.onopen = function (sess) {
    );
 
 
-   session.register('io.crossbar.crossbar.demo.product.reset', resetData).then(
+   session.register('io.crossbar.demo.product.reset', resetData).then(
       function (reg) {
          console.log("procedure reset registered");
       },
