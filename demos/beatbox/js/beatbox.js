@@ -226,7 +226,6 @@ function loadSample(btn, file) {
    samples[btn].load();
    samples[btn].volume = 1;
    samples[btn].loop = true;
-   samples[btn].initialTime = 0;
 }
 
 
@@ -337,8 +336,9 @@ function onPadButtonDown(args, kwargs, details) {
 
       if (enable_audio.checked) {
          console.log("playing a sample");
+
          // do NOT change order/content of the following 2 lines!
-         samples[kwargs.b].currentTime = samples[kwargs.b].initialTime;
+         samples[kwargs.b].currentTime = 0;
          samples[kwargs.b].play();
       }
 
@@ -356,7 +356,7 @@ function onPadButtonUp(args, kwargs, details) {
 
       if (enable_audio.checked) {
          // do NOT change order/content of the following 2 lines!
-         samples[kwargs.b].currentTime = samples[kwargs.b].initialTime;
+         samples[kwargs.b].currentTime = 0;
          samples[kwargs.b].pause();
       }
 
