@@ -69,15 +69,15 @@
          <video id="vid"
                class="video-js vjs-default-skin"
                controls preload="auto"
-               poster="http://media.w3.org/2010/05/sintel/poster.png" >
+               poster="//crossbar.io/videocontrol_data/poster.png" >
             <source id='ogv'
-               src="http://media.w3.org/2010/05/sintel/trailer.ogv"
+               src="//crossbar.io/videocontrol_data/trailer.ogv"
                type='video/ogg'>
             <source id='mp4'
-               src="http://media.w3.org/2010/05/sintel/trailer.mp4"
+               src="//crossbar.io/videocontrol_data/trailer.mp4"
                type='video/mp4'>
             <source id='webm'
-               src="http://media.w3.org/2010/05/sintel/trailer.webm"
+               src="//crossbar.io/videocontrol_data/trailer.webm"
                type='video/webm'>
          </video>
         </p>
@@ -89,6 +89,9 @@
           <a id="ctrllink" href="#" target="_blank">
             <span id="qrcode"></span>
           </a>
+        </p>
+        <p>
+          <strong> Note: </strong> The link will only work for external devices if the page is served with an IP in the address. For pages served as "localhost" (and displayed as such), please manually enter the IP under which the page is served and reload the page so that the QR code gets updated.
         </p>
        </div>
        <center>Read more in the <a href="http://tavendo.com/blog/post/small-demo-of-a-pragmatic-use-of-wamp-in-python/">blog post in English</a> or <a href="http://sametmax.com/introduction-a-wamp-en-python/">French</a> .

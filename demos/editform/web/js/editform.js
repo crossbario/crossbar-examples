@@ -50,7 +50,7 @@ function ViewModel () {
       self.connectionStatus("Connected to " + self.wsuri + " in session " + self.session.id);
 
       // set an URI prefix
-      self.session.prefix("form", "io.crossbar.crossbar.demo.product");
+      self.session.prefix("form", "io.crossbar.demo.product");
 
       // request full data set initially and fill grid
       self.session.call("form:read", [], {start: 0, limit: 25}).then(self.fillList, self.session.log);

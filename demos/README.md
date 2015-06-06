@@ -18,6 +18,8 @@ http://localhost:8080
 
 to see the frontend. 
 
+For some demos, you need to install dependencies or go through a (simple) setup process. See the respective readmes.
+
 Additionally, there's an overview page from which you can launch any of the demos, which is located in the `overview` folder. Here you also start crossbar and then open your browser as above.
 
 > Note: A lot of these demos got started long ago for a precursor to Crossbar.io. This means first of all that they mainly only do PubSub. It also means that we wouldn't necessarily implement them precisely like this anymore - so be aware of this when you look over the sources! If you think something is iffy code, then there's every possibility it is. (Cleaning up things here is definitely on our to-do list - it's just not a priority.)
