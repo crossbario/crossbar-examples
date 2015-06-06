@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <body>
-      <h1>Publishing real-time events from PostgreSQL</h1>
+      <h1>Publishing real-time events from within PostgreSQL using Crossbar.io</h1>
       <p>
          Open the JavaScript console to watch log output.
       </p>
@@ -9,13 +9,10 @@
          Connect to your PostgreSQL database and publish an event:
       </p>
       <pre>
-SELECT pg_notify('crossbar_pubsub_event',
-   json_build_object(
-      'type', 'direct',
-      'topic', 'com.example.topic1',
-      'args', json_build_array(23, 7, 'hello world!'),
-      'kwargs', json_build_object('foo', 'bar', 'baz', 42)
-   )::text
+SELECT crossbar.publish(
+   'com.example.topic1',
+   json_build_array(23, 7, 'hello world!')::jsonb,
+   json_build_object('foo', 'bar', 'baz', 42)::jsonb
 );
       </pre>
       <p>

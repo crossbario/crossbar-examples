@@ -40,13 +40,29 @@
                   }
                }
             }
-         ],
+         ]
+      },
+      {
+         "type": "container",
+         "options": {
+            "reactor": {
+               "win32": "select"
+            }
+         },
          "components": [
             {
                "type": "class",
                "classname": "crossbar.adapter.postgres.PostgreSQLDatabasePublisher",
                "realm": "realm1",
-               "role": "anonymous",
+               "transport": {
+                  "type": "websocket",
+                  "endpoint": {
+                     "type": "tcp",
+                     "host": "127.0.0.1",
+                     "port": 8080
+                  },
+                  "url": "ws://127.0.0.1:8080/ws"
+               },
                "extra": {
                   "database": {
                      "host": "127.0.0.1",
