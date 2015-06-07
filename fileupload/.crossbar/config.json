@@ -47,7 +47,17 @@
                },
                "options": {
                   "max_file_size": 200000000,
-                  "file_types": [".csv", ".txt", ".pdf", ".img"],
+                  "file_types": [
+                     ".csv",
+                     ".txt",
+                     ".pdf",
+                     ".img",
+                     ".png",
+                     ".jpg",
+                     ".bz2",
+                     ".xz",
+                     ".gz"
+                  ],
                   "debug": true
                }
             }

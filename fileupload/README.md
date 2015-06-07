@@ -4,11 +4,14 @@ This example shows how to use Crossbar.io web server with file upload. The file 
 
 ## Prerequisites
 
-To install the Web dependencies
+To install the Web dependencies using [Bower](http://bower.io/):
 
 ```console
 bower install
-``` 
+```
+
+> To install Bower on Debian/Ubuntu, do `sudo npm install -g bower`.
+
 
 ## Running the Demo
 
