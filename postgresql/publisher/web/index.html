@@ -27,7 +27,7 @@ SELECT crossbar.publish(
          });
 
          connection.onopen = function (session, details) {
-            console.log("Connected");
+            console.log("Connected with session ID " + session.id);
 
             topic = 'com.example.topic1';
 

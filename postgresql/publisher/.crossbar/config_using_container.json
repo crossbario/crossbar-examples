@@ -52,7 +52,7 @@
          "components": [
             {
                "type": "class",
-               "classname": "crossbar.adapter.postgres.PostgreSQLDatabasePublisher",
+               "classname": "crossbar.adapter.postgres.PostgreSQLPublisher",
                "realm": "realm1",
                "transport": {
                   "type": "websocket",
