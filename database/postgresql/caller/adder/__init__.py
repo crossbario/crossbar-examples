@@ -48,7 +48,7 @@ class AppSession(ApplicationSession):
         #    print(args)
         #    print(kwargs)
         def add2(x, y):
-            print("add2() called with {} and {}".format(x, y))
+            #print("add2() called with {} and {}".format(x, y))
             return x + y
 
         yield self.register(add2, u'com.example.add2')
