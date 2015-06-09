@@ -39,6 +39,22 @@
                         "ws": {
                             "type": "websocket"
                         },
+                        "config": {
+                            "type": "json",
+                            "value": {
+                                "param1": "foobar",
+                                "param2": [1, 2, 3],
+                                "param3": {
+                                   "awesome": true,
+                                   "nifty": "yes"
+                                }
+                            },
+                            "options": {
+                                "prettify": false,
+                                "allow_cross_origin": true,
+                                "discourage_caching": true
+                            }
+                        },
                         "call": {
                             "type": "caller",
                             "realm": "realm1",
