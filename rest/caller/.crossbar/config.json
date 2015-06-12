@@ -25,10 +25,18 @@
             ],
             "transports": [
                 {
+                    "type": "websocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "crossbar.sock"
+                    }
+                },
+                {
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 8080
+                        "port": 8080,
+                        "backlog": 2000
                     },
                     "paths": {
                         "/": {
@@ -72,6 +80,19 @@
                 {
                     "type": "class",
                     "classname": "adder.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "url": "ws://127.0.0.1:8080/ws"
+                    }
+                },
+                {
+                    "type": "class",
+                    "classname": "mult.AppSession",
                     "realm": "realm1",
                     "transport": {
                         "type": "websocket",

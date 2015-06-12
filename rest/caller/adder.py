@@ -40,6 +40,7 @@ class AppSession(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
+        self._count = 0
 
         # a simple procedure
         #
@@ -48,7 +49,10 @@ class AppSession(ApplicationSession):
         #    print(args)
         #    print(kwargs)
         def add2(x, y):
-            print("add2() called with {} and {}".format(x, y))
+            self._count += 1
+            if self._count % 10000 == 0:
+                print("{} calls served".format(self._count))
+            #print("add2() called with {} and {}".format(x, y))
             return x + y
 
         yield self.register(add2, u'com.example.add2')

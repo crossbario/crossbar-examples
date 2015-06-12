@@ -1,4 +1,6 @@
 proc = 'com.example.add2'
+proc = 'com.example.mul2'
+
 args = [2, 3]
 kwargs = None
 options = None
