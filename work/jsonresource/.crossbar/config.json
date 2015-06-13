@@ -1,0 +1,64 @@
+{
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "pythonpath": [".."]
+            },
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "*",
+                                    "publish": true,
+                                    "subscribe": true,
+                                    "call": true,
+                                    "register": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 2048
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": ".."
+                        },
+                        "ws": {
+                            "type": "websocket"
+                        },
+                        "config": {
+                            "type": "json",
+                            "value": {
+                                "param1": "foobar",
+                                "param2": [1, 2, 3],
+                                "param3": {
+                                   "awesome": true,
+                                   "nifty": "yes"
+                                }
+                            },
+                            "options": {
+                                "prettify": false,
+                                "allow_cross_origin": true,
+                                "discourage_caching": true
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
