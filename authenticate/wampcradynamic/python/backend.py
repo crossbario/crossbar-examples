@@ -47,8 +47,8 @@ class AppSession(ApplicationSession):
          'com.foobar.topic1',
          'com.foobar.topic2']:
 
-         def onhello():
-            print("event received on {}".format(topic))
+         def onhello(arg = topic):
+            print("event received on {}".format(arg))
 
          try:
             sub = yield self.subscribe(onhello, topic)
