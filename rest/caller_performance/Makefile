@@ -5,6 +5,9 @@ testee:
 testee_multi_worker:
 	crossbar start --config=config_multi_worker.json
 
+test_multi_worker:
+	wrk -t8 -c1000 -d120s --latency -s wrk/test_add.lua http://10.0.1.2:8080
+
 testee_debug:
 	PYTHONPATH=${CROSSBAR_REPOS_ROOT}/crossbar python -m crossbar.controller.cli start --loglevel=verbose
 
