@@ -25,7 +25,8 @@
             ],
             "transports": [
                 {
-                    "type": "websocket",
+                    "type": "rawsocket",
+                    "serializers": ["json", "msgpack"],
                     "endpoint": {
                         "type": "unix",
                         "path": "crossbar.sock"
@@ -84,24 +85,32 @@
                     "transport": {
                         "type": "websocket",
                         "endpoint": {
-                            "type": "unix",
-                            "path": "crossbar.sock"
-                        },
-                        "url": "ws://127.0.0.1:8080/ws"
-                    }
-                },
-                {
-                    "type": "class",
-                    "classname": "mult.AppSession",
-                    "realm": "realm1",
-                    "transport": {
-                        "type": "websocket",
-                        "endpoint": {
                             "type": "tcp",
                             "host": "127.0.0.1",
                             "port": 8080
                         },
                         "url": "ws://127.0.0.1:8080/ws"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [".."]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "mult.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "rawsocket",
+                        "serializer": "msgpack",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        }
                     }
                 }
             ]

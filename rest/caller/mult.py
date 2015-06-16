@@ -42,10 +42,13 @@ class AppSession(ApplicationSession):
     def onJoin(self, details):
         self._count = 0
 
-        def mul2(x, y):
+        def mul2(x, y, verbose=True):
             self._count += 1
-            if self._count % 10000 == 0:
-                print("mul2 - {} calls served".format(self._count))
+            if verbose:
+                print("mul2() called with {} and {}".format(x, y))
+            else:
+                if self._count % 10000 == 0:
+                    print("mul2 - {} calls served".format(self._count))
             return x * y
 
         yield self.register(mul2, u'com.example.mul2')

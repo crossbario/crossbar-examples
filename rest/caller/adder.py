@@ -44,15 +44,13 @@ class AppSession(ApplicationSession):
 
         # a simple procedure
         #
-        #def add2(*args, **kwargs):
-        #    print("add2")
-        #    print(args)
-        #    print(kwargs)
-        def add2(x, y):
+        def add2(x, y, verbose=True):
             self._count += 1
-            if self._count % 10000 == 0:
-                print("{} calls served".format(self._count))
-            #print("add2() called with {} and {}".format(x, y))
+            if verbose:
+                print("add2() called with {} and {}".format(x, y))
+            else:
+                if self._count % 10000 == 0:
+                    print("{} calls served".format(self._count))
             return x + y
 
         yield self.register(add2, u'com.example.add2')
