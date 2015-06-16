@@ -253,3 +253,41 @@ Running 30s test @ http://10.0.1.2:8080
 Requests/sec:   9326.66
 Transfer/sec:      2.14MB
 ```
+
+### Multi-Worker over 10GbE
+
+This test was running 4 workers registering the same procedure and round-robin balancing.
+
+```console
+[oberstet@brummer2 ~/scm/crossbarexamples/rest/caller_performance]$ make test_shared
+Testing over 10GbE TCP with single client and sequential requests
+wrk -t1 -c1 -d30s --latency -s wrk/test_add.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   551.81us    3.31ms  46.11ms   98.52%
+    Req/Sec     5.15k   439.65     5.39k    96.05%
+  Latency Distribution
+     50%  176.00us
+     75%  201.00us
+     90%  209.00us
+     99%   17.44ms
+  155677 requests in 30.41s, 35.78MB read
+Requests/sec:   5119.75
+Transfer/sec:      1.18MB
+Testing over 10GbE TCP with multiple clients and concurrent requests
+wrk -t4 -c200 -d30s --latency -s wrk/test_add.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    19.30ms    9.73ms 153.75ms   91.95%
+    Req/Sec     2.74k   559.31     5.47k    77.02%
+  Latency Distribution
+     50%   16.86ms
+     75%   17.49ms
+     90%   22.73ms
+     99%   61.21ms
+  328175 requests in 30.15s, 75.43MB read
+Requests/sec:  10883.73
+Transfer/sec:      2.50MB
+```
