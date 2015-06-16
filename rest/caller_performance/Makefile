@@ -43,3 +43,11 @@ test_network_concurrent:
 	wrk -t4 -c200 -d30s --latency -s wrk/test_sub.lua http://10.0.1.2:8080
 	wrk -t4 -c200 -d30s --latency -s wrk/test_mul.lua http://10.0.1.2:8080
 	wrk -t4 -c200 -d30s --latency -s wrk/test_div.lua http://10.0.1.2:8080
+
+# run this on 10.0.1.3
+test_shared:
+	@echo "Testing over 10GbE TCP with single client and sequential requests"
+	wrk -t1 -c1 -d30s --latency -s wrk/test_add.lua http://10.0.1.2:8080
+	@echo "Testing over 10GbE TCP with multiple clients and concurrent requests"
+	wrk -t4 -c200 -d30s --latency -s wrk/test_add.lua http://10.0.1.2:8080
+
