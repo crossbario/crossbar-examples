@@ -2,6 +2,9 @@
 testee:
 	crossbar start
 
+testee_multi_worker:
+	crossbar start --config=config_multi_worker.json
+
 testee_debug:
 	PYTHONPATH=${CROSSBAR_REPOS_ROOT}/crossbar python -m crossbar.controller.cli start --loglevel=verbose
 
