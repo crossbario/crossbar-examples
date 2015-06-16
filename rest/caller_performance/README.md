@@ -1,5 +1,87 @@
 ## Results
 
+All tests were run on FreeBSD 10.1 and PyPy 2.6. Tests were run multiple times before measuring (to let PyPy's JIT warmup on hot code paths).
+
+### Sequential Requests over Loopback TCP
+
+```console
+(pypy260)[oberstet@brummer1 ~/scm/crossbarexamples/rest/caller_performance]$ make test_local_sequential
+Testing over loopback TCP with single client and sequential requests
+wrk -t1 -c1 -d30s --latency -s wrk/test_add.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.17ms    7.12ms 134.67ms   97.03%
+    Req/Sec     8.55k     1.13k    9.08k    90.37%
+  Latency Distribution
+     50%   96.00us
+     75%  107.00us
+     90%  146.00us
+     99%   39.01ms
+  256233 requests in 30.11s, 58.89MB read
+Requests/sec:   8508.83
+Transfer/sec:      1.96MB
+wrk -t1 -c1 -d30s --latency -s wrk/test_sub.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   631.63us    4.19ms  56.48ms   97.97%
+    Req/Sec     8.79k     1.11k    9.23k    95.35%
+  Latency Distribution
+     50%   97.00us
+     75%  102.00us
+     90%  128.00us
+     99%   23.51ms
+  263393 requests in 30.11s, 84.15MB read
+Requests/sec:   8748.65
+Transfer/sec:      2.80MB
+wrk -t1 -c1 -d30s --latency -s wrk/test_mul.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   540.99us    3.61ms  52.60ms   98.59%
+    Req/Sec     6.22k   546.81     6.53k    95.35%
+  Latency Distribution
+     50%  142.00us
+     75%  163.00us
+     90%  176.00us
+     99%   17.41ms
+  186287 requests in 30.11s, 42.82MB read
+Requests/sec:   6187.85
+Transfer/sec:      1.42MB
+wrk -t1 -c1 -d30s --latency -s wrk/test_div.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   741.84us    4.31ms  51.23ms   97.95%
+    Req/Sec     5.49k   575.49     5.80k    93.00%
+  Latency Distribution
+     50%  159.00us
+     75%  188.00us
+     90%  202.00us
+     99%   28.13ms
+  163875 requests in 30.01s, 37.66MB read
+Requests/sec:   5460.99
+Transfer/sec:      1.26MB
+```
+
+### Concurrent Requests over Loopback TCP
+
+```console
+```
+
+### Sequential Requests over 10GbE
+
+```console
+```
+
+### Concurrent Requests over 10GbE
+
+```console
+```
+
+
+
 ### Loopback TCP / PyPy 2.6 / FreeBSD
 
 ```console
