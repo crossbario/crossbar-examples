@@ -40,15 +40,57 @@ class AppSession(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        self._count = 0
 
-        def mul2(x, y, verbose=True):
-            self._count += 1
-            if verbose:
-                print("mul2() called with {} and {}".format(x, y))
+        # a simple procedure
+        #
+        def add2(x, y):
+            print("add2() called with {} and {}".format(x, y))
+            return x + y
+
+        yield self.register(add2, u'com.example.add2')
+
+        # a procedure returning a positional result
+        #
+        def split_name(fullname):
+            print("split_name() called with '{}'".format(fullname))
+            parts = fullname.split()
+            return CallResult(*parts)
+
+        yield self.register(split_name, u'com.example.split_name')
+
+        # a procedure returning a keyword-base result
+        #
+        def add_complex(a, ai, b, bi):
+            print("add_complex() called with {}".format((a, ai, b, bi)))
+            return CallResult(c=a + b, ci=ai + bi)
+
+        yield self.register(add_complex, u'com.example.add_complex')
+
+        # raising standard exceptions
+        #
+        def sqrt(x):
+            if x == 0:
+                raise Exception("don't ask foolish questions;)")
             else:
-                if self._count % 10000 == 0:
-                    print("mul2 - {} calls served".format(self._count))
-            return x * y
+                # this also will raise, if x < 0
+                return math.sqrt(x)
 
-        yield self.register(mul2, u'com.example.mul2')
+        yield self.register(sqrt, u'com.example.sqrt')
+
+        # raising WAMP application exceptions
+        #
+        def checkname(name):
+            if name in ['foo', 'bar']:
+                raise ApplicationError(u'com.example.error.reserved')
+
+            if name.lower() != name and name.upper() != name:
+                # forward positional arguments in exceptions
+                raise ApplicationError(u'com.example.error.mixed_case', name.lower(), name, name.upper())
+
+            if len(name) < 3 or len(name) > 10:
+                # forward keyword arguments in exceptions
+                raise ApplicationError(u'com.example.error.invalid_length', min=3, max=10)
+
+        yield self.register(checkname, u'com.example.checkname')
+
+        print("all procedures registered")

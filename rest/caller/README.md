@@ -69,9 +69,3 @@ curl -H "Content-Type: application/json" \
     -d '{"procedure": "com.example.checkname", "args": ["go"]}' \
     http://127.0.0.1:8080/call
 ```
-
-## Performance
-
-![alt text](screenshot1.png "Screeenshot 1")
-![alt text](screenshot2.png "Screeenshot 2")
-
