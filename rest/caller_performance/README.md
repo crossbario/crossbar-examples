@@ -68,6 +68,64 @@ Transfer/sec:      1.26MB
 ### Concurrent Requests over Loopback TCP
 
 ```console
+(pypy260)[oberstet@brummer1 ~/scm/crossbarexamples/rest/caller_performance]$ make test_local_concurrent
+Testing over loopback TCP with multiple clients and concurrent requests
+wrk -t4 -c200 -d30s --latency -s wrk/test_add.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    16.78ms    7.64ms  96.42ms   95.86%
+    Req/Sec     3.14k   482.13     5.04k    90.25%
+  Latency Distribution
+     50%   15.21ms
+     75%   15.41ms
+     90%   15.82ms
+     99%   66.53ms
+  375341 requests in 30.07s, 86.27MB read
+Requests/sec:  12483.91
+Transfer/sec:      2.87MB
+wrk -t4 -c200 -d30s --latency -s wrk/test_sub.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    17.53ms    9.17ms 104.69ms   95.38%
+    Req/Sec     3.05k   513.94     4.53k    89.17%
+  Latency Distribution
+     50%   15.59ms
+     75%   15.73ms
+     90%   16.09ms
+     99%   75.74ms
+  365178 requests in 30.09s, 116.67MB read
+Requests/sec:  12136.01
+Transfer/sec:      3.88MB
+wrk -t4 -c200 -d30s --latency -s wrk/test_mul.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    19.50ms   10.06ms 101.00ms   92.89%
+    Req/Sec     2.74k   561.14     5.89k    78.53%
+  Latency Distribution
+     50%   16.55ms
+     75%   16.87ms
+     90%   22.75ms
+     99%   65.80ms
+  328270 requests in 30.12s, 75.45MB read
+Requests/sec:  10897.36
+Transfer/sec:      2.50MB
+wrk -t4 -c200 -d30s --latency -s wrk/test_div.lua http://127.0.0.1:8080
+Running 30s test @ http://127.0.0.1:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    22.28ms   10.03ms 103.21ms   93.04%
+    Req/Sec     2.36k   479.87     3.03k    74.75%
+  Latency Distribution
+     50%   19.41ms
+     75%   19.76ms
+     90%   24.87ms
+     99%   69.09ms
+  282504 requests in 30.09s, 64.93MB read
+Requests/sec:   9389.81
+Transfer/sec:      2.16MB
 ```
 
 ### Sequential Requests over 10GbE
