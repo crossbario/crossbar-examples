@@ -130,3 +130,123 @@ Running 30s test @ http://127.0.0.1:8080
 Requests/sec:   9395.31
 Transfer/sec:      2.16MB
 ```
+
+### 10GbE TCP / PyPy 2.6 / FreeBSD
+
+```console
+[oberstet@brummer2 ~/scm/crossbarexamples/rest/caller_performance]$ make test_network        
+Testing over 10GbE TCP with single client and sequential requests
+wrk -t1 -c1 -d30s --latency -s wrk/test_add.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   701.17us    4.15ms  48.95ms   97.88%
+    Req/Sec     6.46k   647.13     6.73k    93.02%
+  Latency Distribution
+     50%  135.00us
+     75%  139.00us
+     90%  180.00us
+     99%   27.19ms
+  193544 requests in 30.11s, 44.48MB read
+Requests/sec:   6428.92
+Transfer/sec:      1.48MB
+wrk -t1 -c1 -d30s --latency -s wrk/test_sub.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   717.03us    3.85ms  49.27ms   98.18%
+    Req/Sec     4.01k   384.28     4.19k    93.36%
+  Latency Distribution
+     50%  222.00us
+     75%  255.00us
+     90%  301.00us
+     99%   24.01ms
+  120101 requests in 30.11s, 27.72MB read
+Requests/sec:   3989.34
+Transfer/sec:      0.92MB
+wrk -t1 -c1 -d30s --latency -s wrk/test_mul.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   534.75us    3.30ms  50.04ms   98.69%
+    Req/Sec     5.05k   401.23     5.28k    94.70%
+  Latency Distribution
+     50%  179.00us
+     75%  201.00us
+     90%  213.00us
+     99%   14.41ms
+  151816 requests in 30.21s, 34.89MB read
+Requests/sec:   5025.78
+Transfer/sec:      1.16MB
+wrk -t1 -c1 -d30s --latency -s wrk/test_div.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  1 threads and 1 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   638.38us    3.63ms  48.65ms   98.33%
+    Req/Sec     4.59k   419.62     4.78k    95.02%
+  Latency Distribution
+     50%  196.00us
+     75%  225.00us
+     90%  237.00us
+     99%   21.45ms
+  137595 requests in 30.11s, 31.62MB read
+Requests/sec:   4570.29
+Transfer/sec:      1.05MB
+Testing over 10GbE TCP with multiple clients and concurrent requests
+wrk -t4 -c200 -d30s --latency -s wrk/test_add.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    18.20ms    8.10ms  99.85ms   93.85%
+    Req/Sec     2.89k   499.77     9.96k    87.68%
+  Latency Distribution
+     50%   16.45ms
+     75%   16.69ms
+     90%   17.00ms
+     99%   63.72ms
+  345365 requests in 30.13s, 79.38MB read
+Requests/sec:  11464.12
+Transfer/sec:      2.63MB
+wrk -t4 -c200 -d30s --latency -s wrk/test_sub.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    23.96ms    9.16ms 108.59ms   92.12%
+    Req/Sec     2.16k   447.32     6.57k    84.07%
+  Latency Distribution
+     50%   21.50ms
+     75%   21.72ms
+     90%   22.53ms
+     99%   67.71ms
+  257992 requests in 30.10s, 59.54MB read
+Requests/sec:   8571.14
+Transfer/sec:      1.98MB
+wrk -t4 -c200 -d30s --latency -s wrk/test_mul.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    19.50ms    9.41ms 112.25ms   93.00%
+    Req/Sec     2.72k   505.29     6.37k    82.46%
+  Latency Distribution
+     50%   16.79ms
+     75%   16.99ms
+     90%   24.91ms
+     99%   63.45ms
+  325594 requests in 30.14s, 74.83MB read
+Requests/sec:  10802.76
+Transfer/sec:      2.48MB
+wrk -t4 -c200 -d30s --latency -s wrk/test_div.lua http://10.0.1.2:8080
+Running 30s test @ http://10.0.1.2:8080
+  4 threads and 200 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency    22.35ms   10.37ms 149.13ms   92.36%
+    Req/Sec     2.35k   475.02     5.00k    75.55%
+  Latency Distribution
+     50%   19.60ms
+     75%   19.83ms
+     90%   22.44ms
+     99%   66.73ms
+  280643 requests in 30.10s, 64.50MB read
+Requests/sec:   9323.22
+Transfer/sec:      2.14MB
+```
