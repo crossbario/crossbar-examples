@@ -1,0 +1,69 @@
+{
+   "controller": {
+   },
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "name": "realm1",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": ".."
+                  },
+                  "ws": {
+                     "type": "websocket"
+                  }
+               }
+            }
+         ],
+         "connections": [
+            {
+               "type": "postgresql.connection",
+               "host": "localhost",
+               "port": 5432,
+               "database": "cdc",
+               "user": "crossbar",
+               "password": "crossbar"
+            }
+         ]
+      },
+      {
+         "type": "container",
+         "connections": [
+            {
+               "type": "postgresql.connection",
+               "host": "localhost",
+               "port": 5432,
+               "database": "cdc",
+               "user": "crossbar",
+               "password": "crossbar"
+            }
+         ]
+      }
+   ]
+}
