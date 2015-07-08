@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <meta charset="UTF-8">
+
+    <!-- latest compiled and minified css -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <style>
+      .message {
+        font-family: monospace;
+      }
+      .messages {
+        overflow-x: auto;
+        overflow-y: scroll;
+      }
+      .alert {
+        width: 25em;
+        float: left;
+        margin-right: 2em;
+      }
+      body {
+        padding: 1em;
+        font-size: large;
+      }
+    </style>
+
+    <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+
+    <script>AUTOBAHN_DEBUG = false;</script>
+    <script src="//autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+    <script type="text/javascript">
+
+      function to_msg( obj ) {
+        return obj['noun'] + "(" + obj['parm'] + ") is now " + obj['verb'];
+      }
+
+      console.log( "autobahn version: " + autobahn.version );
+
+      var session;
+
+      var wsuri;
+      if (window.location.protocol === "file:") {
+        wsuri = "ws://127.0.0.1:8080/ws";
+      } else {
+        wsuri = "ws://" + window.location.hostname + ":8080/ws";
+      }
+
+      window.onload = function() {
+
+        console.log( "connecting to: " + wsuri );
+
+        var connection = new autobahn.Connection({
+          url: wsuri,
+          realm: 'realm1'}
+          );
+
+        connection.onopen = function( new_session ) {
+
+          session = new_session;
+
+          // 1) subscribe to a topic
+          function onevent(args) {
+            var data = args[0];
+            var obj = JSON.parse( data );
+            console.log("event:", data );
+
+            _Content.refs.Messages.add_msg( obj );
+          }
+
+          _Content.refs.Status.setState({data: "connected"});
+          session.subscribe('netmonitor.event', onevent);
+        };
+
+        connection.onclose = function(e) {
+          console.log("Connection closed.");
+
+          _Content.refs.Status.setState({data: "connection closed"});
+        };
+
+        connection.open();
+      }
+    </script>
+  </head>
+
+  <body>
+    <p>Hit F12 to see javascript console.</p>
+
+    <div id="content">
+    </div>
+
+    <script type="text/jsx">
+      var Status = React.createClass(
+      {
+          getInitialState: function() {
+              return {data: "not connected"};
+          },
+          render: function() {
+              var level = this.state.data == "connected" ? "success" : "danger";
+              return (
+              <div className={"alert alert-"+level} style={{margin: '2em'}}>{this.state.data}</div>
+              );
+          },
+          set_msg: function(msg) {
+              this.props.data = msg;
+          }
+      });
+
+      var Messages = React.createClass(
+      {
+          displayName: 'messages',
+          getInitialState: function() {
+              return {data: []};
+              return {data: ["1st message"]};
+          },
+          render: function() {
+              //return React.create"not connected"Element('div', {className:"messages"}, msg);
+              var messageNodes = this.state.data.map(function (msg) {
+                  return (
+                  <Message data={msg} />
+                  );
+              });
+              return (
+              <div className="messages container-fluid">
+                  {messageNodes}
+              </div>
+              );
+          },
+          add_msg: function(msg) {
+              var messages = this.state.data;
+              messages.push(msg);
+
+              // only show the last n messages
+              while( messages.length > 10 )
+                messages.shift();
+
+              this.setState({data: messages});
+          }
+
+      });
+
+      var Message = React.createClass({
+          render: function() {
+              var msg = to_msg( this.props.data );
+              return (
+              <div className={'alert alert-'+this.props.data.level + " message"}>{msg}</div>
+              );
+          }
+      });
+
+      var Content = React.createClass(
+      {
+          render: function() {
+              return (
+              <div>
+                  <Status ref="Status" />
+                  <p style={{clear: 'both'}}>Incoming network events</p>
+                  <Messages ref="Messages" />
+              </div>
+              );
+          }
+      });
+
+      var _Content = React.render(
+        <Content />
+        ,
+        document.getElementById('content')
+      );
+    </script>
+
+  </body>
+</html>
