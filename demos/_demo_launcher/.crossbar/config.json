@@ -94,6 +94,10 @@
                   "videocontrol": {
                      "type": "static",
                      "directory": "../../videocontrol/web" 
+                  },
+                  "spreadsheet": {
+                     "type": "static",
+                     "directory": "../../spread"
                   }
                }
             }
