@@ -44,7 +44,7 @@ function start() {
 
    var connection = new autobahn.Connection({
       url: wsuri,
-      realm: 'realm1',
+      realm: 'crossbardemo',
       max_retries: 30,
       initial_retry_delay: 2
       }
@@ -94,33 +94,60 @@ function main (session) {
       sheet.getCell(0, 0).value(ticks);
    }, 1000);
 
-   var slidersbaseUri = "io.crossbar.demo.sliders.123456.";
+   // create random channel
+   // change the URI - we want this separated
+   var channel = parseInt(Math.random() * 1000000);
+   // var slidersbaseUri = "io.crossbar.demo.sliders.123456.";
+   var controllerBaseUri = "io.crossbar.demo.spreadsheet." + channel + ".";
+
+   // set up link for control sliders
+   var controllerLink = document.getElementById("controllerLink");
+   controllerLink.href = "controller.html?channel=" + channel;
+
+   var outputLink = document.getElementById("outputLink");
+   outputLink.href = "output.html?channel=" + channel;
+
 
    // Master volume
    sheet.getCell(2, 0).value(0);
-   sheet.getCell(2, 1).text("Master");
-   session.subscribe(slidersbaseUri + "master", function (args, kwargs, details) {
+   sheet.getCell(2, 1).text("Single");
+   session.subscribe(controllerBaseUri + "master", function (args, kwargs, details) {
       sheet.getCell(2, 0).value(args[0]);
    });
 
    // Graphic EQ
    for (var i = 1; i < 8; ++i) {
       sheet.getCell(3 + i, 0).value(0);
-      sheet.getCell(3 + i, 1).text("EQ-" + i);
+      sheet.getCell(3 + i, 1).text("Set-" + i);
    }
-   session.subscribe(slidersbaseUri + "eq", function (args, kwargs, details) {
+   session.subscribe(controllerBaseUri + "eq", function (args, kwargs, details) {
       sheet.getCell(3 + args[0].idx, 0).value(args[0].val);
    });
 
    // Create some formulas
-   sheet.getCell(12, 1).text("Sum");
+   sheet.getCell(12, 1).text("Set Sum");
    sheet.getCell(12, 0).formula("=SUM(A5:A12)");
-   sheet.getCell(13, 1).text("Average");
+   sheet.getCell(13, 1).text("Set Avg.");
    sheet.getCell(13, 0).formula("=ROUND(AVERAGE(A5:A12); 1)");
+   // sheet.getCell(13, 2).text("test");
+   sheet.getCell(12, 2).formula('=PUBLISH("io.crossbar.demo.spreadsheet.' + channel + '.g0", A13)');
+   sheet.getCell(13, 2).formula('=PUBLISH("io.crossbar.demo.spreadsheet.' + channel + '.g1", A14)');
 
    setupCustomFuns();
 
    spread.isPaintSuspended(false);
+
+
+   // allow request of current data
+   session.register(controllerBaseUri + "get_values", function (cellArr) {
+      var values = [];
+
+      cellArr.forEach(function(el) {
+         values.push(sheet.getValue(el[0], el[1]));
+      })
+
+      return values;
+   });
 }
 
 var subs = {};
