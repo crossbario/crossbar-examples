@@ -21,7 +21,7 @@ var device_port = '/dev/ttyATH0';
 //var debug = true;
 var debug = false;
 
-console.log("Arduino Yun Accelerometer starting ...");
+console.log("Arduino Yun Weighing Pad starting ...");
 
 var autobahn = require('autobahn');
 var firmata = require('arduino-firmata');
@@ -89,24 +89,62 @@ arduino.on('connect', function () {
 
 
         /*********************************
-        *   Accelerometer Control Code   *
+        *   Weighing Pad Control Code   *
         *********************************/
 
-        // accelerometer connected:
-        //  x = I2 = 2
-        //  y = I3 = 3
-        set_mode([2, "in"]);
-        set_mode([3, "in"]);
+        // local configuration
 
-        var get_accel_value = function() {
-            var x = analog_read([2]);
-            var y = analog_read([3]);
 
-            session.publish("io.crossbar.examples.yun.accelerometer.on_accelerometer_data", [{x: x, y: y}]);
+        // process config
+        function processConfig (config) {
+            
 
-            setTimeout(get_accel_value, 20);     
-        };
-        get_accel_value();
+        }
+
+        // update config
+        function updateConfig (changeSet) {
+            // check whether we have an instance name change and unregister procedures in this case
+            if (changeSet.instance && changeSet.instance != config.instance) {
+
+                session.unregister("io.crossbar.examples.yun.weighingpad." + instanceName + ".get_config").then(session.log, session.log);
+
+                session.unregister("io.crossbar.examples.yun.weighingpad." + instanceName + ".update_config").then(session.log, session.log);
+
+                config.instance = changeSet.instance;
+            }
+
+            // apply the pad updates to the config
+            // iterate over any pads
+                // if no change of type, just update current config with any updated values
+                // if change of type, remove the inapplicable properties, update common values, add new properties
+            changeSet.pads.forEach(function (padConfig) {
+                // do we have any config for this pad?
+                
+                // is there a change of type?
+                // apply config for the type
+            });
+
+            // process updated config
+            processConfig(config);
+        }
+
+        // set up continous sampling
+
+
+        // set up events
+
+
+        // register procedures
+        function registerProcedures (instanceName) {
+
+            session.register("io.crossbar.examples.yun.weighingpad." + instanceName + ".get_config", function() {
+                return config;
+            }).then(session.log, session.log);
+
+            session.register("io.crossbar.examples.yun.weighingpad." + instanceName + ".update_config", updateConfig).then(session.log, session.log);
+        }
+
+
 
     };
 

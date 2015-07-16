@@ -21,7 +21,7 @@ var device_port = '/dev/ttyATH0';
 //var debug = true;
 var debug = false;
 
-console.log("Arduino Yun Accelerometer starting ...");
+console.log("Arduino Yun Weighing Pads starting ...");
 
 var autobahn = require('autobahn');
 var firmata = require('arduino-firmata');
@@ -92,19 +92,32 @@ arduino.on('connect', function () {
         *   Accelerometer Control Code   *
         *********************************/
 
-        // accelerometer connected:
-        //  x = I2 = 2
-        //  y = I3 = 3
-        set_mode([2, "in"]);
-        set_mode([3, "in"]);
+        var config = { pins: [1, 2], frequency: 10};
+
+        config.pins.forEach(function(pin) {
+            console.log("setting mode for pin " + pin);
+            set_mode([pin, "in"]);
+        });
+
+
+        // set_mode([1, "in"]);
+        // set_mode([2, "in"]);
 
         var get_accel_value = function() {
-            var x = analog_read([2]);
-            var y = analog_read([3]);
+            // var x = analog_read([1]);
+            // var y = analog_read([2]);
 
-            session.publish("io.crossbar.examples.yun.accelerometer.on_accelerometer_data", [{x: x, y: y}]);
+            var values = {};
+            config.pins.forEach(function(pin) {
+                values[pin] = analog_read([pin]);
+            });
 
-            setTimeout(get_accel_value, 20);     
+            console.log("weights: ", values);
+
+            session.publish("io.crossbar.examples.yun.weighingpad.on_sample", [values]);
+
+            // setTimeout(get_accel_value, 20);     
+            setTimeout(get_accel_value, config.frequency);
         };
         get_accel_value();
 
