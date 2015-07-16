@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>Example: Pattern-based Subscriptions - Client / Publisher</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <button onclick="publish_events()">Publish Events</button>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         var session = null;
+
+         function publish_events () {
+            if (session) {
+
+               var topics = [
+                  "com.example.topic1",
+                  "com.example.topic123",
+                  "com.example.topic1.foobar",
+                  "com.example",
+                  "com.myapp.topic1",
+                  "com.myapp.topic123",
+               ];
+
+               for (var i = 0; i < topics.length; ++i) {
+                  (function (topic) {
+
+                     session.publish(topic, ["hello"], null, {acknowledge: true}).then(
+                        function (publication) {
+                           console.log("event published to " + topic + " with publication ID " + publication.id);
+                        },
+                        function (err) {
+                           console.log("could not publish event", err);
+                        }
+                     );
+
+                  })(topics[i]);
+               }
+            } else {
+               console.log("not connected!");
+            }
+         }
+
+         connection.onopen = function (new_session, details) {
+
+            session = new_session;
+
+            console.log("Connected with session ID " + session.id);
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
