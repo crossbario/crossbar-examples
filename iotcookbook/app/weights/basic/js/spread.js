@@ -85,47 +85,12 @@ function main (session) {
    sheet.getColumn(3).locked(false);
    sheet.getColumn(4).locked(false);
 
-   // // Ticker
-   // sheet.getCell(0, 0).value(0);
-   // sheet.getCell(0, 1).text("Ticks");
-   // var ticks = 0;
-   // window.setInterval(function () {
-   //    ticks += 1;
-   //    sheet.getCell(0, 0).value(ticks);
-   // }, 1000);
-
-   // create random channel
-   // change the URI - we want this separated
-   var channel = parseInt(Math.random() * 1000000);
-   // var slidersbaseUri = "io.crossbar.demo.sliders.123456.";
-   var controllerBaseUri = "io.crossbar.demo.spreadsheet." + channel + ".";
-
-   // // set up link for control sliders
-   // var controllerLink = document.getElementById("controllerLink");
-   // controllerLink.href = "controller.html?channel=" + channel;
-
-   var outputLink = document.getElementById("outputLink");
-   outputLink.href = "output.html?channel=" + channel;
-
-
-   // // Master volume
-   // sheet.getCell(2, 0).value(0);
-   // sheet.getCell(2, 1).text("Single");
-   // session.subscribe(controllerBaseUri + "master", function (args, kwargs, details) {
-   //    sheet.getCell(2, 0).value(args[0]);
-   // });
-
-   // // Graphic EQ
-   // for (var i = 1; i < 8; ++i) {
-   //    sheet.getCell(3 + i, 0).value(0);
-   //    sheet.getCell(3 + i, 1).text("Set-" + i);
-   // }
-   // session.subscribe(controllerBaseUri + "eq", function (args, kwargs, details) {
-   //    sheet.getCell(3 + args[0].idx, 0).value(args[0].val);
-   // });
-
    // Set up the raw sample value cells + conversion factors + publication of converted values
+   var maxResistance = 1010;
    var pins = {1: [4, 0], 2: [5, 0]};
+   var firstLine = 0;
+   var lastLine = 0;
+
    for (var pin in pins) {
       if (pins.hasOwnProperty(pin)) {   
          
@@ -141,40 +106,46 @@ function main (session) {
          var sourceCell = "A" + (pins[pin][0] + 1);
          var conversionCell = "D" + (pins[pin][0] + 1);
          sheet.getCell(pins[pin][0], 6).formula('=PUBLISH("io.crossbar.examples.yun.weighingpad.converted_samples.' + pin + '",'  +  sourceCell + ' * ' + conversionCell);
+
+         if (pins[pin][0] < firstLine) {
+            firstLine = pins[pin][0];
+         } 
+         if (pins[pin][0] > lastLine) {
+            lastLine = pins[pin][0];
+         }
       }
    }
 
+   // Set up the sum & average fields and publishing these values
+   var sumCell = ("A" + (lastLine + 3));
+   sheet.getCell(lastLine + 2, 0).formula('=SUM(A' + (firstLine + 1) + ":A" + (lastLine + 1) + ")");
+   sheet.getCell(lastLine + 2, 1).text("Sum");
+   sheet.getCell(lastLine + 2, 3).formula('=PUBLISH("io.crossbar.examples.yun.weighingpad.sum",'  +  sumCell);
+
+   var averageCell = ("A" + (lastLine + 6));
+   sheet.getCell(lastLine + 5, 0).formula('=ROUND(AVERAGE(A' + (firstLine + 1) + ":A" + (lastLine + 1) + "); 1)");
+   sheet.getCell(lastLine + 5, 1).text("Average");
+   sheet.getCell(lastLine + 5, 3).formula('=PUBLISH("io.crossbar.examples.yun.weighingpad.average",'  +  averageCell);
+
+
+
    // Subscribe to pads
    session.subscribe("io.crossbar.examples.yun.weighingpad.on_sample", function (args) {
-      var samples = args[0];
+      var data = args[0];
+      var samples = data.samples;
       for (var pin in samples) {
          if (samples.hasOwnProperty(pin)) {
             console.log("pin " + pin + " value " + samples[pin]);
-            sheet.getCell(pins[pin][0], pins[pin][1]).value(samples[pin]);
+            sheet.getCell(pins[pin][0], pins[pin][1]).value(maxResistance - samples[pin]);
          }
       }
    })
-
-   // Set up the value calculation based on the conversion factor
-
-
-
-
-   // Create some formulas
-   // sheet.getCell(12, 1).text("Set Sum");
-   // sheet.getCell(12, 0).formula("=SUM(A5:A12)");
-   // sheet.getCell(13, 1).text("Set Avg.");
-   // sheet.getCell(13, 0).formula("=ROUND(AVERAGE(A5:A12); 1)");
-   // sheet.getCell(13, 2).text("test");
-   // sheet.getCell(12, 2).formula('=PUBLISH("io.crossbar.demo.spreadsheet.' + channel + '.g0", A13)');
-   // sheet.getCell(13, 2).formula('=PUBLISH("io.crossbar.demo.spreadsheet.' + channel + '.g1", A14)');
 
    setupCustomFuns();
 
    spread.isPaintSuspended(false);
 
-
-   // allow request of current data
+   // allow request of current data so that output components may display these on initialization
    session.register("io.crossbar.examples.yun.weighingpad.get_values", function (cellArr) {
       var values = [];
 

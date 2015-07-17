@@ -24,34 +24,9 @@ if (document.location.origin == "file://") {
                document.location.host + "/ws";
 }
 
-var sess;
+var session;
 var windowUrl;
 var isReconnect = false;
-
-var _idchars = "0123456789";
-var _idlen = 6;
-var _idpat = /^\d*$/;
-
-
-function checkChannelId(id) {
-   return id != null && id != "" && id.length == _idlen && _idpat.test(id);
-}
-
-function isValueChar(e) {
-
-   var kc = e.keyCode;
-   if ((kc > 8 && kc < 46 && kc !== 32) || (kc > 90 && kc < 94) || (kc > 111 && kc < 186) ) {
-      return false;
-   } else {
-      return true;
-   }
-}
-
-var controllerChannelId;
-var controllerChannel = null;
-var controllerChannelSwitch = null;
-var controllerChannelCancel = null;
-
 
 function updateStatusline(status) {
    $(".statusline").text(status);
@@ -68,63 +43,27 @@ function connect() {
       }
    );
 
-   connection.onopen = function (session) {
+   connection.onopen = function (sess) {
 
-      sess = session;
+      session = sess;
 
       setupDemo();
 
       updateStatusline("Connected to " + wsuri);
 
-      // establish prefix to use for shorter URL notation
-      // sess.prefix("api", channelBaseUri);
-
-      // if (checkChannelId(controllerChannel.value)) {
-      //    switchChannel(controllerChannel.value);
-      // } else {
-      //    switchChannel(randomChannelId());
-      // }
-
-
-
-
    };
 
    connection.onclose = function() {
-      sess = null;
+      session = null;
       console.log("connection closed ", arguments);
    }
 
    connection.open();
 }
 
-var setupInfoDictionary = {};
-
 $(document).ready(function()
 {
    updateStatusline("Not connected.");
-
-   
-   // check for additional demo setup data in the URL
-   windowUrl = document.URL; // string
-
-   // check if '?' fragment is present
-   // then make dictionary of values here
-   if (windowUrl.indexOf('?') !== -1) {
-      var setupInfoRaw = windowUrl.split('?')[1];
-      var setupInfoSeparated = setupInfoRaw.split('&');
-
-      for (var i = 0; i < setupInfoSeparated.length; i++) {
-         var pair = setupInfoSeparated[i].split('=');
-         var key = pair[0];
-         var value = pair[1];
-         setupInfoDictionary[key] = value;
-      }
-
-   }
-   if ("channel" in setupInfoDictionary) {
-      controllerChannelId = setupInfoDictionary.channel;
-   }
 
    connect();
 
@@ -132,37 +71,35 @@ $(document).ready(function()
 
 var newWindowLink = null,
     currentSubscriptions = [],
-    gauges = [],
+    padGauges = [],
     sliders = null,
     isReconnect = false;
 
 function setupDemo() {
 
-   // sess.prefix("api", demoPrefix + ".spreadsheet");
+   // session.prefix("api", demoPrefix + ".spreadsheet");
 
    if (isReconnect) {
       return;
    }
    isReconnect = true;
 
-   newWindowLink = document.getElementById('secondInstance');
-
    var gaugeValues = [30, 20];
-   // create and configure gauges
+   // create and configure padGauges
    //
 
-   gauges.push(new JustGage({
-      id: "g" + gauges.length,
-      value: gaugeValues[gauges.length],
+   padGauges.push(new JustGage({
+      id: "g" + padGauges.length,
+      value: gaugeValues[padGauges.length],
       min: 0,
       max: 1010,
       title: "Pad 1",
       label: "resistance"
    }));
 
-   gauges.push(new JustGage({
-      id: "g" + gauges.length,
-      value: gaugeValues[gauges.length],
+   padGauges.push(new JustGage({
+      id: "g" + padGauges.length,
+      value: gaugeValues[padGauges.length],
       min: 0,
       max: 1010,
       title: "Pad 2",
@@ -170,17 +107,15 @@ function setupDemo() {
    }));
 
 
-   for (var k = 0; k < gauges.length; ++k) {
+   for (var k = 0; k < padGauges.length; ++k) {
       (function (p) {
-         // sess.subscribe("api:" + controllerChannelId + ".g" + p, function (args, kwargs, details) {
-         // sess.subscribe("api:" + controllerChannelId + ".g" + p, function (args, kwargs, details) {
-         sess.subscribe("io.crossbar.examples.yun.weighingpad.converted_samples." + (k + 1), function (args, kwargs, details) {
+         session.subscribe("io.crossbar.examples.yun.weighingpad.converted_samples." + (k + 1), function (args, kwargs, details) {
             console.log("refresh", p, args[0]);
-            gauges[p].refresh(args[0]);
+            padGauges[p].refresh(args[0]);
             $("#s" + p).slider({ value: args[0]});
          }).then(
             function(subscription) {
-               console.log("subscribed ", "api:" + controllerChannelId, subscription);
+               console.log("subscribed ", "io.crossbar.examples.yun.weighingpad.converted_samples." + (k + 1), subscription);
                currentSubscriptions.push(subscription);
             },
             function(error) {
@@ -190,12 +125,50 @@ function setupDemo() {
       })(k);
    }
 
+   // set up the sum
+   var sumGauge = new JustGage({
+      id: "g2",
+      value: 0,
+      min: 0,
+      max: 2020,
+      title: "Sum of Pads",
+      label: "???"
+   });
+
+   session.subscribe("io.crossbar.examples.yun.weighingpad.sum", function (args) {
+      sumGauge.refresh(args[0]);
+      if (args[0] > 800) {
+         console.log("sumAlarm triggered");
+         document.getElementById("sumAlarm").style.backgroundColor = "red";
+      } else {
+         console.log("sumAlarm cancelled");
+         document.getElementById("sumAlarm").style.backgroundColor = "green";
+      }
+   })
+
+
+   // set up the average
+   var averageGauge = new JustGage({
+      id: "g3",
+      value: 0,
+      min: 0,
+      max: 1010,
+      title: "Average of Pads",
+      label: "???"
+   });
+
+   session.subscribe("io.crossbar.examples.yun.weighingpad.average", function (args) {
+      averageGauge.refresh(args[0]);
+   })
+
    // get initial values and apply these
-   var cells = [[4,0], [5,0]];
-   sess.call("io.crossbar.examples.yun.weighingpad.get_values", cells).then(function (res) {
+   var cells = [[4,0], [5,0], [7,0], [10,0]];
+   session.call("io.crossbar.examples.yun.weighingpad.get_values", cells).then(function (res) {
       console.log("get_values", res, res.length);
-      gauges[0].refresh(res[0]);
-      gauges[1].refresh(res[1]);
-   }, sess.log);
+      padGauges[0].refresh(res[0]);
+      padGauges[1].refresh(res[1]);
+      sumGauge.refresh(res[2]);
+      averageGauge.refresh(res[3]);
+   }, session.log);
 
 }

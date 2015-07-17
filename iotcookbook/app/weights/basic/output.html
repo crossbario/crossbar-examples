@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8">
       <link rel="shortcut icon" href="favicon.ico">
-      <title>Gauges</title>
+      <title>Wegihing Output</title>
       <link rel="stylesheet" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css">
       <link rel="stylesheet" href="css/output.css">
    </head>
@@ -11,7 +11,7 @@
       <header>
          <div id="header_inner">
             <div id="demo_title">
-               <span>Spreadsheet</span>
+               <span>Weighing</span>
             </div>
             <a class="navbar-brand" href="/">
                <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
@@ -22,7 +22,7 @@
       </header>
       <div class="demo_links">
          <p>
-            See output of the <a href="/index.html">spreadsheet demo</a>
+            See output of the <a href="/index.html">weighing app</a>
          </p>
          <div>
             <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/spread">Source Code</a>
@@ -33,13 +33,35 @@
       </div>
 
       <div id="demo_body">
-         <div class="bigGauge">
-            <div id="g0"></div>
+         
+
+         <div>
+            <div class="smallGaugeContainer">
+               <div id="g0" class="smallGauge"></div>
+            </div>
+
+            <div class="smallGaugeContainer">
+               <div id="g1" class="smallGauge"></div>
+            </div>
+             <div class="clearAll"></div>             
          </div>
 
-         <div class="bigGauge">
-            <div id="g1"></div>
-         </div>      
+
+
+         <div>
+            <div class="bigGaugeContainer">
+               <div id="g2" class="bigGauge"></div>
+            </div>
+
+            <div class="bigGaugeContainer">
+               <div id="g3" class="bigGauge"></div>
+            </div>
+             <div class="clearAll"></div> 
+         </div>
+
+         <div>
+            <span id="sumAlarm"></span>
+         </div>
 
          <div class="status_line noContainer">
             Status: <span class="statusline"></span>

@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <link rel="shortcut icon" href="favicon.ico">
       
-      <title>Spreadsheet</title>
+      <title>Weighing App</title>
 
       <link rel="stylesheet" href="css/spread.css">
 
@@ -34,7 +34,7 @@
       <header>
          <div id="header_inner">
             <div id="demo_title">
-               <span>Spreadsheet</span>
+               <span>Weighing</span>
             </div>
             <a class="navbar-brand" href="/">
                <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
@@ -44,23 +44,18 @@
       </header>
       <div class="demo_links">
          <p>
-            An Excel-like spreadsheet powered by <a href="http://wijmo.com/widgets/wijmo-enterprise/spreadjs/">Wijmo/SpreadJS</a><br>
-            Gets a live data stream from the <a href="../sliders/index.html?channel=123456" target= _blank>Sliders Demo</a> and can send data to the <a href="../gauges/index.html" target="_blank">Gauges Demo</a>
+            Receive data from weighing pads and publish events based on this.
          </p>
          <div>
             <!-- <a id="controllerLink" href="" target="_blank">Open Controller</a> -->
-            <a id="outputLink" href="" target="_blank">Open Output Page</a>
+            <a id="outputLink" href="output.html" target="_blank">Open Output Page</a>
             <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/spread">Source Code</a>
          </div>
       </div>
       <div id="demo_body">
          <div id="ss"></div>
       </div>
-      
-      <center>To enter a formula, navigate to a cell, press backspace, and then type your formula, e.g. <pre>=SUM(A5:A12)</pre></center>
-      <center>To subscribe to some topic, enter a formula <pre>=SUBSCRIBE("io.crossbar.demo.sliders.123456.master")</pre></center>
-      <center>To publish to some topic, enter a formula <pre>=PUBLISH("io.crossbar.demo.gauges.g1", A3)</pre></center>
-
+   
       <div class="status_line noContainer">
          Status: <span class="statusline"></span>
       </div>

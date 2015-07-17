@@ -1,3 +1,8 @@
+// NOTE: 
+// These are notes on an advanced weighing pad component!
+// It is not working code or completely thought through.
+// DO NOT ATTEMPT TO USE THIS!
+
 
 //
 // Copyright (C) Tavendo GmbH. Licensed under the MIT license.
