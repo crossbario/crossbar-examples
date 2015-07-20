@@ -53,6 +53,8 @@ class McuProtocol(LineReceiver):
         if self.debug:
             print("Serial RX: {0}".format(line))
 
+        pins = range(8)
+
         try:
             # parse data received from MCU
             ##
@@ -66,19 +68,20 @@ class McuProtocol(LineReceiver):
                 changed = False
                 for i in range(len(data)):
                     #print i
-                    if abs(data[i] - self._last[i]) > 3:
-                        changed = True
-                        break
+                    if i in pins:
+                        if abs(data[i] - self._last[i]) > 3:
+                            changed = True
+                            break
 
                 if changed:
                     payload = {
                         u'id': self._id,
                         u'timestamp': utcnow(),
-                        u'values': data
+                        u'values': [data[p] for p in pins]
                     }
 
                     self.session.publish(u"io.crossbar.examples.yun.weighingpad.1.on_change", payload)
-                    print(payload)
+                    #print(payload)
                     self._last = data
                     self._id += 1
 
@@ -118,7 +121,7 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug", action="store_true",
                         help="Enable debug output.")
 
-    parser.add_argument("--baudrate", type=int, default=9600, choices=[300, 1200, 2400, 4800, 9600, 19200, 57600, 115200],
+    parser.add_argument("--baudrate", type=int, default=115200, choices=[300, 1200, 2400, 4800, 9600, 19200, 57600, 115200],
                         help='Serial port baudrate.')
 
     parser.add_argument("--port", type=str, default='/dev/ttyACM0',

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <style>
+         .rawvalue {
+            font-family: monospace;
+            font-size: 48px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 16px;
+            line-height: 96px;
+            display: inline;
+         }
+      </style>
+
+      <h1>Weighing Pad Debug Monitor</h1>
+      <div>
+         <pre id="a0" class="rawvalue"></pre>
+         <pre id="a1" class="rawvalue"></pre>
+         <pre id="a2" class="rawvalue"></pre>
+         <pre id="a3" class="rawvalue"></pre>
+         <pre id="a4" class="rawvalue"></pre>
+         <pre id="a5" class="rawvalue"></pre>
+         <pre id="a6" class="rawvalue"></pre>
+         <pre id="a7" class="rawvalue"></pre>
+         <pre id="a8" class="rawvalue"></pre>
+         <pre id="a9" class="rawvalue"></pre>
+      </div>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="chroma.min.js"></script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         var scale = chroma.scale(['grey', 'red']);
+
+         var rawvalues = [];
+         for (var i = 0; i < 10; ++i) {
+            rawvalues.push(document.getElementById('a' + i));
+         }
+
+         function set_rawvalue(i, value) {
+            if (value !== undefined) {
+               rawvalues[i].innerHTML = "A" + i + ": " + ("    " + value).substr(-4, 4);
+            } else {
+               rawvalues[i].innerHTML = "A" + i + ": ?";
+            }
+            var val = value / 1024;
+            rawvalues[i].style.backgroundColor = scale(val).hex();
+         }
+
+         for (var i = 0; i < 10; ++i) {
+            set_rawvalue(i);
+         }
+
+         var wsuri;
+         if (document.location.origin === "null" || document.location.origin === "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "iot_cookbook"
+         });
+
+
+         connection.onopen = function (session, details) {
+            console.log("Connected", details);
+
+            session.subscribe("io.crossbar.examples.yun.weighingpad.1.on_change", function (args) {
+               var evt = args[0];
+//               console.log(evt);
+               for (var i = 0; i < evt.values.length; ++i) {
+                  set_rawvalue(i, 1023 - evt.values[i]);
+               }
+            })
+         };
+
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost", reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

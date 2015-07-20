@@ -33,7 +33,7 @@
                "paths": {
                   "/": {
                      "type": "static",
-                     "directory": ".."
+                     "directory": "../web"
                   },
                   "ws": {
                      "type": "websocket"
