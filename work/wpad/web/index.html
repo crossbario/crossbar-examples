@@ -13,6 +13,27 @@
             line-height: 96px;
             display: inline;
          }
+
+         #bars {
+            width: 80%;
+            background-color: #ccc;
+            padding: 20px;
+            margin: auto;
+            margin-top: 30px;
+         }
+
+         .rawvalue_bar {
+            height: 20px;;
+            width: 120px;
+            background-color: #333;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            color: #fff;
+            font-family: monospace;
+            font-size: 14px;
+            padding: 3px;
+         }
+
       </style>
 
       <h1>Weighing Pad Debug Monitor</h1>
@@ -24,9 +45,26 @@
          <pre id="a4" class="rawvalue"></pre>
          <pre id="a5" class="rawvalue"></pre>
          <pre id="a6" class="rawvalue"></pre>
+<!--
          <pre id="a7" class="rawvalue"></pre>
          <pre id="a8" class="rawvalue"></pre>
          <pre id="a9" class="rawvalue"></pre>
+-->
+      </div>
+
+      <div id="bars">
+         <div id="bar_a0" class="rawvalue_bar"></div>
+         <div id="bar_a1" class="rawvalue_bar"></div>
+         <div id="bar_a2" class="rawvalue_bar"></div>
+         <div id="bar_a3" class="rawvalue_bar"></div>
+         <div id="bar_a4" class="rawvalue_bar"></div>
+         <div id="bar_a5" class="rawvalue_bar"></div>
+         <div id="bar_a6" class="rawvalue_bar"></div>
+<!--
+         <div id="bar_a7" class="rawvalue_bar"></div>
+         <div id="bar_a8" class="rawvalue_bar"></div>
+         <div id="bar_a9" class="rawvalue_bar"></div>
+-->
       </div>
 
       <script>AUTOBAHN_DEBUG = false;</script>
@@ -34,24 +72,39 @@
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 
       <script>
+         var sensor_count = 7;
          var scale = chroma.scale(['grey', 'red']);
 
          var rawvalues = [];
-         for (var i = 0; i < 10; ++i) {
+         var bars = [];
+         var bars_el = document.getElementById('bars');
+
+         for (var i = 0; i < sensor_count; ++i) {
             rawvalues.push(document.getElementById('a' + i));
+            bars.push(document.getElementById('bar_a' + i));
          }
 
          function set_rawvalue(i, value) {
+            var value_text;
             if (value !== undefined) {
-               rawvalues[i].innerHTML = "A" + i + ": " + ("    " + value).substr(-4, 4);
+               value_text = "A" + i + ": " + ("    " + value).substr(-4, 4);
             } else {
-               rawvalues[i].innerHTML = "A" + i + ": ?";
+               value_text = "A" + i + ": ?";
             }
+            rawvalues[i].innerHTML = value_text;
+
             var val = value / 1024;
-            rawvalues[i].style.backgroundColor = scale(val).hex();
+            var col = scale(val).hex()
+            rawvalues[i].style.backgroundColor = col;
+
+            var w = 60 + Math.round(val * (bars_el.clientWidth - 60));
+
+            bars[i].style.width = '' + w + 'px';
+            bars[i].style.backgroundColor = col;
+            bars[i].innerHTML = value_text;
          }
 
-         for (var i = 0; i < 10; ++i) {
+         for (var i = 0; i < sensor_count; ++i) {
             set_rawvalue(i);
          }
 
@@ -77,7 +130,9 @@
                var evt = args[0];
 //               console.log(evt);
                for (var i = 0; i < evt.values.length; ++i) {
-                  set_rawvalue(i, 1023 - evt.values[i]);
+                  if (i < sensor_count) {
+                     set_rawvalue(i, 1023 - evt.values[i]);
+                  }
                }
             })
          };
