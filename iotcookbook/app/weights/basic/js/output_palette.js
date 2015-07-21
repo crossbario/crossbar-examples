@@ -12,10 +12,11 @@
 
 "use strict";
 
-var demoRealm = "iot_cookbook";
+var demoRealm = "crossbardemo";
 // var demoPrefix = "io.crossbar.examples";
 
-var wsuri = "ws://192.168.1.143:8080/ws";
+// var wsuri = "ws://192.168.1.143:8080/ws";
+var wsuri = "wss://demo.crossbar.io/ws";
 // if (document.location.origin == "file://") {
 //    wsuri = "ws://127.0.0.1:8080/ws";
 
@@ -160,10 +161,6 @@ function setup() {
 
    var processed = false;
    var doProcessing = function (values) {
-
-      if (processed) {
-         return;
-      }
 
       console.log("doProcessing", values);
 
@@ -351,15 +348,19 @@ function setup() {
 
 
    // subscribe to pad value updates & set these
-   session.subscribe("io.crossbar.examples.yun.weighingpad.1.on_change", function (args) {
-      // console.log("pad data: ", args[0]);
+   session.subscribe("io.crossbar.demo.wpad.1.on_change", function (args) {
+      
 
       var values = args[0].values;
+
+
 
       // §%$&`?! - values is now eight long since it includes another unrelated sensor!
       if (values.length > 4) {
          values = values.slice(0, 4);
       }
+
+      console.log("pad data: ", values);
 
       var reversedValues = [];
 
@@ -373,6 +374,8 @@ function setup() {
          reversedValues.push(reversedVal);
 
       });
+
+      console.log("rev data: ", reversedValues);
 
       doProcessing(reversedValues);
 

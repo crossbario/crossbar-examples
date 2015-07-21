@@ -2,26 +2,20 @@
 <html lang="en">
 <head>
    <meta charset="UTF-8">
-   <title>HexGL Control Input Page</title>
+   <title>Gamecontrol Input</title>
 </head>
 <body>
-   <p>Steering</p>
-   <p>< / ></p>
-   <br>
-   <p>Accelerate</p>
-   <p>^</p>
-   <br>
-   <p>Brakes</p>
-   <p>A / D</p>
+   <h1>Gamecontrol Input Page</h1>
 
    <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 
 <script>
    "use strict";
 
-   var demoRealm = "iot_cookbook";
+   var demoRealm = "crossbardemo";
 
-   var wsuri = "ws://192.168.1.136:8080/ws";
+   // var wsuri = "ws://192.168.1.143:8080/ws";
+   var wsuri = "wss://demo.crossbar.io/ws";
 
    // var wsuri;
    // if (document.location.origin == "file://") {
@@ -89,7 +83,7 @@
          }
 
          if (movement) {
-            session.publish("io.crossbar.examples.yun.gamecontrol.on_event", [movement]);
+            session.publish("io.crossbar.demo.gamecontrol.on_event", [movement]);
    
          }
          
@@ -98,14 +92,18 @@
       })
 
       // control logic for the browser pong
-      session.subscribe("io.crossbar.examples.yun.weighingpad.1.on_change", function (args) {
+      session.subscribe("io.crossbar.demo.wpad.1.on_change", function (args) {
 
-         var values = args[0];
+
+
+         var values = args[0].values;
 
          // we only need the first four values
          if (values.length > 4) {
             values = values.slice(0, 4);
          }
+
+         console.log("evt", values);
          
          // total of five states to distinguish
          //    - neutral
@@ -116,27 +114,38 @@
          var upPads = [0, 1];
          var downPads = [2, 3];
 
-         var upPressure = ( values[upPads[0]]  + values[upPads[1]] ) / 2;
-         var downPressure = ( values[downPads[0]]  + values[downPads[1]] ) / 2;
+         console.log("dsds");
+         console.log( ( values[upPads[0]] + values[upPads[1]] ) / 2);
+         console.,log
+
+         // var upPressure = ( values[upPads[0]]  + values[upPads[1]] ) / 2;
+         // var downPressure = ( values[downPads[0]]  + values[downPads[1]] ) / 2;
+
+         // console.log("up, " upPressure, "dp", downPressure);
+
          var pressureRation = upPressure / downPressure;
             
+
+         console.log("pressure ratio", pressureRatio);
+
+
          var movement = null;
 
-         // thresholds need setting
-         var tUp = 0;
-         var tUpFast = 0;
-         var tDown = 0;
-         var tDownFast = 0;
+         // // thresholds need setting
+         // var tUp = 0;
+         // var tUpFast = 0;
+         // var tDown = 0;
+         // var tDownFast = 0;
 
-         if (pressureRatio > tUpFast ) {
-            movement = "upFast";
-         } else if (pressureRatio > tUp) {
-            movement = "up";
-         } else if (pressureRatio < tDownFast) {
-            movement = "downFast";
-         } else if (pressureRatio < tDown) {
-            movement = "down";
-         }
+         // if (pressureRatio > tUpFast ) {
+         //    movement = "upFast";
+         // } else if (pressureRatio > tUp) {
+         //    movement = "up";
+         // } else if (pressureRatio < tDownFast) {
+         //    movement = "downFast";
+         // } else if (pressureRatio < tDown) {
+         //    movement = "down";
+         // }
 
          if (movement) {
             session.publish("io.crossbar.examples.yun.gamecontrol.on_event", [movement]);
@@ -145,10 +154,6 @@
       })
 
    }
-
-   setupInput();
-
-
 </script>
 
 
