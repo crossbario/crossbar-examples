@@ -406,8 +406,8 @@ flatButton:hover
 }
 
 .smallGauge {
-  width: 100px;
-  height: 80px;
+  width: 200px;
+  height: 160px;
   display: inline-block;
   margin: 1em;
 }
@@ -423,8 +423,13 @@ flatButton:hover
 }
 
 .smallGaugeContainer {
-    width: 100px;
-    float: left;
+    width: 200px;
+    /*float: left;*/
+    display: inline-block;
+}
+
+.sgC {
+  text-align: center;
 }
 
 .clearAll {

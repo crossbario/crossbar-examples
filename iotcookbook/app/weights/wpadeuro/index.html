@@ -35,23 +35,60 @@
 
       <div id="demo_body">
 
+
+          <div id="fourCratesPage" class="page shown">
+            
+             <div class="crateCounterContainer" id="fourCratesCounterContainer">
+               <span id="fourCratesCounter">0</span>
+               <span id="fourCratesCounterLabel">crates</span>
+               <img src="euro-pallet.svg" alt="">
+            </div>
+
+
+            <div class="fourCratesDisplay">
+               <div>
+                  <div>
+                     <img id="A0" src="kiste_01.jpg" alt="" class="crate">
+                     <span>A2</span>
+                  </div>
+                  <div>
+                      <img id="A1" src="kiste_01.jpg" alt="" class="crate">
+                      <span>A0</span>
+                  </div>
+                   
+               </div>
+               <div>
+                  <div>
+                      <img id="A2" src="kiste_01.jpg" alt="" class="crate">
+                      <span>A3</span>
+                  </div>
+                  <div>
+                      <img id="A3" src="kiste_01.jpg" alt="" class="crate">
+                      <span>A1</span>
+                  </div>
+               </div>
+            </div>
+
+
+         </div>
+
          <div id="gaugesPage" class="page shown">
 
-            <div>
-               <div class="bigGaugeContainer">
-                  <div id="g0" class="bigGauge"></div>
+            <div class="sgC">
+               <div class="smallGaugeContainer">
+                  <div id="g0" class="smallGauge"></div>
                </div>
 
-               <div class="bigGaugeContainer">
-                  <div id="g1" class="bigGauge"></div>
+               <div class="smallGaugeContainer">
+                  <div id="g1" class="smallGauge"></div>
                </div>
 
-               <div class="bigGaugeContainer">
-                  <div id="g2" class="bigGauge"></div>
+               <div class="smallGaugeContainer">
+                  <div id="g2" class="smallGauge"></div>
                </div>
 
-               <div class="bigGaugeContainer">
-                  <div id="g3" class="bigGauge"></div>
+               <div class="smallGaugeContainer">
+                  <div id="g3" class="smallGauge"></div>
                </div>
 
                 <div class="clearAll"></div>             
@@ -92,41 +129,7 @@
          </div> -->
 
 
-         <div id="fourCratesPage" class="page shown">
-            
-             <div class="crateCounterContainer" id="fourCratesCounterContainer">
-               <span id="fourCratesCounter">0</span>
-               <span id="fourCratesCounterLabel">crates</span>
-               <img src="euro-pallet.svg" alt="">
-            </div>
-
-
-            <div class="fourCratesDisplay">
-               <div>
-                  <div>
-                     <img id="A0" src="kiste_01.jpg" alt="" class="crate">
-                     <span>A2</span>
-                  </div>
-                  <div>
-                      <img id="A1" src="kiste_01.jpg" alt="" class="crate">
-                      <span>A0</span>
-                  </div>
-                   
-               </div>
-               <div>
-                  <div>
-                      <img id="A2" src="kiste_01.jpg" alt="" class="crate">
-                      <span>A3</span>
-                  </div>
-                  <div>
-                      <img id="A3" src="kiste_01.jpg" alt="" class="crate">
-                      <span>A1</span>
-                  </div>
-               </div>
-            </div>
-
-
-         </div>
+        
 
    <!--          <div>
                <span id="sumAlarm"></span>
@@ -162,12 +165,12 @@
 
       <!-- AutobahnJS -->
       <script>
-         // AUTOBAHN_DEBUG = true;
+         AUTOBAHN_DEBUG = true;
       </script>
        <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 
       <!-- Demo code -->
       <script src="js/output_palette.js"></script>
-g0
+
    </body>
 </html>
