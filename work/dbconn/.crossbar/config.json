@@ -43,17 +43,39 @@
          ],
          "connections": [
             {
+               "id": "pgpool1",
                "type": "postgresql.connection",
                "host": "localhost",
                "port": 5432,
                "database": "cdc",
                "user": "crossbar",
-               "password": "crossbar"
+               "password": "crossbar",
+               "options": {
+                  "min_connections": 5,
+                  "max_connections": 20
+               }
+            }
+         ],
+         "components": [
+            {
+               "type": "class",
+               "classname": "crossbar.adapter.postgres.PostgreSQLCallee",
+               "realm": "realm1",
+               "role": "anonymous",
+               "references": ["connection:pgpool1"],
+               "extra": {
+                  "foobar": 23
+               }
             }
          ]
       },
       {
          "type": "container",
+         "options": {
+            "env": {
+               "inherit": true
+            }
+         },
          "connections": [
             {
                "type": "postgresql.connection",
@@ -61,7 +83,7 @@
                "port": 5432,
                "database": "cdc",
                "user": "crossbar",
-               "password": "crossbar"
+               "password": "$CDCPASS"
             }
          ]
       }
