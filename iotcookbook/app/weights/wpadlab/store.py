@@ -55,7 +55,7 @@ class WpadSeries(ApplicationSession):
             else:
                 assert(len(series) == n)
             for value in series:
-                assert(type(value) in [int, float])
+                assert(value is None or type(value) in [int, float])
         self._data[self._id] = data
         self.publish(u'io.crossbar.demo.wpad.on_series_stored', self._id, len(data), n)
         self._id += 1

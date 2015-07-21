@@ -231,11 +231,9 @@
 
          function log_data_points () {
             var target_value = parseFloat(document.getElementById('target-value').value);
-
-            console.log(target_value);
-
-            console.log(last_values);
-            series.push(deep_copy(last_values));
+            var data = deep_copy(last_values);
+            data['T'] = target_value;
+            series.push(data);
             document.getElementById('series-length').innerHTML = '' + series.length;
          }
 
@@ -246,10 +244,13 @@
             for (var i = 0; i < sensor_count; ++i) {
                data['A' + i] = [];
             }
+            data['T'] = [];
+
             for (var j = 0; j < series.length; ++j) {
                for (var i = 0; i < sensor_count; ++i) {
                   data['A' + i].push(series[j][i]);
                }
+               data['T'].push(series[j]['T']);
             }
 
             console.log(data);
