@@ -122,6 +122,22 @@
                         }
                      }
                   },
+                  "call": {
+                      "type": "caller",
+                      "realm": "crossbardemo",
+                      "role": "anonymous",
+                      "options": {
+                          "debug": false
+                      }
+                  },
+                  "wpadlab": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                  },
+                  "wpadeuro": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadeuro"
+                  },
                   "beatbox": {
                      "type": "static",
                      "directory": "../../beatbox"

@@ -53,6 +53,8 @@
 
       <h1>Weighing Pad Lab</h1>
 
+      <p id="status"></p>
+
       <div id="series_control">
          <h1>Series Logger</h1>
          <p>
@@ -231,11 +233,9 @@
 
          function log_data_points () {
             var target_value = parseFloat(document.getElementById('target-value').value);
-
-            console.log(target_value);
-
-            console.log(last_values);
-            series.push(deep_copy(last_values));
+            var data = deep_copy(last_values);
+            data['T'] = target_value;
+            series.push(data);
             document.getElementById('series-length').innerHTML = '' + series.length;
          }
 
@@ -246,18 +246,22 @@
             for (var i = 0; i < sensor_count; ++i) {
                data['A' + i] = [];
             }
+            data['T'] = [];
+
             for (var j = 0; j < series.length; ++j) {
                for (var i = 0; i < sensor_count; ++i) {
                   data['A' + i].push(series[j][i]);
                }
+               data['T'].push(series[j]['T']);
             }
 
             console.log(data);
 
             if (session) {
-               session.call("io.crossbar.examples.yun.weighingpad.store_series", [data]).then(
+               session.call("io.crossbar.demo.wpad.store_series", [data]).then(
                   function (res) {
                      console.log(res);
+                     document.getElementById('status').innerHTML = "Series saved under ID " + res;
                   },
                   function (err) {
                      console.log(err);
