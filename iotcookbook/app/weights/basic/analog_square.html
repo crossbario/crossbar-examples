@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="shortcut icon" href="favicon.ico">
+      <title>Square</title>
+      <link rel="stylesheet" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css">
+      <link rel="stylesheet" href="css/output_palette.css">
+
+      <style>
+         #board {
+            width: 100px;
+            height: 100px;
+            background-color: #666;
+            border: 3px solid #000;
+            position: relative;
+         }
+
+         #pointer {
+            width: 6px;
+            height: 6px;
+            background-color: yellow;
+            border: 1px solid orange;
+            border-radius: 8px;
+            position: absolute;
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Square</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+
+      </header>
+
+      <div id="demo_body">
+
+      <div id="board">
+         <div id="pointer"></div>
+      </div>
+
+       <!-- AutobahnJS -->
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <!-- Demo code -->
+      <script>
+          /*****************************************************************************
+          *
+          *  Copyright 2012-2014 Tavendo GmbH.
+          *
+          *                                Apache License
+          *                          Version 2.0, January 2004
+          *                       http://www.apache.org/licenses/
+          *
+          ******************************************************************************/
+
+         /* global document: false, console: false, ab: true, $: true, JustGage: false, getRandomInt: false */
+
+         "use strict";
+
+         var demoRealm = "iot_cookbook";
+         // var demoPrefix = "io.crossbar.examples";
+
+         var wsuri = "ws://192.168.1.143:8080/ws";
+         // if (document.location.origin == "file://") {
+         //    wsuri = "ws://127.0.0.1:8080/ws";
+
+         // } else {
+         //    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+         //                document.location.host + "/ws";
+         // }
+
+         var session;
+         var windowUrl;
+         var isReconnect = false;
+
+         var connection = null;
+         function connect() {
+
+            connection = new autobahn.Connection({
+               url: wsuri,
+               realm: demoRealm
+               }
+            );
+
+            connection.onopen = function (sess) {
+
+               console.log("connected");
+
+               session = sess;
+
+
+               setup();
+
+            };
+
+            connection.onclose = function(reason, details) {
+               session = null;
+               console.log("connection closed", reason, details);
+            }
+
+            connection.open();
+         }
+
+
+         var newWindowLink = null,
+             padGauges = [],
+             isReconnect = false;
+
+         function setup() {
+
+            console.log("setting up");
+
+            // subscribe to pad value updates & set these
+            session.subscribe("io.crossbar.examples.yun.weighingpad.1.on_change", function (args) {
+               // console.log("pad data: ", args[0]);
+
+               var values = args[0].values;
+
+               // §%$&`?! - values is now eight long since it includes another unrelated sensor!
+               if (values.length > 4) {
+                  values = values.slice(0, 4);
+               }
+
+               var reversedValues = [];
+
+               values.forEach(function(val, i) {
+                  // we get resistance values from the pads, which decrease with pressure
+                  // we want values to increase with pressure
+                  var reversedVal = 1023 - val; // theoretical max is 1023, adjust to fit your pads
+
+                  reversedValues.push(reversedVal);
+
+               });
+
+               // set up the board
+               var board = document.getElementById("board");
+               var pointer = document.getElementById("pointer");
+
+               var boardWidth = 500;
+               var boardHeight = 500;
+
+               var pointerSize = 16;
+
+               // add code for setting the actual board & pointer dimensions from these!!! - IMPLEMENT ME
+               board.style.width = boardWidth + "px";
+               board.style.height = boardHeight + "px";
+               pointer.style.height = pointerSize + "px";
+               pointer.style.width = pointerSize + "px";
+               pointer.style.borderRadius = (pointerSize / 2) + "px";
+
+
+               // move the pointer
+               // expects x and y out of 100 (= max down/max right)
+               var movePointer = function (x, y) {
+                  var xPos = (x / 100) * boardWidth;
+                  var yPos = (y / 100) * boardHeight;
+
+                  pointer.style.top = xPos + "px";
+                  pointer.style.left = yPos + "px";
+               };
+
+               // set initial pointer position in the middle of the board
+               movePointer(50, 50);
+
+               move = movePointer;
+               po = pointer;
+
+
+            });
+
+         };
+
+            
+         var move = null;
+         var po = null;
+
+         connect(); 
+
+
+      </script>
+
+   </body>
+</html>

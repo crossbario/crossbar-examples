@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="shortcut icon" href="favicon.ico">
+      <title>Wegihing Output</title>
+      <link rel="stylesheet" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css">
+      <link rel="stylesheet" href="css/output_palette.css">
+   </head>
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Weighing</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+
+      </header>
+
+      <div class="demo_links">
+         <p>
+            See output of the <a href="/index.html">weighing app</a>
+         </p>
+         <div>
+            <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/spread">Source Code</a>
+            <a href="http://crossbar.io">
+               Crossbar.io Homepage
+            </a>
+         </div>
+      </div>
+
+      <div id="demo_body">
+
+         <div id="gaugesPage" class="page shown">
+
+            <div>
+               <div class="bigGaugeContainer">
+                  <div id="g0" class="bigGauge"></div>
+               </div>
+
+               <div class="bigGaugeContainer">
+                  <div id="g1" class="bigGauge"></div>
+               </div>
+
+               <div class="bigGaugeContainer">
+                  <div id="g2" class="bigGauge"></div>
+               </div>
+
+               <div class="bigGaugeContainer">
+                  <div id="g3" class="bigGauge"></div>
+               </div>
+
+                <div class="clearAll"></div>             
+            </div>
+
+
+
+<!--             <div>
+               <div class="bigGaugeContainer">
+                  <div id="sum" class="bigGauge"></div>
+               </div>
+
+               <div class="bigGaugeContainer">
+                  <div id="avg" class="bigGauge"></div>
+               </div>
+                <div class="clearAll"></div> 
+            </div> -->
+
+            
+         </div> 
+
+         <!-- <div id="cratesPage" class="page shown">
+
+            <div class="crateCounterContainer">
+               <span id="crateCounter">0</span>
+               <span id="crateCounterLabel">crates</span>
+            </div>
+
+            <div id="cratesDisplay">
+               <img src="kiste_01.jpg" alt="" class="crate">
+               <img src="kiste_01.jpg" alt="" class="crate">
+               <img src="kiste_01.jpg" alt="" class="crate">
+               <img src="kiste_01.jpg" alt="" class="crate">
+               <img src="kiste_01.jpg" alt="" class="crate">
+               <img src="kiste_01.jpg" alt="" class="crate">
+            </div>
+            
+         </div> -->
+
+
+         <div id="fourCratesPage" class="page shown">
+            
+             <div class="crateCounterContainer" id="fourCratesCounterContainer">
+               <span id="fourCratesCounter">0</span>
+               <span id="fourCratesCounterLabel">crates</span>
+               <img src="euro-pallet.svg" alt="">
+            </div>
+
+
+            <div class="fourCratesDisplay">
+               <div>
+                  <div>
+                     <img id="A0" src="kiste_01.jpg" alt="" class="crate">
+                     <span>A2</span>
+                  </div>
+                  <div>
+                      <img id="A1" src="kiste_01.jpg" alt="" class="crate">
+                      <span>A0</span>
+                  </div>
+                   
+               </div>
+               <div>
+                  <div>
+                      <img id="A2" src="kiste_01.jpg" alt="" class="crate">
+                      <span>A3</span>
+                  </div>
+                  <div>
+                      <img id="A3" src="kiste_01.jpg" alt="" class="crate">
+                      <span>A1</span>
+                  </div>
+               </div>
+            </div>
+
+
+         </div>
+
+   <!--          <div>
+               <span id="sumAlarm"></span>
+            </div> -->
+
+         <div class="permanentDisplay">
+
+            <div class="switcher">
+               <button id="gaugesSwitch" class="bigButton">Gauges</button>
+               <button id="crateSwitch" class="bigButton">Crates</button>
+            </div>
+            
+            <div class="status_line noContainer">
+               Status: <span class="statusline"></span>
+            </div>
+
+         </div>
+
+
+
+      </div>
+
+
+
+
+      <!-- jQuery -->
+      <script type="text/javascript" src="js/jquery.min.js"></script>
+      <script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+
+      <!-- JustGage -->
+      <script src="js/raphael.2.1.0.min.js"></script>
+      <script src="js/justgage.1.0.1.min.js"></script>
+
+      <!-- AutobahnJS -->
+      <script>
+         // AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <!-- Demo code -->
+      <script src="js/output_palette.js"></script>
+g0
+   </body>
+</html>

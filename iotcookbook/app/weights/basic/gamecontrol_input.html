@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>HexGL Control Input Page</title>
+</head>
+<body>
+   <p>Steering</p>
+   <p>< / ></p>
+   <br>
+   <p>Accelerate</p>
+   <p>^</p>
+   <br>
+   <p>Brakes</p>
+   <p>A / D</p>
+
+   <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+<script>
+   "use strict";
+
+   var demoRealm = "iot_cookbook";
+
+   var wsuri = "ws://192.168.1.136:8080/ws";
+
+   // var wsuri;
+   // if (document.location.origin == "file://") {
+   //    wsuri = "ws://127.0.0.1:8080/ws";
+
+   // } else {
+   //    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+   //                document.location.host + "/ws";
+   // }
+
+   var session;
+
+   function updateStatusline(status) {
+      $(".statusline").text(status);
+   };
+
+   var connection = null;
+   function connect() {
+
+      connection = new autobahn.Connection({
+         url: wsuri,
+         realm: demoRealm
+         }
+      );
+
+      connection.onopen = function (sess) {
+
+         console.log("connected");
+
+         session = sess;
+
+         setupInput();
+
+         updateStatusline("Connected to " + wsuri);
+
+      };
+
+      connection.onclose = function() {
+         session = null;
+         console.log("connection closed ", arguments);
+      }
+
+      connection.open();
+   }
+
+   connect();
+
+   function setupInput () {
+
+      // keyboard events, up/down, for testing
+      window.addEventListener("keydown", function (evt) {
+         console.log("keyDown", evt.keyCode, evt);
+
+         var movement = null;
+         switch (evt.keyCode) {
+            case 38:
+               movement = "up";
+               break;
+            case 40:
+               movement = "down";
+               break;
+            default:
+               console.log("currently not processing this key");
+               break;
+         }
+
+         if (movement) {
+            session.publish("io.crossbar.examples.yun.gamecontrol.on_event", [movement]);
+   
+         }
+         
+         evt.stopImmediatePropagation();
+
+      })
+
+      // control logic for the browser pong
+      session.subscribe("io.crossbar.examples.yun.weighingpad.1.on_change", function (args) {
+
+         var values = args[0];
+
+         // we only need the first four values
+         if (values.length > 4) {
+            values = values.slice(0, 4);
+         }
+         
+         // total of five states to distinguish
+         //    - neutral
+         //    - up (light)
+         //    - up (heavy)
+         //    - down (light)
+         //    - down (heavy)
+         var upPads = [0, 1];
+         var downPads = [2, 3];
+
+         var upPressure = ( values[upPads[0]]  + values[upPads[1]] ) / 2;
+         var downPressure = ( values[downPads[0]]  + values[downPads[1]] ) / 2;
+         var pressureRation = upPressure / downPressure;
+            
+         var movement = null;
+
+         // thresholds need setting
+         var tUp = 0;
+         var tUpFast = 0;
+         var tDown = 0;
+         var tDownFast = 0;
+
+         if (pressureRatio > tUpFast ) {
+            movement = "upFast";
+         } else if (pressureRatio > tUp) {
+            movement = "up";
+         } else if (pressureRatio < tDownFast) {
+            movement = "downFast";
+         } else if (pressureRatio < tDown) {
+            movement = "down";
+         }
+
+         if (movement) {
+            session.publish("io.crossbar.examples.yun.gamecontrol.on_event", [movement]);
+         }
+
+      })
+
+   }
+
+   setupInput();
+
+
+</script>
+
+
+</body>
+</html>
