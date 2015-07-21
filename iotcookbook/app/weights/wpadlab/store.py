@@ -43,7 +43,7 @@ class WpadSeries(ApplicationSession):
         yield self.register(self)
         print("WPad series store ready!")
 
-    @wamp.register(u'io.crossbar.examples.yun.weighingpad.store_series')
+    @wamp.register(u'io.crossbar.demo.wpad.store_series')
     def store_series(self, data):
         print data
         assert(type(data) == dict)
@@ -57,15 +57,15 @@ class WpadSeries(ApplicationSession):
             for value in series:
                 assert(type(value) in [int, float])
         self._data[self._id] = data
-        self.publish(u'io.crossbar.examples.yun.weighingpad.on_series_store', self._id, len(data), n)
+        self.publish(u'io.crossbar.demo.wpad.on_series_stored', self._id, len(data), n)
         self._id += 1
         return self._id - 1
 
-    @wamp.register(u'io.crossbar.examples.yun.weighingpad.get_series_count')
+    @wamp.register(u'io.crossbar.demo.wpad.get_series_count')
     def get_series_count(self):
         return len(self._data)
 
-    @wamp.register(u'io.crossbar.examples.yun.weighingpad.get_series')
+    @wamp.register(u'io.crossbar.demo.wpad.get_series')
     def get_series(self, series_id):
         return self._data.get(series_id, None)
 
@@ -82,6 +82,9 @@ if __name__ == '__main__':
     parser.add_argument("--router", type=str, default='ws://localhost:8080/ws',
                         help='Connect to this WAMP router.')
 
+    parser.add_argument("--realm", type=str, default='realm1',
+                        help='Realm to attach to.')
+
     args = parser.parse_args()
 
     from twisted.python import log
@@ -96,7 +99,7 @@ if __name__ == '__main__':
     #
     from autobahn.twisted.wamp import ApplicationRunner
 
-    runner = ApplicationRunner(args.router, u"iot_cookbook", extra={})
+    runner = ApplicationRunner(args.router, args.realm, extra={})
 
     # start the component and the Twisted reactor ..
     #

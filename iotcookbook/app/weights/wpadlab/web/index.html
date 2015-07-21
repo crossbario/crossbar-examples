@@ -255,7 +255,7 @@
             console.log(data);
 
             if (session) {
-               session.call("io.crossbar.examples.yun.weighingpad.store_series", [data]).then(
+               session.call("io.crossbar.demo.wpad.store_series", [data]).then(
                   function (res) {
                      console.log(res);
                   },
