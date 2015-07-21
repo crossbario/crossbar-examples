@@ -43,6 +43,10 @@
                   "ws": {
                      "type": "websocket"
                   },
+                  "wpadlab": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                  },
                   "beatbox": {
                      "type": "static",
                      "directory": "../../beatbox"

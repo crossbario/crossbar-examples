@@ -122,6 +122,14 @@
                         }
                      }
                   },
+                  "wpadlab": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                  },
+                  "wpadeuro": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadeuro"
+                  },
                   "beatbox": {
                      "type": "static",
                      "directory": "../../beatbox"
