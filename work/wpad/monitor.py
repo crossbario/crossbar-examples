@@ -32,7 +32,7 @@ from autobahn.util import utcnow
 from autobahn.twisted.wamp import ApplicationSession
 
 
-class McuProtocol(LineReceiver):
+class WpadSerial(LineReceiver):
 
     """
     MCU serial communication protocol.
@@ -44,7 +44,9 @@ class McuProtocol(LineReceiver):
         self.debug = debug
         self.session = session
         self._last = None
+        self._last_event = None
         self._id = 1
+        self._wpad_id = session.config.extra['wpad_id']
 
     def connectionMade(self):
         print('Serial port connected.')
@@ -80,33 +82,33 @@ class McuProtocol(LineReceiver):
                         u'values': [data[p] for p in pins]
                     }
 
-                    self.session.publish(u"io.crossbar.examples.yun.weighingpad.1.on_change", payload)
-                    #print(payload)
+                    self.session.publish(u"io.crossbar.demo.wpad.{}.on_change".format(self._wpad_id), payload)
+                    self._last_event = payload
                     self._last = data
                     self._id += 1
 
 
-class McuComponent(ApplicationSession):
+class Wpad(ApplicationSession):
 
     """
     MCU WAMP application component.
     """
 
     def onJoin(self, details):
-        print("MyComponent ready! Configuration: {}".format(self.config.extra))
 
         port = self.config.extra['port']
         baudrate = self.config.extra['baudrate']
         debug = self.config.extra['debug']
 
-        serialProtocol = McuProtocol(self, debug)
+        self._serial_proto = WpadSerial(self, debug)
 
-        print('About to open serial port {0} [{1} baud] ..'.format(port, baudrate))
         try:
-            serialPort = SerialPort(serialProtocol, port, reactor, baudrate=baudrate)
+            self._serial_port = SerialPort(self._serial_proto, port, reactor, baudrate=baudrate)
         except Exception as e:
             print('Could not open serial port: {0}'.format(e))
             self.leave()
+
+        print("Wpad ready! Configuration: {}".format(self.config.extra))
 
 
 if __name__ == '__main__':
@@ -129,6 +131,12 @@ if __name__ == '__main__':
 
     parser.add_argument("--router", type=str, default='ws://localhost:8080/ws',
                         help='Connect to this WAMP router.')
+
+    parser.add_argument("--realm", type=str, default='realm1',
+                        help='Realm to attach to.')
+
+    parser.add_argument("--wpad_id", type=str, default='1',
+                        help='Weighing pad ID.')
 
     args = parser.parse_args()
 
@@ -157,9 +165,14 @@ if __name__ == '__main__':
     #
     from autobahn.twisted.wamp import ApplicationRunner
 
-    runner = ApplicationRunner(args.router, u"iot_cookbook",
-                               extra={'port': args.port, 'baudrate': args.baudrate, 'debug': args.debug})
+    extra = {
+        'wpad_id': args.wpad_id,
+        'port': args.port,
+        'baudrate': args.baudrate,
+        'debug': args.debug
+    }
+    runner = ApplicationRunner(args.router, args.realm, extra=extra)
 
     # start the component and the Twisted reactor ..
     #
-    runner.run(McuComponent)
+    runner.run(Wpad)

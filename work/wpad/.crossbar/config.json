@@ -37,6 +37,14 @@
                   },
                   "ws": {
                      "type": "websocket"
+                  },
+                  "call": {
+                      "type": "caller",
+                      "realm": "iot_cookbook",
+                      "role": "anonymous",
+                      "options": {
+                          "debug": true
+                      }
                   }
                }
             }

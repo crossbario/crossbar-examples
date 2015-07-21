@@ -2,6 +2,12 @@
 <html>
    <body>
       <style>
+         body {
+            font-family: sans-serif;
+         }
+         #raw {
+            margin-top: 30px;
+         }
          .rawvalue {
             font-family: monospace;
             font-size: 48px;
@@ -34,14 +40,40 @@
             padding: 3px;
          }
 
+         #series_control {
+            background-color: #333;
+            color: #eee;
+            border-radius: 6px;
+            padding: 12px 20px 12px 20px;
+            margin-left: 20px;
+            width: 360px;
+         }
+
       </style>
 
-      <h1>Weighing Pad Debug Monitor</h1>
-      <div>
+      <h1>Weighing Pad Lab</h1>
+
+      <div id="series_control">
+         <h1>Series Logger</h1>
+         <p>
+            Current length: <span id="series-length">0</span>
+         </p>
+         <p>
+            Target: <input type="text" id="target-value" size="5" />
+            <button onclick="log_data_points()">Add to Series</button>
+         </p>
+         <p>
+            <button onclick="save_series()">Save Series</button>
+            <button onclick="reset_series()">Reset Series</button>
+         </p>
+      </div>
+
+      <div id="raw">
          <pre id="a0" class="rawvalue"></pre>
          <pre id="a1" class="rawvalue"></pre>
          <pre id="a2" class="rawvalue"></pre>
          <pre id="a3" class="rawvalue"></pre>
+         <br>
          <pre id="a4" class="rawvalue"></pre>
          <pre id="a5" class="rawvalue"></pre>
          <pre id="a6" class="rawvalue"></pre>
@@ -57,6 +89,7 @@
          <div id="bar_a1" class="rawvalue_bar"></div>
          <div id="bar_a2" class="rawvalue_bar"></div>
          <div id="bar_a3" class="rawvalue_bar"></div>
+         <br>
          <div id="bar_a4" class="rawvalue_bar"></div>
          <div id="bar_a5" class="rawvalue_bar"></div>
          <div id="bar_a6" class="rawvalue_bar"></div>
@@ -67,13 +100,22 @@
 -->
       </div>
 
+
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="chroma.min.js"></script>
+      <script src="autobahn.min.js"></script>
+<!--
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
-
+-->
       <script>
          var sensor_count = 7;
          var scale = chroma.scale(['grey', 'red']);
+
+         //var colors = ['black', 'red', 'yellow', 'white'];
+         //var colors = ['lightyellow', 'orangered', 'deeppink', 'darkred'];
+         //var colors = ['black', 'red', 'deeppink'];
+         //colors = chroma.interpolate.bezier(colors)
+         //var scale = chroma.scale(colors).mode('lab').correctLightness(true);
 
          var rawvalues = [];
          var bars = [];
@@ -118,31 +160,129 @@
          }
 
          var connection = new autobahn.Connection({
-            url: wsuri,
-            realm: "iot_cookbook"
+            url: "wss://demo.crossbar.io/ws",
+            realm: "crossbardemo"
          });
 
+         var last_values = {};
 
-         connection.onopen = function (session, details) {
+         var session = null;
+
+         connection.onopen = function (new_session, details) {
+            session = new_session;
             console.log("Connected", details);
 
-            session.subscribe("io.crossbar.examples.yun.weighingpad.1.on_change", function (args) {
+            session.subscribe("io.crossbar.demo.wpad.1.on_change", function (args) {
                var evt = args[0];
 //               console.log(evt);
                for (var i = 0; i < evt.values.length; ++i) {
                   if (i < sensor_count) {
-                     set_rawvalue(i, 1023 - evt.values[i]);
+                     evt.values[i] = 1023 - evt.values[i];
+                     set_rawvalue(i, evt.values[i]);
+                     last_values[i] = evt.values[i];
                   }
                }
+
+               var sum_pad1 = 0;
+               var sum_sq_pad1 = 0;
+               for (var i = 0; i < 4; ++i) {
+                  sum_pad1 += evt.values[i];
+                  sum_sq_pad1 += evt.values[i] * evt.values[i];
+               }
+
+               var sum_pad2 = 0;
+               var sum_sq_pad2 = 0;
+               for (var i = 4; i < 7; ++i) {
+                  sum_pad2 += evt.values[i];
+                  sum_sq_pad2 += evt.values[i] * evt.values[i];
+               }
+
+               var avg_pad1 = sum_pad1 / 4;
+               var avg_pad2 = sum_pad2 / 3;
+
+               var var_pad1 = (sum_sq_pad1 / 3) - 4 * (avg_pad1 * avg_pad1);
+               var var_pad2 = (sum_sq_pad2 / 2) - 3 * (avg_pad2 * avg_pad2);
+
+               //console.log(avg_pad1, var_pad1);
+               //console.log(avg_pad2, var_pad2);
             })
          };
 
 
          connection.onclose = function (reason, details) {
             console.log("Connection lost", reason, details);
+            session = null;
          }
 
          connection.open();
+
+         var series = [];
+
+         function deep_copy (oldObj) {
+             var newObj = oldObj;
+             if (oldObj && typeof oldObj === 'object') {
+                 newObj = Object.prototype.toString.call(oldObj) === "[object Array]" ? [] : {};
+                 for (var i in oldObj) {
+                     newObj[i] = deep_copy(oldObj[i]);
+                 }
+             }
+             return newObj;
+         }
+
+         function log_data_points () {
+            var target_value = parseFloat(document.getElementById('target-value').value);
+
+            console.log(target_value);
+
+            console.log(last_values);
+            series.push(deep_copy(last_values));
+            document.getElementById('series-length').innerHTML = '' + series.length;
+         }
+
+         function save_series () {
+            console.log(series);
+
+            var data = {};
+            for (var i = 0; i < sensor_count; ++i) {
+               data['A' + i] = [];
+            }
+            for (var j = 0; j < series.length; ++j) {
+               for (var i = 0; i < sensor_count; ++i) {
+                  data['A' + i].push(series[j][i]);
+               }
+            }
+
+            console.log(data);
+
+            if (session) {
+               session.call("io.crossbar.examples.yun.weighingpad.store_series", [data]).then(
+                  function (res) {
+                     console.log(res);
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            }
+
+            reset_series();
+         }
+
+         function reset_series () {
+            series = [];
+            document.getElementById('series-length').innerHTML = "0";
+         }
+
+         /*
+         curl -H "Content-Type: application/json" -d '{"procedure": "io.crossbar.examples.yun.weighingpad.get_series", "args": [1]}' http://127.0.0.1:8080/call
+
+         import requests, json
+         payload = {"procedure": "io.crossbar.examples.yun.weighingpad.get_series", "args": [1]}
+         r = requests.post("http://127.0.0.1:8080/call", data=json.dumps(payload), headers={'content-type': 'application/json'})
+
+
+         r = requests.get('https://api.github.com/user'
+         */
       </script>
    </body>
 </html>
