@@ -111,37 +111,59 @@
          //    - up (heavy)
          //    - down (light)
          //    - down (heavy)
-         var upPads = [0, 1];
-         var downPads = [2, 3];
+         var upPads = [0, 2];
+         var downPads = [1, 3];
 
-         var upPressure = ( values[upPads[0]]  + values[upPads[1]] ) / 2;
-         var downPressure = ( values[downPads[0]]  + values[downPads[1]] ) / 2;
+         var upPressure = ( values[upPads[0]]  + values[upPads[1]] );
+         var downPressure = ( values[downPads[0]]  + values[downPads[1]] );
 
-         var pressureRatio = upPressure / downPressure;
+         // var pressureDifference = upPressure - downPressure;
+
+         console.log("up", upPressure, "down", downPressure);
             
-         console.log("pressure ratio", pressureRatio);
+         // console.log("pressureDifference", pressureDifference);
 
-         var movement = null;
 
-         // thresholds need setting
-         var tUp = 0;
-         var tUpFast = 0;
-         var tDown = 0;
-         var tDownFast = 0;
+         var movement = "rest";
+         var isUp = false;
+         var isDown = false;
+         var repeatTime = 100;
 
-         if (pressureRatio > tUpFast ) {
-            movement = "upFast";
-         } else if (pressureRatio > tUp) {
+         if (upPressure < 150 && !isUp) {
             movement = "up";
-         } else if (pressureRatio < tDownFast) {
-            movement = "downFast";
-         } else if (pressureRatio < tDown) {
+            isUp = true;
+            setTimeout(function() {
+               isUp = false
+            }, repeatTime);
+         } else if (downPressure < 150 && !isDown) {
             movement = "down";
+            isDown = true;
+            setTimeout(function() {
+               isDown = false
+            }, repeatTime);
          }
 
-         if (movement) {
-            session.publish("io.crossbar.examples.yun.gamecontrol.on_event", [movement]);
-         }
+         // // thresholds need setting
+         // var tUp = 0;
+         // var tUpFast = 0;
+         // var tDown = 0;
+         // var tDownFast = 0;
+
+         // if (pressureRatio > tUpFast ) {
+         //    movement = "upFast";
+         // } else if (pressureRatio > tUp) {
+         //    movement = "up";
+         // } else if (pressureRatio < tDownFast) {
+         //    movement = "downFast";
+         // } else if (pressureRatio < tDown) {
+         //    movement = "down";
+         // }
+
+         // console.log("movement", movement);
+
+         
+         console.log("publishing event: ", movement);
+         session.publish("io.crossbar.demo.gamecontrol.on_event", [movement]);
 
       })
 
