@@ -53,6 +53,8 @@
 
       <h1>Weighing Pad Lab</h1>
 
+      <p id="status"></p>
+
       <div id="series_control">
          <h1>Series Logger</h1>
          <p>
@@ -259,6 +261,7 @@
                session.call("io.crossbar.demo.wpad.store_series", [data]).then(
                   function (res) {
                      console.log(res);
+                     document.getElementById('status').innerHTML = "Series saved under ID " + res;
                   },
                   function (err) {
                      console.log(err);
