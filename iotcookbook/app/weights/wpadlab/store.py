@@ -42,10 +42,10 @@ class WpadObjectStore(ApplicationSession):
     def onJoin(self, details):
         print("Session attached")
 
+        # poor man's key-value database
         self._store = shelve.open(self.config.extra['database'])
-        if 'next_id' not in self._store:
-            self._store['next_id'] = {}
 
+        # expose object store WAMP API
         yield self.register(self)
 
         print("WPad object store ready!")
@@ -59,21 +59,21 @@ class WpadObjectStore(ApplicationSession):
     def save(self, obj_type, obj_data):
         assert(type(obj_type) in (str, unicode))
 
-        next_id = self._store['next_id']
-        if obj_type not in next_id:
-            next_id[obj_type] = 1
-        obj_id = next_id[obj_type]
-        next_id[obj_type] += 1
+        next_id = "{}.{}".format("next_id", obj_type)
+
+        if next_id not in self._store:
+            self._store[next_id] = 1
+            self._store.sync()
+
+        obj_id = self._store[next_id]
+        self._store[next_id] = obj_id + 1
+        self._store.sync()
 
         self._store["{}.{}".format(obj_type, obj_id)] = obj_data
 
         self.publish(u'io.crossbar.demo.wpad.objstore.on_save', obj_type, obj_id)
 
         return obj_id
-
-    @wamp.register(u'io.crossbar.demo.wpad.objstore.count')
-    def count(self, obj_type=None):
-        return len(self._store)
 
     @wamp.register(u'io.crossbar.demo.wpad.objstore.get')
     def get(self, obj_type, obj_id):
@@ -83,6 +83,10 @@ class WpadObjectStore(ApplicationSession):
             return self._store[obj_id]
         else:
             return None
+
+    @wamp.register(u'io.crossbar.demo.wpad.objstore.count')
+    def count(self, obj_type=None):
+        return len(self._store)
 
 
 if __name__ == '__main__':
