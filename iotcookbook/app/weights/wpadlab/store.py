@@ -24,13 +24,15 @@
 #
 ###############################################################################
 
+import shelve
+
 from twisted.internet.defer import inlineCallbacks
 
 from autobahn import wamp
 from autobahn.twisted.wamp import ApplicationSession
 
 
-class WpadSeries(ApplicationSession):
+class WpadObjectStore(ApplicationSession):
 
     """
     MCU WAMP application component.
@@ -38,36 +40,49 @@ class WpadSeries(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        self._id = 1
-        self._data = {}
+        print("Session attached")
+
+        self._store = shelve.open(self.config.extra['database'])
+        if 'next_id' not in self._store:
+            self._store['next_id'] = {}
+
         yield self.register(self)
-        print("WPad series store ready!")
 
-    @wamp.register(u'io.crossbar.demo.wpad.store_series')
-    def store_series(self, data):
-        print data
-        assert(type(data) == dict)
-        n = None
-        for series in data.values():
-            assert(type(series) == list)
-            if n is None:
-                n = len(series)
-            else:
-                assert(len(series) == n)
-            for value in series:
-                assert(value is None or type(value) in [int, float])
-        self._data[self._id] = data
-        self.publish(u'io.crossbar.demo.wpad.on_series_stored', self._id, len(data), n)
-        self._id += 1
-        return self._id - 1
+        print("WPad object store ready!")
 
-    @wamp.register(u'io.crossbar.demo.wpad.get_series_count')
-    def get_series_count(self):
-        return len(self._data)
+    def onLeave(self, details):
+        print("Session detached")
+        self._store.close()
+        self.disconnect()
 
-    @wamp.register(u'io.crossbar.demo.wpad.get_series')
-    def get_series(self, series_id):
-        return self._data.get(series_id, None)
+    @wamp.register(u'io.crossbar.demo.wpad.objstore.save')
+    def save(self, obj_type, obj_data):
+        assert(type(obj_type) in (str, unicode))
+
+        next_id = self._store['next_id']
+        if obj_type not in next_id:
+            next_id[obj_type] = 1
+        obj_id = next_id[obj_type]
+        next_id[obj_type] += 1
+
+        self._store["{}.{}".format(obj_type, obj_id)] = obj_data
+
+        self.publish(u'io.crossbar.demo.wpad.objstore.on_save', obj_type, obj_id)
+
+        return obj_id
+
+    @wamp.register(u'io.crossbar.demo.wpad.objstore.count')
+    def count(self, obj_type=None):
+        return len(self._store)
+
+    @wamp.register(u'io.crossbar.demo.wpad.objstore.get')
+    def get(self, obj_type, obj_id):
+        assert(type(obj_id) == int)
+        obj_id = "{}.{}".format(obj_type, obj_id)
+        if obj_id in self._store:
+            return self._store[obj_id]
+        else:
+            return None
 
 
 if __name__ == '__main__':
@@ -99,8 +114,13 @@ if __name__ == '__main__':
     #
     from autobahn.twisted.wamp import ApplicationRunner
 
-    runner = ApplicationRunner(args.router, args.realm, extra={})
+    extra = {
+        "database": "wpad.dat",
+        "debug": True
+    }
+
+    runner = ApplicationRunner(args.router, args.realm, extra=extra)
 
     # start the component and the Twisted reactor ..
     #
-    runner.run(WpadSeries)
+    runner.run(WpadObjectStore)

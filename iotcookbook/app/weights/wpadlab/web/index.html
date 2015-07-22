@@ -161,10 +161,17 @@
                         document.location.host + "/ws";
          }
 
-         var connection = new autobahn.Connection({
-            url: "wss://demo.crossbar.io/ws",
-            realm: "crossbardemo"
-         });
+         if (false) {
+            var connection = new autobahn.Connection({
+               url: "wss://demo.crossbar.io/ws",
+               realm: "crossbardemo"
+            });
+         } else {
+            var connection = new autobahn.Connection({
+               url: "ws://localhost:8080/ws",
+               realm: "iot_cookbook"
+            });
+         }
 
          var last_values = {};
 
@@ -258,7 +265,7 @@
             console.log(data);
 
             if (session) {
-               session.call("io.crossbar.demo.wpad.store_series", [data]).then(
+               session.call("io.crossbar.demo.wpad.objstore.save", ["series", data]).then(
                   function (res) {
                      console.log(res);
                      document.getElementById('status').innerHTML = "Series saved under ID " + res;

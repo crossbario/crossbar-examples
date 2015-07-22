@@ -82,6 +82,8 @@ class WpadSerial(LineReceiver):
                         u'values': [data[p] for p in pins]
                     }
 
+                    print payload
+
                     self.session.publish(u"io.crossbar.demo.wpad.{}.on_change".format(self._wpad_id), payload)
                     self._last_event = payload
                     self._last = data
