@@ -5,6 +5,11 @@
          body {
             font-family: sans-serif;
          }
+         #status {
+            font-size: 24px;
+            font-weight: bold;
+         }
+
          #raw {
             margin-top: 30px;
          }
@@ -23,35 +28,44 @@
          #bars {
             width: 80%;
             background-color: #ccc;
-            padding: 20px;
+            padding: 8px;
             margin: auto;
             margin-top: 30px;
          }
 
          .rawvalue_bar {
-            height: 20px;;
+            height: 16px;;
             width: 120px;
             background-color: #333;
-            margin-top: 8px;
-            margin-bottom: 8px;
+            margin-top: 2px;
+            margin-bottom: 2px;
             color: #fff;
             font-family: monospace;
             font-size: 14px;
             padding: 3px;
          }
 
-         #series_control {
+         #series_control, #model_control {
             background-color: #333;
             color: #eee;
             border-radius: 6px;
             padding: 12px 20px 12px 20px;
+            margin: 12px;
             margin-left: 20px;
             width: 360px;
+            float: left;
+         }
+
+         #predicted-value {
+            padding-left: 40px;
+            font-size: 72px;
+            font-weight: bold;
+            color: #3c3;
          }
 
       </style>
 
-      <h1>Weighing Pad Lab</h1>
+      <h1>Crossbar.io - Weighing Pad Lab</h1>
 
       <p id="status"></p>
 
@@ -69,6 +83,25 @@
             <button onclick="reset_series()">Reset Series</button>
          </p>
       </div>
+
+      <div id="model_control">
+         <h1>Model</h1>
+         <p>
+            Predicted value: <span id="predicted-value"></span>
+         </p>
+         <p>
+            Loaded model: <span id="loaded-model">-</span>
+         </p>
+         <p>
+            Load model: <input type="text" id="load-model-id" size="5" />
+            <button onclick="load_model()">Load model</button>
+         </p>
+         <p>
+            <button onclick="reset_model()">Reset Model</button>
+         </p>
+      </div>
+
+      <br style="clear: both;">
 
       <div id="raw">
          <pre id="a0" class="rawvalue"></pre>
@@ -191,6 +224,10 @@
                   }
                }
 
+               if (model) {
+                  model_predict(last_values);
+               }
+
                var sum_pad1 = 0;
                var sum_sq_pad1 = 0;
                for (var i = 0; i < 4; ++i) {
@@ -295,6 +332,63 @@
          function reset_series () {
             series = [];
             document.getElementById('series-length').innerHTML = "0";
+         }
+
+         var model = null;
+
+         function model_predict (last_values) {
+
+            var a4 = last_values[4];
+            var a5 = last_values[5];
+            var a6 = last_values[6];
+
+            var sums = [];
+
+            for (var i = 0; i < model.length; ++i) {
+               var row = model[i];
+               var sum = 0;
+               sum += a4 * row[0];
+               sum += a5 * row[1];
+               sum += a6 * row[2];
+
+               sums.push(sum);
+            }
+
+            var max_val = null;
+            var max_ind = null;
+            for (var k = 0; k < sums.length; ++k) {
+               var s = sums[k];
+               if (max_val === null || s > max_val) {
+                  max_val = s;
+                  max_ind = k;
+               }
+            }
+            //console.log(max_val, max_ind);
+
+            document.getElementById("predicted-value").innerHTML = "" + max_ind;
+         }
+
+         function load_model () {
+            var model_id = parseInt(document.getElementById("load-model-id").value);
+            console.log("load_model", model_id);
+
+            if (session) {
+               session.call("io.crossbar.demo.wpad.objstore.get", ["model", model_id]).then(
+                  function (res) {
+                     console.log(res);
+                     model = res;
+                     document.getElementById("loaded-model").innerHTML = "" + model_id;
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            }
+         }
+
+         function reset_model () {
+            model = null;
+            document.getElementById("loaded-model").innerHTML = "-";
          }
 
          /*

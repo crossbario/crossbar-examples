@@ -77,6 +77,9 @@ class WpadObjectStore(ApplicationSession):
 
     @wamp.register(u'io.crossbar.demo.wpad.objstore.get')
     def get(self, obj_type, obj_id):
+        print type(obj_type), type(obj_id)
+        if type(obj_id) == float:
+            obj_id = int(obj_id)
         assert(type(obj_id) == int)
         obj_id = "{}.{}".format(obj_type, obj_id)
         if obj_id in self._store:
