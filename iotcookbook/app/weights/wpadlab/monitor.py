@@ -39,20 +39,25 @@ class WpadSerial(LineReceiver):
     """
 
     # need a reference to our WS-MCU gateway factory to dispatch PubSub events
-    ##
+    #
     def __init__(self, session, debug=False):
-        self.debug = debug
-        self.session = session
+        self._debug = debug
+        self._session = session
         self._last = None
         self._last_event = None
         self._id = 1
         self._wpad_id = session.config.extra['wpad_id']
 
+    def get_last(self):
+        return self._last_event
+
+    @inlineCallbacks
     def connectionMade(self):
         print('Serial port connected.')
+        yield self._session.register(self.get_last, u"io.crossbar.demo.wpad.{}.get_last".format(self._wpad_id))
 
     def lineReceived(self, line):
-        if self.debug:
+        if self._debug:
             print("Serial RX: {0}".format(line))
 
         pins = range(8)
@@ -79,18 +84,16 @@ class WpadSerial(LineReceiver):
                     payload = {
                         u'id': self._id,
                         u'timestamp': utcnow(),
-                        u'values': [data[p] for p in pins]
+                        u'values': [1023 - data[p] for p in pins]
                     }
 
-                    print payload
-
-                    self.session.publish(u"io.crossbar.demo.wpad.{}.on_change".format(self._wpad_id), payload)
+                    self._session.publish(u"io.crossbar.demo.wpad.{}.on_change".format(self._wpad_id), payload)
                     self._last_event = payload
                     self._last = data
                     self._id += 1
 
 
-class Wpad(ApplicationSession):
+class WpadMonitor(ApplicationSession):
 
     """
     MCU WAMP application component.
@@ -177,4 +180,4 @@ if __name__ == '__main__':
 
     # start the component and the Twisted reactor ..
     #
-    runner.run(Wpad)
+    runner.run(WpadMonitor)

@@ -186,7 +186,6 @@
 //               console.log(evt);
                for (var i = 0; i < evt.values.length; ++i) {
                   if (i < sensor_count) {
-                     evt.values[i] = 1023 - evt.values[i];
                      set_rawvalue(i, evt.values[i]);
                      last_values[i] = evt.values[i];
                   }
@@ -214,7 +213,21 @@
 
                //console.log(avg_pad1, var_pad1);
                //console.log(avg_pad2, var_pad2);
-            })
+            });
+
+            session.call("io.crossbar.demo.wpad.1.get_last").then(
+               function (res) {
+                  for (var i = 0; i < res.values.length; ++i) {
+                     if (i < sensor_count) {
+                        set_rawvalue(i, res.values[i]);
+                        last_values[i] = res.values[i];
+                     }
+                  }
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
          };
 
 
