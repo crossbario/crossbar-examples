@@ -23,3 +23,4 @@ notebook:
 
 clean:
 	rm -f *.dat.*
+	rm -rf notebooks/.ipynb_checkpoints
