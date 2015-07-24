@@ -92,7 +92,7 @@ s.close()
 
 @app.signal('onjoined')
 @inlineCallbacks
-def called_on_joinded():
+def called_on_joined():
     """ Loop sending the state of this machine using WAMP every x seconds.
 
         This function is executed when the client joins the router, which
