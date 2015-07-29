@@ -76,7 +76,10 @@
          </p>
          <p>
             Target: <input type="text" id="target-value" size="5" />
-            <button onclick="log_data_points()">Add to Series</button>
+            <button onclick="log_data_points()">Add</button>
+            <button onclick="log_data_points(1)">Add++</button>
+            <button onclick="log_data_points(-1)">Add--</button>
+            <button onclick="log_data_points(0, 16)">AddR</button>
          </p>
          <p>
             <button onclick="save_series()">Save Series</button>
@@ -139,6 +142,7 @@
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="chroma.min.js"></script>
       <script src="autobahn.min.js"></script>
+      <script src="models.js"></script>
 <!--
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
 -->
@@ -210,6 +214,7 @@
 
          var session = null;
 
+
          connection.onopen = function (new_session, details) {
             session = new_session;
             console.log("Connected", details);
@@ -223,7 +228,26 @@
                      last_values[i] = evt.values[i];
                   }
                }
+/*
+               x0 = model1('A0', last_values[0]);
+               x1 = model1('A1', last_values[1]);
+               x2 = model1('A2', last_values[2]);
+               x3 = model1('A3', last_values[3]);
 
+               console.log(x0, x1, x2, x3, x0+x1+x2+x3);
+
+               x0 = Math.round(x0) / 2;
+               x1 = Math.round(x1) / 2;
+               x2 = Math.round(x2) / 2;
+               x3 = Math.round(x3) / 2;
+
+               console.log(x0, x1, x2, x3, x0+x1+x2+x3);
+
+               //var res = model2([x0, x1, x2, x3]);
+               var res = model2(last_values);
+
+               console.log(res);
+*/
                if (model) {
                   model_predict(last_values);
                }
@@ -288,12 +312,21 @@
              return newObj;
          }
 
-         function log_data_points () {
+         function log_data_points (lower, upper) {
             var target_value = parseFloat(document.getElementById('target-value').value);
             var data = deep_copy(last_values);
             data['T'] = target_value;
             series.push(data);
             document.getElementById('series-length').innerHTML = '' + series.length;
+
+            if (lower !== undefined) {
+               if (upper === undefined) {
+                  target_value += lower;
+               } else {
+                  target_value = Math.floor(Math.random() * (upper - lower)) + lower;
+               }
+               document.getElementById('target-value').value = target_value;
+            }
          }
 
          function save_series () {
@@ -338,18 +371,25 @@
 
          function model_predict (last_values) {
 
-            var a4 = last_values[4];
-            var a5 = last_values[5];
-            var a6 = last_values[6];
+var C = [3.2409466412999635,
+ 0.858139704268996,
+ 4.2589012098175321,
+ -633.68376563794209]
+            var res = C[0]*last_values[4]+C[1]*last_values[5]+C[2]*last_values[6]+C[3];
+            res = Math.round(res);
+            document.getElementById("predicted-value").innerHTML = "" + res;
+            return;
+
+
 
             var sums = [];
 
             for (var i = 0; i < model.length; ++i) {
                var row = model[i];
                var sum = 0;
-               sum += a4 * row[0];
-               sum += a5 * row[1];
-               sum += a6 * row[2];
+               for (var k = 0; k < row.length; ++k) {
+                  sum += last_values[k + 4] * row[k];
+               }
 
                sums.push(sum);
             }
@@ -365,6 +405,10 @@
             }
             //console.log(max_val, max_ind);
 
+            var val = (last_values[6] - 64.89668246) / 17.918348;
+            console.log(val);
+
+//            document.getElementById("predicted-value").innerHTML = "" + max_ind;
             document.getElementById("predicted-value").innerHTML = "" + max_ind;
          }
 
