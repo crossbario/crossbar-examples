@@ -3,6 +3,10 @@ from twisted.protocols.basic import LineReceiver
 from twisted.internet.serialport import SerialPort
 from twisted.internet.task import LoopingCall
 
+# adjust this for your setup:
+SERIAL_PORT = "/dev/ttyACM0"
+SERIAL_BAUDRATE = 115200
+
 
 class MySerialBridge(LineReceiver):
 
@@ -42,6 +46,6 @@ if __name__ == '__main__':
     serial_proto = MySerialBridge()
 
     # create serial port: adjust for serial device / baudrate
-    serial_port = SerialPort(serial_proto, "/dev/ttyACM3", reactor, baudrate=115200)
+    serial_port = SerialPort(serial_proto, SERIAL_PORT, reactor, baudrate=SERIAL_BAUDRATE)
 
     reactor.run()

@@ -3,11 +3,17 @@ static const int PIN_LED1 = 11;
 static const int PIN_BTN1 = A0;
 static const int PIN_POT1 = A1;
 
-// on the Yun, Serial1 connects to the MCU with the CPU ..
-HardwareSerial* serial = &Serial1;
+// For the Yun, you have to choose which
+// serial port to connect to:
+#define USE_SERIAL_OVER_USB 1
 
-// .. and Serial connects to USB-over-Serial
-//HardwareSerial* serial = &Serial;
+#ifdef USE_SERIAL_OVER_USB
+    // Serial connects to USB-over-Serial
+    Serial_* serial = &Serial;
+#else
+    // Serial1 connects to the MCU with the CPU ..
+    HardwareSerial* serial = &Serial1;
+#endif
 
 
 void setup() {
