@@ -1,5 +1,8 @@
 #!/bin/sh
 
+#cp /.extroot.md5sum /mnt/sda2/etc/extroot.md5sum
+rm -f /mnt/sda2/etc/extroot.md5sum
+
 # activate extroot from SD card
 
 uci add fstab mount
