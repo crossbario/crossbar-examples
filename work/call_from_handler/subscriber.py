@@ -33,7 +33,6 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 
-
 class MySubscriber(ApplicationSession):
 
     @inlineCallbacks
@@ -44,7 +43,8 @@ class MySubscriber(ApplicationSession):
         @inlineCallbacks
         def on_event(x):
             print("event for 'com.example.topic1' received: {}".format(x))
-            x_squared = yield self.call('com.example.square', x)
+            x_squared = yield self.call('com.example.slowsquare', x)
+            print("square equals to {}".format(x_squared))
 
         sub = yield self.subscribe(on_event, 'com.example.topic1')
         print("subscribed to topic 'com.example.topic1'")
