@@ -8,7 +8,7 @@ from autobahn import wamp
 # adjust this for your setup:
 SERIAL_PORT = "/dev/ttyACM0"
 SERIAL_BAUDRATE = 115200
-ROUTER = "ws://localhost:8080/ws"
+ROUTER = "ws://192.168.1.130:8080/ws"
 REALM = "realm1"
 
 
