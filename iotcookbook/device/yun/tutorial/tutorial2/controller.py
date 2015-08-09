@@ -4,7 +4,14 @@ from twisted.internet.serialport import SerialPort
 from twisted.internet.task import LoopingCall
 
 # adjust this for your setup:
-SERIAL_PORT = "/dev/ttyACM0"
+
+# Serial port to use (e.g. 2 (the integer) for a COM port ('COM3' here) on Windows,
+# /dev/ttyATH0 for Arduino Yun or /dev/ttyACM0 for Serial-over-USB from Linux
+
+SERIAL_PORT = "/dev/ttyATH0"
+# SERIAL_PORT = "/dev/ttyACM0"
+# SERIAL_PORT = 2
+
 SERIAL_BAUDRATE = 115200
 
 
