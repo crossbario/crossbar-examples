@@ -5,6 +5,10 @@
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
       <script>
+
+         var do_reset = null;
+
+         // We assume use of a Tinkerkit shield, hence the mapping
          var tinker2pin = {
             'O0': 11,
             'O1': 10,
@@ -20,18 +24,50 @@
             'I5': 5,
          }
 
-         var base_uri = "io.crossbar.examples.iot.yun.123456.firmata.";
+         var base_uri = "io.crossbar.examples.yun.my_yun.firmata.";
 
+         // the URL of the WAMP Router (Crossbar.io)
+         var wsuri;
+         var session = null;
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+         }
+
+         // the WAMP connection to the Router
+         //
          var connection = new autobahn.Connection({
-            url: "ws://192.168.1.136:8080/ws",
+            url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
             realm: "iot_cookbook"
          });
-
-         var session = null;
 
          connection.onopen = function (new_session, details) {
             console.log("Connected", details);
             session = new_session;
+
+            // set pin to read + do analog read
+
+            session.call(base_uri + "set_mode", [tinker2pin['I0'], "in"]).then(
+               function () {
+                  console.log("ok, pin mode set");
+
+                  session.call(base_uri + "analog_read", [tinker2pin['I0']]).then(
+                     function (value) {
+                        console.log("got analog value", value);
+                     },
+                     function (err) {
+                        console.log(err);
+                     }
+                  );
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+
+            // set pin to write + do digital write
 
             session.call(base_uri + "set_mode", [tinker2pin['O0'], "out"]).then(
                function () {
@@ -56,24 +92,31 @@
                }
             );
 
-            session.call(base_uri + "set_mode", [tinker2pin['I1'], "in"]).then(
+            // set mode to watch
+
+            session.call(base_uri + "set_mode", [tinker2pin['I1'], "watch"]).then(
                function () {
                   console.log("ok, pin mode set");
 
-                  session.call(base_uri + "analog_read", [tinker2pin['I1']]).then(
-                     function (value) {
-                        console.log("got analog value", value);
-                     },
-                     function (err) {
-                        console.log(err);
-                     }
-                  );
+                  // you can read from a watched pin!
+                  setInterval(function() {
+
+                     session.call(base_uri + "analog_read", [tinker2pin['I0']]).then(
+                        function (value) {
+                           console.log("got analog value", value);
+                        },
+                        function (err) {
+                           console.log(err);
+                        }
+                     );
+                  }, 2000);
                },
                function (err) {
                   console.log(err);
                }
             );
 
+            // receive changes from analog watched pins
             function on_analog_changed (args) {
                var pin = args[0];
                var old_value = args[1];
@@ -81,16 +124,13 @@
                console.log(pin, old_value, new_value);
             }
             session.subscribe(base_uri + "on_analog_changed", on_analog_changed);
-/*
-            session.call(base_uri + "set_mode", [tinker2pin['I1'], "watch"]).then(
-               function () {
-                  console.log("ok, pin mode set");
-               },
-               function (err) {
-                  console.log(err);
-               }
-            );
-*/
+
+            function reset () {
+               session.call(base_uri + "reset");
+            }
+
+            do_reset = reset;
+
          };
 
          connection.onclose = function (reason, details) {
