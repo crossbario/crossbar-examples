@@ -26,7 +26,7 @@
 ##
 ###############################################################################
 
-from twisted.internet.defer import inlineCallbacks
+from twisted.internet.defer import inlineCallbacks, returnValue
 
 from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession
@@ -41,9 +41,11 @@ class MyCallee(ApplicationSession):
 
         ## REGISTER a procedure for remote calling
         ##
+        @inlineCallbacks
         def slowsquare(x):
             print("slowsquare() called with {}".format(x))
-            return x * x
+            yield sleep(3)
+            returnValue(x * x)
 
         reg = yield self.register(slowsquare, 'com.example.slowsquare')
         print("procedure slowsquare() registered")

@@ -6,8 +6,10 @@ static const int PIN_BTN1 = A0;
 static const int PIN_POT1 = A1;
 
 // For the Yun, you have to choose which
-// serial port to connect to:
-#define USE_SERIAL_OVER_USB 1
+// serial port to connect to.
+// Uncomment the line below to use 
+// serial-over-USB to your computer
+// #define USE_SERIAL_OVER_USB 1
 
 #ifdef USE_SERIAL_OVER_USB
     // Serial connects to USB-over-Serial

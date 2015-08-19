@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Crossbar.io / Edison Tutorial 2</h1>
+      <p>Open JavaScript console to watch output</p>
+      <button onclick="set_led(true)">Turn on LED</button>
+      <button onclick="set_led(false)">Turn off LED</button>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script>
+         var connection = new autobahn.Connection({
+            url: "ws://localhost:8080/ws",
+            realm: "realm1"
+         });
+
+         var base_uri = "io.crossbar.demo.edison.tutorial3";
+
+         var session = null;
+
+         connection.onopen = function (new_session, details) {
+            console.log("Connected", details);
+
+            // remember session so we can access from other places
+            session = new_session;
+
+            // actively get current/latest sensor values
+            session.call(base_uri + ".get_sensors").then(
+               function (res) {
+                  console.log("Current sensors values:", res);
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+
+            // subscribe to sensor value changes
+            session.subscribe(base_uri + ".on_sensors", function (args, kwargs) {
+               var data = args[0];
+               console.log("Sensor data received:", data);
+            });
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost", reason, details);
+            session = null;
+         }
+
+         connection.open();
+
+         function set_led (value) {
+            if (session) {
+               session.call(base_uri + ".set_led", [value]).then(
+                  function (res) {
+                     if (res) {
+                        console.log("LED was set to " + value);
+                     } else {
+                        console.log("LED was already set to " + value);
+                     }
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               )
+            } else {
+               console.log("Not connected!");
+            }
+         }
+      </script>
+   </body>
+</html>

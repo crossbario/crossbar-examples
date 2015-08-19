@@ -6,9 +6,19 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn import wamp
 
 # adjust this for your setup:
-SERIAL_PORT = "/dev/ttyACM0"
+
+
+# Serial port to use (e.g. 2 (the integer) for a COM port ('COM3' here) on Windows,
+# /dev/ttyATH0 for Arduino Yun or /dev/ttyACM0 for Serial-over-USB from Linux
+
+SERIAL_PORT = "/dev/ttyATH0"
+# SERIAL_PORT = "/dev/ttyACM0"
+# SERIAL_PORT = 2
+
 SERIAL_BAUDRATE = 115200
-ROUTER = "ws://localhost:8080/ws"
+
+# connecting to Crossbar.io
+ROUTER = "ws://192.168.1.130:8080/ws"
 REALM = "realm1"
 
 
