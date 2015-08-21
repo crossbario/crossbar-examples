@@ -14,7 +14,7 @@
 
 // our default config which connects to our demo instance
 var config = {
-    routerUrl: 'https://demo.crossbar.io',
+    routerUrl: 'wss://demo.crossbar.io',
     realm: 'iot_cookbook',
     deviceId: 'myyun',
     devicePort: '/dev/ttyATH0'
