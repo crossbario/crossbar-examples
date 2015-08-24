@@ -54,6 +54,22 @@ This is reflected in the cookie file where Crossbar.io persists the cookies:
 
 ```console
 (python279_1)oberstet@thinkpad-t430s:~/scm/crossbar/crossbarexamples/authenticate/cookie$ cat .crossbar/cookies.dat
-{"max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "created": "2015-08-24T13:39:28.395Z", "id": "mf2FSUWSQU8yveSK8ahsRaM_"}
-{"max_age": 604800, "authid": "joe", "authrole": "frontend", "authmethod": "wampcra", "created": "2015-08-24T13:39:28.395Z", "id": "mf2FSUWSQU8yveSK8ahsRaM_"}
+{"max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "created": "2015-08-24T13:45:33.381Z", "id": "MXRQadHFItz75_-FSxk9g-xg"}
+{"max_age": 604800, "authid": "joe", "authrole": "frontend", "authmethod": "wampcra", "modified": "2015-08-24T13:45:33.381Z", "id": "MXRQadHFItz75_-FSxk9g-xg"}
+```
+
+It is also reflected in the Crossbar.io log.
+
+First time start:
+
+```console
+2015-08-24T15:45:28+0200 [Router      11874] Loaded 0 cookie records from file. Cookie store has 0 entries.
+2015-08-24T15:45:28+0200 [Router      11874] File-backed cookie store active /home/oberstet/scm/crossbar/crossbarexamples/authenticate/cookie/.crossbar/cookies.dat
+2015-08-24T15:46:23+0200 [Router      11903] File-backed cookie store active /home/oberstet/scm/crossbar/crossbarexamples/authenticate/cookie/.crossbar/cookies.dat
+```
+
+Second time start:
+
+```console
+2015-08-24T15:46:23+0200 [Router      11903] Loaded 2 cookie records from file. Cookie store has 1 entries.
 ```
