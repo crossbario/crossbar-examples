@@ -65,11 +65,11 @@ First time start:
 ```console
 2015-08-24T15:45:28+0200 [Router      11874] Loaded 0 cookie records from file. Cookie store has 0 entries.
 2015-08-24T15:45:28+0200 [Router      11874] File-backed cookie store active /home/oberstet/scm/crossbar/crossbarexamples/authenticate/cookie/.crossbar/cookies.dat
-2015-08-24T15:46:23+0200 [Router      11903] File-backed cookie store active /home/oberstet/scm/crossbar/crossbarexamples/authenticate/cookie/.crossbar/cookies.dat
 ```
 
 Second time start:
 
 ```console
 2015-08-24T15:46:23+0200 [Router      11903] Loaded 2 cookie records from file. Cookie store has 1 entries.
+2015-08-24T15:46:23+0200 [Router      11903] File-backed cookie store active /home/oberstet/scm/crossbar/crossbarexamples/authenticate/cookie/.crossbar/cookies.dat
 ```
