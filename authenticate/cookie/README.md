@@ -49,3 +49,11 @@ autobahn.min.js:32 WebSocket transport receive [50,1299945168568320,{},[5]]
 ```
 
 As you can see, this time Crossbar.io directly accepted the client. It also informs the client that it was using `"authmethod": "wampcra"` and `"authprovider": "cookie"`.
+
+This is reflected in the cookie file where Crossbar.io persists the cookies:
+
+```console
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbar/crossbarexamples/authenticate/cookie$ cat .crossbar/cookies.dat
+{"max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "created": "2015-08-24T13:39:28.395Z", "id": "mf2FSUWSQU8yveSK8ahsRaM_"}
+{"max_age": 604800, "authid": "joe", "authrole": "frontend", "authmethod": "wampcra", "created": "2015-08-24T13:39:28.395Z", "id": "mf2FSUWSQU8yveSK8ahsRaM_"}
+```
