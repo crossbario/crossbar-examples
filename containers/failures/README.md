@@ -1,3 +1,14 @@
+# Container startup failures
+
+To run, type:
+
+```
+make test
+```
+
+Please see [here](https://gist.github.com/oberstet/4b9d2d898e4f0ba42d6d) for a complete log.
+
+
 ## Working
 
 The working case.
@@ -34,3 +45,10 @@ Here, we call the `leave()` method on the session to leave the realm, the discon
 
 The same as above, but we end only after some seconds.
 
+## The transport cannot be established (Failure 7)
+
+The transport from the container to the router worker could not be estabished. In this case, wrong port.
+
+## The transport cannot be established (Failure 8)
+
+The transport from the container to the router worker could not be estabished. In this case, wrong WebSocket URL (the trailing `ws` is missing to fit hte router configuration).
