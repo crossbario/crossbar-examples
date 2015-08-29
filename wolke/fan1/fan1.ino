@@ -1,3 +1,5 @@
+// Frequency Measurement on multiple PINs using counting
+
 #define FAN_COUNT 1
 #define ITER_DELAY 200
 #define REPORT_EVERY_ITERS 8000
