@@ -44,6 +44,24 @@
                ]
             },
             {
+               "id": "com.showroomdummy",
+               "name": "showroomdummy",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
                "id": "io.crossbar.iotcookbook",
                "name": "iot_cookbook",
                "roles": [
@@ -468,15 +486,15 @@
                   },
                   "dashboard": {
                      "type": "static",
-                     "directory": "../../dashboard/board" 
+                     "directory": "../../dashboard/board"
                   },
                   "dashboardcontroller": {
                      "type": "static",
-                     "directory": "../../dashboard/controller" 
+                     "directory": "../../dashboard/controller"
                   },
                   "videocontrol": {
                      "type": "static",
-                     "directory": "../../videocontrol/web" 
+                     "directory": "../../videocontrol/web"
                   },
                   "spreadsheet": {
                      "type": "static",
