@@ -1,0 +1,47 @@
+{
+    "$schema": "http://wamp-proto.org/schema#",
+    "uri": "com.example.store.create_product",
+    "type": "procedure",
+    "title": "Create Product",
+    "description": "Create a new product in the store catalog.",
+    "parameters": {
+        "kwargs": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "The unique identifier for a product",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "Name of the product",
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "minimum": 0,
+                    "exclusiveMinimum": true
+                }
+            },
+            "required": ["id", "name", "price"]
+        }
+    },
+    "result": {
+        "args": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "number",
+                    "title": "Current Inventory",
+                    "description": "Total number of product items in inventory."
+                }
+            ]
+        }
+    },
+    "events": [
+        "com.example.store.on_create_product"
+    ],
+    "errors": [
+        "com.example.store.error.no_such_product",
+        "com.example.store.error.invalid_price"
+    ]
+}
