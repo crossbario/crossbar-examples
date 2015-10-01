@@ -1,11 +1,5 @@
-# Publish & Subscribe Demo
+# Cursor Sync
 
-Publish & subscribe demo.
+This syncs the cursor position between two side-by-side boxes on mouse-over.
 
-## Frontend
-
-All the HTML5 assets for the frontend reside in this folder. You can start the demo by opening the `index.html` in your browser.
-
-## Backend
-
-There is no backend for this demo. All messaging is mediated by Crossbar.io, and clients use Publish & Subscribe to send and receive notifications.
+Sync is via a Crossbar.io instance.

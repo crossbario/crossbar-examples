@@ -12,8 +12,6 @@
 var demoRealm = "crossbardemo";
 var demoPrefix = "io.crossbar.demo";
 
-var elems = null;
-
 var wsuri;
 if (document.location.origin == "file://") {
    wsuri = "ws://127.0.0.1:8080/ws";
@@ -40,7 +38,7 @@ function randomChannelId() {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   // $(".statusline").text(status);
 };
 
 var connection = null;
@@ -72,13 +70,6 @@ function connect() {
 }
 
 var setupInfoDictionary = {};
-
-$(document).ready(function()
-{
-
-   connect();
-
-});
 
 var sendTime = null,
     recvTime = null,
@@ -139,7 +130,6 @@ function setupDemo() {
    var channel = randomChannelId();
    // we get the two elements
    var elements = {}; 
-   elems = elements; 
    
    elements.box1 = document.getElementById("box1");
    elements.box2 = document.getElementById("box2");
@@ -161,3 +151,5 @@ function setupDemo() {
    session.subscribe("io.crossbar.demo.cursor_sync." + channel, onReceiveMouseMove);
 
 }
+
+connect();

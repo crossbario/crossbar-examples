@@ -5,9 +5,9 @@
 
       <link rel="shortcut icon" href="favicon.ico">
 
-      <title>Publish &amp; Subscribe</title>
+      <title>Cursorsync</title>
 
-      <link rel="stylesheet" href="css/pubsub.css">
+      <link rel="stylesheet" href="css/cursorsync.css">
 
       <!-- Include Flash WebSocket via Conditional Comment:
            http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
@@ -19,14 +19,6 @@
          <script type="text/javascript" src="../../flashws/web_socket.js"></script>
       <![endif]-->
 
-      <script type="text/javascript" src="js/jquery.min.js"></script>
-      <script>
-         // AUTOBAHN_DEBUG = true;
-      </script>
-       <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
-
-      <script type="text/javascript" src="js/pubsub.js"></script>
-
    </head>
 
    <body>
@@ -34,7 +26,7 @@
    <header>
       <div id="header_inner">
          <div id="demo_title">
-            <span>Publish &amp; Subscribe</span>
+            <span>Cursorsync</span>
             </div>
 
             <a class="navbar-brand" href="/">
@@ -46,11 +38,11 @@
 
    <div class="demo_links">
       <p>
-         Publish on a channel and receive published events in any browser subscribed to the same channel.
+         Sync cursor movement via a Crossbar.io instance. 
       </p>
       <div>
          <a href="#" target="_blank" id="secondInstance">Open 2nd instance</a>
-         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/pubsub">
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/cursorsync">
             Source Code
          </a>
          <a href="http://crossbar.io">
@@ -70,17 +62,14 @@
 
    </div>
 
-      <div class="info_bar" style="display: none;">
+      <div class="info_bar">
 
          <p class="info_bar_heading">
-            Publish and subscribe using Crossbar.io
+            Real-time sync
          </p>
          <ul>
             <li>
-               All interactions on this demo occur in response to messages routed through the instance of Crossbar.io displayed in the status line at the bottom of the demo box.
-            </li>
-            <li>
-               Messages can be published from any application or platform that supports HTTP/POST.
+               All interactions on this demo occur in response to messages routed through an instance of Crossbar.io
             </li>
          </ul>
 
@@ -88,5 +77,13 @@
 
 
    </div>
+
+
+   <script>
+      // AUTOBAHN_DEBUG = true;
+   </script>
+    <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+   <script type="text/javascript" src="js/cursorsync.js"></script>
    </body>
 </html>
