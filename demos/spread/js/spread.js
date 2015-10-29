@@ -32,23 +32,44 @@ function start() {
    // get active worksheet of the wijspread control
    sheet = spread.getActiveSheet();
 
+   // the URL of the WAMP Router (Crossbar.io)
+   //
    var wsuri;
+   if (document.location.origin == "file://") {
+      wsuri = "ws://127.0.0.1:8080";
 
-   if (document.location.protocol === "file:") {
-      wsuri =  "ws://127.0.0.1:8080/ws";
    } else {
-      var scheme = document.location.protocol === 'https:' ? 'wss://' : 'ws://';
-      var port = document.location.port !== "" ? ':' + document.location.port : '';
-      wsuri = scheme + document.location.hostname + port + "/ws";
+      wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                  document.location.host + "/ws";
    }
 
+   var httpUri;
+
+   if (document.location.origin == "file://") {
+      httpUri = "http://127.0.0.1:8080/lp";
+
+   } else {
+      httpUri = (document.location.protocol === "http:" ? "http:" : "https:") + "//" +
+                  document.location.host + "/lp";
+   }
+
+
+   // the WAMP connection to the Router
+   //
    var connection = new autobahn.Connection({
-      url: wsuri,
-      realm: 'crossbardemo',
-      max_retries: 30,
-      initial_retry_delay: 2
-      }
-   );
+      // url: wsuri,
+      transports: [
+         {
+            'type': 'websocket',
+            'url': wsuri
+         },
+         {
+            'type': 'longpoll',
+            'url': httpUri
+         }
+      ],
+      realm: "crossbardemo"
+   });
 
    connection.onopen = function (newSession) {
       session = newSession;

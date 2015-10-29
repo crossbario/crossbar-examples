@@ -43,6 +43,9 @@
                   "ws": {
                      "type": "websocket"
                   },
+                  "lp": {
+                     "type": "longpoll"
+                  },
                   "wpadlab": {
                      "type": "static",
                      "directory": "../../../iotcookbook/app/weights/wpadlab/web"

@@ -11,14 +11,31 @@
 
 var demoRealm = "crossbardemo";
 var demoPrefix = "io.crossbar.demo";
+
+
+// the URL of the WAMP Router (Crossbar.io)
+//
 var wsuri;
 if (document.location.origin == "file://") {
-   wsuri = "ws://127.0.0.1:8080/ws";
+   wsuri = "ws://127.0.0.1:8080";
 
 } else {
    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
                document.location.host + "/ws";
 }
+
+var httpUri;
+
+if (document.location.origin == "file://") {
+   httpUri = "http://127.0.0.1:8080/lp";
+
+} else {
+   httpUri = (document.location.protocol === "http:" ? "http:" : "https:") + "//" +
+               document.location.host + "/lp";
+}
+
+
+
 
 var initialChannel = null,
     currentSubscription = null,
@@ -32,16 +49,6 @@ var initialChannel = null,
     retryDelay = 2,
     oldHash = window.location.href,
     isReconnect = false;
-
-var wsuri;
-
-if (document.location.protocol === "file:") {
-   wsuri =  "ws://127.0.0.1:8080/ws";
-} else {
-   var scheme = document.location.protocol === 'https:' ? 'wss://' : 'ws://';
-   var port = document.location.port !== "" ? ':' + document.location.port : '';
-   wsuri = scheme + document.location.hostname + port + "/ws";
-}
 
 var chatWindow = null;
 
@@ -103,11 +110,21 @@ function updateStatusline(status) {
 
 function connect() {
 
+   // the WAMP connection to the Router
+   //
    var connection = new autobahn.Connection({
-      url: wsuri,
-      realm: demoRealm,
-      max_retries: 30,
-      initial_retry_delay: 2
+      // url: wsuri,
+      transports: [
+         {
+            'type': 'websocket',
+            'url': wsuri
+         },
+         {
+            'type': 'longpoll',
+            'url': httpUri
+         }
+      ],
+      realm: "crossbardemo"
    });
 
    connection.onopen = function (session) {

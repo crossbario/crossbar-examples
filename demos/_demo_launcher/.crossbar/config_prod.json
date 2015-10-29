@@ -148,6 +148,9 @@
                           "debug": false
                       }
                   },
+                  "lp": {
+                     "type": "longpoll"
+                  },
                   "wpadlab": {
                      "type": "static",
                      "directory": "../../../iotcookbook/app/weights/wpadlab/web"

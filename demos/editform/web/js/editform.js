@@ -8,22 +8,29 @@ function ViewModel () {
 
    var self = this;
 
-
-
-
    /***************************************
    *  Establish connection to WAMP Router *
    ***************************************/
 
-   // determine URI of WAMP router
-   self.wsuri = null;
-   // - locally run router when loaded from file for development purposes
+   // the URL of the WAMP Router (Crossbar.io)
+   //
+   var wsuri;
    if (document.location.origin == "file://") {
-      self.wsuri = "ws://127.0.0.1:8080/ws";
-   // - else based on the IP addess the HTML is served from
+      wsuri = "ws://127.0.0.1:8080";
+
    } else {
-      self.wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
-               document.location.host + "/ws";
+      wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                  document.location.host + "/ws";
+   }
+
+   var httpUri;
+
+   if (document.location.origin == "file://") {
+      httpUri = "http://127.0.0.1:8080/lp";
+
+   } else {
+      httpUri = (document.location.protocol === "http:" ? "http:" : "https:") + "//" +
+                  document.location.host + "/lp";
    }
 
    // WAMP session object
@@ -32,7 +39,17 @@ function ViewModel () {
    // the WAMP connection to the Router
    //
    self.connection = new autobahn.Connection({
-      url: self.wsuri,
+      // url: wsuri,
+      transports: [
+         {
+            'type': 'websocket',
+            'url': wsuri
+         },
+         {
+            'type': 'longpoll',
+            'url': httpUri
+         }
+      ],
       realm: "crossbardemo"
    });
 

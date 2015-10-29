@@ -42,6 +42,9 @@
                   "controller": {
                      "type": "static",
                      "directory": "../dashboardcontroller"
+                  },
+                  "lp": {
+                     "type": "longpoll"
                   }
                }
             }
