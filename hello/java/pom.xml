@@ -37,8 +37,13 @@
   <dependencies>
     <dependency>
       <groupId>ws.wamp.jawampa</groupId>
-      <artifactId>jawampa</artifactId>
-      <version>0.1.0</version>
+      <artifactId>jawampa-core</artifactId>
+      <version>0.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>ws.wamp.jawampa</groupId>
+      <artifactId>jawampa-netty</artifactId>
+      <version>0.4.1</version>
     </dependency>
   </dependencies>
 </project>
