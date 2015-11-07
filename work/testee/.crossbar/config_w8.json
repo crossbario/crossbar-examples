@@ -1,0 +1,180 @@
+{
+   "workers": [
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [0]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      },
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [1]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      },
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [2]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      },
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [3]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      },
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [4]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      },
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [5]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      },
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [6]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      },
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [7]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      }
+   ]
+}
