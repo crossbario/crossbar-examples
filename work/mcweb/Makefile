@@ -16,6 +16,12 @@ crossbar_w16:
 crossbar_w32:
 	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --config config_w32.json
 
+crossbar_w40:
+	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --config config_w40.json
+
+crossbar_w48:
+	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --config config_w48.json
+
 crossbar_debug_w1:
 	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --loglevel=debug --config config_w1.json
 
