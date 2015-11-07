@@ -1,0 +1,26 @@
+{
+   "workers": [
+      {
+         "type": "websocket-testee",
+         "options": {
+            "cpu_affinity": [0]
+         },
+         "transport": {
+            "type": "websocket",
+            "endpoint": {
+               "type": "tcp",
+               "port": 9001,
+               "backlog": 2048,
+               "shared": true
+            },
+            "url": "ws://localhost:9001",
+            "options": {
+               "compression": {
+                  "deflate": {
+                  }
+               }
+            }
+         }
+      }
+   ]
+}
