@@ -1,0 +1,80 @@
+{
+   "workers": [
+      {
+         "type": "router",
+         "options": {
+            "cpu_affinity": [0]
+         },
+         "transports": [
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080,
+                  "backlog": 2048,
+                  "shared": true
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": ".."
+                  },
+                  "ws": {
+                     "type": "websocket",
+                     "url": "ws://localhost:8080/ws"
+                  },
+                  "config": {
+                     "type": "json",
+                     "value": {
+                        "param1": "foobar",
+                        "param2": [1, 2, 3],
+                        "param3": {
+                           "awesome": true,
+                           "nifty": "yes"
+                        }
+                     }
+                  }
+               }
+            }
+         ]
+      },
+      {
+         "type": "router",
+         "options": {
+            "cpu_affinity": [1]
+         },
+         "transports": [
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080,
+                  "backlog": 2048,
+                  "shared": true
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": ".."
+                  },
+                  "ws": {
+                     "type": "websocket",
+                     "url": "ws://localhost:8080/ws"
+                  },
+                  "config": {
+                     "type": "json",
+                     "value": {
+                        "param1": "foobar",
+                        "param2": [1, 2, 3],
+                        "param3": {
+                           "awesome": true,
+                           "nifty": "yes"
+                        }
+                     }
+                  }
+               }
+            }
+         ]
+      }
+   ]
+}
