@@ -35,4 +35,4 @@ crossbar_debug_w8:
 	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --loglevel=debug --config config_w8.json
 
 test:
-	weighttp -n 1000000 -c 4000 -t 4 -k "http://127.0.0.1:8080/config"
+	weighttp -n 1000000 -c 128 -t 8 -k "http://10.0.1.3:8080/config"
