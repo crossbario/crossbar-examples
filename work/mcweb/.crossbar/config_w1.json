@@ -3,7 +3,8 @@
       {
          "type": "router",
          "options": {
-            "cpu_affinity": [0]
+            "cpu_affinity": [0],
+            "pythonpath": [".."]
          },
          "transports": [
             {
@@ -19,11 +20,11 @@
                      "type": "static",
                      "directory": ".."
                   },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
+                  "resource": {
+                     "type": "resource",
+                     "classname": "resource.MyResource"
                   },
-                  "config": {
+                  "json": {
                      "type": "json",
                      "value": {
                         "param1": "foobar",
