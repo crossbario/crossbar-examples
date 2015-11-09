@@ -22,7 +22,7 @@
                   },
                   "resource": {
                      "type": "resource",
-                     "classname": "resource.MyResource"
+                     "classname": "myresource.MyResource"
                   },
                   "json": {
                      "type": "json",
