@@ -1,1524 +1,1884 @@
 {
    "workers": [
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [0]
-         },
+            "cpu_affinity": [
+               0
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [1]
-         },
+            "cpu_affinity": [
+               1
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [2]
-         },
+            "cpu_affinity": [
+               2
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [3]
-         },
+            "cpu_affinity": [
+               3
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [4]
-         },
+            "cpu_affinity": [
+               4
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [5]
-         },
+            "cpu_affinity": [
+               5
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [6]
-         },
+            "cpu_affinity": [
+               6
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [7]
-         },
+            "cpu_affinity": [
+               7
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [8]
-         },
+            "cpu_affinity": [
+               8
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [9]
-         },
+            "cpu_affinity": [
+               9
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [10]
-         },
+            "cpu_affinity": [
+               10
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [11]
-         },
+            "cpu_affinity": [
+               11
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [12]
-         },
+            "cpu_affinity": [
+               12
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [13]
-         },
+            "cpu_affinity": [
+               13
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [14]
-         },
+            "cpu_affinity": [
+               14
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [15]
-         },
+            "cpu_affinity": [
+               15
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [16]
-         },
+            "cpu_affinity": [
+               16
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [17]
-         },
+            "cpu_affinity": [
+               17
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [18]
-         },
+            "cpu_affinity": [
+               18
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [19]
-         },
+            "cpu_affinity": [
+               19
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [20]
-         },
+            "cpu_affinity": [
+               20
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [21]
-         },
+            "cpu_affinity": [
+               21
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [22]
-         },
+            "cpu_affinity": [
+               22
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [23]
-         },
+            "cpu_affinity": [
+               23
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [24]
-         },
+            "cpu_affinity": [
+               24
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [25]
-         },
+            "cpu_affinity": [
+               25
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [26]
-         },
+            "cpu_affinity": [
+               26
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [27]
-         },
+            "cpu_affinity": [
+               27
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [28]
-         },
+            "cpu_affinity": [
+               28
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [29]
-         },
+            "cpu_affinity": [
+               29
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [30]
-         },
+            "cpu_affinity": [
+               30
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [31]
-         },
+            "cpu_affinity": [
+               31
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [32]
-         },
+            "cpu_affinity": [
+               32
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [33]
-         },
+            "cpu_affinity": [
+               33
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [34]
-         },
+            "cpu_affinity": [
+               34
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [35]
-         },
+            "cpu_affinity": [
+               35
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [36]
-         },
+            "cpu_affinity": [
+               36
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [37]
-         },
+            "cpu_affinity": [
+               37
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [38]
-         },
+            "cpu_affinity": [
+               38
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
-      },
+         ], 
+         "type": "router"
+      }, 
       {
-         "type": "router",
          "options": {
-            "cpu_affinity": [39]
-         },
+            "cpu_affinity": [
+               39
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
          "transports": [
             {
-               "type": "web",
                "endpoint": {
-                  "type": "tcp",
-                  "port": 8080,
-                  "backlog": 2048,
-                  "shared": true
-               },
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": ".."
-                  },
-                  "ws": {
-                     "type": "websocket",
-                     "url": "ws://localhost:8080/ws"
-                  },
-                  "config": {
-                     "type": "json",
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
                      "value": {
-                        "param1": "foobar",
-                        "param2": [1, 2, 3],
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
                         "param3": {
-                           "awesome": true,
+                           "awesome": true, 
                            "nifty": "yes"
                         }
                      }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
                   }
-               }
+               }, 
+               "type": "web"
             }
-         ]
+         ], 
+         "type": "router"
       }
    ]
 }
