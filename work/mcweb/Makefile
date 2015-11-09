@@ -29,8 +29,8 @@ test_json:
 
 # test Crossbar.io Twisted Web resource path service
 test_resource:
-	weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/resource
-	wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource
+	weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/resource?count=256
+	wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource?count=256
 
 test:
 	curl -s http://10.0.1.3:8080/resource?count=10000 | wc -c
