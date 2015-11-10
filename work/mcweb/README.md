@@ -99,18 +99,17 @@ Crossbar.io is started from a local node configuration. Here is the one used for
 }
 ```
 
-The node configuration contains a `"workers"` attribute in a top-level dictionary which is a list of worker items.
+**What above means**
 
-Each worker item is a dictionary, with a `"type"`, possibly `"options"` and a `"transports"` list.
+* The node configuration contains a `"workers"` attribute in a top-level dictionary which is a list of worker items.
+* Each worker item is a dictionary, with a `"type"`, possibly `"options"` and a `"transports"` list.
+* The transport is of `"type": "web"`, and configures 3 Web services on the paths `/`, `/json` and `/resource`.
+* The `/` path is configured to serve static files over HTTP from the folder `..`, relative to the node configuration.
+* The `/json` path is configured to serve a serialized JSON value as specified in the configuration.
+* The `/resource` path is configured to serve a Twisted Web resource written by us and contained in [myresource.py](myresource.py).
+* The configuration files for more workers replicates above, with the only adjustment being the CPU affinity set for each worker. Setting the CPU affinity is a performance optimization.
 
-The transport is of `"type": "web"`, and configures 3 Web services on the paths `/`, `/json` and `/resource`.
+There are two critical options is above for `"endpoint"`:
 
-The `/` path is configured to serve static files over HTTP from the folder `..`, relative to the node configuration.
-
-The `/json` path is configured to serve a serialized JSON value as specified in the configuration.
-
-The `/resource` path is configured to serve a Twisted Web resource written by us and contained in [myresource.py](myresource.py).
-
-The configuration files for more workers replicates above, with the only adjustment being the CPU affinity set for each worker.
-
-> Setting the CPU affinity is a performance optimization.
+* `shared`: Enable sharing of a listening port - required for multi-core operation. Currently only available on Linux.
+* `backlog`: Socket accept backlog queue depth - needs to be high enough to sustain peaks of new incoming connections.
