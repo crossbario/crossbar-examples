@@ -9,6 +9,8 @@ In these tests, Crossbar.io running on a **single quad-core Xeon CPU** was servi
 * **over 174000 HTTP requests/s at 1 ms avg latency**
 * **over 1090 MB/s HTTP reply traffic**
 
+![](results/bigbox_results.png)
+
 > The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more (please see [here](http://crossbar.io/docs/Web-Services/) for the full list). Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
 
 **Contents**
@@ -108,6 +110,7 @@ Transfer/sec:      1.09GB
 
 ### Big Box Results
 
+Using 40 workers, Crossbar.io is able to serve 627,990 HTTP requests/sec
 
 ```console
 wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=16
@@ -126,6 +129,8 @@ Requests/sec: 627990.75
 Transfer/sec:     85.04MB
 ```
 
+and pushing 12.6 GB/sec HTTP reply traffic
+
 ```console
 wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=65536
 Running 20s test @ http://127.0.0.1:8080/resource?count=65536
@@ -143,8 +148,9 @@ Requests/sec: 205196.90
 Transfer/sec:     12.55GB
 ```
 
-![](results/bigbox_w40.png)
+Here is the system while running the last test. Note the bandwidth over loopback TCP of 103 Gb/s:
 
+![](results/bigbox_w40.png)
 
 
 ## How to test
