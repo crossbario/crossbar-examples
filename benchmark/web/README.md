@@ -1,25 +1,30 @@
 # Scaling Web Services
 
-This examples demonstrates benchmarking the multi-core ready Web service built into Crossbar.io. The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more.
+This examples demonstrates benchmarking the multi-core ready Web service built into Crossbar.io. The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more. Please see [here](http://crossbar.io/docs/Web-Services/) for the full list.
 
 > Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
 
+* [Test setup](#test-setup)
+* [Test results](#test-results)
+* [How to test](#how-to-test)
+* [How it works](#how-ot-works)
 
-## Test Setup
+
+## Test setup
 
 The tests were run on two identical machines, each with:
 
 * Single-socket Intel Xeon E3-1240 v3 CPU, Quad-core (with 8 HT), 3.4GHz and 32GB ECC RAM
 * Dual-port 10GbE Intel X540-T2 Ethernet adapter
 
-Both machines were connected over a 10GbE switch - but tests only used one 10GbE link.
+Both machines were connected over a 10GbE switch (that is, each machine occupied 2 ports on the switch) - but tests only used one 10GbE link.
 
 The testee machine (with Crossbar.io) was running under Ubuntu 14.03 LTS, while the load machine (with [wrk](https://github.com/wg/wrk) and [weighttp](https://github.com/lighttpd/weighttp)) was running FreeBSD 10.2.
 
 Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of [txaio](https://github.com/crossbario/txaio), [autobahn-python](https://github.com/crossbario/autobahn-python) and [crossbar.io](https://github.com/crossbario/crossbar).
 
 
-## Results
+## Test results
 
 A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).
 
@@ -76,12 +81,9 @@ Transfer/sec:      1.09GB
 > Note: the amount of bandwidth is fully saturating a 10GbE link.
 
 
-## Requirements
+## How to test
 
 The testee machine needs to have Crossbar.io installed. The load machine needs to have [wrk](https://github.com/wg/wrk) and [weighttp](https://github.com/lighttpd/weighttp) installed.
-
-
-## How to test
 
 In a first terminal, login to the testee machine ("brummer2") and start Crossbar.io with a given number of workers:
 
