@@ -1,13 +1,15 @@
-# Scaling Web Services
+# Scaling up Crossbar.io - Web Services
+
+*[Get the results](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf)*
 
 This examples demonstrates benchmarking the multi-core ready Web service built into Crossbar.io. The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more. Please see [here](http://crossbar.io/docs/Web-Services/) for the full list.
 
 > Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
 
-* [Test setup](#test-setup)
-* [Test results](#test-results)
-* [How to test](#how-to-test)
-* [How it works](#how-ot-works)
+1. [Test setup](#test-setup)
+2. [Test results](#test-results)
+3. [How to test](#how-to-test)
+4. [How it works](#how-ot-works)
 
 
 ## Test setup
@@ -26,7 +28,7 @@ Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of 
 
 ## Test results
 
-A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).
+**A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).**
 
 * JSON value resource (see [here](http://crossbar.io/docs/JSON-Value-Service/))
 * Static file resource (see [here](http://crossbar.io/docs/Static-Web-Service/))
