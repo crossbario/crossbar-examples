@@ -37,7 +37,11 @@ test_json:
 	wrk -c 128 -t 8 --latency -d 60 ${TESTEE}/json
 
 # test Crossbar.io Twisted Web resource path service
-test_resource: test_resource_256 test_resource_4096 test_resource_65536
+test_resource: test_resource_16 test_resource_256 test_resource_4096 test_resource_65536
+
+test_resource_16:
+	weighttp -n 5000000 -c 128 -t 8 -k ${TESTEE}/resource?count=16
+	wrk -c 128 -t 8 --latency -d 60 ${TESTEE}/resource?count=16
 
 test_resource_256:
 	weighttp -n 5000000 -c 128 -t 8 -k ${TESTEE}/resource?count=256
