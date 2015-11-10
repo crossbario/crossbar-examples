@@ -1,13 +1,13 @@
 # Scaling up Crossbar.io - Web Services
 
-This examples demonstrates benchmarking the multi-core ready Web service built into Crossbar.io. The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more. Please see [here](http://crossbar.io/docs/Web-Services/) for the full list.
+This example is benchmarking the Web service built into Crossbar.io. Multi-core support allows Crossbar.io to scale-up performance by utilizing multiple cores in CPUs for providing Web services over HTTP.
 
-In these tests, Crossbar.io running on a single quad-core Xeon CPU was serving HTTP over 10GbE at
+In these tests, Crossbar.io running on a single quad-core Xeon CPU was serving HTTP requests over 10GbE at
 
 * **over 170,000 HTTP reqs/s** at **1ms avg latency**
 * **over 1 GB/s HTTP reply traffic**
 
-> Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
+> The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more (please see [here](http://crossbar.io/docs/Web-Services/) for the full list). Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
 
 **Contents**
 
