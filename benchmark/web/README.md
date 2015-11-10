@@ -30,6 +30,13 @@ Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of 
 
 **A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).**
 
+Crossbar.io was
+
+* Running at **over 170,000 HTTP reqs/s** at **1ms avg latency**
+* Pushing **over 1 GB/s HTTP reply traffic**
+
+The tests were run against these Web resources
+
 * JSON value resource (see [here](http://crossbar.io/docs/JSON-Value-Service/))
 * Static file resource (see [here](http://crossbar.io/docs/Static-Web-Service/))
 * Web resource (16 bytes reply) (see [here](https://github.com/crossbario/crossbarexamples/blob/master/benchmark/web/myresource.py))
