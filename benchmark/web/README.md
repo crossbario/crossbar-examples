@@ -11,7 +11,7 @@ In these tests, Crossbar.io running on a **single quad-core Xeon CPU** was servi
 
 When using 40 CPU cores on a bigger machine, Crossbar.io was able to serve (over loopback TCP)
 
-* **over 627990 HTTP requests/s at 1 ms avg latency**
+* **over 627990 HTTP requests/s at 360 us avg latency**
 * **over 12.6 GB/s HTTP reply traffic**
 
 Scaling with the number of CPU cores utilized looks like this
@@ -30,7 +30,7 @@ Scaling with the number of CPU cores utilized looks like this
 
 ## Test setup
 
-The tests were run on two identical machines, each with:
+The networked tests were run on two identical machines, each with:
 
 * Single-socket Intel Xeon E3-1240 v3 CPU, Quad-core (with 8 HT), 3.4GHz and 32GB ECC RAM
 * Dual-port 10GbE Intel X540-T2 Ethernet adapter
@@ -50,6 +50,8 @@ sudo cp wrk /usr/local/bin/
 ```
 
 Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of [txaio](https://github.com/crossbario/txaio), [autobahn-python](https://github.com/crossbario/autobahn-python) and [crossbar.io](https://github.com/crossbario/crossbar).
+
+The loopback TCP tests was run on a 4 socket NUMA machine with 48 cores (4 x Intel E7-8857 v2 @ 3.00GHz). This machine was running Ubuntu 15.04.
 
 
 ## Test results
@@ -115,7 +117,7 @@ Transfer/sec:      1.09GB
 
 > Note: the amount of bandwidth is fully saturating a 10GbE link.
 
-### Big Box Results
+### Big box results
 
 Using 40 workers, Crossbar.io is able to serve 627,990 HTTP requests/sec
 
