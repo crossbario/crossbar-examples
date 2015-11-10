@@ -56,6 +56,9 @@ test_static:
 	weighttp -n 5000000 -c 128 -t 8 -k ${TESTEE}/
 	wrk -c 128 -t 8 --latency -d 60 ${TESTEE}/
 
-analyze:
+analyze_1:
 	grep -Hi "Requests/sec" results/*
 	grep -Hi "Transfer/sec" results/*
+
+analyze:
+	cd results && python analyze.py > results.txt

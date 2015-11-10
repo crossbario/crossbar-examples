@@ -60,7 +60,8 @@ for f in res:
         res_p[t][f] = res[f][t]
 #pprint(res_p)
 
+print('test,workers,reqs_per_sec,mbyte_per_sec')
 for t in sorted(res_p):
     for f in sorted(res_p[t]):
         data = res_p[t][f]
-        print('"{}",{},{},{}'.format(TESTS[t], FILES[f], data['req_per_sec'], data['mbyte_per_sec']))
+        print('{},{},{},{}'.format(TESTS[t], FILES[f], int(round(data['req_per_sec'])), int(round(data['mbyte_per_sec']))))
