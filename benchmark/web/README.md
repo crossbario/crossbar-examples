@@ -30,6 +30,16 @@ Both machines were connected over a 10GbE switch (that is, each machine occupied
 
 The testee machine (with Crossbar.io) was running under Ubuntu 14.03 LTS, while the load machine (with [wrk](https://github.com/wg/wrk) and [weighttp](https://github.com/lighttpd/weighttp)) was running FreeBSD 10.2.
 
+To build wrk from sources:
+
+```
+cd ~
+git clone https://github.com/wg/wrk.git
+cd wrk
+make
+sudo cp wrk /usr/local/bin/
+```
+
 Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of [txaio](https://github.com/crossbario/txaio), [autobahn-python](https://github.com/crossbario/autobahn-python) and [crossbar.io](https://github.com/crossbario/crossbar).
 
 

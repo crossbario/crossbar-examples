@@ -66,3 +66,9 @@ analyze_1:
 
 analyze:
 	cd results && python analyze.py > results.txt
+
+test_bigbox:
+	wrk -c 128 -t 8 --latency -d 60 http://127.0.0.1:8080/resource?count=16
+	wrk -c 128 -t 8 --latency -d 60 http://127.0.0.1:8080/resource?count=256
+	wrk -c 128 -t 8 --latency -d 60 http://127.0.0.1:8080/resource?count=4096
+	wrk -c 128 -t 8 --latency -d 60 http://127.0.0.1:8080/resource?count=65536
