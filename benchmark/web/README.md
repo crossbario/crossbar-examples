@@ -113,3 +113,53 @@ There are two critical options is above for `"endpoint"`:
 
 * `shared`: Enable sharing of a listening port - required for multi-core operation. Currently only available on Linux.
 * `backlog`: Socket accept backlog queue depth - needs to be high enough to sustain peaks of new incoming connections.
+
+
+## Results
+
+A summary of the results in diagrams can be found [here]().
+
+The diagrams are generated from the test logs contained in [this](./results) folder. E.g., have a look at [this](https://github.com/crossbario/crossbarexamples/blob/master/benchmark/web/results/result_w4_2.log) result log for Crossbar.io running with 4 workers.
+
+> Using 4 workers seems optimal for the quad-core Xeon this test was run on. The hyperthreading doesn't bring much benefits.
+
+Within above log, you can find a log section showing Crossbar.io serving 174,416 HTTP requests per second:
+
+```console
+$ wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource?count=16
+Running 1m test @ http://10.0.1.3:8080/resource?count=16
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.00ms    1.51ms  25.79ms   95.06%
+    Req/Sec    21.91k     2.28k   28.01k    69.57%
+  Latency Distribution
+     50%  651.00us
+     75%  807.00us
+     90%    1.08ms
+     99%    9.53ms
+  10482364 requests in 1.00m, 1.39GB read
+Requests/sec: 174416.75
+Transfer/sec:     23.62MB
+```
+
+while another section shows Crossbar.io serving 1.09GB/s with HTTP reply traffic:
+
+
+```console
+$ wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource?count=65536
+Running 1m test @ http://10.0.1.3:8080/resource?count=65536
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     8.74ms    7.84ms 107.96ms   88.48%
+    Req/Sec     2.24k   247.62     3.08k    70.77%
+  Latency Distribution
+     50%    6.08ms
+     75%    8.91ms
+     90%   18.41ms
+     99%   39.95ms
+  1070893 requests in 1.00m, 65.49GB read
+Requests/sec:  17818.42
+Transfer/sec:      1.09GB
+```
+
+> Note: the amount of bandwidth is fully saturating a 10GbE link.
