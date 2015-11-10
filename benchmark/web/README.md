@@ -4,10 +4,10 @@
 
 This example is benchmarking the Web service built into Crossbar.io. Multi-core support allows Crossbar.io to scale-up performance by utilizing multiple cores in CPUs for providing Web services over HTTP.
 
-In these tests, Crossbar.io running on a **single quad-core Xeon CPU** was serving HTTP requests over 10GbE at
+In these tests, Crossbar.io running on a **single quad-core Xeon CPU** was serving HTTP requests over a 10GbE local network at
 
-* **over 170,000 HTTP reqs/s at 1ms avg latency**
-* **over 1 GB/s HTTP reply traffic**
+* **over 174000 HTTP requests/s at 1 ms avg latency**
+* **over 1090 MB/s HTTP reply traffic**
 
 > The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more (please see [here](http://crossbar.io/docs/Web-Services/) for the full list). Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
 
@@ -37,8 +37,8 @@ Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of 
 
 **A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).** In these tests, Crossbar.io (using a single quad-core Xeon CPU) was
 
-* serving at **over 170,000 HTTP reqs/s** at **1ms avg latency**
-* pushing **over 1 GB/s HTTP reply traffic**
+* serving at **over 174,000 HTTP requests/s** at **1ms avg latency**
+* pushing **over 1090 MB/s HTTP reply traffic**
 
 The tests were run against these Web resources
 
@@ -97,7 +97,9 @@ Transfer/sec:      1.09GB
 
 ## How to test
 
-The testee machine needs to have Crossbar.io installed. The load machine needs to have [wrk](https://github.com/wg/wrk) and [weighttp](https://github.com/lighttpd/weighttp) installed.
+The testee machine needs to have Crossbar.io installed. Multi-core support currently only works on Linux kernels 3.9+, such as Ubuntu 14.04 LTS.
+
+The load machine needs to have [wrk](https://github.com/wg/wrk) and [weighttp](https://github.com/lighttpd/weighttp) installed. We are running FreeBSD 10.2 on the load generating host.
 
 In a first terminal, login to the testee machine ("brummer2") and start Crossbar.io with a given number of workers:
 
