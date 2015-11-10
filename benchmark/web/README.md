@@ -45,6 +45,8 @@ Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of 
 
 ## Test results
 
+### Quad-core results
+
 **A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).** In these tests, Crossbar.io (using a single quad-core Xeon CPU) was
 
 * serving at **over 174,000 HTTP requests/s** at **1ms avg latency**
@@ -103,6 +105,46 @@ Transfer/sec:      1.09GB
 ```
 
 > Note: the amount of bandwidth is fully saturating a 10GbE link.
+
+### Big Box Results
+
+
+```console
+wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=16
+Running 20s test @ http://127.0.0.1:8080/resource?count=16
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   358.14us    1.94ms 125.94ms   98.70%
+    Req/Sec    79.09k    10.26k  115.57k    75.75%
+  Latency Distribution
+     50%  171.00us
+     75%  253.00us
+     90%  395.00us
+     99%    3.22ms
+  12622825 requests in 20.10s, 1.67GB read
+Requests/sec: 627990.75
+Transfer/sec:     85.04MB
+```
+
+```console
+wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=65536
+Running 20s test @ http://127.0.0.1:8080/resource?count=65536
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.15ms    4.10ms  73.14ms   97.63%
+    Req/Sec    25.83k     2.08k   30.69k    63.93%
+  Latency Distribution
+     50%  514.00us
+     75%  820.00us
+     90%    1.17ms
+     99%   23.95ms
+  4124419 requests in 20.10s, 252.23GB read
+Requests/sec: 205196.90
+Transfer/sec:     12.55GB
+```
+
+![](results/bigbox_w40.png)
+
 
 
 ## How to test
