@@ -1,10 +1,12 @@
 # Scaling up Crossbar.io - Web Services
 
+**Currently only works on Linux**
+
 This example is benchmarking the Web service built into Crossbar.io. Multi-core support allows Crossbar.io to scale-up performance by utilizing multiple cores in CPUs for providing Web services over HTTP.
 
-In these tests, Crossbar.io running on a single quad-core Xeon CPU was serving HTTP requests over 10GbE at
+In these tests, Crossbar.io running on a **single quad-core Xeon CPU** was serving HTTP requests over 10GbE at
 
-* **over 170,000 HTTP reqs/s** at **1ms avg latency**
+* **over 170,000 HTTP reqs/s at 1ms avg latency**
 * **over 1 GB/s HTTP reply traffic**
 
 > The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more (please see [here](http://crossbar.io/docs/Web-Services/) for the full list). Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
@@ -33,12 +35,10 @@ Crossbar.io was running under [PyPy 4](http://pypy.org/) with trunk versions of 
 
 ## Test results
 
-**A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).** In these tests, Crossbar.io was
+**A summary of the results in diagrams can be found [here](https://github.com/crossbario/crossbarexamples/raw/master/benchmark/web/results/results.pdf).** In these tests, Crossbar.io (using a single quad-core Xeon CPU) was
 
 * serving at **over 170,000 HTTP reqs/s** at **1ms avg latency**
 * pushing **over 1 GB/s HTTP reply traffic**
-
-All of this using a single quad-core Xeon CPU.
 
 The tests were run against these Web resources
 
@@ -122,7 +122,11 @@ Repeat the last step (**without** restarting Crossbar.io) and number of times, p
 
 ## How it works
 
-Crossbar.io is started from a local node configuration. Here is the one used for the tests with 1 worker:
+Crossbar.io is started from a local node configuration. The node configuration will start up 1, 2, 4 or 8 worker processes each accepting and serving HTTP requests. The load is distributed evenly among the worker processes by the Linux kernel.
+
+> Under the hood, the socket sharing between worker processes work using the [SO_REUSEPORT](https://lwn.net/Articles/542629/) option. Currently, Linux 3.9+ is the only Unix'oid OS supporting this option.
+
+Here is the configuration used for the tests with 1 worker:
 
 ```json
 {
@@ -178,6 +182,8 @@ Crossbar.io is started from a local node configuration. Here is the one used for
 }
 ```
 
+The configuration files for more workers replicates above, with the only adjustment being the CPU affinity set for each worker. Setting the CPU affinity is a performance optimization.
+
 **What above means**
 
 * The node configuration contains a `"workers"` attribute in a top-level dictionary which is a list of worker items.
@@ -186,7 +192,6 @@ Crossbar.io is started from a local node configuration. Here is the one used for
 * The `/` path is configured to serve static files over HTTP from the folder `..`, relative to the node configuration.
 * The `/json` path is configured to serve a serialized JSON value as specified in the configuration.
 * The `/resource` path is configured to serve a Twisted Web resource written by us and contained in [myresource.py](myresource.py).
-* The configuration files for more workers replicates above, with the only adjustment being the CPU affinity set for each worker. Setting the CPU affinity is a performance optimization.
 
 There are two critical options is above for `"endpoint"`:
 
