@@ -1,14 +1,23 @@
 # Scaling Web Services
 
-This examples demonstrates benchmarking the multi-core ready Web service built into Crossbar.io which includes services such as static file serving, WebSocket endpoints, CGI and WSGI endpoints and so on.
+This examples demonstrates benchmarking the multi-core ready Web service built into Crossbar.io. The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more.
 
-> Web services are powered by Twisted Web under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
+> Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
 
 ## Requirements
 
-The testee machine needs to have Crossbar.io installed. The load machine needs to have [wrk](https://github.com/wg/wrk) (and [weighttp](https://github.com/lighttpd/weighttp)) installed.
+The testee machine needs to have Crossbar.io installed. The load machine needs to have [wrk](https://github.com/wg/wrk) and [weighttp](https://github.com/lighttpd/weighttp) installed.
 
 ## Test Setup
+
+The tests were run on two identical machines, each with:
+
+* Single-socket Intel Xeon E1340 v3 CPU, Quad-core (with 8 HT), 3.4GHz and 32GB ECC RAM
+* Dual-port 10GbE Intel X540 Ethernet adapter
+
+Both machines were connected over a 10GbE switch.
+
+The testee machine (with Crossbar.io) was running under Ubuntu 14.03 LTS, while the load machine (with wrk/weighttp) was running FreeBSD 10.2.
 
 ## Test Procedure
 
