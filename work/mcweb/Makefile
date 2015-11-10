@@ -55,3 +55,7 @@ test_resource_65536:
 test_static:
 	weighttp -n 5000000 -c 128 -t 8 -k ${TESTEE}/
 	wrk -c 128 -t 8 --latency -d 60 ${TESTEE}/
+
+analyze:
+	grep -Hi "Requests/sec" results/*
+	grep -Hi "Transfer/sec" results/*
