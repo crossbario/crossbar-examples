@@ -9,6 +9,13 @@ In these tests, Crossbar.io running on a **single quad-core Xeon CPU** was servi
 * **over 174000 HTTP requests/s at 1 ms avg latency**
 * **over 1090 MB/s HTTP reply traffic**
 
+When using 40 CPU cores on a bigger machine, Crossbar.io was able to serve (over loopback TCP)
+
+* **over 627990 HTTP requests/s at 1 ms avg latency**
+* **over 12.6 GB/s HTTP reply traffic**
+
+Scaling with the number of CPU cores utilized looks like this
+
 ![](results/bigbox_results.png)
 
 > The Web services that are available include static file hosting, file upload, WebSocket endpoints, CGI and WSGI endpoints and more (please see [here](http://crossbar.io/docs/Web-Services/) for the full list). Web services are powered by [Twisted Web](http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html) under the hood. WebSocket, WAMP and scaling on multi-core is provided by Crossbar.io.
