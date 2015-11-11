@@ -193,9 +193,23 @@ Repeat the last step (**without** restarting Crossbar.io) and number of times, p
 
 Crossbar.io is started from a local node configuration. The node configuration will start up 1, 2, 4 or 8 worker processes each accepting and serving HTTP requests. The load is distributed evenly among the worker processes by the Linux kernel.
 
-> Under the hood, the socket sharing between worker processes work using the [SO_REUSEPORT](https://lwn.net/Articles/542629/) option. Currently, Linux 3.9+ is the only Unix'oid OS supporting this option.
+### Background
 
-Here is the configuration used for the tests with 1 worker:
+Under the hood, the socket sharing between worker processes work using the **SO_REUSEPORT** socket option. Currently (11/2015), Linux 3.9+ and DragonFly BSD are the only Unix'oid OS supporting this option. Here are more pointers:
+
+* https://lwn.net/Articles/542629/
+* http://stackoverflow.com/a/14388707/884770
+* https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/
+* https://domsch.com/linux/lpc2010/Scaling_techniques_for_servers_with_high_connection%20rates.pdf
+
+To use SO_REUSEPORT:
+
+1. Before `bind()`, `setsockopt` `SO_REUSEADDR` **and** `SO_REUSEPORT`
+2. Then the same as a normal socket - `bind()`, `listen()`, ` accept()`
+
+### Configuration
+
+Here is the Crossbar.io node configuration used for the tests with 1 worker:
 
 ```json
 {
