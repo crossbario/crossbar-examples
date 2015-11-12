@@ -6,6 +6,13 @@ Here are two browser clients both subscribing to a topic, and each publishing to
 
 ![](shot1.png)
 
+Currently, the only store type implemented is "memory" which just stores event history in objects in memory.
+
+Hence, the price for event history with the "memory" store type is memory consumption. There isn't any significant performance cost for publish & subscribe actions.
+
+We will have a second store type "lmdb" which stores event history in a LMDB embedded database. The price for event history with the "lmdb" store type will be disk usage and a bit of performance for publish & subscribe actions.
+
+
 ## How it works
 
 Event history needs to be enable in the Crossbar.io node configuration. Specifically, you need to add a "store" section to the realm you want to have event history on:
@@ -67,6 +74,7 @@ session.subscribe('com.example.oncounter',
 The permission to retrieve event history depends on two factors: the clients has to be allowed to call `wamp.subscription.get_events` and the client must be permitted to subscribe to the respective subscription. Only then it not only actually gets handed out the subscription ID, but also the `wamp.subscription.get_events` will in turn dynamically authorize the retrieval of event history.
 
 In other words, the right to subscribe implies the right to retrieve event history.
+
 
 ## Try yourself
 
