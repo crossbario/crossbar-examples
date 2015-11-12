@@ -18,7 +18,16 @@
                         }
                      ]
                   }
-               ]
+               ],
+               "store": {
+                  "type": "memory",
+                  "event-history": [
+                     {
+                        "uri": "com.example.oncounter",
+                        "limit": 10000
+                     }
+                  ]
+               }
             }
          ],
          "transports": [

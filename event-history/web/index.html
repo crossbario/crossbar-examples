@@ -32,8 +32,8 @@
 
             // subscribe to a topic ..
             //
-            session.subscribe('com.example.oncounter', function (args) {
-               console.log('com.example.oncounter', args[0]);
+            session.subscribe('com.example.oncounter', function (args, kwargs, details) {
+               console.log('com.example.oncounter', details.publication, args[0]);
             }).then(
                // .. when subscription is successful, we get back a subscription object
                function (sub) {
@@ -65,7 +65,7 @@
                      function (history) {
                         console.log("got history for " + history.length + " events");
                         for (var i = 0; i < history.length; ++i) {
-                           console.log(history[i].args[0]);
+                           console.log(history[i].publication, history[i].args[0]);
                         }
                      },
                      function (err) {
