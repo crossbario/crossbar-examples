@@ -32,7 +32,7 @@ Above is (part of) a realm configuration as part of a Crossbar.io node configura
 * The "store" section defines a memory backed store - that is a store which is transient across restarts of Crossbar.io.
 * The "event-history" section contains a list of URIs or URI patterns for which to keep history, as well as the "limit" to the history to be held
 
-The JavaScript client then uses the WAMP meta API for event history that is implemented by Crossbar.io:
+The JavaScript client then calls into the WAMP meta API `wamp.subscription.get_events` to retrieve event history:
 
 ```javascript
 session.subscribe('com.example.oncounter',
@@ -63,3 +63,11 @@ session.subscribe('com.example.oncounter',
    }
 );
 ```
+
+## Try yourself
+
+To try yourself, go to this directory and start Crossbar.io
+
+    crossbar start
+
+Then open two browser tabs at [http://localhost:8080](http://localhost:8080) and press F12 to open the JavaScript console. Hit F5 to reload a browser tab and look at the initial event history retrieved.
