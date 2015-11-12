@@ -19,57 +19,45 @@
             realm: "realm1"
          });
 
-         connection.onopen = function (session, details) {
-            console.log("Connected");
+         var session = null;
+         var publisher = null;
+
+         connection.onopen = function (new_session, details) {
+            console.log("Connected", details);
+            session = new_session;
 
             // periodically publish an event
             //
             var counter = 0;
-            setInterval(function () {
-               session.publish('com.example.oncounter', [counter], null, {exclude_me: false});
-               counter += 1;
+            publisher = setInterval(function () {
+               if (session) {
+                  session.publish('com.example.oncounter', [counter], null, {exclude_me: false});
+                  counter += 1;
+               }
             }, 1000);
 
             // subscribe to a topic ..
             //
-            session.subscribe('com.example.oncounter', function (args, kwargs, details) {
-               console.log('com.example.oncounter', details.publication, args[0]);
-            }).then(
+            session.subscribe('com.example.oncounter',
+               function (args, kwargs, details) {
+                  console.log('com.example.oncounter', details.publication, args[0]);
+               }
+            ).then(
                // .. when subscription is successful, we get back a subscription object
                function (sub) {
                   console.log("subscribed with subscription ID " + sub.id);
 
-                  session.call('wamp.test.exception').then(
-                     function (res) {
-                        console.log(res);
-                     },
-                     function (err) {
-                        console.log(err);
-                     }
-                  );
-
-                  // get number of subscribers currently attached to given subscription
-                  //
-                  session.call('wamp.subscription.count_subscribers', [sub.id]).then(
-                     function (res) {
-                        console.log("currently " + res + " subscribers");
-                     },
-                     function (err) {
-                        console.log(err);
-                     }
-                  );
-
                   // get event history of length 5 on given subscription
                   //
-                  session.call('wamp.subscription.get_events', [sub.id, 5]).then(
+                  session.call('wamp.subscription.get_events', [sub.id, 12]).then(
                      function (history) {
                         console.log("got history for " + history.length + " events");
                         for (var i = 0; i < history.length; ++i) {
-                           console.log(history[i].publication, history[i].args[0]);
+                           console.log(history[i].timestamp, history[i].publication, history[i].args[0]);
                         }
                      },
                      function (err) {
-                        console.log(err);
+                        console.log("could not retrieve event history", err);
                      }
                   );
                },
@@ -80,7 +68,12 @@
          };
 
          connection.onclose = function (reason, details) {
-            console.log("Connection lost: " + reason);
+            console.log("Connection lost: " + reason, details);
+            session = null;
+            if (publisher) {
+               clearTimeout(publisher);
+               publisher = null;
+            }
          }
 
          connection.open();
