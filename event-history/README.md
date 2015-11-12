@@ -32,7 +32,7 @@ Above is (part of) a realm configuration as part of a Crossbar.io node configura
 * The "store" section defines a memory backed store - that is a store which is transient across restarts of Crossbar.io.
 * The "event-history" section contains a list of URIs or URI patterns for which to keep history, as well as the "limit" to the history to be held
 
-The JavaScript client then calls into the WAMP meta API `wamp.subscription.get_events` to retrieve event history:
+The JavaScript client then calls into the WAMP meta API `wamp.subscription.get_events` with a `subscription_id` and a `limit` to retrieve event history:
 
 ```javascript
 session.subscribe('com.example.oncounter',
@@ -63,6 +63,10 @@ session.subscribe('com.example.oncounter',
    }
 );
 ```
+
+The permission to retrieve event history depends on two factors: the clients has to be allowed to call `wamp.subscription.get_events` and the client must be permitted to subscribe to the respective subscription. Only then it not only actually gets handed out the subscription ID, but also the `wamp.subscription.get_events` will in turn dynamically authorize the retrieval of event history.
+
+In other words, the right to subscribe implies the right to retrieve event history.
 
 ## Try yourself
 
