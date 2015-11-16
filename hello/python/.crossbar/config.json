@@ -1,13 +1,7 @@
-
 {
-   "controller": {
-   },
    "workers": [
       {
          "type": "router",
-         "options": {
-            "pythonpath": [".."]
-         },
          "realms": [
             {
                "name": "realm1",
@@ -37,7 +31,7 @@
                "paths": {
                   "/": {
                      "type": "static",
-                     "directory": "../hello/web"
+                     "directory": "../web"
                   },
                   "ws": {
                      "type": "websocket"
@@ -54,7 +48,7 @@
          "components": [
             {
                "type": "class",
-               "classname": "hello.hello.AppSession",
+               "classname": "hello.AppSession",
                "realm": "realm1",
                "transport": {
                   "type": "websocket",
