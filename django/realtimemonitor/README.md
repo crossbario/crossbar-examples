@@ -22,7 +22,7 @@ Start crossbar in a seperate terminal
 
     crossbar start
 
-Start the client and compare the outcome with the webpage at http://localhost:8000
+Start the client and compare the outcome with the [webpage](http://localhost:8000) at http://localhost:8000
 
     python client.py
 
