@@ -14,7 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "autobahn": "~0.9.6",
-    "resumablejs": "~1.0.2"
+    "autobahn": "^0.9.6",
+    "resumablejs": "^1.0.2"
   }
 }
