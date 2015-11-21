@@ -48,7 +48,7 @@ def get_stats(filters={}):
         results['cpus'] = tuple("%s%%" % x for x in psutil.cpu_percent(percpu=True))
 
     if (filters.get('show_memory', True)):
-        memory = psutil.phymem_usage()
+        memory = psutil.virtual_memory()
         results['memory'] = '{used}/{total} ({percent}%)'.format(
             used=to_gib(memory.used),
             total=to_gib(memory.total),
@@ -141,4 +141,4 @@ def update_configuration(args):
 
 # We start our client.
 if __name__ == '__main__':
-    app.run(url="ws://%s:8080/ws" % SERVER, debug=False, debug_wamp=False)
+    app.run(url=u"ws://%s:8080/ws" % SERVER, debug=False, debug_wamp=False)
