@@ -33,7 +33,7 @@
 
          session.subscribe('com.example.upload.on_progress', function (args) {
             var pinfo = args[0];
-            console.log('upload event received', pinfo.status, pinfo.chunk, pinfo.remaining, pinfo.total, pinfo.progress);
+            console.log('upload event received', pinfo);
          });
 
          var r = new Resumable({
@@ -44,7 +44,15 @@
             testChunks: true,
             query: {
                on_progress: 'com.example.upload.on_progress',
-               session: session.id
+               session: session.id,
+               chunk_extra: JSON.stringify({
+                  test: 'lala',
+                  test2: 23
+               }),
+               finish_extra: JSON.stringify({
+                  test: 'fifi',
+                  test2: 52
+               })
             }
          });
 
@@ -66,7 +74,7 @@
 
                // enable repeated upload since other user can delete the file on the server
                // and this user might want to reupload the file
-               file.cancel();
+               r.removeFile(file)
             });
 
             r.on('fileError', function (file, message) {

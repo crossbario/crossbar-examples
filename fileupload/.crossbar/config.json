@@ -19,7 +19,7 @@
          "endpoint": {
             "type": "tcp",
             "port": 8080
-         },
+         },         
          "paths": {
             "/": {
                "type": "static",
@@ -33,7 +33,7 @@
                "realm": "realm1",
                "role": "anonymous",
                "directory": "../uploaded",
-               "temp_directory": "../temp",
+               "temp_directory": "../uploaded/tmp",
                "form_fields": {
                   "file_name": "resumableFilename",
                   "mime_type": "resumableType",
@@ -43,7 +43,9 @@
                   "total_chunks": "resumableTotalChunks",
                   "content": "file",
                   "on_progress": "on_progress",
-                  "session": "session"
+                  "session": "session",
+                  "chunk_extra": "chunk_extra",
+                  "finish_extra": "finish_extra"
                },
                "options": {
                   "max_file_size": 200000000,
