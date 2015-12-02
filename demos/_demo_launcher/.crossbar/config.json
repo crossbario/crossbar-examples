@@ -13,11 +13,15 @@
                      "name": "anonymous",
                      "permissions": [
                         {
-                           "uri": "*",
+                           "uri": "io.crossbar.demo.*",
                            "publish": true,
                            "subscribe": true,
                            "call": true,
                            "register": true
+                        },
+                        {
+                           "uri": "wamp.*",
+                           "subscribe": true
                         }
                      ]
                   }
@@ -38,6 +42,13 @@
                   },
                   "ws": {
                      "type": "websocket"
+                  },
+                  "lp": {
+                     "type": "longpoll"
+                  },
+                  "wpadlab": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadlab/web"
                   },
                   "beatbox": {
                      "type": "static",
@@ -90,6 +101,10 @@
                   "videocontrol": {
                      "type": "static",
                      "directory": "../../videocontrol/web" 
+                  },
+                  "spreadsheet": {
+                     "type": "static",
+                     "directory": "../../spread"
                   }
                }
             }

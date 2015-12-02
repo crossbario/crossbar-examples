@@ -1,0 +1,56 @@
+wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=16
+Running 20s test @ http://127.0.0.1:8080/resource?count=16
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   358.14us    1.94ms 125.94ms   98.70%
+    Req/Sec    79.09k    10.26k  115.57k    75.75%
+  Latency Distribution
+     50%  171.00us
+     75%  253.00us
+     90%  395.00us
+     99%    3.22ms
+  12622825 requests in 20.10s, 1.67GB read
+Requests/sec: 627990.75
+Transfer/sec:     85.04MB
+wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=256
+Running 20s test @ http://127.0.0.1:8080/resource?count=256
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   355.83us    1.83ms  54.50ms   99.08%
+    Req/Sec    74.78k     8.70k  106.50k    68.16%
+  Latency Distribution
+     50%  185.00us
+     75%  285.00us
+     90%  375.00us
+     99%    1.30ms
+  11941482 requests in 20.10s, 4.26GB read
+Requests/sec: 594120.37
+Transfer/sec:    217.01MB
+wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=4096
+Running 20s test @ http://127.0.0.1:8080/resource?count=4096
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   397.22us    1.89ms  59.21ms   98.65%
+    Req/Sec    71.66k     7.37k   88.00k    64.47%
+  Latency Distribution
+     50%  197.00us
+     75%  276.00us
+     90%  372.00us
+     99%    4.85ms
+  11450734 requests in 20.10s, 45.05GB read
+Requests/sec: 569673.63
+Transfer/sec:      2.24GB
+wrk -c 128 -t 8 --latency -d 20 http://127.0.0.1:8080/resource?count=65536
+Running 20s test @ http://127.0.0.1:8080/resource?count=65536
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.15ms    4.10ms  73.14ms   97.63%
+    Req/Sec    25.83k     2.08k   30.69k    63.93%
+  Latency Distribution
+     50%  514.00us
+     75%  820.00us
+     90%    1.17ms
+     99%   23.95ms
+  4124419 requests in 20.10s, 252.23GB read
+Requests/sec: 205196.90
+Transfer/sec:     12.55GB

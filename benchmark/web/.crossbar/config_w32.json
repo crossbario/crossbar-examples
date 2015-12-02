@@ -1,0 +1,1508 @@
+{
+   "workers": [
+      {
+         "options": {
+            "cpu_affinity": [
+               0
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               1
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               2
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               3
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               4
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               5
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               6
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               7
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               8
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               9
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               10
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               11
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               12
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               13
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               14
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               15
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               16
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               17
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               18
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               19
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               20
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               21
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               22
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               23
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               24
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               25
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               26
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               27
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               28
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               29
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               30
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }, 
+      {
+         "options": {
+            "cpu_affinity": [
+               31
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }
+   ]
+}

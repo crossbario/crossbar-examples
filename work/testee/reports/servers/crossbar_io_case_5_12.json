@@ -1,0 +1,168 @@
+{
+   "agent": "Crossbar.io",
+   "behavior": "OK",
+   "behaviorClose": "OK",
+   "case": 56,
+   "closedByMe": false,
+   "createStats": true,
+   "createWirelog": true,
+   "description": "Send unfragmented Text Message after Continuation Frame with FIN = false, where there is nothing to continue, sent in one chop.",
+   "droppedByMe": false,
+   "duration": 3,
+   "expectation": "The connection is failed immediately, since there is no message to continue.",
+   "expected": {
+      "OK": []
+   },
+   "expectedClose": {
+      "closeCode": [
+         1002
+      ],
+      "closedByMe": false,
+      "requireClean": false
+   },
+   "failedByMe": false,
+   "httpRequest": "GET / HTTP/1.1\r\nUser-Agent: AutobahnTestSuite/0.7.2-0.10.9\r\nHost: 127.0.0.1:8080\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nPragma: no-cache\r\nCache-Control: no-cache\r\nSec-WebSocket-Key: G5jHA2DL5Iahh4/mF+7PvQ==\r\nSec-WebSocket-Version: 13\r\n\r\n",
+   "httpResponse": "HTTP/1.1 101 Switching Protocols\r\nServer: Crossbar/0.11.1\r\nX-Powered-By: AutobahnPython/0.11.0\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: pRj1EABMkVvlHey7HkL0yAyxfio=\r\n\r\n",
+   "id": "5.12",
+   "isServer": false,
+   "localCloseCode": 1000,
+   "localCloseReason": null,
+   "received": [],
+   "remoteCloseCode": 1002,
+   "remoteCloseReason": "received continuation data frame outside fragmented message",
+   "reportCompressionRatio": false,
+   "reportTime": false,
+   "result": "Actual events match at least one expected.",
+   "resultClose": "Connection was properly closed",
+   "rxFrameStats": {
+      "8": 1
+   },
+   "rxOctetStats": {
+      "63": 1,
+      "191": 1
+   },
+   "started": "2015-11-06T15:56:03.937Z",
+   "trafficStats": null,
+   "txFrameStats": {
+      "0": 1,
+      "1": 1,
+      "8": 1
+   },
+   "txOctetStats": {
+      "8": 1,
+      "19": 1,
+      "30": 1,
+      "240": 1
+   },
+   "wasClean": true,
+   "wasCloseHandshakeTimeout": false,
+   "wasNotCleanReason": null,
+   "wasOpenHandshakeTimeout": false,
+   "wasServerConnectionDropTimeout": false,
+   "wirelog": [
+      [
+         "TO",
+         [
+            240,
+            "474554202f20485454502f312e310d0a557365722d4167656e743a204175746f6261686e5465737453756974652f302e372e322d302e31302e390d0a486f7374 ..."
+         ],
+         false
+      ],
+      [
+         "RO",
+         [
+            191,
+            "485454502f312e312031303120537769746368696e672050726f746f636f6c730d0a5365727665723a2043726f73736261722f302e31312e310d0a582d506f77 ..."
+         ]
+      ],
+      [
+         "TF",
+         [
+            24,
+            "non-continuation payload"
+         ],
+         0,
+         false,
+         0,
+         "ee978b87",
+         null,
+         null,
+         false
+      ],
+      [
+         "TO",
+         [
+            30,
+            "0098ee978b8780f8e5aa8df8e5f387f9fee69afee4e9cee7eafe82f8eae3"
+         ],
+         false
+      ],
+      [
+         "TF",
+         [
+            13,
+            "Hello, world!"
+         ],
+         1,
+         true,
+         0,
+         "f172f982",
+         null,
+         null,
+         false
+      ],
+      [
+         "TO",
+         [
+            19,
+            "818df172f982b91795ee9e5ed9f59e0095e6d0"
+         ],
+         false
+      ],
+      [
+         "KL",
+         1
+      ],
+      [
+         "RO",
+         [
+            63,
+            "883d03ea726563656976656420636f6e74696e756174696f6e2064617461206672616d65206f75747369646520667261676d656e746564206d657373616765 ..."
+         ]
+      ],
+      [
+         "RF",
+         [
+            61,
+            "0x03ea726563656976656420636f6e74696e756174696f6e2064617461206672616d65206f75747369646520667261676d656e746564206d657373616765 ..."
+         ],
+         8,
+         true,
+         0,
+         false,
+         null
+      ],
+      [
+         "TF",
+         [
+            2,
+            "0x03e8"
+         ],
+         8,
+         true,
+         0,
+         "6d2b62ea",
+         null,
+         null,
+         false
+      ],
+      [
+         "TO",
+         [
+            8,
+            "88826d2b62ea6ec3"
+         ],
+         false
+      ]
+   ]
+}

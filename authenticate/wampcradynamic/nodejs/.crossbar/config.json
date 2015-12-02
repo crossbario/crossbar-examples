@@ -107,7 +107,7 @@
       },
       {
          "type": "guest",
-         "executable": "/usr/bin/node",
+         "executable": "node",
          "arguments": [
             "authenticator.js",
             "ws://127.0.0.1:9000",
@@ -121,7 +121,7 @@
       },
       {
          "type": "guest",
-         "executable": "/usr/bin/node",
+         "executable": "node",
          "arguments": [
             "backend.js",
             "ws://127.0.0.1:9000",

@@ -2,6 +2,7 @@
 <html>
 
 <head>
+   <meta charset="UTF-8">
    <script src="bower_components/resumablejs/resumable.js"></script>
    <script src="bower_components/autobahn/autobahn.min.js"></script>
 </head>
@@ -39,7 +40,7 @@
             target: 'upload',
             chunkSize: 1 * 1024 * 1024,
             forceChunkSize: true, // https://github.com/23/resumable.js/issues/51
-            simultaneousUploads: 2,
+            simultaneousUploads: 4,
             testChunks: true,
             query: {
                on_progress: 'com.example.upload.on_progress',

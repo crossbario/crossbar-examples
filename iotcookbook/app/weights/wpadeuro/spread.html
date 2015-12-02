@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="shortcut icon" href="favicon.ico">
+      
+      <title>Weighing App</title>
+
+      <link rel="stylesheet" href="css/spread.css">
+
+      <!--jQuery References-->
+      <script src="//code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
+      <script src="//code.jquery.com/ui/1.9.1/jquery-ui.min.js" type="text/javascript"></script>
+
+      <!--Theme-->
+      <link href="//cdn.wijmo.com/themes/aristo/jquery-wijmo.css" rel="stylesheet" type="text/css" />
+
+      <!--SpreadJS Widgets JavaScript-->
+      <script src="//cdn.wijmo.com/spreadjs/jquery.wijmo.wijspread.all.1.20131.1.min.js" type="text/javascript"></script>
+
+      <!--SpreadJS Widgets CSS-->
+      <link href="//cdn.wijmo.com/spreadjs/jquery.wijmo.wijspread.1.20131.1.css" rel="stylesheet" type="text/css" />
+
+      <!-- AutobahnJS -->
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+      <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <!-- Demo code -->
+      <script src="js/spread.js"></script>
+   </head>
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Weighing</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+      </header>
+      <div class="demo_links">
+         <p>
+            Receive data from weighing pads and publish events based on this.
+         </p>
+         <div>
+            <!-- <a id="controllerLink" href="" target="_blank">Open Controller</a> -->
+            <a id="outputLink" href="output.html" target="_blank">Open Output Page</a>
+            <a href="https://github.com/crossbario/crossbardemo/tree/master/web/demo/spread">Source Code</a>
+         </div>
+      </div>
+      <div id="demo_body">
+         <div id="ss"></div>
+      </div>
+   
+      <div class="status_line noContainer">
+         Status: <span class="statusline"></span>
+      </div>
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+
+      <!-- community widget iframe -->
+
+      <!-- general styles for the widget -->
+      <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+      <!-- local stylesheet -->
+      <!--     - ensures non-Display if nothing loads -->
+      <!--     - site-specific positioning of widget -->
+      <style>
+         #communityWidget.nonDisplay {
+            display: none;
+         }
+
+         #communityWidget {
+            top: 111px;
+            right: 0px;
+            box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+         }
+      </style>
+
+      <!-- IFrame itself -->
+      <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+      <!-- the parent page connecting code -->
+      <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+
+   </body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         #status {
+            font-size: 24px;
+            font-weight: bold;
+         }
+
+         #raw {
+            margin-top: 30px;
+         }
+         .rawvalue {
+            font-family: monospace;
+            font-size: 48px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 16px;
+            line-height: 96px;
+            display: inline;
+         }
+
+         #bars {
+            width: 80%;
+            background-color: #ccc;
+            padding: 8px;
+            margin: auto;
+            margin-top: 30px;
+         }
+
+         .rawvalue_bar {
+            height: 16px;;
+            width: 120px;
+            background-color: #333;
+            margin-top: 2px;
+            margin-bottom: 2px;
+            color: #fff;
+            font-family: monospace;
+            font-size: 14px;
+            padding: 3px;
+         }
+
+         #series_control, #model_control {
+            background-color: #333;
+            color: #eee;
+            border-radius: 6px;
+            padding: 12px 20px 12px 20px;
+            margin: 12px;
+            margin-left: 20px;
+            width: 360px;
+            float: left;
+         }
+
+         #predicted-value {
+            padding-left: 40px;
+            font-size: 72px;
+            font-weight: bold;
+            color: #3c3;
+         }
+
+      </style>
+
+      <h1>Crossbar.io - Weighing Pad Lab</h1>
+
+      <p id="status"></p>
+
+      <div id="series_control">
+         <h1>Series Logger</h1>
+         <p>
+            Current length: <span id="series-length">0</span>
+         </p>
+         <p>
+            Target: <input type="text" id="target-value" size="5" />
+            <button onclick="log_data_points()">Add</button>
+            <button onclick="log_data_points(1)">Add++</button>
+            <button onclick="log_data_points(-1)">Add--</button>
+            <button onclick="log_data_points(0, 16)">AddR</button>
+         </p>
+         <p>
+            <button onclick="save_series()">Save Series</button>
+            <button onclick="reset_series()">Reset Series</button>
+         </p>
+      </div>
+
+      <div id="model_control">
+         <h1>Model</h1>
+         <p>
+            Predicted value: <span id="predicted-value"></span>
+         </p>
+         <p>
+            Loaded model: <span id="loaded-model">-</span>
+         </p>
+         <p>
+            Load model: <input type="text" id="load-model-id" size="5" />
+            <button onclick="load_model()">Load model</button>
+         </p>
+         <p>
+            <button onclick="reset_model()">Reset Model</button>
+         </p>
+      </div>
+
+      <br style="clear: both;">
+
+      <div id="raw">
+         <pre id="a0" class="rawvalue"></pre>
+         <pre id="a1" class="rawvalue"></pre>
+         <pre id="a2" class="rawvalue"></pre>
+         <pre id="a3" class="rawvalue"></pre>
+         <br>
+         <pre id="a4" class="rawvalue"></pre>
+         <pre id="a5" class="rawvalue"></pre>
+         <pre id="a6" class="rawvalue"></pre>
+<!--
+         <pre id="a7" class="rawvalue"></pre>
+         <pre id="a8" class="rawvalue"></pre>
+         <pre id="a9" class="rawvalue"></pre>
+-->
+      </div>
+
+      <div id="bars">
+         <div id="bar_a0" class="rawvalue_bar"></div>
+         <div id="bar_a1" class="rawvalue_bar"></div>
+         <div id="bar_a2" class="rawvalue_bar"></div>
+         <div id="bar_a3" class="rawvalue_bar"></div>
+         <br>
+         <div id="bar_a4" class="rawvalue_bar"></div>
+         <div id="bar_a5" class="rawvalue_bar"></div>
+         <div id="bar_a6" class="rawvalue_bar"></div>
+<!--
+         <div id="bar_a7" class="rawvalue_bar"></div>
+         <div id="bar_a8" class="rawvalue_bar"></div>
+         <div id="bar_a9" class="rawvalue_bar"></div>
+-->
+      </div>
+
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="chroma.min.js"></script>
+      <script src="autobahn.min.js"></script>
+      <script src="models.js"></script>
+<!--
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+-->
+      <script>
+         var sensor_count = 7;
+         var scale = chroma.scale(['grey', 'red']);
+
+         //var colors = ['black', 'red', 'yellow', 'white'];
+         //var colors = ['lightyellow', 'orangered', 'deeppink', 'darkred'];
+         //var colors = ['black', 'red', 'deeppink'];
+         //colors = chroma.interpolate.bezier(colors)
+         //var scale = chroma.scale(colors).mode('lab').correctLightness(true);
+
+         var rawvalues = [];
+         var bars = [];
+         var bars_el = document.getElementById('bars');
+
+         for (var i = 0; i < sensor_count; ++i) {
+            rawvalues.push(document.getElementById('a' + i));
+            bars.push(document.getElementById('bar_a' + i));
+         }
+
+         function set_rawvalue(i, value) {
+            var value_text;
+            if (value !== undefined) {
+               value_text = "A" + i + ": " + ("    " + value).substr(-4, 4);
+            } else {
+               value_text = "A" + i + ": ?";
+            }
+            rawvalues[i].innerHTML = value_text;
+
+            var val = value / 1024;
+            var col = scale(val).hex()
+            rawvalues[i].style.backgroundColor = col;
+
+            var w = 60 + Math.round(val * (bars_el.clientWidth - 60));
+
+            bars[i].style.width = '' + w + 'px';
+            bars[i].style.backgroundColor = col;
+            bars[i].innerHTML = value_text;
+         }
+
+         for (var i = 0; i < sensor_count; ++i) {
+            set_rawvalue(i);
+         }
+
+         var wsuri;
+         if (document.location.origin === "null" || document.location.origin === "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         if (false) {
+            var connection = new autobahn.Connection({
+               url: "wss://demo.crossbar.io/ws",
+               realm: "crossbardemo"
+            });
+         } else {
+            var connection = new autobahn.Connection({
+               url: "ws://localhost:8080/ws",
+               realm: "iot_cookbook"
+            });
+         }
+
+         var last_values = {};
+
+         var session = null;
+
+
+         connection.onopen = function (new_session, details) {
+            session = new_session;
+            console.log("Connected", details);
+
+            session.subscribe("io.crossbar.demo.wpad.1.on_change", function (args) {
+               var evt = args[0];
+//               console.log(evt);
+               for (var i = 0; i < evt.values.length; ++i) {
+                  if (i < sensor_count) {
+                     set_rawvalue(i, evt.values[i]);
+                     last_values[i] = evt.values[i];
+                  }
+               }
+/*
+               x0 = model1('A0', last_values[0]);
+               x1 = model1('A1', last_values[1]);
+               x2 = model1('A2', last_values[2]);
+               x3 = model1('A3', last_values[3]);
+
+               console.log(x0, x1, x2, x3, x0+x1+x2+x3);
+
+               x0 = Math.round(x0) / 2;
+               x1 = Math.round(x1) / 2;
+               x2 = Math.round(x2) / 2;
+               x3 = Math.round(x3) / 2;
+
+               console.log(x0, x1, x2, x3, x0+x1+x2+x3);
+
+               //var res = model2([x0, x1, x2, x3]);
+               var res = model2(last_values);
+
+               console.log(res);
+*/
+               if (model) {
+                  model_predict(last_values);
+               }
+
+               var sum_pad1 = 0;
+               var sum_sq_pad1 = 0;
+               for (var i = 0; i < 4; ++i) {
+                  sum_pad1 += evt.values[i];
+                  sum_sq_pad1 += evt.values[i] * evt.values[i];
+               }
+
+               var sum_pad2 = 0;
+               var sum_sq_pad2 = 0;
+               for (var i = 4; i < 7; ++i) {
+                  sum_pad2 += evt.values[i];
+                  sum_sq_pad2 += evt.values[i] * evt.values[i];
+               }
+
+               var avg_pad1 = sum_pad1 / 4;
+               var avg_pad2 = sum_pad2 / 3;
+
+               var var_pad1 = (sum_sq_pad1 / 3) - 4 * (avg_pad1 * avg_pad1);
+               var var_pad2 = (sum_sq_pad2 / 2) - 3 * (avg_pad2 * avg_pad2);
+
+               //console.log(avg_pad1, var_pad1);
+               //console.log(avg_pad2, var_pad2);
+            });
+
+            session.call("io.crossbar.demo.wpad.1.get_last").then(
+               function (res) {
+                  for (var i = 0; i < res.values.length; ++i) {
+                     if (i < sensor_count) {
+                        set_rawvalue(i, res.values[i]);
+                        last_values[i] = res.values[i];
+                     }
+                  }
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+         };
+
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost", reason, details);
+            session = null;
+         }
+
+         connection.open();
+
+         var series = [];
+
+         function deep_copy (oldObj) {
+             var newObj = oldObj;
+             if (oldObj && typeof oldObj === 'object') {
+                 newObj = Object.prototype.toString.call(oldObj) === "[object Array]" ? [] : {};
+                 for (var i in oldObj) {
+                     newObj[i] = deep_copy(oldObj[i]);
+                 }
+             }
+             return newObj;
+         }
+
+         function log_data_points (lower, upper) {
+            var target_value = parseFloat(document.getElementById('target-value').value);
+            var data = deep_copy(last_values);
+            data['T'] = target_value;
+            series.push(data);
+            document.getElementById('series-length').innerHTML = '' + series.length;
+
+            if (lower !== undefined) {
+               if (upper === undefined) {
+                  target_value += lower;
+               } else {
+                  target_value = Math.floor(Math.random() * (upper - lower)) + lower;
+               }
+               document.getElementById('target-value').value = target_value;
+            }
+         }
+
+         function save_series () {
+            console.log(series);
+
+            var data = {};
+            for (var i = 0; i < sensor_count; ++i) {
+               data['A' + i] = [];
+            }
+            data['T'] = [];
+
+            for (var j = 0; j < series.length; ++j) {
+               for (var i = 0; i < sensor_count; ++i) {
+                  data['A' + i].push(series[j][i]);
+               }
+               data['T'].push(series[j]['T']);
+            }
+
+            console.log(data);
+
+            if (session) {
+               session.call("io.crossbar.demo.wpad.objstore.save", ["series", data]).then(
+                  function (res) {
+                     console.log(res);
+                     document.getElementById('status').innerHTML = "Series saved under ID " + res;
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            }
+
+            reset_series();
+         }
+
+         function reset_series () {
+            series = [];
+            document.getElementById('series-length').innerHTML = "0";
+         }
+
+         var model = null;
+
+         function model_predict (last_values) {
+
+var C = [3.2409466412999635,
+ 0.858139704268996,
+ 4.2589012098175321,
+ -633.68376563794209]
+            var res = C[0]*last_values[4]+C[1]*last_values[5]+C[2]*last_values[6]+C[3];
+            res = Math.round(res);
+            document.getElementById("predicted-value").innerHTML = "" + res;
+            return;
+
+
+
+            var sums = [];
+
+            for (var i = 0; i < model.length; ++i) {
+               var row = model[i];
+               var sum = 0;
+               for (var k = 0; k < row.length; ++k) {
+                  sum += last_values[k + 4] * row[k];
+               }
+
+               sums.push(sum);
+            }
+
+            var max_val = null;
+            var max_ind = null;
+            for (var k = 0; k < sums.length; ++k) {
+               var s = sums[k];
+               if (max_val === null || s > max_val) {
+                  max_val = s;
+                  max_ind = k;
+               }
+            }
+            //console.log(max_val, max_ind);
+
+            var val = (last_values[6] - 64.89668246) / 17.918348;
+            console.log(val);
+
+//            document.getElementById("predicted-value").innerHTML = "" + max_ind;
+            document.getElementById("predicted-value").innerHTML = "" + max_ind;
+         }
+
+         function load_model () {
+            var model_id = parseInt(document.getElementById("load-model-id").value);
+            console.log("load_model", model_id);
+
+            if (session) {
+               session.call("io.crossbar.demo.wpad.objstore.get", ["model", model_id]).then(
+                  function (res) {
+                     console.log(res);
+                     model = res;
+                     document.getElementById("loaded-model").innerHTML = "" + model_id;
+                  },
+                  function (err) {
+                     console.log(err);
+                  }
+               );
+            }
+         }
+
+         function reset_model () {
+            model = null;
+            document.getElementById("loaded-model").innerHTML = "-";
+         }
+
+         /*
+         curl -H "Content-Type: application/json" -d '{"procedure": "io.crossbar.examples.yun.weighingpad.get_series", "args": [1]}' http://127.0.0.1:8080/call
+
+         import requests, json
+         payload = {"procedure": "io.crossbar.examples.yun.weighingpad.get_series", "args": [1]}
+         r = requests.post("http://127.0.0.1:8080/call", data=json.dumps(payload), headers={'content-type': 'application/json'})
+
+
+         r = requests.get('https://api.github.com/user'
+         */
+      </script>
+   </body>
+</html>

@@ -14,13 +14,25 @@
 var demoRealm = "crossbardemo";
 var demoPrefix = "io.crossbar.demo";
 
+// the URL of the WAMP Router (Crossbar.io)
+//
 var wsuri;
 if (document.location.origin == "file://") {
-   wsuri = "ws://127.0.0.1:8080/ws";
+   wsuri = "ws://127.0.0.1:8080";
 
 } else {
    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
                document.location.host + "/ws";
+}
+
+var httpUri;
+
+if (document.location.origin == "file://") {
+   httpUri = "http://127.0.0.1:8080/lp";
+
+} else {
+   httpUri = (document.location.protocol === "http:" ? "http:" : "https:") + "//" +
+               document.location.host + "/lp";
 }
 
 var sess;
@@ -79,13 +91,22 @@ function updateStatusline(status) {
 var connection = null;
 function connect() {
 
-   connection = new autobahn.Connection({
-      url: wsuri,
-      realm: demoRealm,
-      max_retries: 30,
-      initial_retry_delay: 2
-      }
-   );
+   // the WAMP connection to the Router
+   //
+   var connection = new autobahn.Connection({
+      // url: wsuri,
+      transports: [
+         {
+            'type': 'websocket',
+            'url': wsuri
+         },
+         {
+            'type': 'longpoll',
+            'url': httpUri
+         }
+      ],
+      realm: "crossbardemo"
+   });
 
    connection.onopen = function (session) {
 
@@ -226,7 +247,6 @@ function loadSample(btn, file) {
    samples[btn].load();
    samples[btn].volume = 1;
    samples[btn].loop = true;
-   samples[btn].initialTime = 0;
 }
 
 
@@ -337,8 +357,9 @@ function onPadButtonDown(args, kwargs, details) {
 
       if (enable_audio.checked) {
          console.log("playing a sample");
+
          // do NOT change order/content of the following 2 lines!
-         samples[kwargs.b].currentTime = samples[kwargs.b].initialTime;
+         samples[kwargs.b].currentTime = 0;
          samples[kwargs.b].play();
       }
 
@@ -356,7 +377,7 @@ function onPadButtonUp(args, kwargs, details) {
 
       if (enable_audio.checked) {
          // do NOT change order/content of the following 2 lines!
-         samples[kwargs.b].currentTime = samples[kwargs.b].initialTime;
+         samples[kwargs.b].currentTime = 0;
          samples[kwargs.b].pause();
       }
 

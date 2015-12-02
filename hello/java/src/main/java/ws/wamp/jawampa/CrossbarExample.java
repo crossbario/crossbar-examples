@@ -17,7 +17,6 @@
 package ws.wamp.jawampa;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -27,11 +26,6 @@ import rx.Subscription;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-import ws.wamp.jawampa.ApplicationError;
-import ws.wamp.jawampa.Request;
-import ws.wamp.jawampa.WampError;
-import ws.wamp.jawampa.WampClient;
-import ws.wamp.jawampa.WampClientBuilder;
 
 /**
  * A demo application that demonstrates all features of WAMP
@@ -77,14 +71,17 @@ public class CrossbarExample {
     void run() {
         
         WampClientBuilder builder = new WampClientBuilder();
+        IWampConnectorProvider connectorProvider = new NettyWampClientConnectorProvider();
         try {
-            builder.witUri(url)
+
+            builder.withConnectorProvider(connectorProvider)
+                   .withUri(url)
                    .withRealm(realm)
                    .withInfiniteReconnects()
                    .withCloseOnErrors(true)
                    .withReconnectInterval(5, TimeUnit.SECONDS);
             client = builder.build();
-        } catch (WampError e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return;
         }
@@ -92,13 +89,13 @@ public class CrossbarExample {
         // Subscribe on the clients status updates
         client.statusChanged()
               .observeOn(rxScheduler)
-              .subscribe(new Action1<WampClient.Status>() {
+              .subscribe(new Action1<WampClient.State>() {
             @Override
-            public void call(WampClient.Status t1) {
+            public void call(WampClient.State t1) {
                 System.out.println("Session status changed to " + t1);
 
-                if (t1 == WampClient.Status.Connected) {
-                    
+                if (t1 instanceof WampClient.ConnectedState) {
+
                     // SUBSCRIBE to a topic and receive events
                     onHelloSubscription = client.makeSubscription("com.example.onhello", String.class)
                                                 .observeOn(rxScheduler)
@@ -198,7 +195,7 @@ public class CrossbarExample {
                         }
                     }, TIMER_INTERVAL, TIMER_INTERVAL, TimeUnit.MILLISECONDS);
                 }
-                else if (t1 == WampClient.Status.Disconnected) {
+                else if (t1 instanceof WampClient.DisconnectedState) {
                     closeSubscriptions();
                 }
             }
@@ -213,9 +210,8 @@ public class CrossbarExample {
                 System.out.println("Session ended normally");
             }
         });
-
-        client.open();
         
+        client.open();
         waitUntilKeypressed();
         System.out.println("Shutting down");
         closeSubscriptions();

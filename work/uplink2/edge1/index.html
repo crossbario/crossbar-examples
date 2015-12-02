@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Hello WAMP</h1>
+      <p>Open JavaScript console to watch output.</p>
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script>
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         connection.onopen = function (session, details) {
+            console.log("Connected");
+
+            session.subscribe("com.example.on_hello", function (args, kwargs) {
+               console.log("com.example.on_hello", args, kwargs);
+            }).then(function () { console.log("subscribed"); }, function (err) { console.log(err); });
+
+            if (true) {
+               var counter = 0;
+               var t1 = setInterval(function () {
+                  session.publish('com.example.onhello', ['Hello edge1 client ' + counter]);
+                  counter += 1;
+                  console.log("published to topic 'com.example.onhello'");
+               }, 1000);               
+            }
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

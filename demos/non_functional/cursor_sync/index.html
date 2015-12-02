@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+
+      <link rel="shortcut icon" href="favicon.ico">
+
+      <title>Cursorsync</title>
+
+      <link rel="stylesheet" href="css/cursorsync.css">
+
+      <!-- Include Flash WebSocket via Conditional Comment:
+           http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+      <!--[if lte IE 9]>
+         <script type="text/javascript">
+           WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+         </script>
+         <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+         <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+      <![endif]-->
+
+   </head>
+
+   <body>
+
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>Cursorsync</span>
+            </div>
+
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+      </div>
+   </header>
+
+   <div class="demo_links">
+      <p>
+         Sync cursor movement via a Crossbar.io instance. 
+      </p>
+      <div>
+         <a href="#" target="_blank" id="secondInstance">Open 2nd instance</a>
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/cursorsync">
+            Source Code
+         </a>
+         <a href="http://crossbar.io">
+            Crossbar.io Homepage
+         </a>
+      </div>
+   </div>
+
+   <div id="pubsub_wrapper" class="content_wrapper">
+            
+   <div id="box1" class="cursorBox">
+      <div id="box1cursor" class="cursor"></div>
+   </div>
+   <div id="box2" class="cursorBox">
+      <div id="box2cursor" class="cursor"></div>
+   </div>
+
+   </div>
+
+      <div class="info_bar">
+
+         <p class="info_bar_heading">
+            Real-time sync
+         </p>
+         <ul>
+            <li>
+               All interactions on this demo occur in response to messages routed through an instance of Crossbar.io
+            </li>
+         </ul>
+
+      </div>
+
+
+   </div>
+
+
+   <script>
+      // AUTOBAHN_DEBUG = true;
+   </script>
+    <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+   <script type="text/javascript" src="js/cursorsync.js"></script>
+   </body>
+</html>

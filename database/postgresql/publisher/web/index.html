@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Publishing real-time events from within PostgreSQL using Crossbar.io</h1>
+      <p>
+         Open the JavaScript console to watch log output.
+      </p>
+      <p>
+         Connect to your PostgreSQL database and publish an event:
+      </p>
+      <pre>
+SELECT crossbar.publish(
+   'com.example.topic1',
+   json_build_array(23, 7, 'hello world!')::jsonb,
+   json_build_object('foo', 'bar', 'baz', 42)::jsonb
+);
+      </pre>
+      <p>
+         You should see the event being received in JavaScript.
+      </p>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz">
+      </script>
+      <script>
+         var connection = new autobahn.Connection({
+            url: "ws://127.0.0.1:8080/ws",
+            realm: "realm1"
+         });
+
+         connection.onopen = function (session, details) {
+            console.log("Connected with session ID " + session.id);
+
+            topic = 'com.example.topic1';
+
+            session.subscribe(topic, function (args, kwargs) {
+               console.log("got event for " + topic, args, kwargs);
+            }).then(function () {
+               console.log("subcribed to " + topic);
+            });
+         }
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

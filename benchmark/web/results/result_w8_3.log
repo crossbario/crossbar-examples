@@ -1,0 +1,246 @@
+weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/json
+weighttp 0.3 - a lightweight and simple webserver benchmarking tool
+
+starting benchmark...
+spawning thread #1: 16 concurrent requests, 625000 total requests
+spawning thread #2: 16 concurrent requests, 625000 total requests
+spawning thread #3: 16 concurrent requests, 625000 total requests
+spawning thread #4: 16 concurrent requests, 625000 total requests
+spawning thread #5: 16 concurrent requests, 625000 total requests
+spawning thread #6: 16 concurrent requests, 625000 total requests
+spawning thread #7: 16 concurrent requests, 625000 total requests
+spawning thread #8: 16 concurrent requests, 625000 total requests
+progress:  10% done
+progress:  20% done
+progress:  30% done
+progress:  40% done
+progress:  50% done
+progress:  60% done
+progress:  70% done
+progress:  80% done
+progress:  90% done
+progress: 100% done
+
+finished in 31 sec, 446 millisec and 727 microsec, 158999 req/s, 46115 kbyte/s
+requests: 5000000 total, 5000000 started, 5000000 done, 5000000 succeeded, 0 failed, 0 errored
+status codes: 5000000 2xx, 0 3xx, 0 4xx, 0 5xx
+traffic: 1485000000 bytes total, 1105000000 bytes http, 380000000 bytes data
+wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/json
+Running 1m test @ http://10.0.1.3:8080/json
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.11ms    2.26ms  49.23ms   96.39%
+    Req/Sec    21.44k     1.67k   25.64k    70.55%
+  Latency Distribution
+     50%  694.00us
+     75%  845.00us
+     90%    1.06ms
+     99%   14.53ms
+  10255309 requests in 1.00m, 2.84GB read
+Requests/sec: 170636.94
+Transfer/sec:     48.33MB
+weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/resource?count=256
+weighttp 0.3 - a lightweight and simple webserver benchmarking tool
+
+starting benchmark...
+spawning thread #1: 16 concurrent requests, 625000 total requests
+spawning thread #2: 16 concurrent requests, 625000 total requests
+spawning thread #3: 16 concurrent requests, 625000 total requests
+spawning thread #4: 16 concurrent requests, 625000 total requests
+spawning thread #5: 16 concurrent requests, 625000 total requests
+spawning thread #6: 16 concurrent requests, 625000 total requests
+spawning thread #7: 16 concurrent requests, 625000 total requests
+spawning thread #8: 16 concurrent requests, 625000 total requests
+progress:  10% done
+progress:  20% done
+progress:  30% done
+progress:  40% done
+progress:  50% done
+progress:  60% done
+progress:  70% done
+progress:  80% done
+progress:  90% done
+progress: 100% done
+
+finished in 30 sec, 736 millisec and 229 microsec, 162674 req/s, 60844 kbyte/s
+requests: 5000000 total, 5000000 started, 5000000 done, 5000000 succeeded, 0 failed, 0 errored
+status codes: 5000000 2xx, 0 3xx, 0 4xx, 0 5xx
+traffic: 1915000000 bytes total, 635000000 bytes http, 1280000000 bytes data
+wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource?count=256
+Running 1m test @ http://10.0.1.3:8080/resource?count=256
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.11ms    2.37ms  52.99ms   96.32%
+    Req/Sec    22.00k     1.87k   26.56k    71.73%
+  Latency Distribution
+     50%  675.00us
+     75%  846.00us
+     90%    1.06ms
+     99%   15.12ms
+  10526111 requests in 1.00m, 3.75GB read
+Requests/sec: 175143.39
+Transfer/sec:     63.97MB
+weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/resource?count=4096
+weighttp 0.3 - a lightweight and simple webserver benchmarking tool
+
+starting benchmark...
+spawning thread #1: 16 concurrent requests, 625000 total requests
+spawning thread #2: 16 concurrent requests, 625000 total requests
+spawning thread #3: 16 concurrent requests, 625000 total requests
+spawning thread #4: 16 concurrent requests, 625000 total requests
+spawning thread #5: 16 concurrent requests, 625000 total requests
+spawning thread #6: 16 concurrent requests, 625000 total requests
+spawning thread #7: 16 concurrent requests, 625000 total requests
+spawning thread #8: 16 concurrent requests, 625000 total requests
+progress:  10% done
+progress:  20% done
+progress:  30% done
+progress:  40% done
+progress:  50% done
+progress:  60% done
+progress:  70% done
+progress:  80% done
+progress:  90% done
+progress: 100% done
+
+finished in 39 sec, 865 millisec and 764 microsec, 125420 req/s, 517361 kbyte/s
+requests: 5000000 total, 5000000 started, 5000000 done, 5000000 succeeded, 0 failed, 0 errored
+status codes: 5000000 2xx, 0 3xx, 0 4xx, 0 5xx
+traffic: 21120000000 bytes total, 640000000 bytes http, 20480000000 bytes data
+wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource?count=4096
+Running 1m test @ http://10.0.1.3:8080/resource?count=4096
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.62ms    3.05ms  49.62ms   94.02%
+    Req/Sec    16.77k     1.94k   21.13k    66.87%
+  Latency Distribution
+     50%    0.87ms
+     75%    1.14ms
+     90%    1.65ms
+     99%   17.64ms
+  8024639 requests in 1.00m, 31.57GB read
+Requests/sec: 133521.17
+Transfer/sec:    537.87MB
+weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/resource?count=65536
+weighttp 0.3 - a lightweight and simple webserver benchmarking tool
+
+starting benchmark...
+spawning thread #1: 16 concurrent requests, 625000 total requests
+spawning thread #2: 16 concurrent requests, 625000 total requests
+spawning thread #3: 16 concurrent requests, 625000 total requests
+spawning thread #4: 16 concurrent requests, 625000 total requests
+spawning thread #5: 16 concurrent requests, 625000 total requests
+spawning thread #6: 16 concurrent requests, 625000 total requests
+spawning thread #7: 16 concurrent requests, 625000 total requests
+spawning thread #8: 16 concurrent requests, 625000 total requests
+progress:  10% done
+progress:  20% done
+progress:  30% done
+progress:  40% done
+progress:  50% done
+progress:  60% done
+progress:  70% done
+progress:  80% done
+progress:  90% done
+progress: 100% done
+
+finished in 280 sec, 540 millisec and 756 microsec, 17822 req/s, 1142899 kbyte/s
+requests: 5000000 total, 5000000 started, 5000000 done, 5000000 succeeded, 0 failed, 0 errored
+status codes: 5000000 2xx, 0 3xx, 0 4xx, 0 5xx
+traffic: 328325000000 bytes total, 645000000 bytes http, 327680000000 bytes data
+wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource?count=65536
+Running 1m test @ http://10.0.1.3:8080/resource?count=65536
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     8.98ms    8.83ms  97.03ms   88.95%
+    Req/Sec     2.24k   221.99     3.06k    71.30%
+  Latency Distribution
+     50%    5.98ms
+     75%    8.71ms
+     90%   19.27ms
+     99%   48.92ms
+  1071664 requests in 1.00m, 65.54GB read
+Requests/sec:  17830.98
+Transfer/sec:      1.09GB
+weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/
+weighttp 0.3 - a lightweight and simple webserver benchmarking tool
+
+starting benchmark...
+spawning thread #1: 16 concurrent requests, 625000 total requests
+spawning thread #2: 16 concurrent requests, 625000 total requests
+spawning thread #3: 16 concurrent requests, 625000 total requests
+spawning thread #4: 16 concurrent requests, 625000 total requests
+spawning thread #5: 16 concurrent requests, 625000 total requests
+spawning thread #6: 16 concurrent requests, 625000 total requests
+spawning thread #7: 16 concurrent requests, 625000 total requests
+spawning thread #8: 16 concurrent requests, 625000 total requests
+progress:  10% done
+progress:  20% done
+progress:  30% done
+progress:  40% done
+progress:  50% done
+progress:  60% done
+progress:  70% done
+progress:  80% done
+progress:  90% done
+progress: 100% done
+
+finished in 82 sec, 590 millisec and 877 microsec, 60539 req/s, 16908 kbyte/s
+requests: 5000000 total, 5000000 started, 5000000 done, 5000000 succeeded, 0 failed, 0 errored
+status codes: 5000000 2xx, 0 3xx, 0 4xx, 0 5xx
+traffic: 1430000000 bytes total, 1360000000 bytes http, 70000000 bytes data
+wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/
+Running 1m test @ http://10.0.1.3:8080/
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     2.42ms    2.83ms  59.42ms   96.32%
+    Req/Sec     7.93k     0.95k   36.40k    75.84%
+  Latency Distribution
+     50%    1.81ms
+     75%    2.29ms
+     90%    3.20ms
+     99%   18.54ms
+  3793110 requests in 1.00m, 1.01GB read
+Requests/sec:  63009.60
+Transfer/sec:     17.19MB
+weighttp -n 5000000 -c 128 -t 8 -k http://10.0.1.3:8080/resource?count=16
+weighttp 0.3 - a lightweight and simple webserver benchmarking tool
+
+starting benchmark...
+spawning thread #1: 16 concurrent requests, 625000 total requests
+spawning thread #2: 16 concurrent requests, 625000 total requests
+spawning thread #3: 16 concurrent requests, 625000 total requests
+spawning thread #4: 16 concurrent requests, 625000 total requests
+spawning thread #5: 16 concurrent requests, 625000 total requests
+spawning thread #6: 16 concurrent requests, 625000 total requests
+spawning thread #7: 16 concurrent requests, 625000 total requests
+spawning thread #8: 16 concurrent requests, 625000 total requests
+progress:  10% done
+progress:  20% done
+progress:  30% done
+progress:  40% done
+progress:  50% done
+progress:  60% done
+progress:  70% done
+progress:  80% done
+progress:  90% done
+progress: 100% done
+
+finished in 31 sec, 272 millisec and 252 microsec, 159886 req/s, 22171 kbyte/s
+requests: 5000000 total, 5000000 started, 5000000 done, 5000000 succeeded, 0 failed, 0 errored
+status codes: 5000000 2xx, 0 3xx, 0 4xx, 0 5xx
+traffic: 710000000 bytes total, 630000000 bytes http, 80000000 bytes data
+wrk -c 128 -t 8 --latency -d 60 http://10.0.1.3:8080/resource?count=16
+Running 1m test @ http://10.0.1.3:8080/resource?count=16
+  8 threads and 128 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.08ms    2.18ms  32.28ms   96.42%
+    Req/Sec    21.88k     1.99k   26.45k    69.88%
+  Latency Distribution
+     50%  668.00us
+     75%    0.92ms
+     90%    1.19ms
+     99%   14.09ms
+  10467956 requests in 1.00m, 1.38GB read
+Requests/sec: 174175.26
+Transfer/sec:     23.59MB

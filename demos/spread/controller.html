@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+   <meta charset="utf-8" />
+
+   <link rel="shortcut icon" href="favicon.ico">
+
+   <title>UI Sync</title>
+
+   <!-- Include Flash WebSocket via Conditional Comment:
+        http://msdn.microsoft.com/en-us/library/ms537512%28v=vs.85%29.aspx -->
+   <!--[if lte IE 9]>
+      <script type="text/javascript">
+        WEB_SOCKET_SWF_LOCATION = "../../flashws/WebSocketMain.swf";
+      </script>
+      <script type="text/javascript" src="../../flashws/swfobject.js"></script>
+      <script type="text/javascript" src="../../flashws/web_socket.js"></script>
+   <![endif]-->
+
+   <link rel="stylesheet" href="css/controller.css">
+   <link rel="stylesheet" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css">
+
+   <script type="text/javascript" src="js/jquery.min.js"></script>
+   <script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+
+   <script>
+      AUTOBAHN_DEBUG = true;
+   </script>
+   <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+   <script type="text/javascript" src="js/controller.js"></script>
+</head>
+
+<body>
+   <header>
+      <div id="header_inner">
+         <div id="demo_title">
+            <span>Spreadsheet<span>
+         </div>
+         <a class="navbar-brand" href="">
+            <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+            <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+         </a>
+      </div>
+   </header>
+
+   <div class="demo_links">
+      <p>
+         Control some values in the <a href="/index.html">spreadsheet demo</a>. (This is one way, changes in the spreadsheet do not influence the slider postions.)
+      </p>
+      <div>
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/spread">
+            Source Code
+         </a>
+         <a href="http://crossbar.io">
+            Crossbar.io Homepage
+         </a>
+      </div>
+   </div>
+
+   <section id="demo_body">
+
+      <!--<div class="box box_left">-->
+      <div class="box box_centered">
+
+         <div class="box_heading">
+            Spreadsheet Controller
+         </div>
+
+            <div class="box_content">
+
+              <!--  <div>
+                  Controller Channel: <input type="text" id="controller-channel" size="6" maxlength="6" value="{{channel}}">
+                  <button id="controller-channel-switch" class="button">Switch</button>
+                  <button id="controller-channel-cancel" class="button">Cancel</button>
+               </div> -->
+
+               <div class="demo">
+
+                  <p class="ui-state-default ui-corner-all ui-helper-clearfix uisync_header">
+                     <span class="ui-icon ui-icon-volume-on uisync_header_content"></span>
+                     Isolated value
+                  </p>
+
+                  <div id="master"></div>
+
+                  <p class="ui-state-default ui-corner-all uisync_header">
+                     <span class="ui-icon ui-icon-signal uisync_header_content"></span>
+                     Set of values
+                  </p>
+
+                  <div id="eq">
+                     <span id="eq1">88</span>
+                     <span id="eq2">77</span>
+                     <span id="eq2">55</span>
+                     <span id="eq4">33</span>
+                     <span id="eq5">40</span>
+                     <span id="eq6">45</span>
+                     <span id="eq7">70</span>
+                  </div>
+
+               </div>
+
+               <div class="clearboth spacer_20"></div>
+
+               <div id="sliders_status_line" class="status_line">
+                  Status: <span class="statusline"></span>
+               </div>
+
+               <button id="helpButton" class="button">?</button>
+
+         </div>
+      </div>
+
+      <div class="clearboth"></div>
+
+   </section>
+
+   <!-- community widget iframe -->
+
+   <!-- general styles for the widget -->
+   <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+   <!-- local stylesheet -->
+   <!--     - ensures non-Display if nothing loads -->
+   <!--     - site-specific positioning of widget -->
+   <style>
+      #communityWidget.nonDisplay {
+         display: none;
+      }
+
+      #communityWidget {
+         top: 111px;
+         right: 0px;
+         box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+      }
+   </style>
+
+   <!-- IFrame itself -->
+   <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+   <!-- the parent page connecting code -->
+   <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+
+</body>
+</html>

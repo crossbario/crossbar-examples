@@ -1,0 +1,51 @@
+{
+   "workers": [
+      {
+         "options": {
+            "cpu_affinity": [
+               0
+            ], 
+            "pythonpath": [
+               ".."
+            ]
+         }, 
+         "transports": [
+            {
+               "endpoint": {
+                  "backlog": 2048, 
+                  "port": 8080, 
+                  "shared": true, 
+                  "type": "tcp"
+               }, 
+               "paths": {
+                  "/": {
+                     "directory": "..", 
+                     "type": "static"
+                  }, 
+                  "json": {
+                     "type": "json", 
+                     "value": {
+                        "param1": "foobar", 
+                        "param2": [
+                           1, 
+                           2, 
+                           3
+                        ], 
+                        "param3": {
+                           "awesome": true, 
+                           "nifty": "yes"
+                        }
+                     }
+                  }, 
+                  "resource": {
+                     "classname": "myresource.MyResource", 
+                     "type": "resource"
+                  }
+               }, 
+               "type": "web"
+            }
+         ], 
+         "type": "router"
+      }
+   ]
+}

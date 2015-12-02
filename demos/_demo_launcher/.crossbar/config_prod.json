@@ -11,6 +11,28 @@
                      "name": "anonymous",
                      "permissions": [
                         {
+                           "uri": "io.crossbar.demo.*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        },
+                        {
+                           "uri": "wamp.*",
+                           "subscribe": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "id": "io.crossbar.publictest",
+               "name": "realm1",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
                            "uri": "*",
                            "publish": true,
                            "subscribe": true,
@@ -22,8 +44,26 @@
                ]
             },
             {
-               "id": "io.crossbar.publictest",
-               "name": "realm1",
+               "id": "com.showroomdummy",
+               "name": "showroomdummy",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "id": "io.crossbar.iotcookbook",
+               "name": "iot_cookbook",
                "roles": [
                   {
                      "name": "anonymous",
@@ -100,6 +140,25 @@
                         }
                      }
                   },
+                  "call": {
+                      "type": "caller",
+                      "realm": "crossbardemo",
+                      "role": "anonymous",
+                      "options": {
+                          "debug": false
+                      }
+                  },
+                  "lp": {
+                     "type": "longpoll"
+                  },
+                  "wpadlab": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                  },
+                  "wpadeuro": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadeuro"
+                  },
                   "beatbox": {
                      "type": "static",
                      "directory": "../../beatbox"
@@ -142,15 +201,19 @@
                   },
                   "dashboard": {
                      "type": "static",
-                     "directory": "../../dashboard/board" 
+                     "directory": "../../dashboard/board"
                   },
                   "dashboardcontroller": {
                      "type": "static",
-                     "directory": "../../dashboard/controller" 
+                     "directory": "../../dashboard/controller"
                   },
                   "videocontrol": {
                      "type": "static",
-                     "directory": "../../videocontrol/web" 
+                     "directory": "../../videocontrol/web"
+                  },
+                  "spreadsheet": {
+                     "type": "static",
+                     "directory": "../../spread"
                   }
                }
             }

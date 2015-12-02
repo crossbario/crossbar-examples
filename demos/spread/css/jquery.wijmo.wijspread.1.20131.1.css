@@ -1,0 +1,233 @@
+/*
+ *
+ * SpreadJS Library 1.0.0
+ * http://wijmo.com/
+ *
+ * Copyright(c) GrapeCity, Inc.  All rights reserved.
+ *
+ * Licensed under the Wijmo Commercial License. Also available under the GNU GPL Version 3 license.
+ * licensing@wijmo.com
+ * http://wijmo.com/widgets/license/
+ *
+ *
+ **/
+/* SuperPanel
+----------------------------------*/
+.wijmo-wijsuperpanel
+{
+    overflow: hidden;
+    outline: none;
+    background-image: none
+}
+.wijmo-wijsuperpanel-statecontainer
+{
+    overflow: hidden;
+    position: relative;
+    zoom: 1
+}
+.wijmo-wijsuperpanel-contentwrapper
+{
+    position: absolute;
+    overflow: hidden
+}
+.wijmo-wijsuperpanel-hbarcontainer, .wijmo-wijsuperpanel-vbarcontainer
+{
+    font-size: 0;
+    border: 0
+}
+.wijmo-wijsuperpanel-templateouterwrapper
+{
+    position: relative;/*    overflow:auto; */zoom: 1
+}
+.wijmo-wijsuperpanel-vbarcontainer .ui-state-default, .wijmo-wijsuperpanel-hbarcontainer .ui-state-default
+{
+    width: 16px;
+    height: 16px;
+    position: absolute
+}
+.wijmo-wijsuperpanel .wijmo-wijsuperpanel-vbarcontainer
+{
+    position: absolute;
+    width: 18px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+    border: none
+}
+.wijmo-wijsuperpanel .wijmo-wijsuperpanel-hbarcontainer
+{
+    position: absolute;
+    height: 18px;
+    padding-left: 18px;
+    padding-right: 18px;
+    border: none
+}
+.wijmo-wijsuperpanel-handle
+{
+    position: absolute;
+    font-size: 0;
+    overflow: hidden
+}
+.wijmo-wijsuperpanel-handle *
+{
+    font-size: 0
+}
+.wijmo-wijsuperpanel-helper
+{
+    border-style: dotted;
+    background: transparent
+}
+.wijmo-wijsuperpanel-button
+{
+    position: absolute;
+    padding: 4px
+}
+.wijmo-wijsuperpanel .ui-icon-gripsmall-diagonal-se
+{
+    background: none;
+    width: 7px;
+    height: 7px
+}
+.wijmo-wijsuperpanel-hbar-buttonleft
+{
+    left: 0
+}
+.wijmo-wijsuperpanel-hbar-buttonright
+{
+    right: 0
+}
+.wijmo-wijsuperpanel-vbar-buttontop
+{
+    top: 0
+}
+.wijmo-wijsuperpanel-vbar-buttonbottom
+{
+    bottom: 0
+}div.ui-multiselect-filter input::-ms-clear
+{
+    display: none
+}
+.sheetTabEditor::-ms-clear
+{
+    display: none
+}
+.ui-multiselect
+{
+    padding: 2px 0 2px 4px;
+    text-align: left
+}
+.ui-multiselect span.ui-icon
+{
+    float: right
+}
+.ui-multiselect-single .ui-multiselect-checkboxes input
+{
+    position: absolute !important;
+    top: auto !important;
+    left: -9999px
+}
+.ui-multiselect-single .ui-multiselect-checkboxes label
+{
+    padding: 5px !important
+}
+.ui-multiselect-header
+{
+    margin-bottom: 3px;
+    padding: 3px 0 3px 4px;
+    width: 187px
+}
+.ui-multiselect-header ul
+{
+    font-size: .9em
+}
+.ui-multiselect-header ul li
+{
+    float: left;
+    padding: 0 10px 0 0
+}
+.ui-multiselect-header a
+{
+    text-decoration: none
+}
+.ui-multiselect-header a:hover
+{
+    text-decoration: underline
+}
+.ui-multiselect-header span.ui-icon
+{
+    float: left
+}
+.ui-multiselect-header li.ui-multiselect-close
+{
+    float: right;
+    text-align: right;
+    padding-right: 0
+}/*.ui-multiselect-menu { display:none; padding:3px; position:absolute; z-index:10000 }*/
+.ui-multiselect-menu
+{
+    padding: 3px
+}
+.ui-multiselect-checkboxes
+{
+    position: relative;/* fixes bug in IE6/7 *//*height: 150px;*//*width: 191px;*/}
+.ui-multiselect-superpanel
+{
+    position: relative;/* fixes bug in IE6/7 */height: 150px;
+    width: 191px
+}
+.ui-multiselect-checkboxes label
+{
+    cursor: default;
+    display: block;
+    border: 1px solid transparent;
+    padding: 3px 1px
+}
+.ui-multiselect-checkboxes label input
+{
+    position: relative;
+    top: 1px
+}
+.ui-multiselect-checkboxes li
+{
+    clear: both;
+    font-size: .9em;
+    padding-right: 3px
+}
+.ui-multiselect-checkboxes li.ui-multiselect-optgroup-label
+{
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid
+}
+.ui-multiselect-checkboxes li.ui-multiselect-optgroup-label a
+{
+    display: block;
+    padding: 3px;
+    margin: 1px 0;
+    text-decoration: none
+}/* remove label borders in IE6 because IE6 does not support transparency */
+* html .ui-multiselect-checkboxes label
+{
+    border: none
+}
+.ui-multiselect-hasfilter ul
+{
+    position: relative;
+    top: 2px
+}
+.ui-multiselect-filter
+{
+    float: left;
+    margin-right: 10px;
+    font-size: 11px
+}
+.ui-multiselect-filter input
+{
+    width: 100px;
+    font-size: 12px;
+    margin-left: 0;
+    height: 15px;
+    padding: 2px;
+    border: 1px solid #292929;
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: content-box
+}

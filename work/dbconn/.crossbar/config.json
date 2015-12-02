@@ -1,0 +1,91 @@
+{
+   "controller": {
+   },
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "name": "realm1",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": ".."
+                  },
+                  "ws": {
+                     "type": "websocket"
+                  }
+               }
+            }
+         ],
+         "connections": [
+            {
+               "id": "pgpool1",
+               "type": "postgresql.connection",
+               "host": "localhost",
+               "port": 5432,
+               "database": "cdc",
+               "user": "crossbar",
+               "password": "crossbar",
+               "options": {
+                  "min_connections": 5,
+                  "max_connections": 20
+               }
+            }
+         ],
+         "components": [
+            {
+               "type": "class",
+               "classname": "crossbar.adapter.postgres.PostgreSQLCallee",
+               "realm": "realm1",
+               "role": "anonymous",
+               "references": ["connection:pgpool1"],
+               "extra": {
+                  "foobar": 23
+               }
+            }
+         ]
+      },
+      {
+         "type": "container",
+         "options": {
+            "env": {
+               "inherit": true
+            }
+         },
+         "connections": [
+            {
+               "type": "postgresql.connection",
+               "host": "localhost",
+               "port": 5432,
+               "database": "cdc",
+               "user": "crossbar",
+               "password": "$CDCPASS"
+            }
+         ]
+      }
+   ]
+}

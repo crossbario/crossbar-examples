@@ -14,7 +14,7 @@
 //
 
 // configuration:
-var router = 'ws://192.168.1.134:8080/ws';
+var router = 'ws://192.168.1.136:8080/ws';
 var realm = 'iot_cookbook';
 var device_id = '123456';
 var device_port = '/dev/ttyATH0';

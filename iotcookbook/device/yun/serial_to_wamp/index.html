@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Arduino Yun Serial to WAMP Bridge Test</h1>
+
+      <p>
+         Open JavaScript console to seet output.
+      </p>
+      <p>
+         Edit JavaScript to fit your setup.
+      </p>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script>
+
+         var do_reset = null;
+
+         // We assume use of a Tinkerkit shield, hence the mapping
+         var tinker2pin = {
+            'O0': 11,
+            'O1': 10,
+            'O2': 9,
+            'O3': 6,
+            'O4': 5,
+            'O5': 3,
+            'I0': 0,
+            'I1': 1,
+            'I2': 2,
+            'I3': 3,
+            'I4': 4,
+            'I5': 5,
+         }
+
+         var base_uri = "io.crossbar.examples.yun.myyun.firmata.";
+
+         // the URL of the WAMP Router (Crossbar.io)
+         var wsuri;
+         var session = null;
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws"; // localhost for development
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws"; // URL of the Crossbar.io instance this is served from
+         }
+
+         // the WAMP connection to the Router
+         //
+         var connection = new autobahn.Connection({
+            url: wsuri, // replace with URL of WAMP router if this doesn't serve the file
+            realm: "iot_cookbook"
+         });
+
+         connection.onopen = function (new_session, details) {
+            console.log("Connected", details);
+            session = new_session;
+
+            // set pin to read + do analog read
+
+            session.call(base_uri + "set_mode", [tinker2pin['I0'], "in"]).then(
+               function () {
+                  console.log("ok, pin mode set");
+
+                  session.call(base_uri + "analog_read", [tinker2pin['I0']]).then(
+                     function (value) {
+                        console.log("got analog value", value);
+                     },
+                     function (err) {
+                        console.log(err);
+                     }
+                  );
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+
+            // set pin to write + do digital write
+
+            session.call(base_uri + "set_mode", [tinker2pin['O0'], "out"]).then(
+               function () {
+                  console.log("ok, pin mode set");
+
+                  var led_state = false;
+
+                  setInterval(function () {
+                     session.call(base_uri + "digital_write", [tinker2pin['O0'], led_state, false]).then(
+                        function () {
+                           console.log("set LED state", led_state);
+                        },
+                        function (err) {
+                           console.log(err);
+                        }
+                     );
+                     led_state = !led_state;
+                  }, 500);
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+
+            // set mode to watch
+
+            session.call(base_uri + "set_mode", [tinker2pin['I1'], "watch"]).then(
+               function () {
+                  console.log("ok, pin mode set");
+
+                  // you can read from a watched pin!
+                  setInterval(function() {
+
+                     session.call(base_uri + "analog_read", [tinker2pin['I0']]).then(
+                        function (value) {
+                           console.log("got analog value", value);
+                        },
+                        function (err) {
+                           console.log(err);
+                        }
+                     );
+                  }, 2000);
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+
+            // receive changes from analog watched pins
+            function on_analog_changed (args) {
+               var pin = args[0];
+               var old_value = args[1];
+               var new_value = args[2];
+               console.log(pin, old_value, new_value);
+            }
+            session.subscribe(base_uri + "on_analog_changed", on_analog_changed);
+
+            function reset () {
+               session.call(base_uri + "reset");
+            }
+
+            do_reset = reset;
+
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost", reason, details);
+            session = null;
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

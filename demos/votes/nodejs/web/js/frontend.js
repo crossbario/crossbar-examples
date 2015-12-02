@@ -2,18 +2,38 @@
 //
 var wsuri;
 if (document.location.origin == "file://") {
-   wsuri = "ws://127.0.0.1:8080/ws";
+   wsuri = "ws://127.0.0.1:8080";
 
 } else {
    wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
                document.location.host + "/ws";
 }
 
+var httpUri;
+
+if (document.location.origin == "file://") {
+   httpUri = "http://127.0.0.1:8080/lp";
+
+} else {
+   httpUri = (document.location.protocol === "http:" ? "http:" : "https:") + "//" +
+               document.location.host + "/lp";
+}
+
 
 // the WAMP connection to the Router
 //
 var connection = new autobahn.Connection({
-   url: wsuri,
+   // url: wsuri,
+   transports: [
+      {
+         'type': 'websocket',
+         'url': wsuri
+      },
+      {
+         'type': 'longpoll',
+         'url': httpUri
+      }
+   ],
    realm: "crossbardemo"
 });
 

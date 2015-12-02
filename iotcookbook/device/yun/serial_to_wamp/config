@@ -1,0 +1,3 @@
+routerUrl: https://demo.crossbar.io
+realm: iot_cookbook
+deviceId: my_yun

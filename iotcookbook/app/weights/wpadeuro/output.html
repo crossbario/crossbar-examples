@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <link rel="shortcut icon" href="favicon.ico">
+      <title>Wegihing Output</title>
+      <link rel="stylesheet" href="jqueryui/css/ui-lightness/jquery-ui-1.8.23.custom.css">
+      <link rel="stylesheet" href="css/output.css">
+   </head>
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Weighing</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+
+      </header>
+      <div class="demo_links">
+         <p>
+            See output of the <a href="/index.html">weighing app</a>
+         </p>
+         <div>
+            <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/spread">Source Code</a>
+            <a href="http://crossbar.io">
+               Crossbar.io Homepage
+            </a>
+         </div>
+      </div>
+
+      <div id="demo_body">
+         
+
+         <div>
+            <div class="smallGaugeContainer">
+               <div id="g0" class="smallGauge"></div>
+            </div>
+
+            <div class="smallGaugeContainer">
+               <div id="g1" class="smallGauge"></div>
+            </div>
+             <div class="clearAll"></div>             
+         </div>
+
+
+
+         <div>
+            <div class="bigGaugeContainer">
+               <div id="g2" class="bigGauge"></div>
+            </div>
+
+            <div class="bigGaugeContainer">
+               <div id="g3" class="bigGauge"></div>
+            </div>
+             <div class="clearAll"></div> 
+         </div>
+
+         <div>
+            <span id="sumAlarm"></span>
+         </div>
+
+         <div class="status_line noContainer">
+            Status: <span class="statusline"></span>
+         </div>
+
+
+      </div>
+
+
+
+
+      <!-- jQuery -->
+      <script type="text/javascript" src="js/jquery.min.js"></script>
+      <script type="text/javascript" src="jqueryui/js/jquery-ui-1.8.23.custom.min.js"></script>
+
+      <!-- JustGage -->
+      <script src="js/raphael.2.1.0.min.js"></script>
+      <script src="js/justgage.1.0.1.min.js"></script>
+
+      <!-- AutobahnJS -->
+      <script>
+         AUTOBAHN_DEBUG = true;
+      </script>
+       <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <!-- Demo code -->
+      <script src="js/output.js"></script>
+
+
+      <!-- community widget iframe -->
+
+      <!-- general styles for the widget -->
+      <link rel="stylesheet" type="text/css" href="https://demo.crossbar.io/clandeckwidget/css/parent.css" />
+
+      <!-- local stylesheet -->
+      <!--     - ensures non-Display if nothing loads -->
+      <!--     - site-specific positioning of widget -->
+      <style>
+         #communityWidget.nonDisplay {
+            display: none;
+         }
+
+         #communityWidget {
+            top: 111px;
+            right: 0px;
+            box-shadow: 0 0 12px 2px rgba(0, 0, 0, 0.4);
+         }
+      </style>
+
+      <!-- IFrame itself -->
+      <iframe id="communityWidget" class="nonDisplay" src="https://demo.crossbar.io/clandeckwidget/index.html" frameborder="0"></iframe>
+
+      <!-- the parent page connecting code -->
+      <script src="https://demo.crossbar.io/clandeckwidget/js/parent.js"></script>
+
+   </body>
+</html>

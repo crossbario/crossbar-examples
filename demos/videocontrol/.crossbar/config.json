@@ -41,6 +41,9 @@
                   },
                   "ws": {
                      "type": "websocket"
+                  },
+                  "lp": {
+                     "type": "longpoll"
                   }
                }
             }

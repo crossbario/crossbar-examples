@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Crossbar.io REST Bridge Demo: Webhook Role</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <p>
+         Crossbar.io is configured to forward raw HTTP requests to this topic.
+      </p>
+      <p>
+         To publish using 'curl' do
+      </p>
+      <pre>
+curl -H "Content-Type: text/plain" \
+   -d 'fresh webhooks!' \
+   http://127.0.0.1:8080/webhook
+      </pre>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         // the URL of the WAMP Router (Crossbar.io)
+         var wsuri;
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         connection.onopen = function (session) {
+
+            console.log("Connected");
+
+            function onevent (args, kwargs) {
+               console.log("Got event:", args, kwargs);
+            }
+
+            session.subscribe('com.myapp.topic1', onevent);
+         };
+
+         connection.onclose = function () {
+            console.log("Connection lost", arguments);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
