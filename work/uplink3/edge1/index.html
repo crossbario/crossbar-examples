@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
    <body>
-      <h1>Edge 2</h1>
+      <h1>Edge 1</h1>
       <p>Open JavaScript console to watch output.</p>
       <script>AUTOBAHN_DEBUG = false;</script>
-      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script src="autobahn.min.js"></script>
       <script>
          if (document.location.origin == "file://") {
             wsuri = "ws://127.0.0.1:8080/ws";
@@ -29,7 +29,7 @@
             if (true) {
                var counter = 0;
                var t1 = setInterval(function () {
-                  session.publish('com.example.onhello', ['Hello edge2 client ' + counter]);
+                  session.publish('com.example.onhello', ['Hello edge1 client ' + counter]);
                   counter += 1;
                   console.log(counter);
                }, 1000);
