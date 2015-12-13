@@ -22,17 +22,29 @@
          connection.onopen = function (session, details) {
             console.log("Connected");
 
-            session.subscribe("com.example.onhello", function (args, kwargs) {
-               console.log("com.example.onhello", args, kwargs);
+            session.subscribe("com.example.onhello", function (args, kwargs, details) {
+
+               console.log(
+                  "RECEIVED:  topic='" + details.topic + "', args='" + args + "'" +
+                  ", publication=" + details.publication + ", publisher=" + details.publisher);
+
             }).then(function () { console.log("subscribed"); }, function (err) { console.log(err); });
 
             if (true) {
                var counter = 0;
                var t1 = setInterval(function () {
-                  session.publish('com.example.onhello', ['Hello edge1 client ' + counter]);
+                  var topic = 'com.example.onhello';
+                  var args = ['Edge 1 (' + counter + ')'];
+                  session.publish(topic, args, null, {acknowledge: true, disclose_me: true}).then(
+                     function (pub) {
+                        console.log("PUBLISHED: topic='" + topic + "', args='" + args + "', publication=" + pub.id);
+                     },
+                     function (err) {
+                        console.log(err);
+                     }
+                  );
                   counter += 1;
-                  console.log(counter);
-               }, 1000);
+               }, 5000);
             }
          };
 
