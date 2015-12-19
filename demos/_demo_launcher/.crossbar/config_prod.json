@@ -82,35 +82,10 @@
          ],
          "transports": [
             {
-               "type": "websocket",
+               "type": "web",
                "endpoint": {
                   "type": "tcp",
                   "port": 8080
-               }
-            },
-            {
-               "type": "web",
-               "endpoint": {
-                  "type": "tcp",
-                  "port": 80
-               },
-               "paths": {
-                  "/": {
-                     "type": "redirect",
-                     "url": "https://demo.crossbar.io"
-                  }
-               }
-            },
-             {
-               "type": "web",
-               "endpoint": {
-                  "type": "tcp",
-                  "port": 443,
-                  "tls": {
-                     "key": "/home/ec2-user/cbdemo_keys/demo_crossbar_io_key.pem",
-                     "certificate": "/home/ec2-user/cbdemo_keys/demo_crossbar_io_cert.pem",
-                     "dhparam": "/home/ec2-user/cbdemo_keys/dhparam.pem"
-                  }
                },
                "paths": {
                   "/": {
@@ -119,10 +94,18 @@
                   },
                   "ws": {
                      "type": "websocket",
-                     "url": "wss://demo.crossbar.io/ws",
+                     "cookie": {
+                        "name": "cbdemo",
+                        "length": 24,
+                        "max_age": 86400,
+                        "store": {
+                           "type": "file",
+                           "filename": "cookie.dat"
+                        }
+                     },
+                     "serializers": ["cbor", "msgpack", "json"],
                      "options": {
                         "enable_webstatus": true,
-                        "enable_hixie76": false,
                         "max_frame_size": 1048576,
                         "max_message_size": 1048576,
                         "auto_fragment_size": 65536,
