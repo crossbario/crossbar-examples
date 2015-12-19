@@ -82,6 +82,14 @@
          ],
          "transports": [
             {
+               "type": "websocket",
+               "serializers": ["cbor", "msgpack", "json"],
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               }
+            },
+            {
                "type": "web",
                "endpoint": {
                   "type": "tcp",
