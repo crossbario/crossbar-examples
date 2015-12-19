@@ -1,6 +1,5 @@
 start:
-	NODE_PATH=$HOME/scm/crossbario/crossbarexamples/demos/_demo_launcher/web/node_modules
-crossbar start --config config_prod.json
+	env NODE_PATH=${HOME}/scm/crossbario/crossbarexamples/demos/_demo_launcher/web/node_modules crossbar start --config config_prod.json
 
 stop:
 	crossbar stop
