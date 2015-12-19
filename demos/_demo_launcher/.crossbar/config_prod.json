@@ -128,7 +128,7 @@
                   },
                   "ws": {
                      "type": "websocket",
-                     "url": "wss://cbdemo-us-west-1.crossbar.io",
+                     "url": "wss://demo.crossbar.io",
                      "cookie": {
                         "name": "cbdemo",
                         "length": 24,
@@ -174,67 +174,67 @@
                   },
                   "wpadlab": {
                      "type": "static",
-                     "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                     "directory": "../../../../iotcookbook/app/weights/wpadlab/web"
                   },
                   "wpadeuro": {
                      "type": "static",
-                     "directory": "../../../iotcookbook/app/weights/wpadeuro"
+                     "directory": "../../../../iotcookbook/app/weights/wpadeuro"
                   },
                   "beatbox": {
                      "type": "static",
-                     "directory": "../../beatbox"
+                     "directory": "../../../beatbox"
                   },
                   "chat": {
                      "type": "static",
-                     "directory": "../../chat"
+                     "directory": "../../../chat"
                   },
                   "colorpicker": {
                      "type": "static",
-                     "directory": "../../colorpicker"
+                     "directory": "../../../colorpicker"
                   },
                   "editform": {
                      "type": "static",
-                     "directory": "../../editform/web"
+                     "directory": "../../../editform/web"
                   },
                   "gauges": {
                      "type": "static",
-                     "directory": "../../gauges"
+                     "directory": "../../../gauges"
                   },
                   "notification": {
                      "type": "static",
-                     "directory": "../../notification"
+                     "directory": "../../../notification"
                   },
                   "pubsub": {
                      "type": "static",
-                     "directory": "../../pubsub"
+                     "directory": "../../../pubsub"
                   },
                   "sliders": {
                      "type": "static",
-                     "directory": "../../sliders"
+                     "directory": "../../../sliders"
                   },
                   "votes": {
                      "type": "static",
-                     "directory": "../../votes/nodejs/web"
+                     "directory": "../../../votes/nodejs/web"
                   },
                   "visitors_counter": {
                      "type": "static",
-                     "directory": "../../visitors_counter"
+                     "directory": "../../../visitors_counter"
                   },
                   "dashboard": {
                      "type": "static",
-                     "directory": "../../dashboard/board"
+                     "directory": "../../../dashboard/board"
                   },
                   "dashboardcontroller": {
                      "type": "static",
-                     "directory": "../../dashboard/controller"
+                     "directory": "../../../dashboard/controller"
                   },
                   "videocontrol": {
                      "type": "static",
-                     "directory": "../../videocontrol/web"
+                     "directory": "../../../videocontrol/web"
                   },
                   "spreadsheet": {
                      "type": "static",
-                     "directory": "../../spread"
+                     "directory": "../../../spread"
                   }
                }
             }
@@ -245,9 +245,9 @@
          "executable": "node",
          "arguments": ["backend.js"],
          "options": {
-            "workdir": "../../votes/nodejs/node",
+            "workdir": "../../../votes/nodejs/node",
             "watch": {
-               "directories": ["../../votes/nodejs/node"],
+               "directories": ["../../../votes/nodejs/node"],
                "action": "restart"
             },
             "env": {
@@ -260,9 +260,9 @@
          "executable": "node",
          "arguments": ["editform_backend.js"],
          "options": {
-            "workdir": "../../editform/node",
+            "workdir": "../../../editform/node",
             "watch": {
-               "directories": ["../../editform/node"],
+               "directories": ["../../../editform/node"],
                "action": "restart"
             },
             "env": {
@@ -275,9 +275,9 @@
          "executable": "node",
          "arguments": ["backend.js"],
          "options": {
-            "workdir": "../../visitors_counter/js",
+            "workdir": "../../../visitors_counter/js",
             "watch": {
-               "directories": ["../../visitors_counter/js"],
+               "directories": ["../../../visitors_counter/js"],
                "action": "restart"
             },
             "env": {

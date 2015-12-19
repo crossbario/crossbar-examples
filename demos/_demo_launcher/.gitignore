@@ -1,3 +1,5 @@
 .crossbar/log
 *.pid
 
+.crossbar/cookie.dat
+letsencrypt.log
