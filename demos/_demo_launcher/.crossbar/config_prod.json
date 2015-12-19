@@ -89,8 +89,8 @@
                },
                "paths": {
                   "/": {
-                     "type": "redirect",
-                     "url": "https://cbdemo-us-west-1.crossbar.io"
+                     "type": "static",
+                     "directory": "../letsencrypt"
                   }
                }
             },
