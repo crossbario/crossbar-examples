@@ -211,6 +211,9 @@
             "watch": {
                "directories": ["../../votes/nodejs/node"],
                "action": "restart"
+            },
+            "env": {
+               "inherit": ["NODE_PATH"]
             }
          }
       },
@@ -223,6 +226,9 @@
             "watch": {
                "directories": ["../../editform/node"],
                "action": "restart"
+            },
+            "env": {
+               "inherit": ["NODE_PATH"]
             }
          }
       },
@@ -235,6 +241,9 @@
             "watch": {
                "directories": ["../../visitors_counter/js"],
                "action": "restart"
+            },
+            "env": {
+               "inherit": ["NODE_PATH"]
             }
          }
       }
