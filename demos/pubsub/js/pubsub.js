@@ -86,7 +86,7 @@ function switchChannel(newChannelId) {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   $(".statusline").innerHTML(status);
 };
 
 var connection = null;
@@ -119,9 +119,9 @@ function connect() {
       setupDemo();
 
       if (details.x_cb_node_id) {
-         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at <pre>" + wsuri + "</pre>");
       } else {
-         updateStatusline("Connected to " + wsuri);
+         updateStatusline("Connected to <pre>" + wsuri + "</pre>");
       }
 
       // establish prefix to use for shorter URL notation
