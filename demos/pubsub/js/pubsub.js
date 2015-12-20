@@ -119,9 +119,9 @@ function connect() {
       setupDemo();
 
       if (details.x_cb_node_id) {
-         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at <pre>" + wsuri + "</pre>");
+         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
       } else {
-         updateStatusline("Connected to <pre>" + wsuri + "</pre>");
+         updateStatusline("Connected to " + wsuri);
       }
 
       // establish prefix to use for shorter URL notation
