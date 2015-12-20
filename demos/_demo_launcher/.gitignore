@@ -3,3 +3,4 @@
 
 .crossbar/cookie.dat
 letsencrypt.log
+.crossbar/*.pem
