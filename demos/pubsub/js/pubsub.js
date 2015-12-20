@@ -110,7 +110,7 @@ function connect() {
    });
 
 
-   connection.onopen = function (session) {
+   connection.onopen = function (session, details) {
 
       sess = session;
 
@@ -118,7 +118,11 @@ function connect() {
 
       setupDemo();
 
-      updateStatusline("Connected to " + wsuri);
+      if (details.x_cb_node_id) {
+         updateStatusline("Connected to node " + details.x_cb_node_id + " at " + wsuri);
+      } else {
+         updateStatusline("Connected to " + wsuri);
+      }
 
       // establish prefix to use for shorter URL notation
       // sess.prefix("api", channelBaseUri);
@@ -132,9 +136,6 @@ function connect() {
       if(typeof(afterAuth) !== "undefined" ) {
          afterAuth(); // only exists in colorpicker demo
       }
-
-
-
    };
 
    connection.onclose = function() {
