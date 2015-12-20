@@ -108,10 +108,10 @@
                   "type": "tcp",
                   "port": 443,
                   "tls": {
-                     "key": "/etc/letsencrypt/live/cbdemo-us-west-1.crossbar.io/privkey.pem",
-                     "certificate": "/etc/letsencrypt/live/cbdemo-us-west-1.crossbar.io/cert.pem",
-                     "chain_certificates": ["/etc/letsencrypt/live/cbdemo-us-west-1.crossbar.io/chain.pem"],
-                     "dhparam": "/etc/letsencrypt/live/cbdemo-us-west-1.crossbar.io/dhparam.pem",
+                     "key": "privkey.pem",
+                     "certificate": "cert.pem",
+                     "chain_certificates": ["chain.pem"],
+                     "dhparam": "dhparam.pem",
                      "ciphers": "ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA"
                   }
                },
