@@ -119,7 +119,7 @@ function connect() {
       setupDemo();
 
       if (details.x_cb_node_id) {
-         updateStatusline("Connected to node " + details.x_cb_node_id + " at " + wsuri);
+         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
       } else {
          updateStatusline("Connected to " + wsuri);
       }
@@ -141,6 +141,7 @@ function connect() {
    connection.onclose = function() {
       sess = null;
       console.log("connection closed ", arguments);
+      updateStatusline("Disconnected");
    }
 
    connection.open();
