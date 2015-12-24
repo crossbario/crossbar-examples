@@ -35,11 +35,12 @@ from autobahn.wamp import auth
 class MyBackend(ApplicationSession):
 
     def onConnect(self):
-        self.join(self.config.realm, [u'tls'], u'admin')
+        # with TLS client certificate based authentication,
+        # providing a WAMP authid is optional
+        self.join(self.config.realm, [u'tls'])
 
     @inlineCallbacks
     def onJoin(self, details):
-
         print("MyBackend: session joined - {}".format(details))
 
         def add2(x, y):
