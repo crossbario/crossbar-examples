@@ -1,0 +1,1 @@
+# WAMP-Ticket Static Authentication
