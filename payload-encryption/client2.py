@@ -35,16 +35,26 @@ from autobahn.wamp.keyring import KeyRing, Key
 from sample_keys import RESPONDER_PRIV, ORIGINATOR_PUB
 
 
-class Component(ApplicationSession):
+class Component2(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
         print("joined")
 
+        # setup application payload end-to-end encryption ("WAMP-cryptobox")
+
+        # this works the same as in Component1, but the keys
+        # loaded is different.
         keyring = KeyRing()
+
+        # since we want to act as "callee" (and "subscriber"), we are thus a "responder"
+        # and responders need the responder private key. however, we don't act as "callers"
+        # (or "publishers"), and hence can get away with the public key for the originator only!
         key = Key(responder_priv=RESPONDER_PRIV, originator_pub=ORIGINATOR_PUB)
         keyring.set_key(u'com.myapp.encrypted.', key)
         self.set_keyring(keyring)
+
+        # now start the testing ..
 
         def add2(a, b, details=None):
             print("call received: a={}, b={}, details={}".format(a, b, details))
@@ -74,4 +84,4 @@ class Component(ApplicationSession):
 
 if __name__ == '__main__':
     runner = ApplicationRunner(u"ws://127.0.0.1:8080", u"realm1")
-    runner.run(Component)
+    runner.run(Component2)
