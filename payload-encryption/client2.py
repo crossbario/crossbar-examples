@@ -28,57 +28,41 @@ from __future__ import print_function
 
 from twisted.internet.defer import inlineCallbacks
 
-from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
-from autobahn.wamp.types import PublishOptions, CallOptions
+from autobahn.wamp.types import SubscribeOptions, RegisterOptions
 from autobahn.wamp.keyring import KeyRing, Key
 
-from sample_keys import ORIGINATOR_PRIV, RESPONDER_PUB
+from sample_keys import RESPONDER_PRIV, ORIGINATOR_PUB
 
 
 class Component(ApplicationSession):
-
-    NUM = 3
 
     @inlineCallbacks
     def onJoin(self, details):
         print("joined")
 
         keyring = KeyRing()
-        key = Key(originator_priv=ORIGINATOR_PRIV, responder_pub=RESPONDER_PUB)
+        key = Key(responder_priv=RESPONDER_PRIV, originator_pub=ORIGINATOR_PUB)
         keyring.set_key(u'com.myapp.encrypted.', key)
         self.set_keyring(keyring)
 
-        yield self._test_rpc()
-        yield self._test_pubsub()
+        def add2(a, b, details=None):
+            print("call received: a={}, b={}, details={}".format(a, b, details))
+            return a + b
 
-        print("done!")
-        self.leave()
+        options = RegisterOptions(details_arg='details')
+        reg1 = yield self.register(add2, u'com.myapp.add2', options=options)
+        reg2 = yield self.register(add2, u'com.myapp.encrypted.add2', options=options)
 
-    @inlineCallbacks
-    def _test_rpc(self):
-        options = CallOptions(disclose_me=True)
-        counter = 1
-        while counter <= self.NUM:
-            res = yield self.call(u'com.myapp.add2', 23, counter, options=options)
-            print("called: {}".format(res))
-            res = yield self.call(u'com.myapp.encrypted.add2', 23, counter, options=options)
-            print("called: {}".format(res))
-            yield sleep(1)
-            counter += 1
 
-    @inlineCallbacks
-    def _test_pubsub(self):
-        options = PublishOptions(acknowledge=True, exclude_me=False, disclose_me=True)
-        counter = 1
-        while counter <= self.NUM:
-            msg = u"Counter is at {}".format(counter)
-            pub = yield self.publish(u'com.myapp.hello', msg, options=options)
-            print("published: {}".format(pub))
-            pub = yield self.publish(u'com.myapp.encrypted.hello', msg, options=options)
-            print("published: {}".format(pub))
-            yield sleep(1)
-            counter += 1
+        def on_hello(msg, details=None):
+            print("event received: msg='{}', details={}".format(msg, details))
+
+        options = SubscribeOptions(details_arg='details')
+        sub1 = yield self.subscribe(on_hello, u'com.myapp.hello', options=options)
+        sub2 = yield self.subscribe(on_hello, u'com.myapp.encrypted.hello', options=options)
+
+        print("ready!")
 
     def onLeave(self, details):
         self.disconnect()
