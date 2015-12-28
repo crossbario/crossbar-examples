@@ -1,0 +1,29 @@
+{
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "allow-by-default": true
+                        }
+                    ],
+                    "trace": true
+                }
+            ],
+            "transports": [
+                {
+                    "type": "websocket",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "serializers": ["json"]
+                }
+            ]
+        }
+    ]
+}
