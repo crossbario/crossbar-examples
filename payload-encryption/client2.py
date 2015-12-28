@@ -44,7 +44,7 @@ class Component2(ApplicationSession):
 
         # setup application payload end-to-end encryption ("WAMP-cryptobox")
         # when a keyring was set, end-to-end encryption is performed automatically
-        if False:
+        if True:
             keyring = KeyRing(PRIVKEY)
         else:
             # this works the same as in Component1, but the keys

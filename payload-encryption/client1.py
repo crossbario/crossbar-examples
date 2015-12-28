@@ -47,9 +47,15 @@ class Component1(ApplicationSession):
 
         # setup application payload end-to-end encryption ("WAMP-cryptobox")
         # when a keyring was set, end-to-end encryption is performed automatically
-        if False:
+        if True:
+            # this is simplest keyring: for all URIs, use one key for both
+            # originators and responders.
             keyring = KeyRing(PRIVKEY)
         else:
+            # this is a more specialized keyring: we only make URIs starting
+            # with "com.myapp.encrypted." encrypted, and only with private key
+            # for originator (= this session, as it is "calling" and "publishing")
+
             # we need to have a keyring first. create an empty one.
             keyring = KeyRing()
 
@@ -69,9 +75,9 @@ class Component1(ApplicationSession):
 
         # now start the testing ..
 
-        #yield self._test_rpc()
+        yield self._test_rpc()
         yield self._test_rpc_errors()
-        #yield self._test_pubsub()
+        yield self._test_pubsub()
 
         print("done!")
         self.leave()
@@ -104,13 +110,12 @@ class Component1(ApplicationSession):
                      (u'com.myapp.encrypted.failme', True)]:
             try:
                 res = yield self.call(proc[0], proc[1], options=options)
-                print("{} call with {} result: {}".format(proc[0], proc[1], res))
-            except ApplicationError as e:
-                print(type(e))
-                print("{} call with {} error: {}".format(proc[0], proc[1], e))
+                print("{} call with {} - result: {}".format(proc[0], proc[1], res))
+            except Exception as e:
+                print("{} call with {} - error: {}".format(proc[0], proc[1], e))
 
     @inlineCallbacks
-    def _test_pubsub(self):
+    def _test_pubsub(self, delay=None):
         options = PublishOptions(acknowledge=True, exclude_me=False, disclose_me=True)
         counter = 1
         while counter <= self.NUM:
@@ -119,7 +124,9 @@ class Component1(ApplicationSession):
             print("published: {}".format(pub))
             pub = yield self.publish(u'com.myapp.encrypted.hello', msg, options=options)
             print("published: {}".format(pub))
-            yield sleep(1)
+
+            if delay:
+                yield sleep(1)
             counter += 1
 
     def onLeave(self, details):
