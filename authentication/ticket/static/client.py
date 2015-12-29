@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.
+##  Copyright (C) Tavendo GmbH and/or collaborators. All rights reserved.
 ##
 ##  Redistribution and use in source and binary forms, with or without
 ##  modification, are permitted provided that the following conditions are met:
@@ -36,25 +36,25 @@ from autobahn.wamp.types import PublishOptions
 
 
 PRINCIPAL = u'joe'
-TICKET = u'secret!!!'
+PRINCIPAL_TICKET = u'secret!!!'
 
 
 class ClientSession(ApplicationSession):
 
    def onConnect(self):
-      print("connected. joining realm {}, performing Ticket-based authentication as principal {} ...".format(self.config.realm, PRINCIPAL))
+      print("Client session connected. Starting WAMP-Ticket authentication on realm '{}' as principal '{}' ..".format(self.config.realm, PRINCIPAL))
       self.join(self.config.realm, [u"ticket"], PRINCIPAL)
 
    def onChallenge(self, challenge):
-      print("authentication challenge received: {}".format(challenge))
       if challenge.method == u"ticket":
-         return TICKET
+         print("WAMP-Ticket challenge received: {}".format(challenge))
+         return PRINCIPAL_TICKET
       else:
-         raise Exception("don't know how to compute challenge for authmethod {}".format(challenge.method))
+         raise Exception("Invalid authmethod {}".format(challenge.method))
 
    @inlineCallbacks
    def onJoin(self, details):
-      print("ok, session joined!")
+      print("Client session joined: {}".format(details))
 
       ## call a procedure we are allowed to call (so this should succeed)
       ##
@@ -69,7 +69,7 @@ class ClientSession(ApplicationSession):
       try:
          reg = yield self.register(lambda x, y: x * y, u'com.example.mul2')
       except Exception as e:
-         print("registration failed - this is expected: {}".format(e))
+         print("registration failed (this is expected!) {}".format(e))
 
       ## publish to a couple of topics we are allowed to publish to.
       ##
@@ -91,15 +91,16 @@ class ClientSession(ApplicationSession):
             yield self.publish(topic, "hello", options = PublishOptions(acknowledge = True))
             print("ok, event published to topic {}".format(topic))
          except Exception as e:
-            print("publication to topic {} failed - this is expected: {}".format(topic, e))
+            print("publication to topic {} failed (this is expected!) {}".format(topic, e))
 
       self.leave()
 
    def onLeave(self, details):
-      print("onLeave: {}".format(details))
+      print("Client session left: {}".format(details))
       self.disconnect()
 
    def onDisconnect(self):
+      print("Client session disconnected.")
       reactor.stop()
 
 
@@ -107,5 +108,5 @@ if __name__ == '__main__':
 
    from autobahn.twisted.wamp import ApplicationRunner
 
-   runner = ApplicationRunner(url = "ws://localhost:8080/ws", realm = "realm1")
+   runner = ApplicationRunner(url=u'ws://localhost:8080/ws', realm=u'realm1')
    runner.run(ClientSession)
