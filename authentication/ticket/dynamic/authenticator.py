@@ -62,6 +62,7 @@ class AuthenticatorSession(ApplicationSession):
          ticket = details['ticket']
          print("WAMP-Ticket dynamic authenticator invoked: realm='{}', authid='{}', ticket='{}'".format(realm, authid, ticket))
          pprint_json(details)
+
          if authid in PRINCIPALS_DB:
             if ticket == PRINCIPALS_DB[authid]['ticket']:
                return PRINCIPALS_DB[authid]['role']

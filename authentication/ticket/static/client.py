@@ -36,7 +36,7 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.types import PublishOptions
 
 if 'MYTICKET' in os.environ and len(sys.argv) > 1:
-   # principal
+   # principal from command line, ticket from environment variable
    PRINCIPAL = sys.argv[1].decode('utf8')
    PRINCIPAL_TICKET = os.environ['MYTICKET'].decode('utf8')
 else:

@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.
+##  Copyright (C) Tavendo GmbH and/or collaborators. All rights reserved.
 ##
 ##  Redistribution and use in source and binary forms, with or without
 ##  modification, are permitted provided that the following conditions are met:
@@ -32,46 +32,50 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 
+# our user "database"
+USERDB = {
+   'joe': {
+      # these are required:
+      'secret': 'secret2',  # the secret/password to be used
+      'role': 'frontend'    # the auth role to be assigned when authentication succeeds
+   },
+   'hans': {
+      'authid': 'ID09125',  # assign a different auth ID during authentication
+      'secret': '123456',
+      'role': 'frontend'
+   },
+   'peter': {
+      # use salted passwords
 
-class MyAuthenticator(ApplicationSession):
-
-   USERDB = {
-      'joe': {
-         # these are required:
-         'secret': 'secret2',  # the secret/password to be used
-         'role': 'frontend'    # the auth role to be assigned when authentication succeeds
-      },
-      'hans': {
-         'authid': 'ID09125',  # assign a different auth ID during authentication
-         'secret': '123456',
-         'role': 'frontend'
-      },
-      'peter': {
-         # use salted passwords
-
-         # autobahn.wamp.auth.derive_key(secret.encode('utf8'), salt.encode('utf8')).decode('ascii')
-         'secret': 'prq7+YkJ1/KlW1X0YczMHw==',
-         'role': 'frontend',
-         'salt': 'salt123',
-         'iterations': 100,
-         'keylen': 16
-      }
+      # autobahn.wamp.auth.derive_key(secret.encode('utf8'), salt.encode('utf8')).decode('ascii')
+      'secret': 'prq7+YkJ1/KlW1X0YczMHw==',
+      'role': 'frontend',
+      'salt': 'salt123',
+      'iterations': 100,
+      'keylen': 16
    }
+}
+
+from crossbar.common.checkconfig import pprint_json
+
+
+class AuthenticatorSession(ApplicationSession):
 
    @inlineCallbacks
    def onJoin(self, details):
 
       def authenticate(realm, authid, details):
-         print("authenticate called: realm = '{}', authid = '{}', details = '{}'".format(realm, authid, details))
+         print("WAMP-CRA dynamic authenticator invoked: realm='{}', authid='{}'".format(realm, authid))
+         pprint_json(details)
 
-         if authid in self.USERDB:
+         if authid in USERDB:
             # return a dictionary with authentication information ...
-            return self.USERDB[authid]
+            return USERDB[authid]
          else:
-            raise ApplicationError("com.example.no_such_user", "could not authenticate session - no such user {}".format(authid))
+            raise ApplicationError(u'com.example.no_such_user', 'could not authenticate session - no such user {}'.format(authid))
 
       try:
-         yield self.register(authenticate, 'com.example.authenticate')
-         print("custom WAMP-CRA authenticator registered")
+         yield self.register(authenticate, u'com.example.authenticate')
+         print("WAMP-CRA dynamic authenticator registered!")
       except Exception as e:
-         print("could not register custom WAMP-CRA authenticator: {0}".format(e))
+         print("Failed to register dynamic authenticator: {0}".format(e))

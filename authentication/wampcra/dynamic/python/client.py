@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.
+##  Copyright (C) Tavendo GmbH and/or collaborators. All rights reserved.
 ##
 ##  Redistribution and use in source and binary forms, with or without
 ##  modification, are permitted provided that the following conditions are met:
@@ -26,52 +26,55 @@
 ##
 ###############################################################################
 
+import os
 import sys
 
-from twisted.python import log
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
-from twisted.internet.endpoints import clientFromString
 
-from autobahn.twisted import wamp, websocket
-from autobahn.wamp import types
-from autobahn.wamp import auth
+from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.types import PublishOptions
+from autobahn.wamp import auth
+
+if 'MYSECRET' in os.environ and len(sys.argv) > 1:
+   # user from command line, secret from environment variable
+   USER = sys.argv[1].decode('utf8')
+   USER_SECRET = os.environ['MYSECRET'].decode('utf8')
+else:
+   # less good: user, including secret hard-coded
+   USER = u'peter'
+   USER_SECRET = u'secret1'
 
 
-PASSWORDS = {
-   u'peter': u'secret1',
-   u'joe': u'secret2'
-}
-
-USER = u'peter'
-#USER = u'joe'
-
-
-class MyFrontendComponent(wamp.ApplicationSession):
+class ClientSession(ApplicationSession):
 
    def onConnect(self):
-      print("connected. joining realm {} as user {} ...".format(self.config.realm, USER))
+      print("Client session connected. Starting WAMP-CRA authentication on realm '{}' as user '{}' ..".format(self.config.realm, USER))
       self.join(self.config.realm, [u"wampcra"], USER)
 
    def onChallenge(self, challenge):
-      print("authentication challenge received: {}".format(challenge))
       if challenge.method == u"wampcra":
+         print("WAMP-CRA challenge received: {}".format(challenge))
+
          if u'salt' in challenge.extra:
-            key = auth.derive_key(PASSWORDS[USER].encode('utf8'),
-               challenge.extra['salt'].encode('utf8'),
-               challenge.extra.get('iterations', None),
-               challenge.extra.get('keylen', None))
+            # salted secret
+            key = auth.derive_key(USER_SECRET,
+                                  challenge.extra['salt'],
+                                  challenge.extra['iterations'],
+                                  challenge.extra['keylen'])
          else:
-            key = PASSWORDS[USER].encode('utf8')
-         signature = auth.compute_wcs(key, challenge.extra['challenge'].encode('utf8'))
+            # plain, unsalted secret
+            key = USER_SECRET
+
+         signature = auth.compute_wcs(key, challenge.extra['challenge'])
          return signature.decode('ascii')
+
       else:
-         raise Exception("don't know how to compute challenge for authmethod {}".format(challenge.method))
+         raise Exception("Invalid authmethod {}".format(challenge.method))
 
    @inlineCallbacks
    def onJoin(self, details):
-      print("ok, session joined!")
+      print("Client session joined: {}".format(details))
 
       ## call a procedure we are allowed to call (so this should succeed)
       ##
@@ -88,29 +91,36 @@ class MyFrontendComponent(wamp.ApplicationSession):
       except Exception as e:
          print("registration failed - this is expected: {}".format(e))
 
-      ## (try to) publish to some topics
+      ## publish to a couple of topics we are allowed to publish to.
       ##
-      topics = [
+      for topic in [
          u'com.example.topic1',
-         u'com.example.topic2',
-         u'com.foobar.topic1',
-         u'com.foobar.topic2'
-      ]
-
-      for topic in topics:
+         u'com.foobar.topic1']:
          try:
-            yield self.publish(topic, options = PublishOptions(acknowledge = True))
+            yield self.publish(topic, "hello", options = PublishOptions(acknowledge = True))
             print("ok, event published to topic {}".format(topic))
          except Exception as e:
             print("publication to topic {} failed: {}".format(topic, e))
 
+      ## (try to) publish to a couple of topics we are not allowed to publish to (so this should fail)
+      ##
+      for topic in [
+         u'com.example.topic2',
+         u'com.foobar.topic2']:
+         try:
+            yield self.publish(topic, "hello", options = PublishOptions(acknowledge = True))
+            print("ok, event published to topic {}".format(topic))
+         except Exception as e:
+            print("publication to topic {} failed - this is expected: {}".format(topic, e))
+
       self.leave()
 
    def onLeave(self, details):
-      print("onLeave: {}".format(details))
+      print("Client session left: {}".format(details))
       self.disconnect()
 
    def onDisconnect(self):
+      print("Client session disconnected.")
       reactor.stop()
 
 
@@ -118,5 +128,5 @@ if __name__ == '__main__':
 
    from autobahn.twisted.wamp import ApplicationRunner
 
-   runner = ApplicationRunner(url = "ws://localhost:8080/ws", realm = "realm1")
-   runner.run(MyFrontendComponent)
+   runner = ApplicationRunner(url=u'ws://localhost:8080/ws', realm=u'realm1')
+   runner.run(ClientSession)

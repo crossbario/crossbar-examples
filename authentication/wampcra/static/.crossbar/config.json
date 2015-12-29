@@ -1,6 +1,4 @@
 {
-   "controller": {
-   },
    "workers": [
       {
          "type": "router",
@@ -79,6 +77,10 @@
                                  "salt": "salt123",
                                  "iterations": 100,
                                  "keylen": 16
+                              },
+                              "homer": {
+                                 "secret": "${MYSECRET}",
+                                 "role": "frontend"
                               }
                            }
                         }

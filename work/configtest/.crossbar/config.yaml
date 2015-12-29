@@ -1,0 +1,20 @@
+controller:
+    # configuration of node controller process
+    id: 'node301'
+
+workers:
+    # list of worker processes, eg a router worker
+    - type: "router"
+      realms:
+          # list of realms run by the router
+          - name: "realm1"
+            roles:
+                - name: "anonymous"
+                  allow-by-default: true
+      transports:
+          # list of transport the router is listening on
+          - type: "websocket"
+            endpoint:
+                type: "tcp"
+                port: 9000
+
