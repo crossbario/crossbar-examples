@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.
+##  Copyright (C) Tavendo GmbH and/or collaborators. All rights reserved.
 ##
 ##  Redistribution and use in source and binary forms, with or without
 ##  modification, are permitted provided that the following conditions are met:
@@ -26,30 +26,40 @@
 ##
 ###############################################################################
 
+import os
+
 from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 
-class AuthenticatorSession(ApplicationSession):
-
-   PRINCIPALS_DB = {
-      'joe': {
-         'ticket': 'secret!!!',
-         'role': 'frontend'
-      }
+# our principal "database"
+PRINCIPALS_DB = {
+   u"joe": {
+      u"ticket": u"secret!!!",
+      u"role": u"frontend"
+   },
+   u"client1": {
+      u"ticket": u"123sekret",
+      u"role": u"frontend"
+   },
+   u"client2": {
+      u"ticket": os.environ.get('MYTICKET', '').decode('utf8'),
+      u"role": u"frontend"
    }
+}
+
+class AuthenticatorSession(ApplicationSession):
 
    @inlineCallbacks
    def onJoin(self, details):
 
       def authenticate(realm, authid, ticket):
-         print("MyAuthenticator.authenticate called: realm = '{}', authid = '{}', ticket = '{}'".format(realm, authid, ticket))
-
-         if authid in self.PRINCIPALS_DB:
-            if ticket == self.PRINCIPALS_DB[authid]['ticket']:
-               return self.PRINCIPALS_DB[authid]['role']
+         print("WAMP-Ticket dynamic authenticator invoked: realm='{}', authid='{}', ticket='{}'".format(realm, authid, ticket))
+         if authid in PRINCIPALS_DB:
+            if ticket == PRINCIPALS_DB[authid]['ticket']:
+               return PRINCIPALS_DB[authid]['role']
             else:
                raise ApplicationError("com.example.invalid_ticket", "could not authenticate session - invalid ticket '{}' for principal {}".format(ticket, authid))
          else:
@@ -57,6 +67,6 @@ class AuthenticatorSession(ApplicationSession):
 
       try:
          yield self.register(authenticate, 'com.example.authenticate')
-         print("custom Ticket-based authenticator registered")
+         print("WAMP-Ticket dynamic authenticator registered!")
       except Exception as e:
-         print("could not register custom Ticket-based authenticator: {0}".format(e))
+         print("Failed to register dynamic authenticator: {0}".format(e))

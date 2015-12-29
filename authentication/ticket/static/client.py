@@ -46,8 +46,6 @@ else:
 
 print("Principal '{}' using ticket '{}'".format(PRINCIPAL, PRINCIPAL_TICKET))
 
-print(type(PRINCIPAL), type(PRINCIPAL_TICKET))
-
 
 class ClientSession(ApplicationSession):
 
