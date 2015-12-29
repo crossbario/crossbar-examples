@@ -1,6 +1,6 @@
 # WAMP-Ticket Static Authentication
 
-There are two roles configured: `frontend` and `backend`. The AutobahnJS based Web "UI", as well as the AutobahnPython based [client](client.py) both connect under role `frontend`, while the AutobahnPython based [backend](backend.py) connect under role `backend`.
+WAMP-Ticket authentication is a simple cleartext challenge scheme. A client connects to a realm under some `authid` and requests `authmethod = ticket`. Crossbar.io will "challenge" the client, asking for a ticket. The client send the ticket, and Crossbar.io will lookup the ticket in the [node configuration](.crossbar/config.json).
 
 ## How to test
 
@@ -61,6 +61,34 @@ Static WAMP-Ticket is activated in Crossbar.io by configuring a respective `auth
 
 With `type = static`, a `principals` element is required: a dictionary mapping `authid` to a dictionary with two elements: `ticket`, the secret being shared, and `role`, the `authrole` that will be assigned in case of successful authentication.
 
+The `authrole` the client is assigned determines the permissions the client has. E.g. consider this part of the [node configuration](.crossbar/config.json):
+
+```json
+"realms": [
+   {
+      "name": "realm1",
+      "roles": [
+         {
+            "name": "backend",
+            "permissions": [
+            ...
+            ]
+         },
+         {
+            "name": "frontend",
+            "permissions": [
+            ...
+            ]
+         }
+      ]
+   }
+]
+```
+
+There are two roles configured: `frontend` and `backend`. The AutobahnJS based Web "UI" [index.html](web/index.html), as well as the AutobahnPython based [client](client.py) both connect under role `frontend`, while the AutobahnPython based [backend](backend.py) connect under role `backend`.
+
+### Authentication Errors
+
 When the `authid` the client announces isn't known, you get
 
 ```console
@@ -103,11 +131,15 @@ MYTICKET=geheim crossbar start
 
 You will see a log line
 
+```console
 2015-12-29T14:50:41+0100 [Controller   5765] Configuration 'auth.ticket.principals["client2"].ticket' set from environment variable $MYTICKET
+```
 
 that indicates an configuration item was indeed set from an environment variable. If the environment variable is missing, you get
 
+```console
 2015-12-29T14:50:14+0100 [Controller   5754] Environment variable $MYTICKET not set - needed in configuration 'auth.ticket.principals["client2"].ticket'
+```
 
 Now start the client in a second terminal:
 
