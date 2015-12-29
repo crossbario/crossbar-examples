@@ -60,3 +60,49 @@ Static WAMP-Ticket is activated in Crossbar.io by configuring a respective `auth
 ```
 
 With `type = static`, a `principals` element is required: a dictionary mapping `authid` to a dictionary with two elements: `ticket`, the secret being shared, and `role`, the `authrole` that will be assigned in case of successful authentication.
+
+When the `authid` the client announces isn't known, you get
+
+```console
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/authentication/ticket/static$ python client.py
+2015-12-29T13:14:42+0100 Client session connected. Starting WAMP-Ticket authentication on realm 'realm1' as principal 'client1' ..
+2015-12-29T13:14:42+0100 Client session left: CloseDetails(reason = wamp.error.not_authorized, message = 'no principal with authid 'client1' in principal database'')
+2015-12-29T13:14:42+0100 Client session disconnected.
+2015-12-29T13:14:42+0100 Main loop terminated.
+```
+
+When the `authid` is known, but the ticket the client presented is invalid, you get
+
+```console
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/authentication/ticket/static$ python client.py
+2015-12-29T13:16:24+0100 Client session connected. Starting WAMP-Ticket authentication on realm 'realm1' as principal 'client1' ..
+2015-12-29T13:16:24+0100 WAMP-Ticket challenge received: Challenge(method = ticket, extra = {})
+2015-12-29T13:16:24+0100 Client session left: CloseDetails(reason = wamp.error.not_authorized, message = 'WAMP-Ticket ticket is invalid'')
+2015-12-29T13:16:24+0100 Client session disconnected.
+2015-12-29T13:16:24+0100 Main loop terminated.
+```
+
+### Using environment variables
+
+The `ticket` field contains sensitive information, and you might want to prefer holding that value in an environment variable. This is possible by defining a principal like this:
+
+```json
+"client2": {
+   "ticket": "${MYTICKET}",
+   "role": "frontend"
+}
+```
+
+A client with a value for `ticket` that matches the pattern `${..}` will be interpreted as an environment variable, and Crossbar.io tries to set the configuration item from this environment variable.
+
+To this this variant with the example here, start Crossbar.io in a first terminal:
+
+```console
+MYTICKET=geheim crossbar start
+```
+
+and start the client in a second terminal:
+
+```console
+MYTICKET=geheim python client.py client2
+```

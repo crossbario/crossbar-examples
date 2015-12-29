@@ -70,6 +70,14 @@
                               "joe": {
                                  "ticket": "secret!!!",
                                  "role": "frontend"
+                              },
+                              "client1": {
+                                 "ticket": "123sekret",
+                                 "role": "frontend"
+                              },
+                              "client2": {
+                                 "ticket": "${MYTICKET}",
+                                 "role": "frontend"
                               }
                            }
                         }

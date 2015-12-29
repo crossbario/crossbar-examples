@@ -26,6 +26,7 @@
 ##
 ###############################################################################
 
+import os
 import sys
 
 from twisted.internet import reactor
@@ -34,9 +35,18 @@ from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.types import PublishOptions
 
+if 'MYTICKET' in os.environ and len(sys.argv) > 1:
+   # principal
+   PRINCIPAL = sys.argv[1].decode('utf8')
+   PRINCIPAL_TICKET = os.environ['MYTICKET'].decode('utf8')
+else:
+   # less good: principal, including secret ticket hard-coded
+   PRINCIPAL = u'client1'
+   PRINCIPAL_TICKET = u'123sekret'
 
-PRINCIPAL = u'joe'
-PRINCIPAL_TICKET = u'secret!!!'
+print("Principal '{}' using ticket '{}'".format(PRINCIPAL, PRINCIPAL_TICKET))
+
+print(type(PRINCIPAL), type(PRINCIPAL_TICKET))
 
 
 class ClientSession(ApplicationSession):
