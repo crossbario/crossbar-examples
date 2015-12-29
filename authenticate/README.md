@@ -24,12 +24,12 @@ and working at the **transport level**:
 1. **WAMP-Cookie** (`cookie`) [auto](cookie), a HTTP cookie-based authentication mechanism
 2. **WAMP-TLS** (`tls`) - [static](tls) / [dynamic](tlsdynamic), TLS client certificate based authentication using x509 certificates
 
-### Static, Internal and Dynamic Authentication
+### Static, Dynamic and Database Authentication
 
-Further, authentication methods in Crossbar.io are available in different flavors, differing in where the authentication credentials are stored (server-side):
+Authentication methods in Crossbar.io are available in different flavors, differing in where the authentication credentials are stored (server-side):
 
-1. **static**: the authentication credentials are configured statically in the Crossbar.io node configuration file. This is only feasible where the set of clients to be authenticated is small and fixed.
-2. **dynamic**: the authentication credentials are stored outside of Crossbar.io, and the router will call into a user provided WAMP procedure during authentication. This is the most flexible variant.
+1. **static**: the authentication credentials are configured statically in the Crossbar.io node configuration file. This is only feasible when the set of clients to be authenticated is small and fixed.
+2. **dynamic**: the authentication credentials are stored outside of Crossbar.io and the router will call into a user provided WAMP procedure during authentication. This is the most flexible variant.
 3. **database**: the authentication credentials are stored inside Crossbar.io in a secure, transactional database. The Crossbar.io credential store can be managed via the node management API, and the credential database spans all authentication methods.
 
 > Note: *database authentication* is not yet available. It will be added to the different mechanisms gradually.
