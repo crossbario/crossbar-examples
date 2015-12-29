@@ -66,8 +66,11 @@ class ClientSession(ApplicationSession):
             # plain, unsalted secret
             key = USER_SECRET
 
+         # compute signature for challenge, using the key
          signature = auth.compute_wcs(key, challenge.extra['challenge'])
-         return signature.decode('ascii')
+
+         # return the signature to the router for verification
+         return signature
 
       else:
          raise Exception("Invalid authmethod {}".format(challenge.method))
