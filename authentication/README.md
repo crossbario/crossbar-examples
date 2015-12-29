@@ -15,14 +15,14 @@ Authentication mechanisms in WAMP and Crossbar.io can be distinguished regarding
 
 Notably, working at the **session level**:
 
-1. **WAMP-Ticket** (`ticket`) - [static](ticket) / [dynamic](ticketdynamic), a shared secret ("ticket") based authentication mechanism
-2. **WAMP-CRA** (`wampcra`) - [static](wampcra) / [dynamic](wampcradynamic), a shared secret, challenge-response scheme supporting salting
-3. **WAMP-Cryptosign** (`cryptosign`) - [static](cryptosign) / [dynamic](cryptosigndynamic), a public-private key based authentication scheme using Curve25519 elliptic curve cryptography
+1. **WAMP-Ticket** (`ticket`) - [static](ticket/static) / [dynamic](ticket/dynamic), a shared secret ("ticket") based authentication mechanism
+2. **WAMP-CRA** (`wampcra`) - [static](wampcra/static) / [dynamic](wampcra/dynamic), a shared secret, challenge-response scheme supporting salting
+3. **WAMP-Cryptosign** (`cryptosign`) - [static](cryptosign/static) / [dynamic](cryptosign/dynamic), a public-private key based authentication scheme using Curve25519 elliptic curve cryptography
 
 and working at the **transport level**:
 
-1. **WAMP-Cookie** (`cookie`) [auto](cookie), a HTTP cookie-based authentication mechanism
-2. **WAMP-TLS** (`tls`) - [static](tls) / [dynamic](tlsdynamic), TLS client certificate based authentication using x509 certificates
+1. **WAMP-Cookie** (`cookie`) [cookie](cookie), a HTTP cookie-based authentication mechanism
+2. **WAMP-TLS** (`tls`) - [static](tls/static) / [dynamic](tls/dynamic), TLS client certificate based authentication using x509 certificates
 
 ### Static, Dynamic and Database Authentication
 
