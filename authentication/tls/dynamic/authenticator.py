@@ -65,7 +65,14 @@ class MyAuthenticator(ApplicationSession):
          else:
             print("MyAuthenticator.authenticate: client accepted.")
             return {
+               # here, we are returning the client certificate subject CN, but
+               # we could also use the certificate fingerprint as authid or remap
+               # the fingerprint to yet some other authid
                u'authid': subject_cn,
+
+               # here, we set the authrole to a fixed value "backend". we could also
+               # do a database lookup here, or parse the client cert CN is both an
+               # authid and authrole (eg consider CN="node301#backend")
                u'role': u'backend'
             }
 
