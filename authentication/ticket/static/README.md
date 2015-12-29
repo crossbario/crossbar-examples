@@ -101,8 +101,28 @@ To this this variant with the example here, start Crossbar.io in a first termina
 MYTICKET=geheim crossbar start
 ```
 
-and start the client in a second terminal:
+You will see a log line
+
+2015-12-29T14:50:41+0100 [Controller   5765] Configuration 'auth.ticket.principals["client2"].ticket' set from environment variable $MYTICKET
+
+that indicates an configuration item was indeed set from an environment variable. If the environment variable is missing, you get
+
+2015-12-29T14:50:14+0100 [Controller   5754] Environment variable $MYTICKET not set - needed in configuration 'auth.ticket.principals["client2"].ticket'
+
+Now start the client in a second terminal:
 
 ```console
 MYTICKET=geheim python client.py client2
+```
+
+You should see the client successfully authenticate:
+
+```console
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/authentication/ticket/static$ MYTICKET=geheim python client.py client2
+Principal 'client2' using ticket 'geheim'
+(<type 'unicode'>, <type 'unicode'>)
+2015-12-29T14:52:26+0100 Client session connected. Starting WAMP-Ticket authentication on realm 'realm1' as principal 'client2' ..
+2015-12-29T14:52:26+0100 WAMP-Ticket challenge received: Challenge(method = ticket, extra = {})
+2015-12-29T14:52:26+0100 Client session joined: SessionDetails(realm = realm1, session = 1274456341345787, authid = client2, authrole = frontend, authmethod = ticket)
+...
 ```
