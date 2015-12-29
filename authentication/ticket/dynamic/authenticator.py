@@ -50,13 +50,18 @@ PRINCIPALS_DB = {
    }
 }
 
+from crossbar.common.checkconfig import pprint_json
+
+
 class AuthenticatorSession(ApplicationSession):
 
    @inlineCallbacks
    def onJoin(self, details):
 
-      def authenticate(realm, authid, ticket):
+      def authenticate(realm, authid, details):
+         ticket = details['ticket']
          print("WAMP-Ticket dynamic authenticator invoked: realm='{}', authid='{}', ticket='{}'".format(realm, authid, ticket))
+         pprint_json(details)
          if authid in PRINCIPALS_DB:
             if ticket == PRINCIPALS_DB[authid]['ticket']:
                return PRINCIPALS_DB[authid]['role']

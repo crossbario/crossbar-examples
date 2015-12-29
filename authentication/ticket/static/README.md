@@ -1,6 +1,6 @@
 # WAMP-Ticket Static Authentication
 
-**WAMP-Ticket static authentication** is a simple cleartext challenge scheme. A client connects to a realm under some `authid` and requests `authmethod = ticket`. Crossbar.io will "challenge" the client, asking for a ticket. The client sends the ticket, and Crossbar.io will lookup the ticket in the node configuration.
+**WAMP-Ticket static authentication** is a simple cleartext challenge scheme. A client connects to a realm under some `authid` and requests `authmethod = ticket`. Crossbar.io will "challenge" the client, asking for a ticket. The client sends the ticket, and **Crossbar.io will lookup the ticket in the node configuration**.
 
 ## How to test
 

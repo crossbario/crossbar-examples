@@ -29,3 +29,36 @@ Principal 'client1' using ticket '123sekret'
 ```
 
 As the log shows, the client was authenticating using `authmethod = ticket` as `authid = client1` and joined the realm under role `authrole = frontend`.
+
+The Crossbar.io log is more interesting though:
+
+```console
+...
+2015-12-29T16:04:41+0100 [Router       7067] WAMP-Ticket dynamic authenticator invoked: realm='realm1', authid='client1', ticket='123sekret'
+2015-12-29T16:04:41+0100 [Router       7067] {
+2015-12-29T16:04:41+0100 [Router       7067]    "ticket": "123sekret",
+2015-12-29T16:04:41+0100 [Router       7067]    "session": 508715025212448,
+2015-12-29T16:04:41+0100 [Router       7067]    "transport": {
+2015-12-29T16:04:41+0100 [Router       7067]       "cbtid": null,
+2015-12-29T16:04:41+0100 [Router       7067]       "protocol": "wamp.2.msgpack.batched",
+2015-12-29T16:04:41+0100 [Router       7067]       "http_headers_received": {
+2015-12-29T16:04:41+0100 [Router       7067]          "upgrade": "WebSocket",
+2015-12-29T16:04:41+0100 [Router       7067]          "sec-websocket-version": "13",
+2015-12-29T16:04:41+0100 [Router       7067]          "sec-websocket-protocol": "wamp.2.msgpack.batched,wamp.2.msgpack,wamp.2.json.batched,wamp.2.json",
+2015-12-29T16:04:41+0100 [Router       7067]          "host": "localhost:8080",
+2015-12-29T16:04:41+0100 [Router       7067]          "sec-websocket-key": "xWszwpILt1/lMXVdGmIkfw==",
+2015-12-29T16:04:41+0100 [Router       7067]          "user-agent": "AutobahnPython/0.11.0",
+2015-12-29T16:04:41+0100 [Router       7067]          "connection": "Upgrade",
+2015-12-29T16:04:41+0100 [Router       7067]          "pragma": "no-cache",
+2015-12-29T16:04:41+0100 [Router       7067]          "cache-control": "no-cache"
+2015-12-29T16:04:41+0100 [Router       7067]       },
+2015-12-29T16:04:41+0100 [Router       7067]       "peer": "tcp4:127.0.0.1:17185",
+2015-12-29T16:04:41+0100 [Router       7067]       "http_headers_sent": {},
+2015-12-29T16:04:41+0100 [Router       7067]       "type": "websocket",
+2015-12-29T16:04:41+0100 [Router       7067]       "client_cert": null
+2015-12-29T16:04:41+0100 [Router       7067]    }
+2015-12-29T16:04:41+0100 [Router       7067] }
+...
+```
+
+As can be seen, the dynamic authenticator receives a whole set of information about the connecting client, the actual ticket presented by the client (`"ticket": "123sekret"`) being only one of them.
