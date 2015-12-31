@@ -1,0 +1,77 @@
+{
+   "workers": [
+      {
+         "type": "router",
+         "options": {
+            "pythonpath": [".."]
+         },
+         "realms": [
+            {
+               "name": "realm-auth",
+               "roles": [
+                  {
+                     "name": "authenticator",
+                     "permissions": [
+                        {
+                           "uri": "com.example.authenticate",
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "name": "realm-user1",
+               "roles": [
+                  {
+                     "name": "user",
+                     "allow-by-default": true
+                  }
+               ]
+            },
+            {
+               "name": "realm-user2",
+               "roles": [
+                  {
+                     "name": "user",
+                     "allow-by-default": true
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": "../web"
+                  },
+                  "ws": {
+                     "type": "websocket",
+                     "auth": {
+                        "ticket": {
+                           "type": "dynamic",
+                           "authenticator": "com.example.authenticate",
+                           "authenticator-realm": "realm-auth"
+                        }
+                     }
+                  }
+               }
+            }
+         ],
+         "components": [
+            {
+               "type": "class",
+               "classname": "authenticator.AuthenticatorSession",
+               "realm": "realm-auth",
+               "role": "authenticator"
+            }
+         ]
+      }
+   ]
+}
