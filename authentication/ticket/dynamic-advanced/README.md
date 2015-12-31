@@ -16,6 +16,19 @@ In some situations, this can be a pain, and it is possible to invoke dynamic aut
 }
 ```
 
+Here, we have configured WAMP-Ticket with a dynamic authenticator by not only providing the URI of the procedure to be called ("com.example.authenticate"), but also the realm on which to invoke said procedure ("realm-auth").
+
+The authenticator component lives on the "realm-auth" realm:
+
+```json
+{
+   "type": "class",
+   "classname": "authenticator.AuthenticatorSession",
+   "realm": "realm-auth",
+   "role": "authenticator"
+}
+```
+
 Here is how to test with this example. Start Crossbar.io in a first terminal. Then start the client in a second terminal:
 
 ```console
