@@ -44,12 +44,11 @@
                         "type": "tcp",
                         "port": 8080,
                         "tls": {
-                            "certificate": "server.crt",
                             "key": "server.key",
-                            "dhparam": "dhparam",
+                            "certificate": "server.crt",
                             "ca_certificates": [
-                                "intermediate.cert.pem",
-                                "ca.cert.pem"
+                                "ca.cert.pem",
+                                "intermediate.cert.pem"
                             ]
                         }
                     },
@@ -94,11 +93,11 @@
                             "port": 8080,
                             "tls": {
                                 "hostname": "localhost",
-                                "certificate": "client.crt",
                                 "key": "client.key",
+                                "certificate": "client.crt",
                                 "ca_certificates": [
-                                    "intermediate.cert.pem",
-                                    "ca.cert.pem"
+                                    "ca.cert.pem",
+                                    "intermediate.cert.pem"
                                 ]
                             }
                         },

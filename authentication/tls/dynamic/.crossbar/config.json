@@ -40,11 +40,11 @@
                         "type": "tcp",
                         "port": 8080,
                         "tls": {
-                            "key": "server.key",
                             "certificate": "server.crt",
+                            "key": "server.key",
                             "ca_certificates": [
-                                "intermediate.cert.pem",
-                                "ca.cert.pem"
+                                "ca.cert.pem",
+                                "intermediate.cert.pem"
                             ],
                             "dhparam": "dhparam.pem"
                         }
@@ -96,8 +96,8 @@
                                 "key": "client.key",
                                 "certificate": "client.crt",
                                 "ca_certificates": [
-                                    "intermediate.cert.pem",
-                                    "ca.cert.pem"
+                                    "ca.cert.pem",
+                                    "intermediate.cert.pem"
                                 ]
                             }
                         },
