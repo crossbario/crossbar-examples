@@ -37,7 +37,7 @@ class BackendSession(ApplicationSession):
     def onJoin(self, details):
       print("Backend session joined: {}".format(details))
 
-      def onhello(msg):
+      def onhello(msg=None):
          print("event received on {}: {}".format(topic, msg))
 
       ## SUBSCRIBE to a few topics we are allowed to subscribe to.

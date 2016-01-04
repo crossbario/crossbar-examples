@@ -3,6 +3,18 @@
 This uses a client-side TLS certificate to verify the connection to a server.
 
 
+
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/authentication/tls/static$ openssl x509 -noout -in .crossbar/client.crt -fingerprint -sha1
+SHA1 Fingerprint=B6:E5:E6:F2:2A:86:DB:3C:DC:9F:51:42:58:39:9B:14:92:5D:A1:EB
+
+
+
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/authentication/tls/static$ openssl x509 -in .crossbar/client.crt -outform der | openssl sha1
+(stdin)= b6e5e6f22a86db3cdc9f514258399b14925da1eb
+
+
+
+
 Note that we're still
 
 

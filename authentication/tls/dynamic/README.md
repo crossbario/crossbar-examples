@@ -157,3 +157,77 @@ and uses the following configuration attributes relevant to TLS authentication
 * `transport.tls.key`: The client's private key.
 * `transport.tls.certificate`: The client's certificate - this will be used to authenticate the client!
 * `transport.tls.ca_certificates`: If this attribute is present, the server cert will be verified against this list of CA certs (instead of being verified using the platform trust anchors - which is the default when this attribute is missing).
+
+
+## Testing with curl
+
+To test with curl:
+
+```console
+oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/authentication/tls/dynamic$ curl --cacert .crossbar/ca.cert.pem --cert .crossbar/client.crt --key .crossbar/client.key https://localhost:8080 | wc -l
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 13165  100 13165    0     0   588k      0 --:--:-- --:--:-- --:--:--  584k
+116
+```
+
+If you leave out the `--cacert`, curl no longer accepts the server certificate:
+
+
+```console
+oberstet@thinkpad-t430s:~$ curl -v https://localhost:8080
+* Rebuilt URL to: https://localhost:8080/
+* Hostname was NOT found in DNS cache
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 8080 (#0)
+* successfully set certificate verify locations:
+*   CAfile: none
+  CApath: /etc/ssl/certs
+* SSLv3, TLS handshake, Client hello (1):
+* SSLv3, TLS handshake, Server hello (2):
+* SSLv3, TLS handshake, CERT (11):
+* SSLv3, TLS alert, Server hello (2):
+* SSL certificate problem: self signed certificate in certificate chain
+* Closing connection 0
+curl: (60) SSL certificate problem: self signed certificate in certificate chain
+More details here: http://curl.haxx.se/docs/sslcerts.html
+
+curl performs SSL certificate verification by default, using a "bundle"
+ of Certificate Authority (CA) public keys (CA certs). If the default
+ bundle file isn't adequate, you can specify an alternate file
+ using the --cacert option.
+If this HTTPS server uses a certificate signed by a CA represented in
+ the bundle, the certificate verification probably failed due to a
+ problem with the certificate (it might be expired, or the name might
+ not match the domain name in the URL).
+If you'd like to turn off curl's verification of the certificate, use
+ the -k (or --insecure) option.
+```
+
+If you leave out the `--cert` and `--key` to specify the client certificate to announce and key to use, Crossbar.io will deny the client:
+
+```console
+oberstet@thinkpad-t430s:~$ curl --insecure -v https://localhost:8080
+* Rebuilt URL to: https://localhost:8080/
+* Hostname was NOT found in DNS cache
+*   Trying 127.0.0.1...
+* Connected to localhost (127.0.0.1) port 8080 (#0)
+* successfully set certificate verify locations:
+*   CAfile: none
+  CApath: /etc/ssl/certs
+* SSLv3, TLS handshake, Client hello (1):
+* SSLv3, TLS handshake, Server hello (2):
+* SSLv3, TLS handshake, CERT (11):
+* SSLv3, TLS handshake, Server key exchange (12):
+* SSLv3, TLS handshake, Request CERT (13):
+* SSLv3, TLS handshake, Server finished (14):
+* SSLv3, TLS handshake, CERT (11):
+* SSLv3, TLS handshake, Client key exchange (16):
+* SSLv3, TLS change cipher, Client hello (1):
+* SSLv3, TLS handshake, Finished (20):
+* SSLv3, TLS alert, Server hello (2):
+* error:14094410:SSL routines:SSL3_READ_BYTES:sslv3 alert handshake failure
+* Closing connection 0
+curl: (35) error:14094410:SSL routines:SSL3_READ_BYTES:sslv3 alert handshake failure
+oberstet@thinkpad-t430s:~$
+```

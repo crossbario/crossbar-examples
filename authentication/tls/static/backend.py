@@ -1,6 +1,6 @@
 ###############################################################################
 ##
-##  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.
+##  Copyright (C) Tavendo GmbH and/or collaborators. All rights reserved.
 ##
 ##  Redistribution and use in source and binary forms, with or without
 ##  modification, are permitted provided that the following conditions are met:
@@ -32,53 +32,23 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp import auth
 
 
-class BackendSession(ApplicationSession):
+class MyBackend(ApplicationSession):
 
     def onConnect(self):
-        self.join(self.config.realm, [u'wampcra'], u'admin')
-
-    def onChallenge(self, msg):
-        assert msg.method == u'wampcra'
-        signature = auth.compute_wcs(
-            u"seekrit".encode('utf8'),
-            msg.extra['challenge'].encode('utf8'),
-        )
-        return signature.decode('ascii')
+        # with TLS client certificate based authentication,
+        # providing a WAMP authid is optional
+        self.join(self.config.realm, [u'tls'])
 
     @inlineCallbacks
     def onJoin(self, details):
+        print("MyBackend: session joined - {}".format(details))
 
-      def onhello(msg):
-         print("event received on {}: {}".format(topic, msg))
+        def add2(x, y):
+            print("MyBackend: add2() called with {} and {}".format(x, y))
+            return x + y
 
-      ## SUBSCRIBE to a few topics we are allowed to subscribe to.
-      ##
-      for topic in [
-         'com.example.topic1',
-         'com.foobar.topic1',
-         'com.foobar.topic2']:
-
-         try:
-            sub = yield self.subscribe(onhello, topic)
-            print("ok, subscribed to topic {}".format(topic))
-         except Exception as e:
-            print("could not subscribe to {}: {}".format(topic, e))
-
-      ## SUBSCRIBE to a topic we are not allowed to subscribe to (so this should fail).
-      ##
-      try:
-         sub = yield self.subscribe(onhello, "com.example.topic2")
-      except Exception as e:
-         print("subscription failed - this is expected: {}".format(e))
-
-      ## REGISTER a procedure for remote calling
-      ##
-      def add2(x, y):
-         print("add2() called with {} and {}".format(x, y))
-         return x + y
-
-      try:
-         reg = yield self.register(add2, 'com.example.add2')
-         print("procedure add2() registered")
-      except Exception as e:
-         print("could not register procedure: {}".format(e))
+        try:
+            reg = yield self.register(add2, 'com.example.add2')
+            print("MyBackend: procedure add2() registered")
+        except Exception as e:
+            print("MyBackend: could not register procedure - {}".format(e))
