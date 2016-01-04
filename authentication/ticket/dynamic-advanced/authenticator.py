@@ -74,7 +74,10 @@ class AuthenticatorSession(ApplicationSession):
 
             res = {
                u'realm': principal[u'realm'],
-               u'role': principal[u'role']
+               u'role': principal[u'role'],
+               u'extra': {
+                  u'my-custom-welcome-data': [1, 2, 3]
+               }
             }
             print("WAMP-Ticket authentication success: {}".format(res))
             return res
