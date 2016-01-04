@@ -1,6 +1,6 @@
 # TLS Dynamic Authentication
 
-This uses a client-side TLS certificate to authenticate a WAMP session.
+This uses a client-side TLS certificate to authenticate a WAMP session using a **dynamic authenticator**.
 
 A WAMP router worker is started that runs a TLS transport and embeds a dynamic authenticator user component.
 A container worker is started with a backend component that connects via TLS and presents a TLS client certificate.
