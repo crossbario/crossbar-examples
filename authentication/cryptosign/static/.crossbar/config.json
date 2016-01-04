@@ -1,0 +1,52 @@
+{
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "name": "devices",
+               "roles": [
+                  {
+                     "name": "device",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "websocket",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               },
+               "auth": {
+                  "cryptosign": {
+                     "type": "static",
+                     "principals": {
+                        "client01@example.com": {
+                           "realm": "devices",
+                           "role": "device",
+                           "pubkey": "545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122"
+                        },
+                        "client02@example.com": {
+                           "realm": "devices",
+                           "role": "device",
+                           "pubkey": "e5b0d24af05c77d644de885946147aeb4fa6897a5cf4eb14347c3d637664b117"
+                        }
+                     }
+                  }
+               }
+            }
+         ]
+      }
+   ]
+}
