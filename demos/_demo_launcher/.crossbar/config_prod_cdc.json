@@ -1,0 +1,308 @@
+{
+   "controller": {
+      "cdc": {
+         "key": "Rl4T7JPskrJ7bYq64Kqe4l+P5E0jIdp90aU+29jsRzs=",
+         "realm": "user1-default",
+         "transport": {
+            "type": "websocket",
+            "url": "wss://devops.crossbario.com/ws",
+            "endpoint": {
+               "type": "tcp",
+               "host": "devops.crossbario.com",
+               "port": 443,
+               "timeout": 5,
+               "tls": {
+                  "hostname": "devops.crossbario.com"
+               }
+            }
+         }
+      }
+   },
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "id": "io.crossbar.demo",
+               "name": "crossbardemo",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "io.crossbar.demo.*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        },
+                        {
+                           "uri": "wamp.*",
+                           "subscribe": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "id": "io.crossbar.publictest",
+               "name": "realm1",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "id": "com.showroomdummy",
+               "name": "showroomdummy",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "id": "io.crossbar.iotcookbook",
+               "name": "iot_cookbook",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "publish": true,
+                           "subscribe": true,
+                           "call": true,
+                           "register": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "websocket",
+               "serializers": ["cbor", "msgpack", "json"],
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               }
+            },
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 80
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": "../letsencrypt"
+                  }
+               }
+            },
+            {
+               "type": "web",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 443,
+                  "tls": {
+                     "key": "privkey.pem",
+                     "certificate": "cert.pem",
+                     "chain_certificates": ["chain.pem"],
+                     "dhparam": "dhparam.pem",
+                     "ciphers": "ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA"
+                  }
+               },
+               "options": {
+                  "access_log": false,
+                  "display_tracebacks": false,
+                  "hsts": true,
+                  "hsts_max_age": 31536000
+               },
+               "paths": {
+                  "/": {
+                     "type": "static",
+                     "directory": "../web"
+                  },
+                  "ws": {
+                     "type": "websocket",
+                     "url": "wss://demo.crossbar.io",
+                     "cookie": {
+                        "name": "cbdemo",
+                        "length": 24,
+                        "max_age": 86400,
+                        "store": {
+                           "type": "file",
+                           "filename": "cookie.dat"
+                        }
+                     },
+                     "serializers": ["cbor", "msgpack", "json"],
+                     "options": {
+                        "enable_webstatus": true,
+                        "max_frame_size": 1048576,
+                        "max_message_size": 1048576,
+                        "auto_fragment_size": 65536,
+                        "fail_by_drop": true,
+                        "open_handshake_timeout": 2500,
+                        "close_handshake_timeout": 1000,
+                        "auto_ping_interval": 10000,
+                        "auto_ping_timeout": 5000,
+                        "auto_ping_size": 4,
+                        "compression": {
+                           "deflate": {
+                              "request_no_context_takeover": false,
+                              "request_max_window_bits": 13,
+                              "no_context_takeover": false,
+                              "max_window_bits": 13,
+                              "memory_level": 5
+                           }
+                        }
+                     }
+                  },
+                  "call": {
+                      "type": "caller",
+                      "realm": "crossbardemo",
+                      "role": "anonymous",
+                      "options": {
+                          "debug": false
+                      }
+                  },
+                  "lp": {
+                     "type": "longpoll"
+                  },
+                  "wpadlab": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                  },
+                  "wpadeuro": {
+                     "type": "static",
+                     "directory": "../../../iotcookbook/app/weights/wpadeuro"
+                  },
+                  "beatbox": {
+                     "type": "static",
+                     "directory": "../../beatbox"
+                  },
+                  "chat": {
+                     "type": "static",
+                     "directory": "../../chat"
+                  },
+                  "colorpicker": {
+                     "type": "static",
+                     "directory": "../../colorpicker"
+                  },
+                  "editform": {
+                     "type": "static",
+                     "directory": "../../editform/web"
+                  },
+                  "gauges": {
+                     "type": "static",
+                     "directory": "../../gauges"
+                  },
+                  "notification": {
+                     "type": "static",
+                     "directory": "../../notification"
+                  },
+                  "pubsub": {
+                     "type": "static",
+                     "directory": "../../pubsub"
+                  },
+                  "sliders": {
+                     "type": "static",
+                     "directory": "../../sliders"
+                  },
+                  "votes": {
+                     "type": "static",
+                     "directory": "../../votes/nodejs/web"
+                  },
+                  "visitors_counter": {
+                     "type": "static",
+                     "directory": "../../visitors_counter"
+                  },
+                  "dashboard": {
+                     "type": "static",
+                     "directory": "../../dashboard/board"
+                  },
+                  "dashboardcontroller": {
+                     "type": "static",
+                     "directory": "../../dashboard/controller"
+                  },
+                  "videocontrol": {
+                     "type": "static",
+                     "directory": "../../videocontrol/web"
+                  },
+                  "spreadsheet": {
+                     "type": "static",
+                     "directory": "../../spread"
+                  }
+               }
+            }
+         ]
+      },
+      {
+         "type": "guest",
+         "executable": "node",
+         "arguments": ["backend.js"],
+         "options": {
+            "workdir": "../../votes/nodejs/node",
+            "watch": {
+               "directories": ["../../votes/nodejs/node"],
+               "action": "restart"
+            },
+            "env": {
+               "inherit": ["NODE_PATH"]
+            }
+         }
+      },
+      {
+         "type": "guest",
+         "executable": "node",
+         "arguments": ["editform_backend.js"],
+         "options": {
+            "workdir": "../../editform/node",
+            "watch": {
+               "directories": ["../../editform/node"],
+               "action": "restart"
+            },
+            "env": {
+               "inherit": ["NODE_PATH"]
+            }
+         }
+      },
+      {
+         "type": "guest",
+         "executable": "node",
+         "arguments": ["backend.js"],
+         "options": {
+            "workdir": "../../visitors_counter/js",
+            "watch": {
+               "directories": ["../../visitors_counter/js"],
+               "action": "restart"
+            },
+            "env": {
+               "inherit": ["NODE_PATH"]
+            }
+         }
+      }
+   ]
+}
