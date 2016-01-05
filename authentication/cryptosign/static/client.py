@@ -86,7 +86,10 @@ class ClientSession(ApplicationSession):
 
    def onJoin(self, details):
       print("onJoin(details={})".format(details))
-      # hooray! we've been successfully authenticated with WAMP-cryptosign
+      print("""
+            Hooray! We've been successfully authenticated
+            with WAMP-cryptosign using Ed25519!
+            """)
       self.leave()
 
    def onLeave(self, details):
