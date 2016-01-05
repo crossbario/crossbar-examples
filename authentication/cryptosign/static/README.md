@@ -1,4 +1,23 @@
-# WAMP-Ed25519 Static Authentication
+# WAMP-cryptosign Static Authentication
+
+## How to try
+
+Run Crossbar.io in a first terminal from this directory. Then, in a second terminal, start the client:
+
+```console
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/authentication/cryptosign/static$ python client.py --key client01.key
+Connecting to ws://localhost:8080/ws: realm=None, authid=None
+2016-01-05T17:54:31+0100 __init__(config=ComponentConfig(realm=<None>, extra={u'key': u'client01.key', u'authid': None}, keyring=None))
+2016-01-05T17:54:31+0100 Client public key loaded: 545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122
+2016-01-05T17:54:31+0100 onConnect()
+2016-01-05T17:54:31+0100 onChallenge(challenge=Challenge(method=cryptosign, extra={u'challenge': '800e870c77bfa62fbe17305f262ea6595532f09fcb54550b39648fc5255609af'}))
+2016-01-05T17:54:31+0100 onJoin(details=SessionDetails(realm=<devices>, session=3983743498134005, authid=<client01@example.com>, authrole=<device>, authmethod=cryptosign, authprovider=static, authextra=None))
+2016-01-05T17:54:31+0100 onLeave(details=CloseDetails(reason=<wamp.close.normal>, message='None'))
+2016-01-05T17:54:31+0100 onDisconnect()
+2016-01-05T17:54:31+0100 Main loop terminated.
+```
+
+**Generating keys for SSH**
 
 
 Generate a new public-private key pair of type Ed25519, no passphrase and with comment being set to an identifier for your client component:

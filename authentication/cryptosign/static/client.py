@@ -33,27 +33,68 @@ from autobahn.wamp import cryptosign
 
 class ClientSession(ApplicationSession):
 
+   def __init__(self, config=None):
+      print("__init__(config={})".format(config))
+      ApplicationSession.__init__(self, config)
+
+      # load the client private key (raw format)
+      self._key = cryptosign.Key.from_raw(config.extra[u'key'])
+      print("Client public key loaded: {}".format(self._key.public_key()))
+
    def onConnect(self):
-      realm = self.config.realm
-      authid = self.config.extra[u'authid']
-      print("ClientSession connected. Joining realm <{}> under authid <{}>".format(realm if realm else 'not provided', authid if authid else 'not provided'))
-      self.join(realm, [u'cryptosign'], authid)
+      print("onConnect()")
+
+      # authentication extra information for wamp-cryptosign
+      #
+      extra = {
+         # forward the client pubkey: this allows us to omit authid as
+         # the router can identify us with the pubkey already
+         u'pubkey': self._key.public_key(),
+
+         # not yet implemented. a public key the router should provide
+         # a trustchain for it's public key. the trustroot can eg be
+         # hard-coded in the client, or come from a command line option.
+         u'trustroot': None,
+
+         # not yet implemented. for authenticating the router, this
+         # challenge will need to be signed by the router and send back
+         # in AUTHENTICATE for client to verify. A string with a hex
+         # encoded 32 bytes random value.
+         u'challenge': None
+      }
+
+      # now request to join ..
+      self.join(self.config.realm,
+                authmethods=[u'cryptosign'],
+                authid=self.config.extra[u'authid'],
+                authextra=extra)
 
    def onChallenge(self, challenge):
-      print("ClientSession challenge received: {}".format(challenge))
-      key = self.config.extra[u'key']
-      return key.sign_challenge(challenge)
+      print("onChallenge(challenge={})".format(challenge))
+      # alright, we've got a challenge from the router.
+
+      # not yet implemented. check the trustchain the router provided against
+      # our trustroot, and check the signature provided by the
+      # router for our previous challenge. if both are ok, everything
+      # is fine - the router is authentic wrt our trustroot.
+
+      # sign the challenge with our private key.
+      signed_challenge = self._key.sign_challenge(challenge)
+
+      # send back the signed challenge for verification
+      return signed_challenge
 
    def onJoin(self, details):
-      print("ClientSession joined: {}".format(details))
+      print("onJoin(details={})".format(details))
+      # hooray! we've been successfully authenticated with WAMP-cryptosign
       self.leave()
 
    def onLeave(self, details):
-      print("ClientSession left: {}".format(details))
+      print("onLeave(details={})".format(details))
       self.disconnect()
 
    def onDisconnect(self):
-      print("ClientSession disconnected")
+      print("onDisconnect()")
       reactor.stop()
 
 
@@ -61,26 +102,26 @@ if __name__ == '__main__':
 
    import sys
    import argparse
-   from autobahn.wamp import cryptosign
+   from autobahn.twisted.wamp import ApplicationRunner
 
+   # parse command line arguments
    parser = argparse.ArgumentParser()
    parser.add_argument('--authid', dest='authid', type=unicode, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid.')
    parser.add_argument('--realm', dest='realm', type=unicode, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
-   parser.add_argument('--key', dest='key', type=unicode, required=True, help='The private key to use for authentication (an OpenSSH Ed25519 private key file)')
+   parser.add_argument('--key', dest='key', type=unicode, required=True, help='The private client key to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')
+   parser.add_argument('--routerkey', dest='routerkey', type=unicode, default=None, help='The public router key to verify the remote router against. A 32 bytes file containing the raw Ed25519 public key.')
    parser.add_argument('--url', dest='url', type=unicode, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+   parser.add_argument('--agent', dest='agent', type=unicode, default=None, help='Path to Unix domain socket of SSH agent to use.')
+   parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
    options = parser.parse_args()
 
-   from autobahn.twisted.wamp import ApplicationRunner
-
-   #key = cryptosign.Key.from_ssh(options.key)
-   key = cryptosign.Key.from_raw(options.key, options.authid)
-   print("pubkey = {}".format(key.public_key()))
-
+   # forward requested authid and key filename to ClientSession
    extra = {
       u'authid': options.authid,
-      u'key': key
+      u'key': options.key
    }
    print("Connecting to {}: realm={}, authid={}".format(options.url, options.realm, options.authid))
 
-   runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)
+   # connect to router and run ClientSession
+   runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, debug_wamp=options.trace)
    runner.run(ClientSession)
