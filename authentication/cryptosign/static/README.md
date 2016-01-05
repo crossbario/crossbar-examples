@@ -17,6 +17,32 @@ Connecting to ws://localhost:8080/ws: realm=None, authid=None
 2016-01-05T17:54:31+0100 Main loop terminated.
 ```
 
+## Todo
+
+### Router Authentication
+
+### SSH agent integration
+
+### Authorized keys
+
+```json
+"auth": {
+  "cryptosign": {
+     "type": "static",
+     "principals": {
+        "client01@example.com": {
+           "realm": "devices",
+           "role": "device",
+           "authorized-keys": [
+               "545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122",
+               "e5b0d24af05c77d644de885946147aeb4fa6897a5cf4eb14347c3d637664b117"
+           ]
+        }
+     }
+  }
+}
+```
+
 **Generating keys for SSH**
 
 
