@@ -1,5 +1,24 @@
 # WAMP-cryptosign Static Authentication
 
+## Intro
+
+WAMP-cryptosign is a WAMP level authentication mechanism that allows WAMP client to authentiate to WAMP routers using Curve25519 based cryptography.
+
+In particular, WAMP-cryptosign uses Ed25519 private signing keys for authentication.
+
+WAMP-cryptosign also allows clients to authenticate the router connecting to, so MITM attackes are mitigated.
+
+A WAMP client needs to have a (private) Ed25519 which is used during authentication in the WAMP opening handshake.
+
+When a client wants to authenticate the WAMP router it is connecting to, the client additionally needs to have a **trustroot** defined, which is a *public* Ed25519 key. The WAMP router will present it's public key plus a trustchain originating in the server public key, and ending in the trustroot presented by the client.
+
+AutobahnPython supports the following sources for such keys:
+
+1. raw binary string (32 bytes): [client_raw_key.py](client_raw_key.py)
+2. SSH private key: [client_ssh_key.py](client_ssh_key.py)
+3. SSH private key held in SSH agent: [client_ssh_agent.py](client_ssh_agent.py)
+
+
 ## How to try
 
 Run Crossbar.io in a first terminal from this directory. Then, in a second terminal, start the client:
@@ -18,6 +37,13 @@ Connecting to ws://localhost:8080/ws: realm=None, authid=None
 ```
 
 ## Todo
+
+* run an SSH key agent under a dedicated auth agent account
+* add private keys for WAMP client running on this host under the agent
+* have the SSH agent Unix domain socket only accesible for the WAMP client (or WAMP router)
+* nobody but the dedicated auth agent account has access to private keys
+* access to the auth agent and it's signing service is restricted
+
 
 ### Router Authentication
 

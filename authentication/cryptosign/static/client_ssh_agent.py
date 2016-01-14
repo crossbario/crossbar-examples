@@ -27,7 +27,7 @@
 ###############################################################################
 
 from twisted.internet import reactor
-from twisted.internet.defer import inlineCallbacks, returnValue
+from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.cryptosign import SSHAgentSigningKey
@@ -42,14 +42,22 @@ class ClientSession(ApplicationSession):
     @inlineCallbacks
     def onConnect(self):
         print("onConnect()")
-        self._clientkey = yield SSHAgentSigningKey.new(self.config.extra[u'clientkey'])
-        self.join(self.config.realm, authmethods=[u'cryptosign'], authid=self.config.extra[u'authid'])
 
-    @inlineCallbacks
+        # create a proxy signing key with the private key being held in SSH agent
+        self._pubkey = yield SSHAgentSigningKey.new(self.config.extra[u'pubkey'])
+
+        # join and authenticate using WAMP-cryptosign
+        self.join(self.config.realm,
+                  authmethods=[u'cryptosign'],
+                  authid=self.config.extra[u'authid'])
+
     def onChallenge(self, challenge):
         print("onChallenge(challenge={})".format(challenge))
-        sig = yield self._clientkey.sign_challenge(challenge)
-        returnValue(sig)
+
+        # router has sent us a challenge .. sign it and return the signature
+        # the actual signing is done within SSH agent! that means: the private key
+        # is actually _never_ touched (other than by SSH agent itself)
+        return self._pubkey.sign_challenge(challenge)
 
     def onJoin(self, details):
         print("onJoin(details={})".format(details))
@@ -75,30 +83,30 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
     parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--clientkey', dest='clientkey', type=six.text_type, help='Filename of the client SSH Ed25519 public key.')
-    parser.add_argument('--routerkey', dest='routerkey', type=six.text_type, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
+    parser.add_argument('--pubkey', dest='pubkey', type=six.text_type, help='Filename of the client SSH Ed25519 public key.')
+    parser.add_argument('--trustroot', dest='trustroot', type=six.text_type, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
     parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
     parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
     options = parser.parse_args()
 
     # load client public key
-    with open(options.clientkey) as f:
-        clientkey = f.read()
+    with open(options.pubkey, 'r') as f:
+        pubkey = f.read().decode('ascii')
 
     # load router public key (optional, if avail., router will be authenticated too)
-    routerkey = None
-    if options.routerkey:
-        with open(options.routerkey) as f:
-            routerkey = f.read()
+    trustroot = None
+    if options.trustroot:
+        with open(options.trustroot, 'r') as f:
+            trustroot = f.read().decode('ascii')
 
     # forward stuff to our session
     extra = {
         u'authid': options.authid,
-        u'clientkey': clientkey,
-        u'routerkey': routerkey
+        u'pubkey': pubkey,
+        u'trustroot': trustroot
     }
-    print("Connecting to {}: realm={}, authid={}, clientkey={}, routerkey={}".format(options.url, options.realm, options.authid, clientkey, routerkey))
+    print("Connecting to {}: realm={}, authid={}, pubkey={}, trustroot={}".format(options.url, options.realm, options.authid, pubkey, trustroot))
 
     # connect to router and run ClientSession
     runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, debug_wamp=options.trace)
