@@ -40,7 +40,7 @@
                         "client02@example.com": {
                            "realm": "devices",
                            "role": "device",
-                           "pubkey": "e5b0d24af05c77d644de885946147aeb4fa6897a5cf4eb14347c3d637664b117"
+                           "pubkey": "9c194391af3bf566fc11a619e8df200ba02efb35b91bdd98b424f20f4163875e"
                         }
                      }
                   }
