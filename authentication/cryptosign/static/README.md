@@ -19,6 +19,130 @@ AutobahnPython supports the following sources for such keys:
 3. SSH private key held in SSH agent: [client_ssh_agent.py](client_ssh_agent.py)
 
 
+
+## Generating Ed25519 keys
+
+To generate a new Ed25519 key:
+
+```console
+oberstet@corei7ub1310:~$ ssh-keygen -t ed25519
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/oberstet/.ssh/id_ed25519): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/oberstet/.ssh/id_ed25519.
+Your public key has been saved in /home/oberstet/.ssh/id_ed25519.pub.
+The key fingerprint is:
+SHA256:Wn0VrI0mMGaBELuq6dqJdRye26D/gqM2UT6B3JtWlQs oberstet@corei7ub1310
+The key's randomart image is:
++--[ED25519 256]--+
+|    oo .o.   ..  |
+|     E.o=     .. |
+|. o . oo.o   +.  |
+| o + o . .. +..  |
+|  o B   S .o.    |
+| . X o o   .     |
+|  =.B .          |
+| Oo+.+           |
+|Xo=oooo          |
++----[SHA256]-----+
+```
+
+
+## Using Ed25519 with ssh-agent
+
+### Disable Gnome keyring
+
+Ubuntu 14.04 is using Gnome keyring for managing and holding SSH keys. This app is outdated, and [does not support Ed25519 keys](https://bugs.launchpad.net/ubuntu/+source/gnome-keyring/+bug/1393531).
+
+We'll be using [OpenSSH portable](http://www.openssh.com/portable.html) from [upstream](http://www.openbsd.org/) instead.
+
+First, we need to disable Gnome keyring. There are lots of recipes on the net. The only one that worked for me is this:
+
+```console
+sudo chmod -x /usr/bin/gnome-keyring*
+sudo chmod -x /usr/bin/ssh-agent
+```
+
+Reboot your machine.
+
+### Build and install OpenSSH portable
+
+Visit [OpenSSH portable download mirrors](http://www.openssh.com/portable.html#mirrors) to get the latest release:
+
+```console
+cd /tmp
+wget http://openbsd.cs.fau.de/pub/OpenBSD/OpenSSH/portable/openssh-7.1p2.tar.gz
+tar xvf openssh-7.1p2.tar.gz
+cd openssh-7.1p2
+./configure --prefix=/opt/openssh
+make
+sudo make install
+```
+
+This should give you
+
+```
+oberstet@corei7ub1310:~$ /opt/openssh/bin/ssh -V
+OpenSSH_7.1p2, OpenSSL 1.0.1f 6 Jan 2014
+```
+
+### Autostart SSH agent
+
+Add the following to your `$HOME/.bashrc`:
+
+```shell
+export PATH=/opt/openssh/bin:${PATH}
+
+env=~/.ssh/agent.env
+
+agent_is_running() {
+    if [ "$SSH_AUTH_SOCK" ]; then
+        # ssh-add returns:
+        #   0 = agent running, has keys
+        #   1 = agent running, no keys
+        #   2 = agent not running
+        ssh-add -l >/dev/null 2>&1 || [ $? -eq 1 ]
+    else
+        false
+    fi
+}
+
+agent_has_keys() {
+    ssh-add -l >/dev/null 2>&1
+}
+
+agent_load_env() {
+    . "$env" >/dev/null
+}
+
+agent_start() {
+    (umask 077; ssh-agent >"$env")
+    . "$env" >/dev/null
+}
+
+if ! agent_is_running; then
+    agent_load_env
+fi
+
+if ! agent_is_running; then
+    agent_start
+    ssh-add
+elif ! agent_has_keys; then
+    ssh-add
+fi
+
+unset env
+```
+
+When SSH agent is running, it'll set a environment variable pointing to the Unix domain socket it is listening on:
+
+```console
+oberstet@corei7ub1310:~$ echo $SSH_AUTH_SOCK
+/tmp/ssh-nglQGz2LuI7v/agent.13601
+```
+
+
 ## How to try
 
 Run Crossbar.io in a first terminal from this directory. Then, in a second terminal, start the client:
