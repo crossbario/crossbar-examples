@@ -19,8 +19,14 @@ AutobahnPython supports the following sources for such keys:
 3. SSH private key held in SSH agent: [client_ssh_agent.py](client_ssh_agent.py)
 
 
+## Using WAMP-cryptosign with OpenSSH
 
-## Generating Ed25519 keys
+OpenSSH can be used to
+
+* generate keys for use with WAMP-cryptosign
+* hold private keys in `ssh-agent`
+
+### Generating Ed25519 keys
 
 To generate a new Ed25519 key:
 
@@ -48,10 +54,9 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
+### Using Ed25519 with `ssh-agent`
 
-## Using Ed25519 with ssh-agent
-
-### Disable Gnome keyring
+#### Disable Gnome keyring
 
 Ubuntu 14.04 is using Gnome keyring for managing and holding SSH keys. This app is outdated, and [does not support Ed25519 keys](https://bugs.launchpad.net/ubuntu/+source/gnome-keyring/+bug/1393531).
 
@@ -66,7 +71,7 @@ sudo chmod -x /usr/bin/ssh-agent
 
 Reboot your machine.
 
-### Build and install OpenSSH portable
+#### Build and install OpenSSH portable
 
 Visit [OpenSSH portable download mirrors](http://www.openssh.com/portable.html#mirrors) to get the latest release:
 
@@ -87,7 +92,7 @@ oberstet@corei7ub1310:~$ /opt/openssh/bin/ssh -V
 OpenSSH_7.1p2, OpenSSL 1.0.1f 6 Jan 2014
 ```
 
-### Autostart SSH agent
+#### Autostart SSH agent
 
 Add the following to your `$HOME/.bashrc`:
 
@@ -142,6 +147,23 @@ oberstet@corei7ub1310:~$ echo $SSH_AUTH_SOCK
 /tmp/ssh-nglQGz2LuI7v/agent.13601
 ```
 
+#### Securing use of `ssh-agent`
+
+For maximum security, the following measures should be taken:
+
+1. run an SSH agent under a dedicated account, different from the one running your WAMP component
+2. nobody but that dedicated account should have access to the private keys held (using filesystem permissions)
+3. access to the SSH agent's listening Unix domain socket should be restricted to the account running your WAMP components (using filesystem permissions)
+
+
+## Using WAMP-cryptosign with Putty?
+
+**Autobahn|Python does [not support](https://github.com/crossbario/autobahn-python/issues/577) Putty/Pageant for WAMP-cryptosign**. This section is mainly for noting that, and for users that want to use Ed25519 for general SSH with Putty.
+
+The current *release* of Putty (version 0.66 as of 15.1.2016) does **not** support Ed25519. Only the *development snapshot* does.
+
+Get it [here](http://tartarus.org/~simon/putty-snapshots/x86/putty-installer.exe).
+
 
 ## How to try
 
@@ -160,13 +182,6 @@ Connecting to ws://localhost:8080/ws: realm=None, authid=None
 2016-01-05T17:54:31+0100 Main loop terminated.
 ```
 
-## Todo
-
-* run an SSH key agent under a dedicated auth agent account
-* add private keys for WAMP client running on this host under the agent
-* have the SSH agent Unix domain socket only accesible for the WAMP client (or WAMP router)
-* nobody but the dedicated auth agent account has access to private keys
-* access to the auth agent and it's signing service is restricted
 
 
 ### Router Authentication
