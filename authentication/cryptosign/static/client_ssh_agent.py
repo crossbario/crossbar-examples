@@ -44,12 +44,20 @@ class ClientSession(ApplicationSession):
         print("onConnect()")
 
         # create a proxy signing key with the private key being held in SSH agent
-        self._pubkey = yield SSHAgentSigningKey.new(self.config.extra[u'pubkey'])
+        self._key = yield SSHAgentSigningKey.new(self.config.extra[u'pubkey'])
+
+        # authentication extra information for wamp-cryptosign
+        extra = {
+            # forward the client pubkey: this allows us to omit authid as
+            # the router can identify us with the pubkey already
+            u'pubkey': self._key.public_key()
+        }
 
         # join and authenticate using WAMP-cryptosign
         self.join(self.config.realm,
                   authmethods=[u'cryptosign'],
-                  authid=self.config.extra[u'authid'])
+                  authid=self.config.extra[u'authid'],
+                  authextra=extra)
 
     def onChallenge(self, challenge):
         print("onChallenge(challenge={})".format(challenge))
@@ -57,7 +65,7 @@ class ClientSession(ApplicationSession):
         # router has sent us a challenge .. sign it and return the signature
         # the actual signing is done within SSH agent! that means: the private key
         # is actually _never_ touched (other than by SSH agent itself)
-        return self._pubkey.sign_challenge(challenge)
+        return self._key.sign_challenge(challenge)
 
     def onJoin(self, details):
         print("onJoin(details={})".format(details))
@@ -90,6 +98,8 @@ if __name__ == '__main__':
     parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
     options = parser.parse_args()
 
+    print("Connecting to {}: realm={}, authid={}, pubkey={}, trustroot={}".format(options.url, options.realm, options.authid, options.pubkey, options.trustroot))
+
     # load client public key
     with open(options.pubkey, 'r') as f:
         pubkey = f.read().decode('ascii')
@@ -106,7 +116,6 @@ if __name__ == '__main__':
         u'pubkey': pubkey,
         u'trustroot': trustroot
     }
-    print("Connecting to {}: realm={}, authid={}, pubkey={}, trustroot={}".format(options.url, options.realm, options.authid, pubkey, trustroot))
 
     # connect to router and run ClientSession
     runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, debug_wamp=options.trace)

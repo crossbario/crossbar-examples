@@ -54,7 +54,24 @@ The key's randomart image is:
 +----[SHA256]-----+
 ```
 
+An OpenSSH Ed25519 
+
 ### Using Ed25519 with `ssh-agent`
+
+OpenSSH keys held in `ssh-agent` can be used like this:
+
+```python
+from autobahn.wamp.cryptosign import SSHAgentSigningKey
+...
+# create a proxy signing key with the private key being held in SSH agent
+key = yield SSHAgentSigningKey.new(pubkey)
+```
+
+Here, `pubkey` should be a string with the public key part of the keypair held in `ssh-agent`, e.g.
+
+```
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFhd9RmReA7o3OR2YyQFigTsrkKd/9eG7oCDnJRnRowo oberstet@corei7ub1310
+```
 
 #### Disable Gnome keyring
 
