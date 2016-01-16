@@ -1191,8 +1191,9 @@ header {
 {
    position: absolute;
    font-size: 14px;
-   color: #bbb;
+   color: #444;
    bottom: 5px;
+   left: 5px;
 }
 
 

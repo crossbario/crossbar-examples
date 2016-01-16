@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <title>Document</title>
+   <style>
+   body
+   {
+      width: 1040px;
+      height: 100%;
+      font-size: 14px;
+   }
+   
+   #codeContainer
+   {
+      width: 1200px;
+      width: 1040px;
+      margin: 0 auto;
+      background-color: #fff;
+      position: relative;
+   }
+
+   
+   #codeContainer .syntaxhighlighter code {
+      font-family: Consolas, Menlo, 'DejaVu Sans Mono', 'Courier New', monospace !important;
+      font-size: 13px !important;
+   }
+
+   .codehalf
+   {
+      width: 50%;
+      height: 100%;
+      float: left;
+      background-color: #fff;
+   }
+
+   .codehalf > h2  {
+      font-family: sans-serif;
+      text-align: center;
+   }
+
+   .codehalf .syntaxhighlighter, .ie.syntaxhighlighter  {
+      overflow: hidden !important;
+      /*padding: 0.7em !important;
+      border: solid 1px white !important;
+      box-shadow: 0 0 1em white !important;*/
+   }
+
+   #frontend
+   {
+       width: 57%;
+       width: 55%;
+
+   }
+   #backend
+   {
+      border-left: 1px solid rgb(163, 163, 163);
+      width: 42%;
+      width: 44%;
+   }
+
+
+   .arrowBox
+   {
+      position: absolute;
+      z-index: 10;
+      border-left: 3px solid black;
+   }
+
+   .dot
+   {
+      height: 2px;
+      width: 2px;
+      background-color: red;
+      position: absolute;
+      z-index: 10;
+   }
+
+   .arrowHead
+   {
+      position: absolute;
+   }
+
+   .codehalf .syntaxhighlighter.nogutter td.code .line
+   {
+      padding-left: 0.5em !important;
+   }
+   </style>
+</head>
+<body>
+   <div id="codeContainer">
+
+      <div class="codehalf" id="frontend">
+         <h2>
+            Browser
+         </h2>
+            <pre class="brush: javascript; toolbar: false; gutter: false; auto-links: false; highlight: [5, 13, 26, 32, 42]">
+// [...] - boilerplate code to connect to Crossbar.io
+
+function main (session) {
+   // subscribe to future vote event
+   session.subscribe("io.crossbar.demo.vote.onvote", 
+      function(args, kwargs, details) {
+         var event = args[0];
+         document.getElementById("votes" + event.subject).value = 
+            event.votes;
+      });
+
+   // get the current vote count
+   session.call("io.crossbar.demo.vote.get").then(
+      function(res){
+         for(var i = 0; i < res.length; i++) {
+            document.getElementById("votes" + res[i].subject).value = 
+               res[i].votes;
+         }
+   }, session.log);
+
+   // wire up vote buttons
+   var voteButtons = document.getElementById("voteContainer").
+                              getElementsByTagName("button");
+   for (var i = 0; i < voteButtons.length; i++) {
+      voteButtons[i].onclick = function(evt) {
+         session.call("io.crossbar.demo.vote.vote", 
+            [evt.target.id]).then(session.log, session.log);
+      };
+   }
+
+   // subscribe to vote reset event
+   session.subscribe("io.crossbar.demo.vote.onreset", function() {
+         var voteCounters = document.getElementById("voteContainer").
+                                     getElementsByTagName("input");
+         for(var i = 0; i < voteCounters.length; i++) {
+            voteCounters[i].value = 0;
+         }
+      });
+
+   // wire up reset button
+   document.getElementById("resetVotes").onclick = function() {
+      session.call("io.crossbar.demo.vote.reset").
+         then(session.log, session.log);
+   };
+}
+         </pre>
+      </div>
+      <div class="codehalf" id="backend">
+         <h2>
+            Node.js
+         </h2>
+         <pre class="brush: javascript; toolbar: false; gutter: false; auto-links: false; highlight: [6, 20, 30, 36, 43]">
+// [...] - boilerplate code to connect to Crossbar.io
+
+function main (session) {
+   
+   // return set of present votes on request
+   var getVote = function() {
+      var votesArr = [];
+      for (var flavor in votes) {
+         if (votes.hasOwnProperty(flavor)) {
+            votesArr.push({
+               subject: flavor,
+               votes: votes[flavor]
+            })
+         }
+      }
+      return votesArr;
+   };
+
+   // handle vote submission
+   var submitVote = function(args, kwargs, details) {
+      var flavor = args[0];
+      votes[flavor] += 1;
+
+      var res = {
+         subject: flavor,
+         votes: votes[flavor]
+      };
+
+      // publish the vote event
+      session.publish("io.crossbar.demo.vote.onvote", [res]);
+
+      return "voted for " + flavor;
+   };
+
+   // reset vote count
+   var resetVotes = function() {
+      for (var fl in votes) {
+         if (votes.hasOwnProperty(fl)) {
+            votes[fl] = 0;
+         }
+      }
+      // publish the reset event
+      session.publish("io.crossbar.demo.vote.onreset");
+      return "votes reset";
+   };
+
+
+   // register the procedures
+   session.register('io.crossbar.demo.vote.get', getVote);
+   session.register('io.crossbar.demo.vote.vote', submitVote);
+   session.register('io.crossbar.demo.vote.reset', resetVotes);
+}
+         </pre>
+      </div>
+      <div class="clearboth"></div>
+   </div>
+   <link href="js/syntaxhighlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+   <link href="js/syntaxhighlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" />
+
+   <script src="js/syntaxhighlighter/scripts/shCore.js" type="text/javascript"></script>
+   <script src="js/syntaxhighlighter/scripts/shBrushJScript.js" type="text/javascript"></script>
+   <script src="js/syntaxhighlighter/scripts/shBrushPlSql.js" type="text/javascript"></script>
+
+   <script type="text/javascript">
+     SyntaxHighlighter.all()
+   </script>
+
+
+   <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+   <!-- // <script src="//code.jquery.com/jquery-1.11.0.min.js"></script> -->
+
+   <script>
+      var arrows = {};
+
+// initially contains line numbers
+arrows.codeContainer = "codeContainer";
+arrows.left = "frontend";
+arrows.right = "backend";
+
+arrows.fromLeft = {
+   get: {
+      color: "#92D050",
+      direction: "lr",
+      start: 13,
+      end: 6,
+      border: "top",
+      fromLeft: 30,
+      rightFudge: -7,
+      arrowHead: "img/greenright.png",
+      arrowHeadPosition: "top",
+      arrowHeadFudge: { left: -20, top: -11}
+   },
+   vote: {
+      color: "#92D050",
+      direction: "lr",
+      start: 26,
+      end: 20,
+      border: "top",
+      fromLeft: 30,
+      rightFudge: -7,
+      arrowHead: "img/greenright.png",
+      arrowHeadPosition: "top",
+      arrowHeadFudge: { left: -20, top: -11}
+   },
+   reset: {
+      color: "#92D050",
+      direction: "lr",
+      start: 42,
+      end: 36,
+      border: "top",
+      fromLeft: 30,
+      rightFudge: -7,
+      arrowHead: "img/greenright.png",
+      arrowHeadPosition: "top",
+      arrowHeadFudge: { left: -20, top: -12}
+   }
+};
+
+arrows.fromRight = {
+   onVote: {
+      color: "#00B0F0",
+      direction: "rl",
+      start: 30,
+      end: 5,
+      border: "bottom",
+      fromLeft: -55,
+      topFudge: 15,
+      arrowHead: "img/blueup.png",
+      arrowHeadPosition: "top",
+      arrowHeadFudge: { left: -11, top: -6}
+   },
+   onReset: {
+      color: "#00B0F0",
+      direction: "rl",
+      start: 43,
+      end: 32,
+      border: "bottom",
+      fromLeft: -55,
+      topFudge: 15,
+      arrowHead: "img/blueup.png",
+      arrowHeadPosition: "top",
+      arrowHeadFudge: { left: -11, top: -6}
+   }
+};
+
+arrows.drawArrows = function(obj) {
+   var codeContainer = document.getElementById(arrows.codeContainer),
+       ccOffset = {
+         top: $(codeContainer).offset().top,
+         left: $(codeContainer).offset().left
+       };
+   // whereIs(ccOffset.left, ccOffset.top);
+
+
+   // loop over the arrows in the object
+   for(var i in obj) {
+      if(obj.hasOwnProperty(i)) {
+         var arrow = obj[i];
+
+         // get the start & end lines
+         var startHalf = arrow.direction === "lr" ? arrows.left : arrows.right;
+         var endHalf = arrow.direction === "lr" ? arrows.right : arrows.left;
+         var startElementId = ("#" + startHalf + " .code .line.number" + arrow.start),
+             endElementId = ("#" + endHalf + " .code .line.number" + arrow.end);
+         arrow.startElement = $(startElementId)[0];
+         arrow.endElement = $(endElementId)[0];
+
+         // get the offSet within the viewport for these
+         var startOffSet = $(arrow.startElement).offset();
+         var endOffSet = $(arrow.endElement).offset();
+         var addY = 5;
+         arrow.startOffSet = startOffSet;
+         arrow.endOffSet = endOffSet;
+
+         // calculate the offset depending on where on the element the arrow starts & ends
+         // add fromLeft to get additional horizontal distance, e.g. to avoid arrows overlapping
+         var startAddX = arrow.direction === "lr" ? $(arrow.startElement).width() - arrow.fromLeft : 0;
+         var startX = startOffSet.left + startAddX;
+         var startY = startOffSet.top + addY;
+
+         arrow.startCoords = { x: startX, y: startY };
+
+         var endAddX = arrow.direction === "lr" ? 0 : $(arrow.startElement).width() - arrow.fromLeft;
+         var endX = endOffSet.left + endAddX;
+         var endY = endOffSet.top + addY;
+
+         arrow.endCoords = { x: endX, y: endY };
+
+         // draw arrowBox
+         var arrowBox = document.createElement("div");
+         $(arrowBox).addClass("arrowBox");
+
+         arrow.border === "top" ? arrowBox.style.borderTop = "3px solid " + arrow.color : arrowBox.style.borderBottom = "3px solid " + arrow.color;
+         arrowBox.style.borderLeft = "3px solid " + arrow.color;
+
+         // fudge factors set the displacement for the beginning/end relative to the line start/middle
+         rightFudge = arrow.rightFudge ? arrow.rightFudge : 0;
+         topFudge = arrow.topFudge ? arrow.topFudge : 0;
+
+         arrowBox.style.height = Math.abs(arrow.startCoords.y - arrow.endCoords.y) - topFudge + "px"; // decrease arrowBox height by fudhe factor
+         arrowBox.style.width = Math.abs(arrow.startCoords.x - arrow.endCoords.x) + rightFudge + "px";
+
+         arrowBox.style.top = Math.min(arrow.startCoords.y, arrow.endCoords.y) + topFudge - ccOffset.top + "px"; // move box down, since the offset should be at the top
+         arrowBox.style.left = Math.min(arrow.startCoords.x, arrow.endCoords.x) - ccOffset.left + "px";
+
+         // add the arrowhead graphic and position this
+         var arrowHead = document.createElement("img");
+         arrowHead.src = arrow.arrowHead;
+         $(arrowHead).addClass("arrowHead");
+         var ahLeft = arrow.direction === "lr" ? parseInt(arrowBox.style.width, 10) : 0;
+         var ahTop = arrow.arrowHeadPosition === "bottom" ? parseInt(arrowBox.style.height, 10) : 0;
+         arrowHead.style.left = ahLeft + arrow.arrowHeadFudge.left + "px";
+         arrowHead.style.top = ahTop + arrow.arrowHeadFudge.top +  "px";
+         arrowBox.appendChild(arrowHead);
+
+         // document.getElementsByTagName("body")[0].appendChild(arrowBox);
+         codeContainer.appendChild(arrowBox);
+
+      }
+      // console.log(obj[i]);
+   }
+};
+
+window.onload = function() {
+   // syntaxhighlighter seems to be slow, so draw arrows here
+   window.setTimeout(function() {
+      arrows.drawArrows(arrows.fromLeft);
+      arrows.drawArrows(arrows.fromRight);
+   }, 0) // without the timer, IE10 tries to draw arrows before syntaxhighlighter has completed
+};
+
+
+   </script>
+
+</body>
+</html>
+
+
+

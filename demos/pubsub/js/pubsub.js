@@ -9,8 +9,6 @@
 
 "use strict";
 
-"use strict";
-
 var demoRealm = "crossbardemo";
 var demoPrefix = "io.crossbar.demo";
 
@@ -138,10 +136,15 @@ function connect() {
       }
    };
 
-   connection.onclose = function() {
+   connection.onclose = function(reason, details) {
       sess = null;
-      console.log("connection closed ", arguments);
-      updateStatusline("Disconnected");
+      console.log("connection closed ", reason, details);
+   
+      if (details.will_retry) {
+         updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+      } else {
+         updateStatusline("Disconnected");   
+      }
    }
 
    connection.open();

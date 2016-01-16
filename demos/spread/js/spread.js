@@ -71,21 +71,30 @@ function start() {
       realm: "crossbardemo"
    });
 
-   connection.onopen = function (newSession) {
+   connection.onopen = function (newSession, details) {
       session = newSession;
 
       console.log("connected");
 
-      updateStatusline("Connected to " + wsuri);
+      if (details.x_cb_node_id) {
+         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+      } else {
+         updateStatusline("Connected to " + wsuri);
+      }
 
       main(session);
 
    };
 
-   connection.onclose = function() {
+   connection.onclose = function(reason, details) {
       session = null;
-      console.log("connection closed ", arguments);
-      updateStatusline("Not connected");
+      console.log("connection closed ", reason, details);
+   
+       if (details.will_retry) {
+         updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+      } else {
+         updateStatusline("Disconnected");   
+      }
    }
 
    connection.open();

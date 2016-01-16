@@ -64,7 +64,11 @@ function ViewModel () {
       // $('#new-window').attr('href', window.location.pathname);
       document.getElementById('secondInstance').setAttribute('href', window.location.pathname);
 
-      self.connectionStatus("Connected to " + self.wsuri + " in session " + self.session.id);
+      if (details.x_cb_node_id) {
+         self.connectionStatus("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+      } else {
+         self.connectionStatus("Connected to " + wsuri);
+      }
 
       // set an URI prefix
       self.session.prefix("form", "io.crossbar.demo.product");
@@ -86,6 +90,16 @@ function ViewModel () {
    self.connection.onclose = function (reason, details) {
       console.log("Connection lost: " + reason, details);
       self.connectionStatus("Connection lost!");
+   }
+
+   self.connection.onclose = function(reason, details) {
+      console.log("connection closed ", reason, details);
+   
+      if (details.will_retry) {
+         self.connectionStatus("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+      } else {
+         self.connectionStatus("Disconnected");   
+      }
    }
 
 
