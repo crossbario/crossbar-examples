@@ -14,12 +14,13 @@
          }
 
          div.crossbar-visitors-widget {
-            width: 180px;
-            height: 32px;
+            width: 250px;
+            height: 64px;
             background-color: #e5e5e5;
             border: 1px solid #aaa;
             margin: 1em;
             box-shadow: 0 0 6px 1px rgba(0, 0, 0, 0.3);
+            /*text-align: center;*/
          }
          div.crossbar-visitors-widget.hidden {
             display: none;
@@ -34,6 +35,18 @@
             font-weight: bold;
          }
 
+         .connectionIndicator {
+            position: absolute;
+            bottom: 20px;
+            left: 1.4em;
+         }
+
+         .crossbar-visitors-widget span.connectionStatus {
+            font-weight: normal;
+            font-size: 60%;
+            color: #888;
+         }
+
          /* works in Chrome, but not in browsers which need Polymer */
          /* is overwritten by any stlyes declared in the host page */
          :host {
@@ -45,7 +58,12 @@
       </style>
 
       <div id="crossbar-visitors-widget" class="crossbar-visitors-widget hidden">
-         <span id="label">site</span><span id="count">23</span>
+         <div>
+            <span id="label">site</span><span id="count">23</span>   
+         </div>
+         <div class="connectionIndicator">
+            <span id="connectionStatus" class="connectionStatus">Not connected</span>
+         </div>
       </div>
 
    </template>
@@ -81,6 +99,11 @@
          self.shadowRoot.getElementById("label").innerHTML = config.label;
          var wsuri = config.routerUrl;
 
+         // to change the connection indicator
+         var updateStatusline = function (status) {
+            self.shadowRoot.getElementById("connectionStatus").innerHTML = status;
+         }
+
          // the WAMP connection to the Router
          //
          var connection = new autobahn.Connection({
@@ -93,6 +116,12 @@
          connection.onopen = function (session, details) {
 
             console.log("onopen");
+
+            if (details.x_cb_node_id) {
+               updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+            } else {
+               updateStatusline("Connected to " + wsuri);
+            }
 
             // get the current visitors count
             session.call("io.crossbar.demo.crossbardemo.get-current-visitor-count").then(
@@ -123,7 +152,13 @@
          //
          connection.onclose = function (reason, details) {
 
-            console.log("Connection lost: " + reason, details);
+            console.log("Connection closed: " + reason, details);
+
+            if (details.will_retry) {
+               updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+            } else {
+               updateStatusline("Disconnected");   
+            }
 
          };
 

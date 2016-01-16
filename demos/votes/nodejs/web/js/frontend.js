@@ -19,6 +19,10 @@ if (document.location.origin == "file://") {
                document.location.host + "/lp";
 }
 
+var updateStatusline = function (status) {
+   document.getElementsByClassName("statusline")[0].innerHTML = status;
+}
+
 
 // the WAMP connection to the Router
 //
@@ -41,6 +45,12 @@ var connection = new autobahn.Connection({
 // fired when connection is established and session attached
 //
 connection.onopen = function (session, details) {
+
+   if (details.x_cb_node_id) {
+      updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+   } else {
+      updateStatusline("Connected to " + wsuri);
+   }
 
    main(session);
 
@@ -94,10 +104,14 @@ function main (session) {
 
 // fired when connection was lost (or could not be established)
 //
-connection.onclose = function (reason, details) {
+connection.onclose = function(reason, details) {
+   console.log("connection closed ", reason, details);
 
-   console.log("Connection lost: " + reason);
-
+   if (details.will_retry) {
+      updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+   } else {
+      updateStatusline("Disconnected");   
+   }
 }
 
 

@@ -110,7 +110,7 @@ function connect() {
       realm: "crossbardemo"
    });
 
-   connection.onopen = function (session) {
+   connection.onopen = function (session, details) {
 
       sess = session;
 
@@ -118,7 +118,11 @@ function connect() {
 
       setupDemo();
 
-      updateStatusline("Connected to " + wsuri);
+      if (details.x_cb_node_id) {
+         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+      } else {
+         updateStatusline("Connected to " + wsuri);
+      }
 
       // establish prefix to use for shorter URL notation
       // sess.prefix("api", channelBaseUri);
@@ -137,9 +141,15 @@ function connect() {
 
    };
 
-   connection.onclose = function() {
+   connection.onclose = function(reason, details) {
       sess = null;
-      console.log("connection closed ", arguments);
+      console.log("connection closed ", reason, details);
+   
+       if (details.will_retry) {
+         updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+      } else {
+         updateStatusline("Disconnected");   
+      }
    }
 
    connection.open();

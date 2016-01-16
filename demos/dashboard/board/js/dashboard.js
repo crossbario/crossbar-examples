@@ -129,14 +129,17 @@ $(document).ready(function() {
    });
 
 
-   connection.onopen = function (sess) {
+   connection.onopen = function (sess, details) {
 
       session = sess;
 
       console.log("connected");
 
-      // main(session);
-      updateStatusline("Connected to " + wsuri + " in session " + session.id);
+      if (details.x_cb_node_id) {
+         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+      } else {
+         updateStatusline("Connected to " + wsuri);
+      }      
 
       ///** define session prefixes ***/
       session.prefix("event", demoPrefix);
@@ -180,11 +183,16 @@ $(document).ready(function() {
    };
 
    connection.onclose = function(reason, details) {
-      session = null;
-      updateStatusline(reason);
-      console.log("connection closed ", arguments);
+      sess = null;
+      console.log("connection closed ", reason, details);
+   
+       if (details.will_retry) {
+         updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+      } else {
+         updateStatusline("Disconnected");   
+      }
    }
-
+   
    connection.open();
 
 })

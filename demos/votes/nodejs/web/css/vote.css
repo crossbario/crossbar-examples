@@ -264,3 +264,83 @@ button:hover
 
    color: #aaa;
 }
+
+.status_line {
+  position: absolute;
+  bottom: -5em;
+  left: 0;
+  margin: 1em;
+}
+
+
+#codeFrame
+{
+  width: 1210px;
+  width: 1040px;
+  height: 1200px;
+  margin: 0 auto;
+}
+#codeFrame > iframe
+{
+  border: none;
+}
+
+#codeContainer
+{
+   width: 1200px;
+   margin: 0 auto;
+   background-color: #fff;
+   position: relative;
+}
+.codehalf
+{
+   width: 50%;
+   height: 100%;
+   float: left;
+   background-color: #fff;
+}
+
+.codehalf .syntaxhighlighter, .ie.syntaxhighlighter  {
+   overflow: hidden !important;
+   /*padding: 0.7em !important;
+   border: solid 1px white !important;
+   box-shadow: 0 0 1em white !important;*/
+}
+
+#JSCode
+{
+    width: 58%;
+
+}
+#PLSQLCode
+{
+   border-left: 1px solid rgb(163, 163, 163);
+   width: 42%;
+}
+
+
+.arrowBox
+{
+   position: absolute;
+   z-index: 10;
+   border-left: 3px solid black;
+}
+
+.dot
+{
+   height: 2px;
+   width: 2px;
+   background-color: red;
+   position: absolute;
+   z-index: 10;
+}
+
+.arrowHead
+{
+   position: absolute;
+}
+
+.codehalf .syntaxhighlighter.nogutter td.code .line
+{
+   padding-left: 0.5em !important;
+}

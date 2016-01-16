@@ -39,9 +39,9 @@
                   "ws": {
                      "type": "websocket"
                   },
-                  "controller": {
+                  "dashboardcontroller": {
                      "type": "static",
-                     "directory": "../dashboardcontroller"
+                     "directory": "../controller"
                   },
                   "lp": {
                      "type": "longpoll"

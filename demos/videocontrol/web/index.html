@@ -95,6 +95,11 @@
         </p>
        </div>
        <center>Read more in the <a href="http://tavendo.com/blog/post/small-demo-of-a-pragmatic-use-of-wamp-in-python/">blog post in English</a> or <a href="http://sametmax.com/introduction-a-wamp-en-python/">French</a> .
+
+      <div class="status_line">
+         Status: <span class="statusline"></span>
+      </div>
+
    </div>
 
 </body>
@@ -109,6 +114,11 @@
 
   /* Run the code once the page is loaded */
   window.addEventListener("load", function(){
+
+    var updateStatusline = function (statusline) {
+      document.getElementsByClassName("statusline")[0].innerHTML = statusline;
+    } 
+
     console.log("loaded");
 
     // the URL of the WAMP Router (Crossbar.io)
@@ -155,9 +165,15 @@
      any error cases in this demo since
      it's a rabbit hole I don't want to
      fall in right now. */
-    connection.onopen = function (session) {
+    connection.onopen = function (session, details) {
 
       console.log("connected");
+
+      if (details.x_cb_node_id) {
+         updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
+      } else {
+         updateStatusline("Connected to " + wsuri);
+      }
 
       session.prefix('demo', 'io.crossbar.demo.videocontroller');
 
@@ -168,6 +184,7 @@
         var uuid = Math.floor(Math.random() * 9007199254740992);
         var controlUrl = document.location.origin + document.location.pathname + "control.html#" + uuid;
         var codeDiv = document.getElementById("qrcode");
+        codeDiv.innerHTML = "";
         new QRCode(codeDiv, controlUrl);
         var ctrllink = document.getElementById("ctrllink");
         ctrllink.href = controlUrl;
@@ -229,6 +246,17 @@
         });
 
     };
+
+
+    connection.onclose = function(reason, details) {
+      console.log("connection closed ", reason, details);
+   
+       if (details.will_retry) {
+         updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
+      } else {
+         updateStatusline("Disconnected");   
+      }
+   }
 
     /* Opening the connection once all the callbacks are set */
     connection.open();
