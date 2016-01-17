@@ -1,3 +1,6 @@
+crossbar:
+	PYTHONPATH=../../../../crossbar python -m crossbar.controller.cli start
+
 client_raw_key:
 	python client_raw_key.py --realm devices --authid client01@example.com --privkey client01.key
 
