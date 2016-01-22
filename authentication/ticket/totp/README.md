@@ -48,4 +48,3 @@ We use WAMP-Ticket as the authentication mechanism, and use two helper functions
 
 * `autobahn.wamp.auth.compute_totp`: compute a current TOTP value from a (secret) seed
 * `autobahn.wamp.auth.generate_totp_secret`: generate a new (random) TOTP seed
-

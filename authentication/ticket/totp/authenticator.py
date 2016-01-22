@@ -32,7 +32,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
-from autobahn.wamp.auth import compute_totp
+from autobahn.wamp.auth import check_totp
 
 # our principal "database"
 PRINCIPALS_DB = {
@@ -60,11 +60,10 @@ class AuthenticatorSession(ApplicationSession):
          pprint_json(details)
 
          if authid in PRINCIPALS_DB:
-            expected = compute_totp(PRINCIPALS_DB[authid][u'seed'])
-            if ticket == expected:
+            secret = PRINCIPALS_DB[authid][u'seed']
+            if check_totp(secret, ticket):
                return PRINCIPALS_DB[authid][u'role']
             else:
-               print("got ticket value {}, but expected {}".format(ticket, expected))
                raise ApplicationError(u'com.example.invalid_ticket', u'could not authenticate session - invalid ticket "{}" for principal {}'.format(ticket, authid))
          else:
             raise ApplicationError(u'com.example.no_such_user', u'could not authenticate session - no such principal {}'.format(authid))

@@ -47,6 +47,7 @@ class ClientSession(ApplicationSession):
 
     def onJoin(self, details):
         print("Client session joined: {}".format(details))
+        print("\nHooray! We've been successfully authenticated with WAMP-Ticket using TOTP!\n")
         self.leave()
 
     def onLeave(self, details):
@@ -67,13 +68,17 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--realm', dest='realm', type=six.text_type, default=u'realm1', help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--authid', dest='authid', type=six.text_type, required=True, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
-    parser.add_argument('--ticket', dest='ticket', type=six.text_type, required=True, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--authid', dest='authid', type=six.text_type, default=u'tobias1', help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--ticket', dest='ticket', type=six.text_type, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
     options = parser.parse_args()
+
+    ticket = options.ticket
+    if not ticket:
+        ticket = six.moves.input('Enter current TOTP value for authid "{}" (e.g. "522955"): '.format(options.authid))
 
     extra = {
         u'authid': options.authid,
-        u'ticket': options.ticket
+        u'ticket': ticket
     }
 
     runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)
