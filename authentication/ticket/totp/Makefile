@@ -3,3 +3,6 @@ crossbar:
 
 client:
 	PYTHONPATH=../../../../autobahn python client.py
+
+generator:
+	PYTHONPATH=../../../../autobahn python generator.py
