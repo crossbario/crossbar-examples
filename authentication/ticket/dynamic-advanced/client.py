@@ -26,6 +26,7 @@
 ##
 ###############################################################################
 
+import six
 from twisted.internet import reactor
 from autobahn.twisted.wamp import ApplicationSession
 
@@ -71,9 +72,9 @@ if __name__ == '__main__':
    import argparse
 
    parser = argparse.ArgumentParser()
-   parser.add_argument('--authid', dest='authid', type=unicode, default=u'user1', help='The authid to connect under (required)')
-   parser.add_argument('--realm', dest='realm', type=unicode, default=None, help='The realm to join. If not provided, let the router auto-choose the realm (default).')
-   parser.add_argument('--url', dest='url', type=unicode, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+   parser.add_argument('--authid', dest='authid', type=six.text_type, default=u'user1', help='The authid to connect under (required)')
+   parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm (default).')
+   parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
    options = parser.parse_args()
 
    from autobahn.twisted.wamp import ApplicationRunner

@@ -28,11 +28,16 @@
 
 import os
 
+import six
+
 from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
+MYTICKET = os.environ.get('MYTICKET', None)
+if MYTICKET and six.PY2:
+   MYTICKET = MYTICKET.decode('utf8')
 
 # our principal "database"
 PRINCIPALS_DB = {
@@ -45,7 +50,7 @@ PRINCIPALS_DB = {
       u"role": u"frontend"
    },
    u"client2": {
-      u"ticket": os.environ.get('MYTICKET', '').decode('utf8'),
+      u"ticket": MYTICKET,
       u"role": u"frontend"
    }
 }
