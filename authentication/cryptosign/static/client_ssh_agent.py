@@ -54,7 +54,10 @@ class ClientSession(ApplicationSession):
         extra = {
             # forward the client pubkey: this allows us to omit authid as
             # the router can identify us with the pubkey already
-            u'pubkey': self._key.public_key()
+            u'pubkey': self._key.public_key(),
+
+            # request channel binding
+            u'channel_binding': u'tls-unique'
         }
 
         # join and authenticate using WAMP-cryptosign

@@ -2,10 +2,11 @@
 
 This examples demonstrates how to authenticate WAMP session using [TOTP](https://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm), specified in IETF [RFC6238](https://tools.ietf.org/html/rfc6238).
 
-* [Google Authenticator](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2)
+* For Android, iOS, and Blackberry: [Google Authenticator](https://support.google.com/accounts/answer/1066447?hl=en) and [here](https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2)
+* For Android and iOS: [Duo Mobile](http://guide.duosecurity.com/third-party-accounts)
+* For Windows Phone: [Authenticator](https://www.microsoft.com/en-US/store/apps/Authenticator/9WZDNCRFJ3RJ)
 * [Yubico Authenticator](https://play.google.com/store/apps/details?id=com.yubico.yubioath)
 * [Authenticator for Pebble by Collin Fair](https://github.com/cpfair/pTOTP)
-
 
 ## How to test
 
