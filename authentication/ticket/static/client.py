@@ -63,6 +63,7 @@ class ClientSession(ApplicationSession):
    @inlineCallbacks
    def onJoin(self, details):
       print("Client session joined: {}".format(details))
+      print("\nHooray! We've been successfully authenticated with WAMP-Ticket using static configuration!\n")
 
       ## call a procedure we are allowed to call (so this should succeed)
       ##
