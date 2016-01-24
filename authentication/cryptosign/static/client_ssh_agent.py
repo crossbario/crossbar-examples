@@ -109,13 +109,17 @@ if __name__ == '__main__':
 
     # load client public key
     with open(options.pubkey, 'r') as f:
-        pubkey = f.read().decode('ascii')
+        pubkey = f.read()
+        if type(pubkey) == six.binary_type:
+            pubkey = pubkey.decode('ascii')
 
     # load router public key (optional, if avail., router will be authenticated too)
     trustroot = None
     if options.trustroot:
         with open(options.trustroot, 'r') as f:
-            trustroot = f.read().decode('ascii')
+            trustroot = f.read()
+            if type(trustroot) == six.binary_type:
+                trustroot = trustroot.decode('ascii')
 
     # forward stuff to our session
     extra = {
@@ -147,5 +151,5 @@ if __name__ == '__main__':
     # ctx = optionsForClientTLS(u'localhost', trustRoot=ca_certs)
 
     # connect to router and run ClientSession
-    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, ssl=ctx, debug=True, debug_wamp=options.trace)
+    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, ssl=ctx, debug=False, debug_wamp=options.trace)
     runner.run(ClientSession)

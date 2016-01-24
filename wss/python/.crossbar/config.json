@@ -63,6 +63,10 @@
                      "host": "127.0.0.1",
                      "port": 8080,
                      "tls": {
+                        "hostname": "localhost",
+                        "ca_certificates": [
+                           "server_cert.pem"
+                        ]
                      }
                   },
                   "url": "wss://localhost:8080/ws"
