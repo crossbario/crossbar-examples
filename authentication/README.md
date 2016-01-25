@@ -15,9 +15,10 @@ Authentication mechanisms in WAMP and Crossbar.io can be distinguished regarding
 
 Notably, working at the **session level**:
 
-1. **WAMP-Ticket** (`ticket`) - [static](ticket/static) / [dynamic](ticket/dynamic), a shared secret ("ticket") based authentication mechanism
-2. **WAMP-CRA** (`wampcra`) - [static](wampcra/static) / [dynamic](wampcra/dynamic), a shared secret, challenge-response scheme supporting salting
-3. **WAMP-Cryptosign** (`cryptosign`) - [static](cryptosign/static) / [dynamic](cryptosign/dynamic), a public-private key based authentication scheme using Curve25519 elliptic curve cryptography
+1. **WAMP-Anonymous** (`anonymous`) - [static](anonymous/static) / [dynamic](anonymous/dynamic), anonymous "authentication" (the client isn't actually identifying itself)
+2. **WAMP-Ticket** (`ticket`) - [static](ticket/static) / [dynamic](ticket/dynamic) / [dynamic-advanced](ticket/dynamic-advanced) / [totp](ticket/totp), a shared secret ("ticket") based authentication mechanism
+3. **WAMP-CRA** (`wampcra`) - [static](wampcra/static) / [dynamic](wampcra/dynamic), a shared secret, challenge-response scheme supporting salting
+4. **WAMP-Cryptosign** (`cryptosign`) - [static](cryptosign/static) / [dynamic](cryptosign/dynamic), a public-private key based authentication scheme using Curve25519 elliptic curve cryptography
 
 and working at the **transport level**:
 
