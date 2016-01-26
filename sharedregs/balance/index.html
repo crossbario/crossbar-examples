@@ -20,6 +20,7 @@
       <p>Open JavaScript console to watch output.</p>
 
       <button onclick="call_procedure()">Call Procedure</button>
+      <button onclick="call_procedure(5)">Call Long Procedure</button>
 
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
@@ -34,13 +35,14 @@
 
          var session = null;
 
-         function call_procedure () {
+         function call_procedure (wait) {
+            wait = wait || 0.01
             if (session) {
                var a = Math.random();
                var b = Math.random();
-               session.call("com.example.add2", [a, b]).then(
+               session.call("com.example.add2", [a, b, wait]).then(
                   function (res) {
-                     console.log("Call succeeded: " + a + " + " + b + " = " + res.result, res.ident);
+                     console.log("Call succeeded: ", res.callnum, res.ident);
                   },
                   function (err) {
                      console.log("Call failed", err);
