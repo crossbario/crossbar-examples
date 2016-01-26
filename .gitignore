@@ -1,5 +1,6 @@
 *.pyc
 node.pid
+node.key
 *~
 .DS_Store
 node_modules
