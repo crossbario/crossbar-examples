@@ -1,5 +1,5 @@
-proc = 'com.example.add2'
-proc = 'com.example.mul2'
+proc = u'com.example.add2'
+proc = u'com.example.mul2'
 
 args = [2, 3]
 kwargs = None
@@ -7,14 +7,14 @@ options = None
 
 def test():
     import requests, json
-    payload = {"procedure": proc}
+    payload = {u'procedure': proc}
     if args:
-        payload['args'] = list(args)
+        payload[u'args'] = list(args)
     if kwargs:
-        payload['kwargs'] = dict(kwargs)
-    headers = {'Content-Type': 'application/json'}
-    r = requests.post("http://10.0.1.2:8080/call", data=json.dumps(payload), headers=headers)
+        payload[u'kwargs'] = dict(kwargs)
+    headers = {u'Content-Type': u'application/json'}
+    r = requests.post(u'http://localhost:8080/call', data=json.dumps(payload), headers=headers)
     res = r.json()
-    return res['args'][0]
+    return res[u'args'][0]
 
-print test()
+print(test())

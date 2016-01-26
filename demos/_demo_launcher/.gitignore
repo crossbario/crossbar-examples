@@ -1,3 +1,6 @@
 .crossbar/log
 *.pid
-
+.crossbar/config_prod.json
+.crossbar/cookie.dat
+letsencrypt.log
+.crossbar/*.pem

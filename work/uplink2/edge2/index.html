@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <body>
-      <h1>Hello WAMP</h1>
+      <h1>Edge 2</h1>
       <p>Open JavaScript console to watch output.</p>
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
@@ -22,8 +22,8 @@
          connection.onopen = function (session, details) {
             console.log("Connected");
 
-            session.subscribe("com.example.on_hello", function (args, kwargs) {
-               console.log("com.example.on_hello", args, kwargs);
+            session.subscribe("com.example.onhello", function (args, kwargs) {
+               console.log("com.example.onhello", args, kwargs);
             }).then(function () { console.log("subscribed"); }, function (err) { console.log(err); });
 
             if (true) {
@@ -31,8 +31,8 @@
                var t1 = setInterval(function () {
                   session.publish('com.example.onhello', ['Hello edge2 client ' + counter]);
                   counter += 1;
-                  console.log("published to topic 'com.example.onhello'");
-               }, 1000);               
+                  console.log(counter);
+               }, 1000);
             }
          };
 

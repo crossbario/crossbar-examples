@@ -1,0 +1,48 @@
+{
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "cpu_affinity": [0]
+            },
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "options": {
+                "cpu_affinity": [1]
+            },
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Edge 1</h1>
+      <p>Open JavaScript console to watch output.</p>
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="autobahn.min.js"></script>
+      <script>
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         connection.onopen = function (session, details) {
+            console.log("Connected");
+
+            session.subscribe("com.example.onhello", function (args, kwargs, details) {
+
+               console.log(
+                  "RECEIVED:  topic='" + details.topic + "', args='" + args + "'" +
+                  ", publication=" + details.publication + ", publisher=" + details.publisher);
+
+            }).then(function () { console.log("subscribed"); }, function (err) { console.log(err); });
+
+            if (true) {
+               var counter = 0;
+               var t1 = setInterval(function () {
+                  var topic = 'com.example.onhello';
+                  var args = ['Edge 1 (' + counter + ')'];
+                  session.publish(topic, args, null, {acknowledge: true, disclose_me: true}).then(
+                     function (pub) {
+                        console.log("PUBLISHED: topic='" + topic + "', args='" + args + "', publication=" + pub.id);
+                     },
+                     function (err) {
+                        console.log(err);
+                     }
+                  );
+                  counter += 1;
+               }, 5000);
+            }
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

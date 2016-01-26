@@ -304,3 +304,15 @@ header {
 /***************************/
 /* old demo.css styles end */
 /***************************/
+
+
+.status_line {
+   position: absolute;
+   bottom: -3em;
+   left: 5px;
+   color: #444;
+}
+
+.statusline {
+
+}

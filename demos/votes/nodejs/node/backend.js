@@ -1,24 +1,5 @@
-var wsuri = null;
-
-// include AutobahnJS
-try {
-   var autobahn = require('autobahn');
-
-   wsuri = "ws://127.0.0.1:8080/ws"; // assume that this is running locally
-} catch (e) {
-   // when running in browser, AutobahnJS will
-   // be included without a module system
-
-   // router url either localhost or assumed to be
-   // at IP of server of backend HTML
-   if (document.location.origin == "file://") {
-      wsuri = "ws://127.0.0.1:8080/ws";
-
-   } else {
-      wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
-                  document.location.host + "/ws";
-   }
-}
+var wsuri = "ws://127.0.0.1:8080/ws";
+var autobahn = require('autobahn');
 
 var connection = new autobahn.Connection({
    url: wsuri,

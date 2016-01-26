@@ -1,7 +1,4 @@
-
 {
-   "controller": {
-   },
    "workers": [
       {
          "type": "router",
