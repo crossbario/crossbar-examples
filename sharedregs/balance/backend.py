@@ -34,3 +34,4 @@ if __name__ == '__main__':
     log.startLogging(sys.stdout)
     runner = ApplicationRunner(url=u"ws://127.0.0.1:8080/ws", realm=u"realm1")
     runner.run(MyComponent)
+
