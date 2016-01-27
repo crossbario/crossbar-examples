@@ -18,7 +18,7 @@ class MyComponent(ApplicationSession):
     def onJoin(self, details):
         self._ident = "MyComponent (PID {}, Session {})".format(os.getpid(), details.session)
         self.call_count = 0
-        yield self.register(self.add2, u'com.example.add2', options=RegisterOptions(invoke=u'balance'))
+        yield self.register(self.add2, u'com.example.add2', options=RegisterOptions(invoke=u'leastbusy'))
         log.msg("MyComponent: add2() registered!")
 
     @inlineCallbacks

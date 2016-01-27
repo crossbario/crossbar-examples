@@ -16,11 +16,14 @@
       </style>
    </head>
    <body>
-      <h1>Example: Shared Registrations - Client / Caller</h1>
+      <h1>Example: Shared Registrations - Client / Caller with LEASTBUSY policy</h1>
       <p>Open JavaScript console to watch output.</p>
-
-      <button onclick="call_procedure()">Call Procedure</button>
-      <button onclick="call_procedure(5)">Call Long Procedure</button>
+      <p>There are 8 workers registered. To experience the leastbusy balancing policy
+      click 7 times on the 5sec butten and then repeatedly on the 0sec button. 
+      The 0sec calls will then all be routed to the remaining worker as long as the
+      other 7 workers are busy (5sec).  </p>
+      <button onclick="call_procedure()">Call 0sec Procedure</button>
+      <button onclick="call_procedure(5)">Call 5sec Procedure</button>
 
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
