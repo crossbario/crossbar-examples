@@ -37,24 +37,57 @@
          function call_procedures () {
             if (session) {
 
+               /*
+                The backend registers 3 endpoints:
+
+                 - com.example.procedure1    => exact matching    => endpoint1
+                 - com.example               => prefix matching   => endpoint2
+                 - com.example.              => prefix matching   => endpoint2b
+                 - com..procedure1           => wildcard matching => endpoint3
+                */
+
                var procedures = [
-                  "com.example.procedure1",
-                  "com.example.procedure123",
-                  "com.example.procedure1.foobar",
-                  "com.example",
-                  "com.myapp.procedure1",
-                  "com.myapp.procedure123",
+                  // exact matching
+                  ["com.example.procedure1", true, "endpoint1"],
+                  ["de.example.procedure1", false, null],
+
+                  // prefix matching
+                  ["com.example", true, "endpoint2"],
+                  ["com.example.procedure123", true, "endpoint2b"],
+                  ["com.example.procedure1.foobar", true, "endpoint2b"],
+                  ["com.example.foo", true, "endpoint2b"],
+
+                  // wildcard matching
+                  ["com.myapp.procedure1", true, "endpoint3"],
+                  ["com.myapp.procedure123", false, null],
+                  ["de.myapp.procedure1", false, null],
                ];
 
                for (var i = 0; i < procedures.length; ++i) {
                   (function (procedure) {
 
-                     session.call(procedure, ["hello"]).then(
-                        function () {
-                           console.log("procedure " + procedure + " called successfully");
+                     var uri = procedure[0];
+                     var expect_success = procedure[1];
+                     var expected_endpoint = procedure[2];
+
+                     session.call(uri, ["hello"]).then(
+                        function (res) {
+                           if (expect_success) {
+                              if (res === expected_endpoint) {
+                                 console.log("OK  : procedure " + uri + " called successfully, processed by endpoint '" + res + "'.");
+                              } else {
+                                 console.log("FAIL: procedure " + uri + " called successfully, but processed by wrong endpoint '" + res + "' - expected endpoint '" + expected_endpoint + "'!");
+                              }
+                           } else {
+                              console.log("FAIL: procedure " + uri + " called successfully, but expected the call to fail!");
+                           }
                         },
                         function (err) {
-                           console.log("could not call procedure", err);
+                           if (expect_success) {
+                              console.log("FAIL: procedure " + uri + " call failed - expected the call to succeed!");
+                           } else {
+                              console.log("OK  : procedure " + uri + " call failed with " + JSON.stringify(err));
+                           }
                         }
                      );
 
