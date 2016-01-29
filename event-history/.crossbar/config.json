@@ -21,10 +21,12 @@
                ],
                "store": {
                   "type": "memory",
+                  "limit": 100,
                   "event-history": [
                      {
                         "uri": "com.example.oncounter",
-                        "limit": 10000
+                        "match": "exact",
+                        "limit": 1000
                      }
                   ]
                }

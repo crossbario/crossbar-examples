@@ -41,19 +41,23 @@
             session.subscribe('com.example.oncounter',
                function (args, kwargs, details) {
                   console.log('com.example.oncounter', details.publication, args[0]);
+               },
+               {
+                  'match': 'exact'
                }
             ).then(
                // .. when subscription is successful, we get back a subscription object
                function (sub) {
                   console.log("subscribed with subscription ID " + sub.id);
 
-                  // get event history of length 5 on given subscription
+                  // get event history of length 20 on given subscription
                   //
-                  session.call('wamp.subscription.get_events', [sub.id, 12]).then(
+                  session.call('wamp.subscription.get_events', [sub.id, 20]).then(
                      function (history) {
                         console.log("got history for " + history.length + " events");
                         for (var i = 0; i < history.length; ++i) {
-                           console.log(history[i].timestamp, history[i].publication, history[i].args[0]);
+                           var evt = history[i];
+                           console.log(evt.timestamp, evt.publication, evt.args[0]);
                         }
                      },
                      function (err) {
