@@ -40,6 +40,13 @@
                      "debug": false 
                   }
                }
+            },
+            {
+               "type": "websocket",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8090
+               }
             }
          ]
       }
