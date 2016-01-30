@@ -27,6 +27,7 @@
 ###############################################################################
 
 import os
+from pprint import pprint
 
 from twisted.internet.defer import inlineCallbacks
 
@@ -48,8 +49,6 @@ PRINCIPALS_DB = {
    }
 }
 
-from crossbar.common.checkconfig import pprint_json
-
 
 class AuthenticatorSession(ApplicationSession):
 
@@ -60,7 +59,7 @@ class AuthenticatorSession(ApplicationSession):
 
       def authenticate(realm, authid, details):
          print("WAMP-Ticket dynamic authenticator invoked: realm='{}', authid='{}', details=".format(realm, authid))
-         pprint_json(details)
+         pprint(details)
 
          if authid in PRINCIPALS_DB:
             ticket = details['ticket']

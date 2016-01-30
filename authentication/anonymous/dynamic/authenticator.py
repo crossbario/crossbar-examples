@@ -27,6 +27,7 @@
 ###############################################################################
 
 import os
+from pprint import pprint
 
 import six
 
@@ -34,8 +35,6 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
-
-from crossbar.common.checkconfig import pprint_json
 
 
 class AuthenticatorSession(ApplicationSession):
@@ -45,7 +44,7 @@ class AuthenticatorSession(ApplicationSession):
 
       def authenticate(realm, authid, details):
          print("WAMP-Anonymous dynamic authenticator invoked: realm='{}', authid='{}'".format(realm, authid))
-         pprint_json(details)
+         pprint(details)
          principal = {
             u'role': u'public',
             u'extra': {

@@ -26,6 +26,8 @@
 ##
 ###############################################################################
 
+from pprint import pprint
+
 from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
@@ -56,8 +58,6 @@ USERDB = {
    }
 }
 
-from crossbar.common.checkconfig import pprint_json
-
 
 class AuthenticatorSession(ApplicationSession):
 
@@ -66,7 +66,7 @@ class AuthenticatorSession(ApplicationSession):
 
       def authenticate(realm, authid, details):
          print("WAMP-CRA dynamic authenticator invoked: realm='{}', authid='{}'".format(realm, authid))
-         pprint_json(details)
+         pprint(details)
 
          if authid in USERDB:
             # return a dictionary with authentication information ...
