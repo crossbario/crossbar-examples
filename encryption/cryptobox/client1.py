@@ -84,7 +84,7 @@ class Component1(ApplicationSession):
 
     @inlineCallbacks
     def _test_rpc(self, delay=None):
-        options = CallOptions(disclose_me=True)
+        options = CallOptions()
 
         counter = 1
         while counter <= self.NUM:
@@ -102,7 +102,7 @@ class Component1(ApplicationSession):
 
     @inlineCallbacks
     def _test_rpc_errors(self):
-        options = CallOptions(disclose_me=True)
+        options = CallOptions()
 
         for proc in [(u'com.myapp.failme', False),
                      (u'com.myapp.failme', True),
@@ -116,7 +116,7 @@ class Component1(ApplicationSession):
 
     @inlineCallbacks
     def _test_pubsub(self, delay=None):
-        options = PublishOptions(acknowledge=True, exclude_me=False, disclose_me=True)
+        options = PublishOptions(acknowledge=True, exclude_me=False)
         counter = 1
         while counter <= self.NUM:
             msg = u"Counter is at {}".format(counter)
