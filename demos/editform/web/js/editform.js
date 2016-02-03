@@ -204,7 +204,6 @@ function ViewModel () {
 
       for (var i = 0; i < self.detailsIds.length; ++i) {
          var id = self.detailsIds[i];
-         console.log("x", id, self.detailsEditable[id].isDirty());
          if (self.detailsEditable[id].isDirty()) {
             return true;
          }
@@ -337,7 +336,6 @@ function ViewModel () {
 
       // exclude clicks on an already displayed item
       if (self.detailsCurrent === listItem) {
-         console.log("clicked on already selected item");
          return;
       }
 
@@ -417,9 +415,8 @@ function ViewModel () {
       // set call URI depending on creating new item or updating existing one
       var callURI = self.detailsCurrent.itemState() === 'isNew' ? 'form:create' : 'form:update';
 
-      self.session.call(callURI, [], saveSet, { disclose_me: true }).then(
+      self.session.call(callURI, [], saveSet ).then(
          function(res) {
-            console.log("res", res);
 
             //// use return from DB for this
             for (var i in res) {
@@ -494,7 +491,7 @@ function ViewModel () {
                self.detailsEditable[i].hasBeenUpdated(true);
                (function(i) {
                      window.setTimeout(function() {
-                        console.log(i + " hasBeenUpdated = false");
+                        // console.log(i + " hasBeenUpdated = false");
                            self.detailsEditable[i].hasBeenUpdated(false);
                      }, 1400);
                })(i);
@@ -562,7 +559,7 @@ function ViewModel () {
    // +
    // delete triggered locally via delete button on list item
    self.triggerDelete = function( listItem, event ) {
-      self.session.call("form:delete", [listItem.id()], {}, { disclose_me: true }).then(
+      self.session.call("form:delete", [listItem.id()]).then(
          function(res) {
             // console.log("item " + listItem.id() + " deleted on backend", res);
             var locallyTriggered = true;
@@ -624,7 +621,7 @@ function ViewModel () {
    self.onItemDeleted = function (args) {
    
       var id = args[0];
-      console.log("onItemDeleted", id);   
+      // console.log("onItemDeleted", id);   
 
       // get the item we need to delete
       var item = self.listData()[self.getIndexFromId(id)];
@@ -643,7 +640,7 @@ function ViewModel () {
    // +   
    // local user requests data reset
    self.requestDataReset = function() {
-      self.session.call("form:reset", [], {}, { disclose_me: true }).then(
+      self.session.call("form:reset").then(
          function(res) {
             self.resetData(res);
          }, self.session.log
@@ -651,7 +648,6 @@ function ViewModel () {
    };
 
    self.resetData = function (data) {
-      console.log("resetData", data);
 
       self.displayResetNotice(true);
       setTimeout(function() {
@@ -687,7 +683,6 @@ function ViewModel () {
 
    self.helpShown = ko.observable(false);
    self.toggleHelp = function (viewmodel, event) {
-      console.log("toggleHelp", event);
       self.helpShown(!self.helpShown());
    }
 
