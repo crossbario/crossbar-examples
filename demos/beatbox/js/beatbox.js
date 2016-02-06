@@ -85,7 +85,7 @@ function switchChannel(newChannelId) {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   $(".statusline").html(status);
 };
 
 var connection = null;

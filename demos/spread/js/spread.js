@@ -102,7 +102,7 @@ function start() {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   $(".statusline").html(status);
 };
 
 function main (session) {

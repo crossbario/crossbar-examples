@@ -104,7 +104,7 @@ function switchChannel(oldChannelID, newChannelID) {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   $(".statusline").html(status);
 };
 
 

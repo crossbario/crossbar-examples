@@ -100,7 +100,7 @@ function connect() {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   $(".statusline").html(status);
 };
 
 

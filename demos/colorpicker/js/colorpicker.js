@@ -9,8 +9,6 @@
 
 "use strict";
 
-"use strict";
-
 var demoPrefix = "io.crossbar.demo";
 
 // the URL of the WAMP Router (Crossbar.io)
@@ -87,7 +85,7 @@ function switchChannel(newChannelId) {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   $(".statusline").html(status);
 };
 
 var connection = null;

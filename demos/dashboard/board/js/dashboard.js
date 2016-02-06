@@ -275,7 +275,7 @@ function initialize() {
 
 
 function updateStatusline(status) {
-   $(".statusline").text(status);
+   $(".statusline").html(status);
 };
 
 
