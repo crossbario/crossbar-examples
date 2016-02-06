@@ -12,7 +12,7 @@ if (document.location.origin == "file://") {
 // the WAMP connection to the Router
 //
 var connection = new autobahn.Connection({
-   url: "ws://192.168.1.134:8080/ws", // replace with the url of your crossbar instance
+   url: "ws://127.0.0.1:8080/ws", // replace with the url of your crossbar instance
    realm: "iot_cookbook"
 });
 
