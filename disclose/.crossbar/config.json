@@ -14,7 +14,7 @@
                            "publish": true,
                            "subscribe": true,
                            "call": true,
-                           "register": true,
+                           "register": true
                         }
                      ]
                   }
