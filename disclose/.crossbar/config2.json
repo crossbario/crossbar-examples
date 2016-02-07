@@ -1,5 +1,4 @@
 {
-   "version": 2,
    "workers": [
       {
          "type": "router",
@@ -11,18 +10,21 @@
                      "name": "anonymous",
                      "permissions": [
                         {
-                           "uri": "com.example.",
+                           "uri": "",
                            "match": "prefix",
+
                            "allow": {
-                              "call": true,
-                              "register": true,
                               "publish": true,
-                              "subscribe": true
+                              "subscribe": true,
+                              "call": true,
+                              "register": true
                            },
+
                            "disclose": {
-                              "caller": false,
-                              "publisher": false
+                              "caller": true,
+                              "publisher": true
                            },
+
                            "cache": true
                         }
                      ]
@@ -52,9 +54,7 @@
       {
          "type": "container",
          "options": {
-            "pythonpath": [
-               ".."
-            ]
+            "pythonpath": [".."]
          },
          "components": [
             {

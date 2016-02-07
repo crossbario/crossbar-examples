@@ -11,19 +11,17 @@
                      "name": "anonymous",
                      "permissions": [
                         {
-                           "uri": "com.example.",
-                           "match": "prefix",
+                           "uri": "com.example.*",
                            "allow": {
                               "call": true,
                               "register": true,
                               "publish": true,
-                              "subscribe": true
+                              "subscribe": false
                            },
                            "disclose": {
                               "caller": false,
                               "publisher": false
-                           },
-                           "cache": true
+                           }
                         }
                      ]
                   }
