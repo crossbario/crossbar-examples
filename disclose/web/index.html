@@ -4,8 +4,13 @@
       <h1>Hello WAMP</h1>
       <p>Open JavaScript console to watch output.</p>
       <script>AUTOBAHN_DEBUG = false;</script>
+      <!--
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      -->
+      <script src="autobahn.min.js"></script>
       <script>
+         console.log("Running AutobahnJS " + autobahn.version);
+
          var wsuri;
          if (document.location.origin == "file://") {
             wsuri = "ws://127.0.0.1:8080/ws";
@@ -29,7 +34,7 @@
             function on_counter (args, kwargs, details) {
                var counter = args[0];
                console.log("on_counter() event received with counter " + counter);
-               console.log("publisher details:", details);
+               console.log("publication details:", details);
             }
             session.subscribe('com.example.oncounter', on_counter).then(
                function (sub) {
@@ -46,10 +51,11 @@
                console.log("published to topic 'com.example.onhello'");
             }, 1000);
 
-            function mul2 (args) {
+            function mul2 (args, kwargs, details) {
                var x = args[0];
                var y = args[1];
                console.log("mul2() called with " + x + " and " + y);
+               console.log("invocation details:", details);
                return x * y;
             }
             session.register('com.example.mul2', mul2).then(
