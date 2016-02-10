@@ -29,7 +29,7 @@
 
          connection.onopen = function (session, details) {
 
-            console.log("Connected");
+            console.log("Connected:", details);
 
             function on_counter (args, kwargs, details) {
                var counter = args[0];
