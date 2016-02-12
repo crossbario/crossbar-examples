@@ -6,6 +6,17 @@ See the docs [here](http://crossbar.io/docs/WSGI-Host-Service/).
 
 ## Try
 
+Install Flask:
+
+```console
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/wsgi$ pip install -U flask
+Requirement already up-to-date: flask in /home/oberstet/python279_1/lib/python2.7/site-packages
+Requirement already up-to-date: Werkzeug>=0.7 in /home/oberstet/python279_1/lib/python2.7/site-packages (from flask)
+Requirement already up-to-date: Jinja2>=2.4 in /home/oberstet/python279_1/lib/python2.7/site-packages (from flask)
+Requirement already up-to-date: itsdangerous>=0.21 in /home/oberstet/python279_1/lib/python2.7/site-packages (from flask)
+Requirement already up-to-date: MarkupSafe in /home/oberstet/python279_1/lib/python2.7/site-packages (from Jinja2>=2.4->flask)
+```
+
 Start Crossbar.io:
 
 ```console
