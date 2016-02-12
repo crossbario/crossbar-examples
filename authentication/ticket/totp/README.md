@@ -43,6 +43,9 @@ In a third terminal, start the example WAMP client, replacing the `--ticket` val
 2016-01-18T22:07:14+0100 Main loop terminated.
 ```
 
+**generator.py** outputs SVGQR codes for the principals defined in **authenticator.py**.
+
+
 ## How it works
 
 We use WAMP-Ticket as the authentication mechanism, and use two helper functions provided by AutobahnPython:
