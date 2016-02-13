@@ -51,7 +51,6 @@ body {
    font-family: 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
    font-size: 16px;
    line-height: 1.428571429;
-   background-color: #fcfcfc;
    color: #333;
 
    background-color: #fafafa;
@@ -556,6 +555,10 @@ flatButton:hover
 .noContainer {
    margin: 0em 0 1em 2em;
    padding: 6em 0 0 0;
+}
+
+.indent {
+    margin: 0em 0 1em 2em;
 }
 
 #bigGauge {
