@@ -69,7 +69,9 @@ class ClientSession(ApplicationSession):
             # challenge will need to be signed by the router and send back
             # in AUTHENTICATE for client to verify. A string with a hex
             # encoded 32 bytes random value.
-            u'challenge': None
+            u'challenge': None,
+
+            u'channel_binding': u'tls-unique'
         }
 
         # now request to join ..
