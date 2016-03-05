@@ -10,6 +10,7 @@ from twisted.internet.error import ReactorNotRunning
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
+from autobahn.twisted.util import sleep
 
 from Adafruit_QuadAlphanum import QuadAlphanum
 
@@ -20,16 +21,43 @@ class VotesListener(ApplicationSession):
     def onJoin(self, details):
         self.log.info("Session joined: {details}", details=details)
 
-        self._disp = QuadAlphanum(0x70, 1)
+        # the voting subject we will display
+        subject = self.config.extra[u'subject']
+
+        # our quad, alphanumeric display: https://www.adafruit.com/products/2157
+        self._disp = QuadAlphanum(self.config.extra[u'i2c_address'])
         self._disp.clear()
-        self._disp.setBrightness(15)
+        self._disp.setBrightness(int(round(self.config.extra[u'brightness'] * 15)))
 
-        def onvote(vote):
-            if vote[u'subject'] == u'Banana':
-                text = "{:0>4d}".format(votes[u'votes'])
-                self._disp.setMessage(text)
+        # display votes for subject on display
+        def setVotes(votes):
+            if votes < 10000:
+                text = "{:0>4d}".format(votes)
+            else:
+                text = "MANY"
+            self._disp.setMessage(text)
 
-        yield self.subscribe(onvote, u'io.crossbar.demo.vote.onvote')
+        # get notified of new votes
+        def onVote(vote):
+            if vote[u'subject'] == subject:
+                setVotes(vote[u'votes'])
+
+        yield self.subscribe(onVote, u'io.crossbar.demo.vote.onvote')
+
+        # get notified of votes being reset
+        @inlineCallbacks
+        def onReset():
+            self._disp.setMessage('****')
+            yield sleep(.1)
+            setVotes(0)
+
+        yield self.subscribe(onReset, u'io.crossbar.demo.vote.onreset')
+
+        # get the current votes
+        votes = yield self.call(u'io.crossbar.demo.vote.get')
+        for vote in votes:
+            if vote[u'subject'] == subject:
+                setVotes(vote[u'votes'])
 
         self.log.info("Votes listener ready!")
 
@@ -62,6 +90,9 @@ if __name__ == '__main__':
         txaio.start_logging(level='info')
 
     extra = {
+        u'i2c_address': 0x70,
+        u'brightness': 1.,
+        u'subject': u'Banana'
     }
 
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra)
