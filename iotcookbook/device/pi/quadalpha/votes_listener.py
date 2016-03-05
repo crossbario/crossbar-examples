@@ -37,7 +37,7 @@ class VotesListener(ApplicationSession):
         # the voting subject we will display
         subject = self.config.extra[u'subject']
 
-        yield scrollText(self._disp, "listening on {} votes".upper())
+        yield scrollText(self._disp, "listening on {} votes".format(subject).upper())
 
         # display votes for subject on display
         def setVotes(votes):
@@ -101,11 +101,7 @@ if __name__ == '__main__':
 
     extra = {
         u'i2c_address': 0x70,
-<<<<<<< HEAD
         u'brightness': 1.,
-=======
-        u'brightness' 1.,
->>>>>>> 2e0e4de5935a085f50045a2e328d87edcda96f41
         u'subject': u'Banana'
     }
 
