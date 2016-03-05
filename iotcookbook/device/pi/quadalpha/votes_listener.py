@@ -7,6 +7,7 @@ txaio.use_twisted()
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet.error import ReactorNotRunning
+from twisted.internet.task import LoopingCall
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
@@ -37,8 +38,6 @@ class VotesListener(ApplicationSession):
         # the voting subject we will display
         subject = self.config.extra[u'subject']
 
-        yield scrollText(self._disp, "listening on {} votes".format(subject).upper())
-
         # display votes for subject on display
         def setVotes(votes):
             if votes < 10000:
@@ -63,11 +62,18 @@ class VotesListener(ApplicationSession):
 
         yield self.subscribe(onReset, u'io.crossbar.demo.vote.onreset')
 
-        # get the current votes
-        votes = yield self.call(u'io.crossbar.demo.vote.get')
-        for vote in votes:
-            if vote[u'subject'] == subject:
-                setVotes(vote[u'votes'])
+        @inlineCallbacks
+        def displayNotice():
+            yield scrollText(self._disp, "listening on {} votes".format(subject).upper())
+
+            # get the current votes
+            votes = yield self.call(u'io.crossbar.demo.vote.get')
+            for vote in votes:
+                if vote[u'subject'] == subject:
+                    setVotes(vote[u'votes'])
+
+        #yield displayNotice()
+        LoopingCall(displayNotice).start(4)
 
         self.log.info("Votes listener ready!")
 
