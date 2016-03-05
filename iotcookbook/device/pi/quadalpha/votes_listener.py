@@ -15,19 +15,29 @@ from autobahn.twisted.util import sleep
 from Adafruit_QuadAlphanum import QuadAlphanum
 
 
+@inlineCallbacks
+def scrollText(disp, text):
+    s = text + "    "
+    for i in range(len(s)):
+        disp.setMessage(s[i:i+4])
+        yield sleep(.2)
+
+
 class VotesListener(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
         self.log.info("Session joined: {details}", details=details)
 
-        # the voting subject we will display
-        subject = self.config.extra[u'subject']
-
         # our quad, alphanumeric display: https://www.adafruit.com/products/2157
         self._disp = QuadAlphanum(self.config.extra[u'i2c_address'])
         self._disp.clear()
         self._disp.setBrightness(int(round(self.config.extra[u'brightness'] * 15)))
+
+        # the voting subject we will display
+        subject = self.config.extra[u'subject']
+
+        yield scrollText(self._disp, "listening on {} votes".upper())
 
         # display votes for subject on display
         def setVotes(votes):
