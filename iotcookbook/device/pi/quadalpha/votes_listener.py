@@ -64,7 +64,7 @@ class VotesListener(ApplicationSession):
 
         @inlineCallbacks
         def displayNotice():
-            yield scrollText(self._disp, "listening on {} votes".format(subject).upper())
+            yield scrollText(self._disp, "watching votes for {} ...".format(subject).upper())
 
             # get the current votes
             votes = yield self.call(u'io.crossbar.demo.vote.get')
@@ -72,8 +72,8 @@ class VotesListener(ApplicationSession):
                 if vote[u'subject'] == subject:
                     setVotes(vote[u'votes'])
 
-        #yield displayNotice()
-        LoopingCall(displayNotice).start(4)
+        # every couple of secs, display a notice
+        LoopingCall(displayNotice).start(20)
 
         self.log.info("Votes listener ready!")
 
