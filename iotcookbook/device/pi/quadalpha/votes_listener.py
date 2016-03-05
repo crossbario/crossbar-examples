@@ -58,10 +58,10 @@ class VotesListener(ApplicationSession):
         @inlineCallbacks
         def onReset():
             self._disp.setMessage('****')
-            yield sleep(.5)
+            yield sleep(.1)
             setVotes(0)
 
-        yield self.subscribe(onVote, u'io.crossbar.demo.vote.onreset')
+        yield self.subscribe(onReset, u'io.crossbar.demo.vote.onreset')
 
         # get the current votes
         votes = yield self.call(u'io.crossbar.demo.vote.get')
@@ -101,7 +101,11 @@ if __name__ == '__main__':
 
     extra = {
         u'i2c_address': 0x70,
+<<<<<<< HEAD
+        u'brightness': 1.,
+=======
         u'brightness' 1.,
+>>>>>>> 2e0e4de5935a085f50045a2e328d87edcda96f41
         u'subject': u'Banana'
     }
 
