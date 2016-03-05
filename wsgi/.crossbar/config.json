@@ -1,8 +1,12 @@
 {
    "version": 2,
+   "controller": {},
    "workers": [
       {
          "type": "router",
+         "options": {
+            "pythonpath": [".."]
+         },
          "realms": [
             {
                "name": "realm1",
@@ -11,16 +15,12 @@
                      "name": "anonymous",
                      "permissions": [
                         {
-                           "uri": "com.example.*",
+                           "uri": "*",
                            "allow": {
                               "call": true,
                               "register": true,
                               "publish": true,
-                              "subscribe": false
-                           },
-                           "disclose": {
-                              "caller": false,
-                              "publisher": false
+                              "subscribe": true
                            }
                         }
                      ]
@@ -37,36 +37,13 @@
                },
                "paths": {
                   "/": {
-                     "type": "static",
-                     "directory": "../web"
+                     "type": "wsgi",
+                     "module": "myapp",
+                     "object": "app"
                   },
                   "ws": {
                      "type": "websocket"
                   }
-               }
-            }
-         ]
-      },
-      {
-         "type": "container",
-         "options": {
-            "pythonpath": [
-               ".."
-            ]
-         },
-         "components": [
-            {
-               "type": "class",
-               "classname": "hello.AppSession",
-               "realm": "realm1",
-               "transport": {
-                  "type": "websocket",
-                  "endpoint": {
-                     "type": "tcp",
-                     "host": "127.0.0.1",
-                     "port": 8080
-                  },
-                  "url": "ws://127.0.0.1:8080/ws"
                }
             }
          ]

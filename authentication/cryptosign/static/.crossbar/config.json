@@ -1,4 +1,5 @@
 {
+   "version": 2,
    "workers": [
       {
          "type": "router",
@@ -10,11 +11,19 @@
                      "name": "device",
                      "permissions": [
                         {
-                           "uri": "*",
-                           "publish": true,
-                           "subscribe": true,
-                           "call": true,
-                           "register": true
+                           "uri": "",
+                           "match": "prefix",
+                           "allow": {
+                              "call": true,
+                              "register": true,
+                              "publish": true,
+                              "subscribe": true
+                           },
+                           "disclose": {
+                              "caller": false,
+                              "publisher": false
+                           },
+                           "cache": true
                         }
                      ]
                   }
@@ -28,8 +37,8 @@
                   "type": "tcp",
                   "port": 8080,
                   "tls": {
-                      "certificate": "server.crt",
-                      "key": "server.key"
+                     "certificate": "server.crt",
+                     "key": "server.key"
                   }
                },
                "auth": {

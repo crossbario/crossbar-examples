@@ -39,8 +39,8 @@ curl -H "Content-Type: application/json" \
 
             console.log("Connected");
 
-            function onevent (args, kwargs) {
-               console.log("Got event:", args, kwargs);
+            function onevent (args, kwargs, details) {
+               console.log("Got event:", args, kwargs, details);
             }
 
             session.subscribe('com.myapp.topic1', onevent);

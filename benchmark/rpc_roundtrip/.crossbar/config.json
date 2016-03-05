@@ -1,0 +1,158 @@
+{
+   "workers": [
+      {
+         "type": "router",
+         "realms": [
+            {
+               "name": "realm1",
+               "roles": [
+                  {
+                     "name": "anonymous",
+                     "permissions": [
+                        {
+                           "uri": "*",
+                           "call": true,
+                           "register": true,
+                           "publish": true,
+                           "subscribe": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "websocket",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 9000
+               },
+               "serializers": [
+                  "json"
+               ]
+            },
+            {
+               "type": "rawsocket",
+               "endpoint": {
+                  "type": "unix",
+                  "path": "crossbar.sock"
+               },
+               "serializers": [
+                  "msgpack"
+               ]
+            }
+         ]
+      },
+      {
+         "type": "container",
+         "options": {
+            "pythonpath": [
+               ".."
+            ]
+         },
+         "components": [
+            {
+               "type": "class",
+               "classname": "callee.AppSession",
+               "realm": "realm1",
+               "transport": {
+                  "type": "rawsocket",
+                  "endpoint": {
+                     "type": "unix",
+                     "path": "crossbar.sock"
+                  },
+                  "serializer": "msgpack"
+               },
+               "extra": {
+                  "prefix": "com.example.rawsocket-msgpack",
+                  "logname": "WAMP-UDS-RawSocket-MessagePack"
+               }
+            }
+         ]
+      },
+      {
+         "type": "container",
+         "options": {
+            "pythonpath": [
+               ".."
+            ]
+         },
+         "components": [
+            {
+               "type": "class",
+               "classname": "caller.AppSession",
+               "realm": "realm1",
+               "transport": {
+                  "type": "rawsocket",
+                  "endpoint": {
+                     "type": "unix",
+                     "path": "crossbar.sock"
+                  },
+                  "serializer": "msgpack"
+               },
+               "extra": {
+                  "prefix": "com.example.rawsocket-msgpack",
+                  "logname": "WAMP-UDS-RawSocket-MessagePack"
+               }
+            }
+         ]
+      },
+      {
+         "type": "container",
+         "options": {
+            "pythonpath": [
+               ".."
+            ]
+         },
+         "components": [
+            {
+               "type": "class",
+               "classname": "callee.AppSession",
+               "realm": "realm1",
+               "transport": {
+                  "type": "websocket",
+                  "endpoint": {
+                     "type": "tcp",
+                     "host": "127.0.0.1",
+                     "port": 9000
+                  },
+                  "url": "ws://localhost:9000"
+               },
+               "extra": {
+                  "prefix": "com.example.websocket-json",
+                  "logname": "WAMP-TCP-WebSocket-JSON"
+               }
+            }
+         ]
+      },
+      {
+         "type": "container",
+         "options": {
+            "pythonpath": [
+               ".."
+            ]
+         },
+         "components": [
+            {
+               "type": "class",
+               "classname": "caller.AppSession",
+               "realm": "realm1",
+               "transport": {
+                  "type": "websocket",
+                  "endpoint": {
+                     "type": "tcp",
+                     "host": "127.0.0.1",
+                     "port": 9000
+                  },
+                  "url": "ws://localhost:9000"
+               },
+               "extra": {
+                  "prefix": "com.example.websocket-json",
+                  "logname": "WAMP-TCP-WebSocket-JSON"
+               }
+            }
+         ]
+      }
+   ]
+}
