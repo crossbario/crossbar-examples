@@ -8,6 +8,14 @@ For example, user code could lookup clients in a persistent database, such as a 
 
 ## How to run
 
+For the impatient:
+
+```console
+make crossbar
+make client
+make bad_client
+```
+
 In a first terminal, start Crossbar.io:
 
     crossbar start

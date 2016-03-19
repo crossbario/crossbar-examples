@@ -103,13 +103,14 @@ class AuthenticatorSession(ApplicationSession):
                u'realm': principal[u'realm'],
                u'authid': principal[u'authid'],
                u'role': principal[u'role'],
-               u'extra': principal[u'extra']
+               u'extra': principal[u'extra'],
+               u'cache': True
             }
             self.log.info("found valid principal {authid} matching public key", authid=auth[u'authid'])
             return auth
          else:
             self.log.error("no principal found matching public key")
-            raise ApplicationError('com.example.no_such_user', 'could not authenticate session - no such principal {}'.format(pubkey))
+            raise ApplicationError('com.example.no_such_user', 'no principal with matching public')
 
       # register our dynamic authenticator with Crossbar.io
       try:
