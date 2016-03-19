@@ -86,7 +86,7 @@ class AuthenticatorSession(ApplicationSession):
       # this is our dynamic authenticator procedure that will be called by Crossbar.io
       # when a session is authenticating
       def authenticate(realm, authid, details):
-         self.log.info("authenticate({realm}, {authid}, {details})", realm=realm, authid=authid, details=details)
+         self.log.debug("authenticate({realm}, {authid}, {details})", realm=realm, authid=authid, details=details)
 
          assert(u'authmethod' in details)
          assert(details[u'authmethod'] == u'cryptosign')
@@ -105,8 +105,10 @@ class AuthenticatorSession(ApplicationSession):
                u'role': principal[u'role'],
                u'extra': principal[u'extra']
             }
+            self.log.info("found valid principal {authid} matching public key", authid=auth[u'authid'])
             return auth
          else:
+            self.log.error("no principal found matching public key")
             raise ApplicationError('com.example.no_such_user', 'could not authenticate session - no such principal {}'.format(pubkey))
 
       # register our dynamic authenticator with Crossbar.io
