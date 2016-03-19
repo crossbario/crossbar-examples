@@ -1,0 +1,78 @@
+{
+   "version": 2,
+   "workers": [
+      {
+         "type": "router",
+         "options": {
+            "pythonpath": [".."]
+         },
+         "realms": [
+            {
+               "name": "realm-auth",
+               "roles": [
+                  {
+                     "name": "authenticator",
+                     "permissions": [
+                        {
+                           "uri": "com.example.authenticate",
+                           "allow": {
+                              "register": true
+                           }
+                        }
+                     ]
+                  }
+               ]
+            },
+            {
+               "name": "devices",
+               "roles": [
+                  {
+                     "name": "device",
+                     "permissions": [
+                        {
+                           "uri": "",
+                           "match": "prefix",
+                           "allow": {
+                              "call": true,
+                              "register": true,
+                              "publish": true,
+                              "subscribe": true
+                           },
+                           "disclose": {
+                              "caller": false,
+                              "publisher": false
+                           },
+                           "cache": true
+                        }
+                     ]
+                  }
+               ]
+            }
+         ],
+         "transports": [
+            {
+               "type": "websocket",
+               "endpoint": {
+                  "type": "tcp",
+                  "port": 8080
+               },
+               "auth": {
+                  "cryptosign": {
+                     "type": "dynamic",
+                     "authenticator": "com.example.authenticate",
+                     "authenticator-realm": "realm-auth"
+                  }
+               }
+            }
+         ],
+         "components": [
+            {
+               "type": "class",
+               "classname": "authenticator.AuthenticatorSession",
+               "realm": "realm-auth",
+               "role": "authenticator"
+            }
+         ]
+      }
+   ]
+}
