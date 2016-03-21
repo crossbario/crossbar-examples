@@ -55,32 +55,6 @@
                             ]
                         }
                     ]
-                },
-                {
-                    "name": "users",
-                    "roles": [
-                        {
-                            "name": "^user-(?P<user>[a-z][a-z0-9_-]{2,8})$",
-                            "template": true,
-                            "permissions": [
-                                {
-                                    "uri": "com.example.user.",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "call": true,
-                                        "register": true,
-                                        "publish": true,
-                                        "subscribe": true
-                                    },
-                                    "disclose": {
-                                        "caller": false,
-                                        "publisher": false
-                                    },
-                                    "cache": true
-                                }
-                            ]
-                        }
-                    ]
                 }
             ],
             "transports": [
