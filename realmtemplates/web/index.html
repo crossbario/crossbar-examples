@@ -19,7 +19,7 @@
          var connection = new autobahn.Connection({
             url: wsuri,
 //            realm: "public"
-            realm: "realm-user2"
+            realm: "realm-user7"
          });
 
          connection.onopen = function (session, details) {
@@ -27,7 +27,7 @@
          };
 
          connection.onclose = function (reason, details) {
-            console.log("Connection lost: " + reason);
+            console.log("Connection lost: " + reason, details);
          }
 
          connection.open();

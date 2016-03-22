@@ -81,6 +81,29 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "container",
+            "template-realm": "^realm-(?P<user>[a-z][a-z0-9_-]{2,8})$",
+            "options": {
+                "pythonpath": [".."]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "backend.Backend",
+                    "realm": "realm-{user}",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "localhost",
+                            "port": 8080
+                        },
+                        "url": "ws://localhost:8080/ws"
+                    }
+                }
+            ]
         }
     ]
 }
