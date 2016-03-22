@@ -29,6 +29,59 @@ crossbar start
 
 Open [http://localhost:8080](http://localhost:8080) in your browser and look at the JavaScript console output (open the console by pressing F12 in your browser).
 
+This should give you log output in the Crossbar.io terminal similar to
+
+```console
+(python279_1)oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/templates/realm-templates$ make
+PYTHONPATH=../../../crossbar/ python -m crossbar.controller.cli start --loglevel=info
+2016-03-22T19:22:11+0100 [Controller  27629] Automatically choosing optimal Twisted reactor
+2016-03-22T19:22:11+0100 [Controller  27629] Running on Linux and optimal reactor (epoll) was installed.
+2016-03-22T19:22:12+0100 [Controller  27629]      __  __  __  __  __  __      __     __
+2016-03-22T19:22:12+0100 [Controller  27629]     /  `|__)/  \/__`/__`|__) /\ |__)  |/  \
+2016-03-22T19:22:12+0100 [Controller  27629]     \__,|  \\__/.__/.__/|__)/~~\|  \. |\__/
+2016-03-22T19:22:12+0100 [Controller  27629]
+2016-03-22T19:22:12+0100 [Controller  27629]     Crossbar.io Version: 0.13.0
+2016-03-22T19:22:12+0100 [Controller  27629]     Node Public Key: bb4d27e5e9a1f20d24a01ef249373fde77cd402e4a7af45bf08b5dec1c2ba72f
+2016-03-22T19:22:12+0100 [Controller  27629]
+2016-03-22T19:22:12+0100 [Controller  27629] Running from node directory '/home/oberstet/scm/crossbario/crossbarexamples/templates/realm-templates/.crossbar'
+2016-03-22T19:22:12+0100 [Controller  27629] Controller process starting (CPython-EPollReactor) ..
+2016-03-22T19:22:12+0100 [Controller  27629] Node configuration loaded from 'config.json'
+2016-03-22T19:22:12+0100 [Controller  27629] Node ID 'thinkpad-t430s' set from hostname
+2016-03-22T19:22:12+0100 [Controller  27629] Using default node shutdown triggers [u'shutdown_on_worker_exit']
+2016-03-22T19:22:12+0100 [Controller  27629] Joined realm 'crossbar' on node management router
+2016-03-22T19:22:12+0100 [Controller  27629] Starting Router with ID 'worker-001'...
+2016-03-22T19:22:12+0100 [Router      27634] Worker process starting (CPython-EPollReactor) ..
+2016-03-22T19:22:12+0100 [Controller  27629] Router with ID 'worker-001' and PID 27634 started
+2016-03-22T19:22:12+0100 [Router      27634] Realm 'public' started
+2016-03-22T19:22:12+0100 [Controller  27629] Router 'worker-001': realm 'realm-001' (named 'public') started
+2016-03-22T19:22:12+0100 [Controller  27629] Router 'worker-001': role 'role-001' (named 'anonymous') started on realm 'realm-001'
+2016-03-22T19:22:12+0100 [Router      27634] Site starting on 8080
+2016-03-22T19:22:12+0100 [Controller  27629] Router 'worker-001': transport 'transport-001' started
+2016-03-22T19:22:15+0100 [Router      27634] Auto starting realm 'realm-user1' ..
+2016-03-22T19:22:15+0100 [Controller  27629] Processing activation request for realm 'realm-user1'
+2016-03-22T19:22:15+0100 [Controller  27629] Realm 'realm-user1' matched from template '^realm-(?P<user>[a-z][a-z0-9_-]{2,8})$'
+2016-03-22T19:22:15+0100 [Router      27634] Realm 'realm-user1' started
+2016-03-22T19:22:15+0100 [Controller  27629] Router 'worker-001': realm 'realm-002' (named 'realm-user1') started
+2016-03-22T19:22:15+0100 [Controller  27629] Router 'worker-001': role 'role-002' (named 'anonymous') started on realm 'realm-002'
+2016-03-22T19:22:15+0100 [Router      27634] Realm 'realm-user1' auto started succeesfully
+2016-03-22T19:22:15+0100 [Router      27634] Auto starting realm 'realm-user2' ..
+2016-03-22T19:22:15+0100 [Controller  27629] Processing activation request for realm 'realm-user2'
+2016-03-22T19:22:15+0100 [Controller  27629] Realm 'realm-user2' matched from template '^realm-(?P<user>[a-z][a-z0-9_-]{2,8})$'
+2016-03-22T19:22:15+0100 [Router      27634] Realm 'realm-user2' started
+2016-03-22T19:22:15+0100 [Controller  27629] Router 'worker-001': realm 'realm-003' (named 'realm-user2') started
+2016-03-22T19:22:15+0100 [Controller  27629] Router 'worker-001': role 'role-003' (named 'anonymous') started on realm 'realm-003'
+2016-03-22T19:22:15+0100 [Controller  27629] Processing activation request for realm 'realm-user3'
+2016-03-22T19:22:15+0100 [Controller  27629] Realm 'realm-user3' matched from template '^realm-(?P<user>[a-z][a-z0-9_-]{2,8})$'
+2016-03-22T19:22:15+0100 [Router      27634] Auto starting realm 'realm-user3' ..
+2016-03-22T19:22:15+0100 [Router      27634] Realm 'realm-user2' auto started succeesfully
+2016-03-22T19:22:15+0100 [Router      27634] Realm 'realm-user3' started
+2016-03-22T19:22:15+0100 [Controller  27629] Router 'worker-001': realm 'realm-004' (named 'realm-user3') started
+2016-03-22T19:22:15+0100 [Controller  27629] Router 'worker-001': role 'role-004' (named 'anonymous') started on realm 'realm-004'
+2016-03-22T19:22:15+0100 [Router      27634] Realm 'realm-user3' auto started succeesfully
+...
+```
+
+
 
 ## Outlook
 

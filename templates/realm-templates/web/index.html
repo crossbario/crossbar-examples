@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
    <body>
-      <h1>Hello WAMP</h1>
+      <h1>Crossbar.io Realm Templating and Auto-activation</h1>
       <p>Open JavaScript console to watch output.</p>
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
@@ -16,21 +16,30 @@
                         document.location.host + "/ws";
          }
 
-         var connection = new autobahn.Connection({
-            url: wsuri,
-//            realm: "public"
-            realm: "realm-user7"
-         });
+         // create connections and attach to these realms:
+         var realms = ['public', 'realm-user1', 'realm-user2', 'realm-user3'];
 
-         connection.onopen = function (session, details) {
-            console.log("Connected", details);
-         };
+         for (var i = 0; i < realms.length; ++i) {
+            (function (k) {
+               var realm = realms[k];
 
-         connection.onclose = function (reason, details) {
-            console.log("Connection lost: " + reason, details);
+               var connection = new autobahn.Connection({
+                  url: wsuri,
+                  realm: realm
+               });
+
+               connection.onopen = function (session, details) {
+                  console.log("Connected to realm " + realm, details);
+                  connection.close();
+               };
+
+               connection.onclose = function (reason, details) {
+                  console.log("Connection lost: " + reason, details);
+               }
+
+               connection.open();
+            })(i);
          }
-
-         connection.open();
       </script>
    </body>
 </html>
