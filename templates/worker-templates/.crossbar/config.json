@@ -84,6 +84,7 @@
         },
         {
             "type": "container",
+            "template": true,
             "template-realm": "^realm-(?P<user>[a-z][a-z0-9_-]{2,8})$",
             "options": {
                 "pythonpath": [".."]
