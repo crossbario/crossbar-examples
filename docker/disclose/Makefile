@@ -13,7 +13,7 @@ crossbar:
 
 crossbar_dev:
 	sudo chown -R ${USER}:${USER} ./crossbar/.crossbar
-	PYTHONPATH=$(REPOS)/crossbar python -m crossbar.controller.cli start \
+	PYTHONPATH=$(REPOS)/autobahn:$(REPOS)/crossbar python -m crossbar.controller.cli start \
 		--cbdir=./crossbar/.crossbar
 
 client:
