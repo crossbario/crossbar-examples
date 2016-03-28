@@ -1,6 +1,5 @@
 .PHONY: crossbar crossbar_dev client client_dev
 
-HOSTIP=$(shell ip route get 1 | awk '{print $$NF;exit}')
 REPOS=../..
 
 crossbar:
@@ -9,6 +8,7 @@ crossbar:
 	sudo docker run \
 		-v ${PWD}/crossbar:/var/crossbar \
 		-p 8080:8080 \
+		--name crossbar \
 		-it crossbario/crossbar
 
 crossbar_dev:
@@ -18,10 +18,10 @@ crossbar_dev:
 
 client:
 	sudo docker run \
-		-v ${PWD}/client:/root \
+		-v ${PWD}/client:/root --link crossbar \
 		-it crossbario/autobahn-python:cpy3-alpine \
-		python /root/client.py --url ws://$(HOSTIP):8080/ws --realm realm1
+		python /root/client.py --url ws://crossbar:8080/ws --realm realm1
 
 client_dev:
 	PYTHONPATH=$(REPOS)/autobahn-python python client/client.py \
-		--url ws://$(HOSTIP):8080/ws --realm realm1
+		--url ws://localhost:8080/ws --realm realm1
