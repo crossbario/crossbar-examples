@@ -9,7 +9,7 @@ crossbar:
 		-v ${PWD}/crossbar:/var/crossbar \
 		-p 8080:8080 \
 		--name crossbar \
-		-it crossbario/crossbar
+		--rm -it crossbario/crossbar
 
 crossbar_dev:
 	sudo chown -R ${USER}:${USER} ./crossbar/.crossbar
@@ -19,7 +19,7 @@ crossbar_dev:
 client:
 	sudo docker run \
 		-v ${PWD}/client:/root --link crossbar \
-		-it crossbario/autobahn-python:cpy3-alpine \
+		--rm -it crossbario/autobahn-python:cpy3-alpine \
 		python /root/client.py --url ws://crossbar:8080/ws --realm realm1
 
 client_dev:
