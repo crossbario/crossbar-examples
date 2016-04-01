@@ -89,6 +89,7 @@ class VotesListener(ApplicationSession):
         def scan_buttons():
             new_state = GPIO.input(self.config.extra[u'button_pin']) == 1
             if new_state != self._button_state:
+                self.log.info("Button state change: {new_state}", new_state=new_state)
                 if new_state:
                     votes = yield self.call(u'io.crossbar.demo.vote.vote', subject)
                     setVotes(votes)
@@ -136,7 +137,7 @@ if __name__ == '__main__':
 
         # the button configuration (a BCM digital pin number is required,
         # see here https://pinout.xyz/)
-        u'button_pin': 2,
+        u'button_pin': 26,
 
         # the quad-alpha display hardware configuration
         u'i2c_address': 0x70,
