@@ -31,17 +31,25 @@ class VotesListener(ApplicationSession):
     def onJoin(self, details):
         self.log.info("Session joined: {details}", details=details)
 
+        # the voting subject we will display and vote for
+        subject = self.config.extra[u'subject']
+
         # init GPIO
-        button_pin = 2
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.cleanup()
-        GPIO.setup(button_pin, GPIO.IN)
+        GPIO.setup(self.config.extra[u'button_pin'], GPIO.IN)
+
+        button_state = False
 
         def scan_buttons():
-            state = GPIO.input(button_pin) == 1
-            print state
+            new_state = GPIO.input(self.config.extra[u'button_pin']) == 1
+            if new_state != button_state:
+                if new_state:
+                    self.call(u'io.crossbar.demo.vote.vote', subject)
+                button_state = new_state
 
+        # periodically scan buttons
         scanner = LoopingCall(scan_buttons)
         scanner.start(1./5.)
 
@@ -49,9 +57,6 @@ class VotesListener(ApplicationSession):
         self._disp = QuadAlphanum(self.config.extra[u'i2c_address'])
         self._disp.clear()
         self._disp.setBrightness(int(round(self.config.extra[u'brightness'] * 15)))
-
-        # the voting subject we will display
-        subject = self.config.extra[u'subject']
 
         # display votes for subject on display
         def setVotes(votes):
@@ -121,9 +126,17 @@ if __name__ == '__main__':
         txaio.start_logging(level='info')
 
     extra = {
+        # the voting subject the display will show, and the button
+        # will trigger voting for
+        u'subject': u'Banana',
+
+        # the button configuration (a BCM digital pin number is required,
+        # see here https://pinout.xyz/)
+        u'button_pin': 2,
+
+        # the quad-alpha display hardware configuration
         u'i2c_address': 0x70,
         u'brightness': 1.,
-        u'subject': u'Banana'
     }
 
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra)
