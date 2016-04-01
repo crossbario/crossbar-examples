@@ -32,13 +32,14 @@ class VotesListener(ApplicationSession):
         self.log.info("Session joined: {details}", details=details)
 
         # init GPIO
+        button_pin = 2
         GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BOARD)
+        GPIO.setmode(GPIO.BCM)
         GPIO.cleanup()
-        GPIO.setup(digin_pin, GPIO.IN)
+        GPIO.setup(button_pin, GPIO.IN)
 
         def scan_buttons():
-            state = GPIO.input(2) == 1
+            state = GPIO.input(button_pin) == 1
             print state
 
         scanner = LoopingCall(scan_buttons)
