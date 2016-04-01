@@ -19,4 +19,5 @@ log:
 install:
 	sudo cp votes.service /etc/systemd/system/votes.service
 	sudo systemctl daemon-reload
+	sudo systemctl enable votes
 	sudo systemctl restart votes
