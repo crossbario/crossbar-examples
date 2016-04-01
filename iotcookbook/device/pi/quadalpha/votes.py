@@ -91,8 +91,7 @@ class VotesListener(ApplicationSession):
             if new_state != self._button_state:
                 self.log.info("Button state change: {new_state}", new_state=new_state)
                 if new_state:
-                    votes = yield self.call(u'io.crossbar.demo.vote.vote', subject)
-                    setVotes(votes)
+                    yield self.call(u'io.crossbar.demo.vote.vote', subject)
                 self._button_state = new_state
 
         # periodically scan buttons
