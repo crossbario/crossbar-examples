@@ -13,6 +13,7 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.twisted.util import sleep
 
+import RPi.GPIO as GPIO
 from Adafruit_QuadAlphanum import QuadAlphanum
 
 
@@ -29,6 +30,19 @@ class VotesListener(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
         self.log.info("Session joined: {details}", details=details)
+
+        # init GPIO
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.cleanup()
+        GPIO.setup(digin_pin, GPIO.IN)
+
+        def scan_buttons():
+            state = GPIO.input(2) == 1
+            print state
+
+        scanner = LoopingCall(scan_buttons)
+        scanner.start(1./5.)
 
         # our quad, alphanumeric display: https://www.adafruit.com/products/2157
         self._disp = QuadAlphanum(self.config.extra[u'i2c_address'])
