@@ -34,27 +34,6 @@ class VotesListener(ApplicationSession):
         # the voting subject we will display and vote for
         subject = self.config.extra[u'subject']
 
-        # init GPIO
-        GPIO.setwarnings(False)
-        GPIO.setmode(GPIO.BCM)
-        GPIO.cleanup()
-        GPIO.setup(self.config.extra[u'button_pin'], GPIO.IN)
-
-        self._button_state = False
-
-        @inlineCallbacks
-        def scan_buttons():
-            new_state = GPIO.input(self.config.extra[u'button_pin']) == 1
-            if new_state != self._button_state:
-                print(new_state)
-                if new_state:
-                    yield self.call(u'io.crossbar.demo.vote.vote', subject)
-                self._button_state = new_state
-
-        # periodically scan buttons
-        scanner = LoopingCall(scan_buttons)
-        scanner.start(1./50.)
-
         # our quad, alphanumeric display: https://www.adafruit.com/products/2157
         self._disp = QuadAlphanum(self.config.extra[u'i2c_address'])
         self._disp.clear()
@@ -96,6 +75,29 @@ class VotesListener(ApplicationSession):
 
         # every couple of secs, display a notice
         LoopingCall(displayNotice).start(20)
+
+
+        # init GPIO
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.cleanup()
+        GPIO.setup(self.config.extra[u'button_pin'], GPIO.IN)
+
+        self._button_state = False
+
+        @inlineCallbacks
+        def scan_buttons():
+            new_state = GPIO.input(self.config.extra[u'button_pin']) == 1
+            if new_state != self._button_state:
+                if new_state:
+                    votes = yield self.call(u'io.crossbar.demo.vote.vote', subject)
+                    setVotes(votes)
+                self._button_state = new_state
+
+        # periodically scan buttons
+        scanner = LoopingCall(scan_buttons)
+        scanner.start(1./50.)
+
 
         self.log.info("Votes listener ready!")
 
