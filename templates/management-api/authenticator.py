@@ -48,6 +48,7 @@ class AuthenticatorSession(ApplicationSession):
       def authenticate(realm, authid, details):
          print("WAMP-Anonymous dynamic authenticator invoked: realm='{}', authid='{}'".format(realm, authid))
 
+         realm = realm or u'default'
          controller = self.config.controller
          worker = details[u'worker']
          realm_id = u'realm-{}'.format(realm)
@@ -82,7 +83,7 @@ class AuthenticatorSession(ApplicationSession):
                   }
                ]
             }
-    
+
             # crossbar.node.corei7ub1310.worker.worker-001.start_router_realm
             try:
                yield self.config.controller.call(u'{}.start_router_realm'.format(worker), realm_id, realm_config)
@@ -125,9 +126,9 @@ class AuthenticatorSession(ApplicationSession):
                u"pythonpath": [u".."]
             }
 
-            # crossbar.node.corei7ub1310.start_container
+            node_id = u'thinkpad-t430s'
             try:
-               yield self.config.controller.call(u'crossbar.node.corei7ub1310.start_container', container_id, container_options)
+               yield self.config.controller.call(u'crossbar.node.{}.start_container'.format(node_id), container_id, container_options)
             except Exception as e:
                self.log.error("CONTAINER CREATION FAILED")
                self.log.error(e)
@@ -152,7 +153,7 @@ class AuthenticatorSession(ApplicationSession):
 
             # crossbar.node.corei7ub1310.worker.backend-realm1.start_container_component
             try:
-               yield self.config.controller.call(u'crossbar.node.corei7ub1310.worker.{}.start_container_component'.format(container_id), component_id, component_config)
+               yield self.config.controller.call(u'crossbar.node.{}.worker.{}.start_container_component'.format(node_id, container_id), component_id, component_config)
             except Exception as e:
                self.log.error("COMPONENT CREATION FAILED")
                self.log.error(e)

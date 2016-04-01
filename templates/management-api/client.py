@@ -56,7 +56,22 @@ class ClientSession(ApplicationSession):
 
 if __name__ == '__main__':
 
+   import sys
+   import argparse
+   import six
+
+   parser = argparse.ArgumentParser()
+   parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under (required)')
+   parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm (default).')
+   parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+   options = parser.parse_args()
+
    from autobahn.twisted.wamp import ApplicationRunner
 
-   runner = ApplicationRunner(url=u'ws://localhost:8080/ws', realm=u'realm1')
+   extra = {
+      u'authid': options.authid
+   }
+   print("Connecting to {}: realm={}, authid={}".format(options.url, options.realm, options.authid))
+
+   runner = ApplicationRunner(url=options.url, realm=options.realm)
    runner.run(ClientSession)
