@@ -62,7 +62,7 @@ function main (session) {
    session.subscribe("io.crossbar.demo.vote.onvote",
       function(args) {
          var event = args[0];
-         document.getElementById("votes" + event.subject).value =
+         document.getElementById("votes" + event.subject).innerHTML =
             event.votes;
       });
 
@@ -70,7 +70,7 @@ function main (session) {
    session.call("io.crossbar.demo.vote.get").then(
       function(res){
          for(var i = 0; i < res.length; i++) {
-            document.getElementById("votes" + res[i].subject).value =
+            document.getElementById("votes" + res[i].subject).innerHTML =
                res[i].votes;
          }
    }, session.log);
@@ -88,9 +88,10 @@ function main (session) {
    // subscribe to vote reset event
    session.subscribe("io.crossbar.demo.vote.onreset", function() {
          var voteCounters = document.getElementById("voteContainer").
-                                     getElementsByTagName("input");
+                                    getElementsByClassName("votesCounter");
+                                    //  getElementsByTagName("input");
          for(var i = 0; i < voteCounters.length; i++) {
-            voteCounters[i].value = 0;
+            voteCounters[i].innerHTML = 0;
          }
       });
 
@@ -110,7 +111,7 @@ connection.onclose = function(reason, details) {
    if (details.will_retry) {
       updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
    } else {
-      updateStatusline("Disconnected");   
+      updateStatusline("Disconnected");
    }
 }
 
@@ -118,4 +119,3 @@ connection.onclose = function(reason, details) {
 // now actually open the connection
 //
 connection.open();
-
