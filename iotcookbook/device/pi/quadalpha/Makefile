@@ -17,6 +17,6 @@ log:
 	journalctl -n 100 -f -u votes
 
 install:
-    sudo cp votes.service /etc/systemd/system/votes.service
-    sudo systemctl daemon-reload
-    sudo systemctl restart votes
+	sudo cp votes.service /etc/systemd/system/votes.service
+	sudo systemctl daemon-reload
+	sudo systemctl restart votes
