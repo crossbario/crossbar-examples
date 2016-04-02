@@ -10,7 +10,7 @@
       height: 100%;
       font-size: 14px;
    }
-   
+
    #codeContainer
    {
       width: 1200px;
@@ -20,7 +20,7 @@
       position: relative;
    }
 
-   
+
    #codeContainer .syntaxhighlighter code {
       font-family: Consolas, Menlo, 'DejaVu Sans Mono', 'Courier New', monospace !important;
       font-size: 13px !important;
@@ -99,10 +99,10 @@
 
 function main (session) {
    // subscribe to future vote event
-   session.subscribe("io.crossbar.demo.vote.onvote", 
+   session.subscribe("io.crossbar.demo.vote.onvote",
       function(args, kwargs, details) {
          var event = args[0];
-         document.getElementById("votes" + event.subject).value = 
+         document.getElementById("votes" + event.subject).value =
             event.votes;
       });
 
@@ -110,7 +110,7 @@ function main (session) {
    session.call("io.crossbar.demo.vote.get").then(
       function(res){
          for(var i = 0; i < res.length; i++) {
-            document.getElementById("votes" + res[i].subject).value = 
+            document.getElementById("votes" + res[i].subject).value =
                res[i].votes;
          }
    }, session.log);
@@ -120,7 +120,7 @@ function main (session) {
                               getElementsByTagName("button");
    for (var i = 0; i < voteButtons.length; i++) {
       voteButtons[i].onclick = function(evt) {
-         session.call("io.crossbar.demo.vote.vote", 
+         session.call("io.crossbar.demo.vote.vote",
             [evt.target.id]).then(session.log, session.log);
       };
    }
@@ -150,7 +150,7 @@ function main (session) {
 // [...] - boilerplate code to connect to Crossbar.io
 
 function main (session) {
-   
+
    // return set of present votes on request
    var getVote = function() {
       var votesArr = [];
@@ -215,8 +215,7 @@ function main (session) {
    </script>
 
 
-   <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
-   <!-- // <script src="//code.jquery.com/jquery-1.11.0.min.js"></script> -->
+   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 
    <script>
       var arrows = {};
@@ -383,6 +382,3 @@ window.onload = function() {
 
 </body>
 </html>
-
-
-

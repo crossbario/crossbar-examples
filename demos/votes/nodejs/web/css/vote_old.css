@@ -122,8 +122,8 @@ header {
 #demo_body,
 .demo_links
 {
-   width: 850px;
-   height: 100%;
+   /* width: 850px; */
+   /* height: 100%; */
    margin: 4em auto;
    position: relative;
 }
@@ -149,7 +149,8 @@ header {
 #voteContainer > div
 {
    display: inline-block;
-   width: 16em;
+   /* width: 16em; */
+   margin: 0 0.5rem 4rem 0.5rem;
 }
 #voteContainer > div > img
 {
@@ -159,45 +160,32 @@ header {
 #voteContainer > div > span
 {
     display: block;
-
-    margin: 1em 0 0;
-    font-size: 21px;
+    margin: 1rem 0 0;
+    font-size: 28px;
     text-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
 }
+
+#voteContainer button {}
 
 #voteContainer > div > div
 {
     display: inline-block;
-
-
+    margin-bottom: 1rem;
+    margin-top: 0.6rem;
 }
-#voteContainer > div > div > input
-{
-
-    width: 4em;
-    text-align: center;
-    border: none;
-    background-color: #fafafa;
-    font-size: 4em;
-    padding: 20px 0 30px;
-
-    transition: all 0.3s ease;
-    text-shadow: 0 0 7px rgba(0, 0, 0, 0.2);
-}
+#voteContainer > div > div > span
+{width: 3em;text-align: center;border: none;background-color: #fafafa;font-size: 4em;padding: 20px 0 30px;transition: all 0.3s ease;text-shadow: 0 0 7px rgba(0, 0, 0, 0.2);color: #797979;}
 
 
-#voteContainer > div > button
-{
-
-}
+#voteContainer > div > button:focus
+{background-color: #A5A5A5;}
 
 button
 {
     background-color: #D4D0C8;
-
     border: 1px solid rgb(196, 191, 181);
-    padding: 0.5em 1em;
-    font-size: 20px;
+    padding: 0.8rem 1.7rem;
+    font-size: 28px;
     font-weight: normal;
     text-shadow: 0 0 4px rgba(0, 0, 0, 0.3), -1px 0 1px rgba(255, 255, 255, 0.5);
     box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.3);
@@ -212,13 +200,12 @@ button:hover
 #resetVotesContainer
 {
     text-align: center;
-
-    margin: 3em 0 0 0;
+    margin: 1em 0 1em 0;
 }
 
 #demo_body
 {
-   width: 823px;
+   /* width: 823px; */
    text-align: center;
 }
 
@@ -344,4 +331,62 @@ button:hover
 .codehalf .syntaxhighlighter.nogutter td.code .line
 {
    padding-left: 0.5em !important;
+}
+
+
+/* votes demo mobile - new styles */
+
+nav {height: 74px;background-color: #333;}
+
+.nav-wrapper .brand-logo {
+   /* position: absolute; */
+   top: 7px;
+   left: 19px;
+   -webkit-transfrom: initial;
+   transform: translateX(0%); /* IE 11 does not do 'initial'*/
+}
+
+.nav-wrapper span {
+   font-size: 38px;
+   color: #A2A2A2;
+   position: absolute;
+   right: 0;
+   top: 8px;
+   font-weight: bold;
+}
+
+@media (max-width: 500px) {
+   .brand-logo img.notOnNarrowScreens {
+      display: none;
+   }
+}
+
+#demo_body h1 {
+   font-size: 2.5rem;
+}
+
+@media (max-width: 900px) {
+   #demo_body {
+      width: 95%;
+   }
+
+}
+
+
+@media (max-width: 700px) {
+   #voteContainer > div > img {
+      display: none;
+   }
+}
+
+@media (max-width: 500px) {
+   #voteContainer > div {font-size: 9px;}
+
+   #voteContainer span {
+       font-size: 23px;
+   }
+
+   #voteContainer button {
+       font-size: 24px;
+   }
 }
