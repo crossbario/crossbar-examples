@@ -1,9 +1,12 @@
 {
+    "version": 2,
     "workers": [
         {
             "type": "router",
             "options": {
-                "pythonpath": [".."]
+                "pythonpath": [
+                    ".."
+                ]
             },
             "realms": [
                 {
@@ -13,11 +16,19 @@
                             "name": "anonymous",
                             "permissions": [
                                 {
-                                    "uri": "*",
-                                    "publish": true,
-                                    "subscribe": true,
-                                    "call": true,
-                                    "register": true
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
@@ -56,7 +67,10 @@
                                 "secret": "secret",
                                 "post_body_limit": 8192,
                                 "timestamp_delta_limit": 10,
-                                "require_ip": ["192.168.1.1/255.255.255.0", "127.0.0.1"],
+                                "require_ip": [
+                                    "192.168.1.1/255.255.255.0",
+                                    "127.0.0.1"
+                                ],
                                 "require_tls": false
                             }
                         }

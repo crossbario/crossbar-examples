@@ -1,9 +1,12 @@
 {
+    "version": 2,
     "workers": [
         {
             "type": "router",
             "options": {
-                "pythonpath": [".."]
+                "pythonpath": [
+                    ".."
+                ]
             },
             "realms": [
                 {
@@ -13,11 +16,19 @@
                             "name": "backend",
                             "permissions": [
                                 {
-                                    "uri": "*",
-                                    "publish": true,
-                                    "subscribe": true,
-                                    "call": true,
-                                    "register": true
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         },
@@ -25,12 +36,34 @@
                             "name": "frontend",
                             "permissions": [
                                 {
-                                    "uri": "com.example.*",
-                                    "call": true
+                                    "uri": "com.example.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": false,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 },
                                 {
-                                    "uri": "com.example.*",
-                                    "publish": true
+                                    "uri": "com.example.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": false,
+                                        "register": false,
+                                        "publish": true,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
@@ -78,7 +111,9 @@
         {
             "type": "container",
             "options": {
-                "pythonpath": [".."]
+                "pythonpath": [
+                    ".."
+                ]
             },
             "components": [
                 {

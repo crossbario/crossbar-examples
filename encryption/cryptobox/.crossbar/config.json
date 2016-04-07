@@ -1,4 +1,5 @@
 {
+    "version": 2,
     "workers": [
         {
             "type": "router",
@@ -21,7 +22,9 @@
                         "type": "tcp",
                         "port": 8080
                     },
-                    "serializers": ["json"]
+                    "serializers": [
+                        "json"
+                    ]
                 }
             ]
         }

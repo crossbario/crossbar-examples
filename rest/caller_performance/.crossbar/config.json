@@ -1,11 +1,13 @@
 {
-    "controller": {
-    },
+    "version": 2,
+    "controller": {},
     "workers": [
         {
             "type": "router",
             "options": {
-                "pythonpath": ["../components"]
+                "pythonpath": [
+                    "../components"
+                ]
             },
             "realms": [
                 {
@@ -15,11 +17,19 @@
                             "name": "anonymous",
                             "permissions": [
                                 {
-                                    "uri": "*",
-                                    "publish": true,
-                                    "subscribe": true,
-                                    "call": true,
-                                    "register": true
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
@@ -29,7 +39,10 @@
             "transports": [
                 {
                     "type": "rawsocket",
-                    "serializers": ["json", "msgpack"],
+                    "serializers": [
+                        "json",
+                        "msgpack"
+                    ],
                     "endpoint": {
                         "type": "unix",
                         "path": "crossbar.sock"
@@ -73,7 +86,9 @@
         {
             "type": "container",
             "options": {
-                "pythonpath": ["../components"]
+                "pythonpath": [
+                    "../components"
+                ]
             },
             "components": [
                 {
@@ -95,7 +110,9 @@
         {
             "type": "container",
             "options": {
-                "pythonpath": ["../components"]
+                "pythonpath": [
+                    "../components"
+                ]
             },
             "components": [
                 {
@@ -116,7 +133,9 @@
         {
             "type": "container",
             "options": {
-                "pythonpath": ["../components"]
+                "pythonpath": [
+                    "../components"
+                ]
             },
             "components": [
                 {

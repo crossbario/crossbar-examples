@@ -1,9 +1,12 @@
 {
+    "version": 2,
     "workers": [
         {
             "type": "router",
             "options": {
-                "pythonpath": [".."]
+                "pythonpath": [
+                    ".."
+                ]
             },
             "realms": [
                 {
@@ -14,7 +17,18 @@
                             "permissions": [
                                 {
                                     "uri": "com.example.authenticate",
-                                    "register": true
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": false,
+                                        "register": true,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         },
@@ -22,11 +36,19 @@
                             "name": "backend",
                             "permissions": [
                                 {
-                                    "uri": "*",
-                                    "publish": true,
-                                    "subscribe": true,
-                                    "call": true,
-                                    "register": true
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
@@ -68,17 +90,19 @@
             ],
             "components": [
                 {
-                   "type": "class",
-                   "classname": "authenticator.MyAuthenticator",
-                   "realm": "realm1",
-                   "role": "authenticator"
+                    "type": "class",
+                    "classname": "authenticator.MyAuthenticator",
+                    "realm": "realm1",
+                    "role": "authenticator"
                 }
             ]
         },
         {
             "type": "container",
             "options": {
-                "pythonpath": [".."]
+                "pythonpath": [
+                    ".."
+                ]
             },
             "components": [
                 {

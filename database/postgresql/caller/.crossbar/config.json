@@ -1,9 +1,12 @@
 {
+    "version": 2,
     "workers": [
         {
             "type": "router",
             "options": {
-                "pythonpath": [".."]
+                "pythonpath": [
+                    ".."
+                ]
             },
             "realms": [
                 {
@@ -13,11 +16,19 @@
                             "name": "anonymous",
                             "permissions": [
                                 {
-                                    "uri": "*",
-                                    "publish": true,
-                                    "subscribe": true,
-                                    "call": true,
-                                    "register": true
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
@@ -43,10 +54,14 @@
                             "type": "json",
                             "value": {
                                 "param1": "foobar",
-                                "param2": [1, 2, 3],
+                                "param2": [
+                                    1,
+                                    2,
+                                    3
+                                ],
                                 "param3": {
-                                   "awesome": true,
-                                   "nifty": "yes"
+                                    "awesome": true,
+                                    "nifty": "yes"
                                 }
                             },
                             "options": {

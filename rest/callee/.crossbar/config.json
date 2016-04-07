@@ -1,6 +1,6 @@
 {
-    "controller": {
-    },
+    "version": 2,
+    "controller": {},
     "workers": [
         {
             "type": "router",
@@ -12,11 +12,19 @@
                             "name": "anonymous",
                             "permissions": [
                                 {
-                                    "uri": "*",
-                                    "publish": true,
-                                    "subscribe": true,
-                                    "call": true,
-                                    "register": true
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
@@ -53,7 +61,9 @@
         {
             "type": "container",
             "options": {
-                "pythonpath": [".."]
+                "pythonpath": [
+                    ".."
+                ]
             },
             "components": [
                 {

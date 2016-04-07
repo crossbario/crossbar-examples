@@ -1,62 +1,72 @@
 {
-  "controller": {
-  },
-  "workers": [
-    {
-      "id": "router",
-      "type": "router",
-      "realms": [
+    "version": 2,
+    "controller": {},
+    "workers": [
         {
-          "name": "realm1",
-          "roles": [
-            {
-              "name": "anonymous",
-              "permissions": [
+            "id": "router",
+            "type": "router",
+            "realms": [
                 {
-                  "uri": "*",
-                  "publish": true,
-                  "subscribe": true,
-                  "call": true,
-                  "register": true
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
                 }
-              ]
-            }
-          ]
-        }
-      ],
-      "transports": [
+            ],
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../client"
+                        },
+                        "ws": {
+                            "type": "websocket"
+                        }
+                    }
+                }
+            ]
+        },
         {
-          "type": "web",
-          "endpoint": {
-            "type": "tcp",
-            "port": 8080
-          },
-          "paths": {
-            "/": {
-              "type": "static",
-              "directory": "../client"
-            },
-            "ws": {
-              "type": "websocket"
+            "id": "netmonitor",
+            "type": "guest",
+            "executable": "python",
+            "arguments": [
+                "netmonitor.py"
+            ],
+            "options": {
+                "workdir": "../netmonitor",
+                "env": {
+                    "inherit": false,
+                    "vars": {
+                        "WS": "ws://localhost:8080/ws"
+                    }
+                }
             }
-          }
         }
-      ]
-    },
-    {
-      "id": "netmonitor",
-      "type": "guest",
-      "executable": "python",
-      "arguments": ["netmonitor.py"],
-      "options": {
-        "workdir": "../netmonitor",
-        "env": {
-          "inherit": false,
-          "vars": {
-            "WS": "ws://localhost:8080/ws"
-          }
-        }
-      }
-    }
-  ]
+    ]
 }
