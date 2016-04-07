@@ -25,7 +25,6 @@ body {
 }
 
 a {
-  color: #555;
 }
 
 a:hover {
@@ -64,7 +63,6 @@ a > img {
   padding: 0 2em 0 0;
   font-size: 19px;
   text-decoration: none;
-  color: #f60;
   color: #d0b800;
 }
 
@@ -117,7 +115,7 @@ a > img {
 }
 
 #demo_body button:focus {
-  background-color: #A5A5A5;
+  /* background-color: #A5A5A5; */
 }
 
 button {
@@ -183,7 +181,6 @@ button:hover {
 
 nav {
   height: 74px;
-  background-color: #333;
 }
 
 .nav-wrapper .brand-logo {

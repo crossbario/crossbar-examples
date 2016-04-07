@@ -11,9 +11,9 @@
    <!--Import Google Icon Font-->
    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
    <!--Import materialize.css-->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"> -->
 
-
+   <link rel="stylesheet" href="//tavendo-common-static.s3-eu-west-1.amazonaws.com/css/materialize_cb.min.css.gz">
    <link rel="stylesheet" href="css/vote.css">
 
 </head>
@@ -54,7 +54,7 @@
 
    <div id="demo_body" class="container">
 
-      <h1>Vote for your favourite flavour of ice cream!</h1>
+      <h1>Vote for your favorite flavor of ice cream!</h1>
       <div id="voteContainer">
          <div>
             <img src="img/banana_small.png" alt="CC attribution license, Evan-Amos/EABanner">
@@ -67,7 +67,7 @@
                <span id="votesBanana" class="votesCounter"></span>
             </div>
             <br>
-            <button id="Banana" style="touch-action: none">
+            <button id="Banana" class="btn-large waves-effect waves-light" style="touch-action: none">
                Vote
             </button>
          </div>
@@ -82,7 +82,7 @@
                <span id="votesChocolate" class="votesCounter"></span>
             </div>
             <br>
-            <button id="Chocolate" style="touch-action: none">
+            <button id="Chocolate" class="btn-large waves-effect waves-light" style="touch-action: none">
                Vote
             </button>
          </div>
@@ -97,13 +97,13 @@
                <span id="votesLemon" class="votesCounter"></span>
             </div>
             <br>
-            <button id="Lemon" style="touch-action: none">
+            <button id="Lemon" class="btn-large waves-effect waves-light" style="touch-action: none">
                Vote
             </button>
          </div>
       </div>
       <div id="resetVotesContainer">
-         <button id="resetVotes" style="touch-action: none">
+         <button id="resetVotes" class="btn-large waves-effect waves-light" style="touch-action: none">
             Reset Votes
          </button>
       </div>
