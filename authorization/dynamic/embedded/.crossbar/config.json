@@ -1,0 +1,66 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "pythonpath": [".."]
+            },
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "authorizer",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.auth",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "app",
+                            "authorizer": "com.example.auth"
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": ".."
+                        },
+                        "ws": {
+                            "type": "websocket"
+                        }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "authorizer.Authorizer",
+                    "realm": "realm1",
+                    "role": "authorizer"
+                },
+                {
+                    "type": "class",
+                    "classname": "app.App",
+                    "realm": "realm1",
+                    "role": "app"
+                }
+            ]
+        }
+    ]
+}
