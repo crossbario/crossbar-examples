@@ -105,7 +105,7 @@
                   var topic = topics[j][0];
                   var expect_success = topics[j][1];
 
-                  session.publish(topic, [], {}, {acknowledge: true})
+                  session.publish(topic, ['hello from browser'], {}, {acknowledge: true})
                      .then(
                         function (pub) {
                            if (expect_success) {
