@@ -5,3 +5,6 @@ node.pid
 node_modules
 bower_components
 node.key
+key.priv
+key.pub
+
