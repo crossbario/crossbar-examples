@@ -1,6 +1,4 @@
 proc = u'com.example.add2'
-proc = u'com.example.mul2'
-
 args = [2, 3]
 kwargs = None
 options = None
