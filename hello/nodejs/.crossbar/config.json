@@ -6,7 +6,7 @@
             "type": "router",
             "realms": [
                 {
-                    "name": "{{ realm }}",
+                    "name": "realm1",
                     "roles": [
                         {
                             "name": "anonymous",
@@ -54,7 +54,7 @@
             "type": "guest",
             "executable": "node",
             "arguments": [
-                "{{ appname }}.js"
+                "hello.js"
             ],
             "options": {
                 "workdir": "../node",

@@ -29,8 +29,8 @@
 var autobahn = require('autobahn');
 
 var connection = new autobahn.Connection({
-   url: '{{ url }}',
-   realm: '{{ realm }}'}
+   url: 'ws://localhost:8080/ws',
+   realm: 'realm1'}
 );
 
 connection.onopen = function (session) {
@@ -57,7 +57,7 @@ connection.onopen = function (session) {
       var x = args[0];
       var y = args[1];
       console.log("add2() called with " + x + " and " + y);
-      return x + y;
+      return 10 + x + y;
    }
    session.register('com.example.add2', add2).then(
       function (reg) {
