@@ -30,7 +30,7 @@ openssl x509 -noout -text -in ./ca/certs/ca.cert.pem > /dev/null || exit $?
 # for that. Might provide a "more realistic" example/environment to
 # make an intermediate...
 
-# okay, fuckit, making an intermediate
+# okay, making an intermediate
 mkdir ./ca/intermediate
 pushd ./ca/intermediate
 mkdir certs crl csr newcerts private
