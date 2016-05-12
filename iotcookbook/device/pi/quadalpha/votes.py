@@ -1,3 +1,4 @@
+import time
 import argparse
 
 import six
@@ -12,6 +13,13 @@ from twisted.internet.task import LoopingCall
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.twisted.util import sleep
+
+import socket
+
+def get_ip_address():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 80))
+    return s.getsockname()[0]
 
 import RPi.GPIO as GPIO
 from Adafruit_QuadAlphanum import QuadAlphanum
@@ -30,6 +38,9 @@ class VotesListener(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
         self.log.info("Session joined: {details}", details=details)
+
+        my_ip = get_ip_address()
+        joined_at = time.strftime("%H:%M")
 
         # the voting subject we will display and vote for
         subject = self.config.extra[u'subject']
@@ -65,7 +76,7 @@ class VotesListener(ApplicationSession):
 
         @inlineCallbacks
         def displayNotice():
-            yield scrollText(self._disp, "watching votes for {} ...".format(subject).upper())
+            yield scrollText(self._disp, "ip={} joined={} subject={} ...".format(my_ip, joined_at, subject).upper())
 
             # get the current votes
             votes = yield self.call(u'io.crossbar.demo.vote.get')
@@ -74,7 +85,7 @@ class VotesListener(ApplicationSession):
                     setVotes(vote[u'votes'])
 
         # every couple of secs, display a notice
-        LoopingCall(displayNotice).start(20)
+        LoopingCall(displayNotice).start(60)
 
 
         # init GPIO
