@@ -150,7 +150,7 @@ if __name__ == '__main__':
         u'button_pin': 26,
 
         # the quad-alpha display hardware configuration
-        u'i2c_address': 0x70,
+        u'i2c_address': 0x77,
         u'brightness': 1.,
     }
 

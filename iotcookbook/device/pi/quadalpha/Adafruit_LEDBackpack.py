@@ -98,4 +98,3 @@ class LEDBackpack:
     if (update):
       self.writeDisplay()
 
-led = LEDBackpack(0x70)

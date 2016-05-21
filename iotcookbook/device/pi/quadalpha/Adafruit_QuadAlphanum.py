@@ -262,7 +262,7 @@ class QuadAlphanum:
 
 if __name__ == '__main__':
   "Self test / demo."
-  screen = QuadAlphanum(0x70, 1, True)
+  screen = QuadAlphanum(0x77, 1, True)
   screen.setMessage("TEST.")
   time.sleep(2)
   screen.clear()
