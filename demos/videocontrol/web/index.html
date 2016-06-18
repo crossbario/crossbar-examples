@@ -10,7 +10,7 @@
    <script>
        AUTOBAHN_DEBUG = true;
   </script>
-     <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>     
+     <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
    <script src="qrcode.min.js"></script>
 
    <style type="text/css">
@@ -69,15 +69,15 @@
          <video id="vid"
                class="video-js vjs-default-skin"
                controls preload="auto"
-               poster="//crossbar.io/videocontrol_data/poster.png" >
+               poster="https://s3-eu-west-1.amazonaws.com/crossbar.io/videocontrol_data/poster.png" >
             <source id='ogv'
-               src="//crossbar.io/videocontrol_data/trailer.ogv"
+               src="https://s3-eu-west-1.amazonaws.com/crossbar.io/videocontrol_data/trailer.ogv"
                type='video/ogg'>
             <source id='mp4'
-               src="//crossbar.io/videocontrol_data/trailer.mp4"
+               src="https://s3-eu-west-1.amazonaws.com/crossbar.io/videocontrol_data/trailer.mp4"
                type='video/mp4'>
             <source id='webm'
-               src="//crossbar.io/videocontrol_data/trailer.webm"
+               src="https://s3-eu-west-1.amazonaws.com/crossbar.io/videocontrol_data/trailer.webm"
                type='video/webm'>
          </video>
         </p>
@@ -117,7 +117,7 @@
 
     var updateStatusline = function (statusline) {
       document.getElementsByClassName("statusline")[0].innerHTML = statusline;
-    } 
+    }
 
     console.log("loaded");
 
@@ -178,7 +178,7 @@
       session.prefix('demo', 'io.crossbar.demo.videocontroller');
 
          /* Creating the QR code with a link targetting
-         the right URL. We put the ID in the hash. 
+         the right URL. We put the ID in the hash.
          We assume that the player page and the controller are served on the same port
          */
         var uuid = Math.floor(Math.random() * 9007199254740992);
@@ -223,7 +223,7 @@
 
       /* Somebody could very well push play directly from
         this page.
- 
+
         So we need to react if the user does it, and
         publish an WAMP event to allow our remote
         control to update its UI.
@@ -250,11 +250,11 @@
 
     connection.onclose = function(reason, details) {
       console.log("connection closed ", reason, details);
-   
+
        if (details.will_retry) {
          updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
       } else {
-         updateStatusline("Disconnected");   
+         updateStatusline("Disconnected");
       }
    }
 
@@ -265,4 +265,3 @@
 </script>
 
 </html>
-
