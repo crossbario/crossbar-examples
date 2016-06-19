@@ -309,9 +309,9 @@
                     "action": "restart"
                 },
                 "env": {
-                    "inherit": [
-                        "NODE_PATH"
-                    ]
+                    "vars": {
+                        "NODE_PATH": "./node_modules"
+                    }
                 }
             }
         },
@@ -330,9 +330,9 @@
                     "action": "restart"
                 },
                 "env": {
-                    "inherit": [
-                        "NODE_PATH"
-                    ]
+                    "vars": {
+                        "NODE_PATH": "../node_modules"
+                    }
                 }
             }
         },
@@ -351,9 +351,9 @@
                     "action": "restart"
                 },
                 "env": {
-                    "inherit": [
-                        "NODE_PATH"
-                    ]
+                    "vars": {
+                        "NODE_PATH": "../node_modules"
+                    }
                 }
             }
         }

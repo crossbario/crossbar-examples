@@ -55,7 +55,7 @@
                     "paths": {
                         "/": {
                             "type": "static",
-                            "directory": ".."
+                            "directory": "../web"
                         },
                         "ws": {
                             "type": "websocket"
@@ -140,6 +140,11 @@
                         "../../votes/nodejs/node"
                     ],
                     "action": "restart"
+                },
+                "env": {
+                    "vars": {
+                        "NODE_PATH": "./node_modules"
+                    }
                 }
             }
         },
@@ -156,6 +161,11 @@
                         "../../editform/node"
                     ],
                     "action": "restart"
+                },
+                "env": {
+                    "vars": {
+                        "NODE_PATH": "../node_modules"
+                    }
                 }
             }
         },
@@ -172,6 +182,11 @@
                         "../../visitors_counter/js"
                     ],
                     "action": "restart"
+                },
+                "env": {
+                    "vars": {
+                        "NODE_PATH": "../node_modules"
+                    }
                 }
             }
         }
