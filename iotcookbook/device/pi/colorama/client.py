@@ -48,7 +48,7 @@ class ColoramaDisplay(ApplicationSession):
             cfg['led_brightness'])
 
         self._leds.begin()
-        self.set_uniform_color(0, 0, 0)
+        self.set_color(0, 0, 0)
 
         for proc in [
             (self.set_color, 'set_color'),
@@ -59,6 +59,10 @@ class ColoramaDisplay(ApplicationSession):
         self.log.info("ColoramaDisplay ready!")
 
     def set_color(self, red, green, blue, k=None):
+        # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
+        _red = red
+        red = green
+        green = _red
         if k is None:
             for i in range(self._leds.numPixels()):
                 self._leds.setPixelColorRGB(i, red, green, blue)
@@ -95,7 +99,7 @@ class ColoramaDisplay(ApplicationSession):
 
     def onDisconnect(self):
         self.log.info("Connection closed")
-        self.set_uniform_color(0, 0, 0)
+        self.set_color(0, 0, 0)
         try:
             reactor.stop()
         except ReactorNotRunning:
