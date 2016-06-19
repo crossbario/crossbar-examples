@@ -48,7 +48,6 @@ class ColoramaDisplay(ApplicationSession):
             cfg['led_brightness'])
 
         self._leds.begin()
-        self.set_color(0xe1, 0xda, 0x05)
 
         for proc in [
             (self.set_color, 'set_color'),
@@ -56,7 +55,18 @@ class ColoramaDisplay(ApplicationSession):
         ]:
             yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
 
+        self.flash()
+
         self.log.info("ColoramaDisplay ready!")
+
+    @inlineCallbacks
+    def flash(self, delay=50, repeat=5):
+        delay = float(delay) / 1000.
+        for i in range(repeat):
+            self.set_color(0xe1, 0xda, 0x05)
+            yield sleep(2 * delay)
+            self.set_color(0x52, 0x42, 0x00)
+            yield sleep(delay)
 
     def set_color(self, red, green, blue, k=None):
         # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
