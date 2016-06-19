@@ -1,24 +1,5 @@
 {
     "version": 2,
-    "controller": {
-        "cdc": {
-            "key": "Rl4T7JPskrJ7bYq64Kqe4l+P5E0jIdp90aU+29jsRzs=",
-            "realm": "user1-default",
-            "transport": {
-                "type": "websocket",
-                "url": "wss://devops.crossbario.com/ws",
-                "endpoint": {
-                    "type": "tcp",
-                    "host": "devops.crossbario.com",
-                    "port": 443,
-                    "timeout": 5,
-                    "tls": {
-                        "hostname": "devops.crossbario.com"
-                    }
-                }
-            }
-        }
-    },
     "workers": [
         {
             "type": "router",
@@ -378,3 +359,4 @@
         }
     ]
 }
+
