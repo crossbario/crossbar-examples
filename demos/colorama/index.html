@@ -44,25 +44,10 @@
       </div>
    </header>
 
-   <div class="demo_links">
-      <p>
-         Synchronize color picker changes in real-time.
-      </p>
-      <div>
-         <a href="#" target="_blank" id="secondInstance">Open 2nd instance</a>
-         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/colorama">
-            Source Code
-         </a>
-         <a href="http://crossbar.io">
-            Crossbar.io Homepage
-         </a>
-      </div>
-   </div>
-
    <div id="demo_body">
       <div class="box colorpicker_box">
 
-         <div class="box_heading">Colorama Demo</div>
+         <div class="box_heading">Colorama: remote color control for IoT Starterkits</div>
 
          <div class="box_content">
 
@@ -72,6 +57,8 @@
                   <div id="color0" class="colorbox">
                      <div id="picker0" class="colorpicker"></div>
                   </div>
+                  <p>Starterkit SN1307984267</p>
+                  <img src="img/crossbar-iot-starterkit.png" width="160" />
                </div>
 
                <div class="colorwrapper">
@@ -79,10 +66,19 @@
                   <div id="color1" class="colorbox">
                      <div id="picker1" class="colorpicker"></div>
                   </div>
+                  <p>Starterkit SN3711643271</p>
+                  <img src="img/crossbar-iot-starterkit.png" width="160" />
                </div>
             </div>
 
             <div class="cb"></div>
+
+            <p>
+               The RGB color LED strips on two Crossbar.io IoT Starterkits
+               (with serials SN1307984267 and SN3711643271) can be controlled
+               in real-time using above color pickers. The LED strips expose
+               procedure which are called remotely from this color picker UI.
+            </p>
 
             <div id="colorpicker_status_line" class="status_line">
                Status: <span class="statusline"></span>
@@ -111,6 +107,18 @@
             instead of by the user from within the control.</i>
             </li>
          </ul>
+      </div>
+   </div>
+
+   <div class="demo_links">
+      <div>
+         <a href="#" target="_blank" id="secondInstance">Open 2nd instance</a>
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/colorama">
+            Source Code
+         </a>
+         <a href="http://crossbar.io">
+            Crossbar.io Homepage
+         </a>
       </div>
    </div>
 

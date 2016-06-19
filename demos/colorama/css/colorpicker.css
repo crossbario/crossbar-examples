@@ -634,7 +634,7 @@ flatButton:hover
 
 /*#colorpicker_wrapper .webmq_demo_info_bar_pubsub
 {
-   
+
    margin-top: 3em;
 }
 
@@ -647,9 +647,13 @@ flatButton:hover
 
 .colorpicker_box
 {
+   width: 580px;
+   margin: auto;
+   /*
    width: 100%;
    float: none;
    margin: 0 auto;
+   */
 }
 
 /*.info_bar_colorpicker

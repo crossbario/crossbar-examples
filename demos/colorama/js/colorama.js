@@ -9,6 +9,9 @@
 
 "use strict";
 
+// serial numbers from IoT Starterkit devices
+var devices_serials = [1307984267, 3711643271];
+
 // the URL of the WAMP Router (Crossbar.io)
 var wsuri;
 if (document.location.origin == "file://") {
@@ -121,18 +124,39 @@ function setExtraColors(k, color) {
 }
 
 
+function color_components (color) {
+   var c = JSON.stringify(color);
+   c = c.substring(2, 8);
+   var red = parseInt(c.substring(0, 2), 16);
+   var green = parseInt(c.substring(2, 4), 16);
+   var blue = parseInt(c.substring(4, 6), 16);
+   return [red, green, blue];
+   //return {red: red, green: green, blue: blue};
+}
+
 // setup color picker by index
 function setupPicker(k) {
    $('#picker' + k).farbtastic(
 
       // this is the callback fired when the user manipulates a color picker
-      function onColorChangeLocal(color) {
+      function (color) {
 
          // set colors associated with color picker
          setExtraColors(k, color);
 
          // publish the color change event on our topic
          sess.publish("io.crossbar.demo.colorama.color_change", [{ index: k, color: color }]);
+
+         var color_rgb = color_components(color);
+
+         sess.call('io.crossbar.demo.iotstarterkit.' + devices_serials[k] + '.pixelstrip.set_color', color_rgb).then(
+            function () {
+               console.log("color set!");
+            },
+            function (err) {
+               console.log("could not set color:", err);
+            }
+         );
       }
    )
 }
