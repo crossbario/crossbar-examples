@@ -14,7 +14,7 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.twisted.util import sleep
 
-from neopixel import *
+from neopixel import Adafruit_NeoPixel, Color
 
 
 def get_serial():
@@ -33,6 +33,8 @@ class ColoramaDisplay(ApplicationSession):
         self.log.info("Session joined: {details}", details=details)
 
         self._serial = get_serial()
+        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.pixelstrip'.format(self._serial)
+
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
 
         cfg = self.config.extra
@@ -48,14 +50,44 @@ class ColoramaDisplay(ApplicationSession):
         self._leds.begin()
         self.set_uniform_color(0, 0, 0)
 
-        yield self.register(self.set_uniform_color, u'io.crossbar.demo.iotstarterkit.{}.pixelstrip.set_uniform_color'.format(self._serial))
+        for proc in [
+            (self.set_color, 'set_color'),
+            (self.get_color, 'get_color'),
+        ]:
+            yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
 
         self.log.info("ColoramaDisplay ready!")
 
-    def set_uniform_color(self, red, green, blue):
-        for i in range(self._leds.numPixels()):
-            self._leds.setPixelColor(i, Color(red, green, blue))
+    def set_color(self, red, green, blue, k=None):
+        if k is None:
+            for i in range(self._leds.numPixels()):
+                self._leds.setPixelColorRGB(i, red, green, blue)
+                color_change = {
+                    u'led': i,
+                    u'r': red,
+                    u'g': green,
+                    u'b': blue
+                }
+                self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
+        else:
+            self._leds.setPixelColorRGB(k, red, green, blue)
+            color_change = {
+                u'led': k,
+                u'r': red,
+                u'g': green,
+                u'b': blue
+            }
+            self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
         self._leds.show()
+
+    def get_color(self, k):
+        c = self._leds.getPixelColor(k)
+        color = {
+            u'r': c >> 16,
+            u'g': (c >> 8) & 0xff,
+            u'b': c & 0xff,
+        }
+        return color
 
     def onLeave(self, details):
         self.log.info("Session closed: {details}", details=details)
