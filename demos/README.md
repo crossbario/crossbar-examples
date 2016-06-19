@@ -1,4 +1,4 @@
-The demos folder contains small WAMP/Crossbar.io applications with a bit more polish than the general examples. 
+The demos folder contains small WAMP/Crossbar.io applications with a bit more polish than the general examples.
 
 The general examples are there to illustrate a particular feature of WAMP or Crossbar.io, and only contain the parts necessary to do so.
 
@@ -16,7 +16,7 @@ and then open a browser to
 http://localhost:8080
 ```
 
-to see the frontend. 
+to see the frontend.
 
 For some demos, you need to install dependencies or go through a (simple) setup process. See the respective readmes.
 
