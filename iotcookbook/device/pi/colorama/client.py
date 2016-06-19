@@ -20,9 +20,10 @@ from neopixel import *
 def get_serial():
     with open('/proc/cpuinfo') as fd:
         for line in fd.read().splitlines():
+            line = line.strip()
             if line.startswith('Serial'):
                 _, serial = line.split(':')
-                return u''.format(int(serial.strip()))
+                return u'{}'.format(int(serial.strip(), 16))
 
 
 class ColoramaDisplay(ApplicationSession):
@@ -32,6 +33,7 @@ class ColoramaDisplay(ApplicationSession):
         self.log.info("Session joined: {details}", details=details)
 
         self._serial = get_serial()
+        self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
 
         cfg = self.config.extra
 
@@ -42,10 +44,11 @@ class ColoramaDisplay(ApplicationSession):
             cfg['led_dma'],
             cfg['led_invert'],
             cfg['led_brightness'])
+
         self._leds.begin()
         self.set_uniform_color(0, 0, 0)
 
-        yield self.register(set_uniform_color, u'io.crossbar.iotstarterkit.{}.pixelstrip.set_uniform_color'.format(self._serial))
+        yield self.register(self.set_uniform_color, u'io.crossbar.demo.iotstarterkit.{}.pixelstrip.set_uniform_color'.format(self._serial))
 
         self.log.info("ColoramaDisplay ready!")
 
@@ -60,7 +63,7 @@ class ColoramaDisplay(ApplicationSession):
 
     def onDisconnect(self):
         self.log.info("Connection closed")
-        self._disp.clear()
+        self.set_uniform_color(0, 0, 0)
         try:
             reactor.stop()
         except ReactorNotRunning:
@@ -68,7 +71,6 @@ class ColoramaDisplay(ApplicationSession):
 
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
