@@ -48,7 +48,7 @@ class ColoramaDisplay(ApplicationSession):
             cfg['led_brightness'])
 
         self._leds.begin()
-        self.set_color(0, 0, 0)
+        self.set_color(0xe1, 0xda, 0x05)
 
         for proc in [
             (self.set_color, 'set_color'),
@@ -99,7 +99,9 @@ class ColoramaDisplay(ApplicationSession):
 
     def onDisconnect(self):
         self.log.info("Connection closed")
-        self.set_color(0, 0, 0)
+        for i in range(self._leds.numPixels()):
+            self._leds.setPixelColorRGB(i, 0, 0, 0)
+        self._leds.show()
         try:
             reactor.stop()
         except ReactorNotRunning:
@@ -125,7 +127,7 @@ if __name__ == '__main__':
         u'led_pin': 12,             # GPIO pin connected to the pixels (must support PWM!).
         u'led_freq_hz': 800000,     # LED signal frequency in hertz (usually 800khz)
         u'led_dma': 5,              # DMA channel to use for generating signal (try 5)
-        u'led_brightness': 80,      # Set to 0 for darkest and 255 for brightest
+        u'led_brightness': 96,      # Set to 0 for darkest and 255 for brightest
         u'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
     }
 
