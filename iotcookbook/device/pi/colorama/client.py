@@ -95,8 +95,8 @@ class ColoramaDisplay(ApplicationSession):
     def get_color(self, k):
         c = self._leds.getPixelColor(k)
         color = {
-            u'r': c >> 16,
-            u'g': (c >> 8) & 0xff,
+            u'g': c >> 16,
+            u'r': (c >> 8) & 0xff,
             u'b': c & 0xff,
         }
         return color

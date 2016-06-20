@@ -103,6 +103,19 @@ function setupDemo() {
 
    $("#helpButton").click(function() { $(".info_bar").toggle() });
 
+   for (var i = 0; i < devices_serials.length; ++i) {
+      (function (k) {
+         sess.call('io.crossbar.demo.iotstarterkit.' + devices_serials[k] + '.pixelstrip.get_color', [0]).then(
+            function (res) {
+               set_col(devices_serials[k], res);
+            },
+            function (err) {
+               console.log("could not get color:", err);
+            }
+         );
+      })(i);
+   }
+
    sess.subscribe('io.crossbar.demo.iotstarterkit..pixelstrip.on_color_set', onColorChangeRemote, {match: 'wildcard'}).then(
       null,
       function (err) {
@@ -144,13 +157,11 @@ function setupPicker(k) {
       // this is the callback fired when the user manipulates a color picker
       function (color) {
 
-         console.log(color);
-
          var color_rgb = color_components(color);
 
          sess.call('io.crossbar.demo.iotstarterkit.' + devices_serials[k] + '.pixelstrip.set_color', color_rgb).then(
             function () {
-               console.log("color set!");
+               console.log("color set");
             },
             function (err) {
                console.log("could not set color:", err);
@@ -160,12 +171,7 @@ function setupPicker(k) {
    )
 }
 
-// our event handler for processing remote color changes
-function onColorChangeRemote(args, kwargs, details) {
-   var col_ev = args[0];
-   if (col_ev.led == 0) {
-      // "io.crossbar.demo.iotstarterkit.1307984267.pixelstrip.on_color_set"
-      var serial = parseInt(details.topic.split('.')[4]);
+function set_col(serial, col_ev) {
       var serial_index = null;
       for (var i = 0; i < devices_serials.length; ++i) {
          if (devices_serials[i] === serial) {
@@ -181,5 +187,15 @@ function onColorChangeRemote(args, kwargs, details) {
 
       // set colors associated with color picker
       setExtraColors(serial_index, color);
+}
+
+// our event handler for processing remote color changes
+function onColorChangeRemote(args, kwargs, details) {
+   var col_ev = args[0];
+   if (col_ev.led == 0) {
+      // "io.crossbar.demo.iotstarterkit.1307984267.pixelstrip.on_color_set"
+      var serial = parseInt(details.topic.split('.')[4]);
+
+      set_col(serial, col_ev);
    }
 };
