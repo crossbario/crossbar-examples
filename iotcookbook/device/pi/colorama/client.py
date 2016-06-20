@@ -52,6 +52,7 @@ class ColoramaDisplay(ApplicationSession):
         for proc in [
             (self.set_color, 'set_color'),
             (self.get_color, 'get_color'),
+            (self.flash, 'flash'),
         ]:
             yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
 

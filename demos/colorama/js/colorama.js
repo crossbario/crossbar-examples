@@ -124,6 +124,14 @@ function setupDemo() {
    );
 }
 
+function flash_leds (k) {
+   sess.call('io.crossbar.demo.iotstarterkit.' + devices_serials[k] + '.pixelstrip.flash', [0]).then(
+      nullm
+      function (err) {
+         console.log("could not flash LEDs:", err);
+      }
+   );
+}
 
 function color_components (color) {
    var c = JSON.stringify(color);
