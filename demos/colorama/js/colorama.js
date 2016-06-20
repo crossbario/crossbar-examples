@@ -124,11 +124,11 @@ function setupDemo() {
    );
 }
 
-function flash_leds (k) {
-   sess.call('io.crossbar.demo.iotstarterkit.' + devices_serials[k] + '.pixelstrip.flash').then(
+function action (k, action_name) {
+   sess.call('io.crossbar.demo.iotstarterkit.' + devices_serials[k] + '.pixelstrip.' + action_name).then(
       null,
       function (err) {
-         console.log("could not flash LEDs:", err);
+         console.log("could not perform action on LEDs:", err);
       }
    );
 }

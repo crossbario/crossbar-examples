@@ -53,6 +53,11 @@ class ColoramaDisplay(ApplicationSession):
             (self.set_color, 'set_color'),
             (self.get_color, 'get_color'),
             (self.flash, 'flash'),
+            (self.flash, 'color_wipe'),
+            (self.flash, 'theater_chase'),
+            (self.flash, 'rainbow'),
+            (self.flash, 'rainbow_cycle'),
+            (self.flash, 'theater_chaserainbow'),
         ]:
             yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
 
@@ -68,6 +73,66 @@ class ColoramaDisplay(ApplicationSession):
             yield sleep(2 * delay)
             self.set_color(0x52, 0x42, 0x00)
             yield sleep(delay)
+
+    # Define functions which animate LEDs in various ways.
+    @inlineCallbacks
+    def color_wipe(self, r, g, b, wait_ms=50):
+        """Wipe color across display a pixel at a time."""
+        for i in range(self._leds.numPixels()):
+            self.set_color(r, g, b, i)
+            yield sleep(wait_ms / 1000.0)
+
+    @inlineCallbacks
+    def theater_chase(self, r, g, b, wait_ms=50, iterations=10):
+        """Movie theater light style chaser animation."""
+        for j in range(iterations):
+            for q in range(3):
+                for i in range(0, self._leds.numPixels(), 3):
+                    self.set_color(r, g, b, i + q)
+                yield sleep(wait_ms / 1000.0)
+                for i in range(0, self._leds.numPixels(), 3):
+                    self.set_color(0, 0, 0, i + q)
+
+    def wheel(self, pos):
+        """Generate rainbow colors across 0-255 positions."""
+        if pos < 85:
+            return (pos * 3, 255 - pos * 3, 0)
+        elif pos < 170:
+            pos -= 85
+            return (255 - pos * 3, 0, pos * 3)
+        else:
+            pos -= 170
+            return (0, pos * 3, 255 - pos * 3)
+
+    @inlineCallbacks
+    def rainbow(self, wait_ms=20, iterations=1):
+        """Draw rainbow that fades across all pixels at once."""
+        for j in range(256 * iterations):
+            for i in range(self._leds.numPixels()):
+                r, g, b = self.wheel((i + j) & 255)
+                self.set_color(r, g, b, i)
+            yield sleep(wait_ms / 1000.0)
+
+    @inlineCallbacks
+    def rainbow_cycle(self, wait_ms=20, iterations=5):
+        """Draw rainbow that uniformly distributes itself across all pixels."""
+        for j in range(256 * iterations):
+            for i in range(self._leds.numPixels()):
+                r, g, b = self.wheel(((i * 256 / self._leds.numPixels()) + j) & 255)
+                self.set_color(r, g, b, i)
+            yield sleep(wait_ms / 1000.0)
+
+    @inlineCallbacks
+    def theater_chaserainbow(self, wait_ms=50):
+        """Rainbow movie theater light style chaser animation."""
+        for j in range(256):
+            for q in range(3):
+                for i in range(0, self._leds.numPixels(), 3):
+                    r, g, b = self.wheel((i+j) % 255)
+                    self.set_color(r, g, b, i + q)
+                yield sleep(wait_ms / 1000.0)
+                for i in range(0, self._leds.numPixels(), 3):
+                    self.set_color(0, 0, 0, i)
 
     def set_color(self, red, green, blue, k=None):
         if k is None:
