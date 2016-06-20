@@ -168,9 +168,7 @@ function setupPicker(k) {
          var color_rgb = color_components(color);
 
          sess.call('io.crossbar.demo.iotstarterkit.' + devices_serials[k] + '.pixelstrip.set_color', color_rgb).then(
-            function () {
-               console.log("color set");
-            },
+            null,
             function (err) {
                console.log("could not set color:", err);
             }
