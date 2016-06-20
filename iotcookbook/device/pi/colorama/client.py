@@ -89,7 +89,8 @@ class ColoramaDisplay(ApplicationSession):
         # Rainbow animations.
         yield self.rainbow()
         yield self.rainbow_cycle()
-        yield self.theater_chase_rainbow()
+        #yield self.theater_chase_rainbow()
+        yield self.flash()
 
     # Define functions which animate LEDs in various ways.
     @inlineCallbacks
