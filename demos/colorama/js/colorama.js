@@ -103,9 +103,24 @@ function setupDemo() {
 
    $("#helpButton").click(function() { $(".info_bar").toggle() });
 
-   sess.subscribe("io.crossbar.demo.colorama.color_change", onColorChangeRemote);
+   sess.subscribe('io.crossbar.demo.iotstarterkit..pixelstrip.on_color_set', onColorChangeRemote, {match: 'wildcard'}).then(
+      null,
+      function (err) {
+         console.log("failed to subscribe:", err);
+      }
+   );
 }
 
+
+function color_components (color) {
+   var c = JSON.stringify(color);
+   c = c.substring(2, 8);
+   var red = parseInt(c.substring(0, 2), 16);
+   var green = parseInt(c.substring(2, 4), 16);
+   var blue = parseInt(c.substring(4, 6), 16);
+   return [red, green, blue];
+   //return {red: red, green: green, blue: blue};
+}
 
 // set colors associated with / controlled by a color picker
 function setExtraColors(k, color) {
@@ -123,29 +138,13 @@ function setExtraColors(k, color) {
    $('#c' + k + 'b').css('background-color', color);
 }
 
-
-function color_components (color) {
-   var c = JSON.stringify(color);
-   c = c.substring(2, 8);
-   var red = parseInt(c.substring(0, 2), 16);
-   var green = parseInt(c.substring(2, 4), 16);
-   var blue = parseInt(c.substring(4, 6), 16);
-   return [red, green, blue];
-   //return {red: red, green: green, blue: blue};
-}
-
 // setup color picker by index
 function setupPicker(k) {
    $('#picker' + k).farbtastic(
-
       // this is the callback fired when the user manipulates a color picker
       function (color) {
 
-         // set colors associated with color picker
-         setExtraColors(k, color);
-
-         // publish the color change event on our topic
-         sess.publish("io.crossbar.demo.colorama.color_change", [{ index: k, color: color }]);
+         console.log(color);
 
          var color_rgb = color_components(color);
 
@@ -161,12 +160,26 @@ function setupPicker(k) {
    )
 }
 
-
 // our event handler for processing remote color changes
 function onColorChangeRemote(args, kwargs, details) {
-   // set color in color picker
-   $.farbtastic('#picker' + args[0].index).setColor(args[0].color, true);
+   var col_ev = args[0];
+   if (col_ev.led == 0) {
+      // "io.crossbar.demo.iotstarterkit.1307984267.pixelstrip.on_color_set"
+      var serial = parseInt(details.topic.split('.')[4]);
+      var serial_index = null;
+      for (var i = 0; i < devices_serials.length; ++i) {
+         if (devices_serials[i] === serial) {
+            serial_index = i;
+            break;
+         }
+      }
 
-   // set colors associated with color picker
-   setExtraColors(args[0].index, args[0].color);
+      var color = 'rgba(' + col_ev.r + ', ' + col_ev.g + ', ' + col_ev.b + ', 1)';
+
+      // set color in color picker
+      $.farbtastic('#picker' + serial_index).setColor(color, true);
+
+      // set colors associated with color picker
+      setExtraColors(serial_index, color);
+   }
 };

@@ -69,13 +69,10 @@ class ColoramaDisplay(ApplicationSession):
             yield sleep(delay)
 
     def set_color(self, red, green, blue, k=None):
-        # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
-        _red = red
-        red = green
-        green = _red
         if k is None:
             for i in range(self._leds.numPixels()):
-                self._leds.setPixelColorRGB(i, red, green, blue)
+                # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
+                self._leds.setPixelColorRGB(i, green, red, blue)
                 color_change = {
                     u'led': i,
                     u'r': red,
@@ -84,7 +81,8 @@ class ColoramaDisplay(ApplicationSession):
                 }
                 self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
         else:
-            self._leds.setPixelColorRGB(k, red, green, blue)
+                # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
+            self._leds.setPixelColorRGB(k, green, red, blue)
             color_change = {
                 u'led': k,
                 u'r': red,
