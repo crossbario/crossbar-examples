@@ -53,11 +53,11 @@ class ColoramaDisplay(ApplicationSession):
             (self.set_color, 'set_color'),
             (self.get_color, 'get_color'),
             (self.flash, 'flash'),
-            (self.flash, 'color_wipe'),
-            (self.flash, 'theater_chase'),
-            (self.flash, 'rainbow'),
-            (self.flash, 'rainbow_cycle'),
-            (self.flash, 'theater_chaserainbow'),
+            (self.color_wipe, 'color_wipe'),
+            (self.theater_chase, 'theater_chase'),
+            (self.rainbow, 'rainbow'),
+            (self.rainbow_cycle, 'rainbow_cycle'),
+            (self.theater_chaserainbow, 'theater_chaserainbow'),
         ]:
             yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
 
