@@ -246,6 +246,10 @@
                             "type": "static",
                             "directory": "../../colorpicker"
                         },
+                        "colorama": {
+                            "type": "static",
+                            "directory": "../../colorama"
+                        },
                         "editform": {
                             "type": "static",
                             "directory": "../../editform/web"
