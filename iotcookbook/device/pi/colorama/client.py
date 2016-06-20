@@ -79,17 +79,17 @@ class ColoramaDisplay(ApplicationSession):
     @inlineCallbacks
     def lightshow(self):
         # Color wipe animations.
-        yield color_wipe(255, 0, 0)  # Red wipe
-        yield color_wipe(0, 255, 0)  # Blue wipe
-        yield color_wipe(0, 0, 255)  # Green wipe
+        yield self.color_wipe(255, 0, 0)  # Red wipe
+        yield self.color_wipe(0, 255, 0)  # Blue wipe
+        yield self.color_wipe(0, 0, 255)  # Green wipe
         # Theater chase animations.
-        yield theater_chase(127, 127, 127)  # White theater chase
-        yield theater_chase(127,   0,   0)  # Red theater chase
-        yield theater_chase(0,   0, 127)  # Blue theater chase
+        yield self.theater_chase(127, 127, 127)  # White theater chase
+        yield self.theater_chase(127,   0,   0)  # Red theater chase
+        yield self.theater_chase(0,   0, 127)  # Blue theater chase
         # Rainbow animations.
-        yield rainbow()
-        yield rainbow_cycle()
-        yield theater_chase_rainbow()
+        yield self.rainbow()
+        yield self.rainbow_cycle()
+        yield self.theater_chase_rainbow()
 
     # Define functions which animate LEDs in various ways.
     @inlineCallbacks
