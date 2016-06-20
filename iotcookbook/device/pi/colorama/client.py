@@ -53,11 +53,13 @@ class ColoramaDisplay(ApplicationSession):
             (self.set_color, 'set_color'),
             (self.get_color, 'get_color'),
             (self.flash, 'flash'),
+            (self.lightshow, 'lightshow'),
             (self.color_wipe, 'color_wipe'),
             (self.theater_chase, 'theater_chase'),
             (self.rainbow, 'rainbow'),
             (self.rainbow_cycle, 'rainbow_cycle'),
             (self.theater_chaserainbow, 'theater_chaserainbow'),
+
         ]:
             yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
 
@@ -73,6 +75,21 @@ class ColoramaDisplay(ApplicationSession):
             yield sleep(2 * delay)
             self.set_color(0x52, 0x42, 0x00)
             yield sleep(delay)
+
+    @inlineCallbacks
+    def lightshow(self):
+        # Color wipe animations.
+        yield color_wipe(255, 0, 0)  # Red wipe
+        yield color_wipe(0, 255, 0)  # Blue wipe
+        yield color_wipe(0, 0, 255)  # Green wipe
+        # Theater chase animations.
+        yield theater_chase(127, 127, 127)  # White theater chase
+        yield theater_chase(127,   0,   0)  # Red theater chase
+        yield theater_chase(0,   0, 127)  # Blue theater chase
+        # Rainbow animations.
+        yield rainbow()
+        yield rainbow_cycle()
+        yield theater_chase_rainbow()
 
     # Define functions which animate LEDs in various ways.
     @inlineCallbacks
