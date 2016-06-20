@@ -48,7 +48,7 @@ The code might have been slightly modified and extended after we have copied it 
 
 ## Wifi Setup
 
-In general, Wifi setup from the CLI isn't hard these days anymore .. see [here](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md).
+In general, Wifi setup from the CLI isn't hard these days anymore .. see [here](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md) and [here](http://raspberrypi.stackexchange.com/questions/11631/how-to-setup-multiple-wifi-networks).
 
 To configure your Wifi network, SSH into the Pi and edit the following file:
 
@@ -117,3 +117,13 @@ Eg given above, this Pi (MAC `F4:F2:6D:14:1B:56`) will join one of the Wifi netw
 * office: 192.168.1.142
 * mobile: 192.168.43.105
 * home: 192.168.55.104
+
+### wicd
+
+There is a curses based Wifi config app too:
+
+```
+sudo apt-get install wicd-curses
+sudo wicd-curses
+```
+
