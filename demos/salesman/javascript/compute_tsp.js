@@ -37,11 +37,10 @@ var connection = new autobahn.Connection({
 });
 var session = null;
 
-
 connection.onopen = function(newSession, details) {
    console.log("Connected");
 
-   var session = newSession;
+   session = newSession;
 
    // set the URL prefix based on the compute group we are part of
    session.prefix("api", "io.crossbar.demo.tsp." + computeGroup);
@@ -214,14 +213,26 @@ var testCompute = function() {
    var points = createPoints(30);
    var startRoute = createPointsIndex(points);
    var temp = 1;
-   var tempDecrease = 1;
+   var tempDecrease = 0.95;
    var iterations = 200;
 
-   console.log("test result: ", computeTsp([], {
+   // console.log("test result: ", computeTsp([], {
+   //    points: points,
+   //    startRoute: startRoute,
+   //    temp: temp,
+   //    tempDecrease: tempDecrease,
+   //    iterations: iterations
+   // }))
+
+   var testResult = session.call("api:compute_tsp", [], {
       points: points,
       startRoute: startRoute,
       temp: temp,
       tempDecrease: tempDecrease,
       iterations: iterations
-   }))
+   });
+
+   testResult.then(function() {
+      console.log("test done", arguments);
+   });
 }
