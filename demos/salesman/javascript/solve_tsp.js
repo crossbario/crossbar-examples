@@ -71,6 +71,23 @@ var solveTsp = function(args, kwargs) {
    // the data we need for coordination + results
    var leaderBoard = []; // contains the 10 best routes + the ID of the components which found them
    var nickRegistrations = {}; // nicks and the associated component IDs
+   var idsToNicks = {}; // generate this for lookup - needed to update nickStats + the leaderboard
+   var nickStats = {}; // number of connected components (current/max/total), number of total compute cylces contributed, current compute cycles/s
+   var currentBestRoute = []; // indices of points
+   var currentBestLength = null;
+   var temp = null; // the temperature to use for a compute_tsp call
+   var tempDecrease = 1; // none for the time being, temp is only decreased between compute calls, not during the actual computation
+   var iterations = 300; // adjust as needed once we have clients running on slow devices, so that we get a reasonable time until the computations return
+   var onErrorWait = 300; // timeout before attempting to send the next call when a call returns that all compute components are presently busy. Should really not be a hardcoded constant, but depend on the current average return time of calls - FIXME
+   var timeExpired = false;
+
+   // calculate the temperature fall across the computeTime
+   // IMPLEMENT ME
+
+   // create the computeTime timer
+   setTimeout(function() {
+      timeExpired = true;
+   }, computeTime);
 
    // check whether any compute nodes for our computeGroup are present, if so: start, else subscribe to the join event and start when this is called the first time
    session.call("wamp.registration.match", ["io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"]).then(function(res) {
@@ -85,6 +102,66 @@ var solveTsp = function(args, kwargs) {
    }, session.log)
 
    var startCalling = function() {
+
+      // trigger the temperature falling
+      // IMPLEMENT ME
+
+      var onComputation = function(res) {
+         // check whether time has expired - exit if so
+         if(timeExpired) {
+            deliverResult();
+            return;
+         }
+
+         var resultLength = res.length;
+         var resultRoute = res.route;
+
+         // check whether we have a new best route
+         if(resultLength < currentBestLength) {
+            currentBestLength = resultLength;
+            currentBestRoute = resultRoute;
+         }
+
+         // check whether/where this belongs into the leaderboard
+         // this may be expensive, so possibly do outside of this function
+         // and periodically. But needs to be triggered on a new best result, since this should be shown immediately
+         leaderBoard.forEach(function(el, i) {
+
+         })
+
+         // update the nickStats
+         
+
+         triggerComputation();
+      }
+
+      var onComputationError = function(error, details) {
+         console.log("computation call error", error, detaisl);
+         // wait the current timeout and then try to call again
+         setTimeout(function() {
+            triggerComputation();
+         }, onErrorWait)
+      }
+
+      var triggerComputation = function() {
+
+         session.call("io.crossbar.demo.tsp." + computeGroup + ".compute_tsp", [], {
+            points: points,
+            startRoute: currentBestRoute,
+            temp:temp,
+            tempDecrease: tempDecrease,
+            iterations: iterations
+         }).then(onComputation, onComputationError);
+
+      }
+
+      // create the initial route to send to the compute nodes
+      // store the length of this
+      var straightIndex = createPointsIndex(points);
+      currentBestRoute = randomSwapMultiple(straightIndex);
+      currentBestLength = computeLength(currentBestRoute);
+
+      triggerComputation();
 
    }
 
@@ -137,6 +214,60 @@ var createPointsIndex = function(points) {
    })
    return index;
 }
+
+
+// random swap of multiple points (two points at a time)
+var randomSwapMultiple = function(route, iterations) {
+
+   // route is array, and since we don't want to overwrite this, wee need to deep-copy it
+   var routeCopy = deepCopyArray(route);
+
+   while(iterations) {
+
+      // pick the two elements to swap
+      var first = Math.floor(Math.random() * routeCopy.length);
+      var second = first;
+      while(second === first) {
+         // console.log("calculating second", first, second);
+         second = Math.floor(Math.random() * routeCopy.length);
+      }
+
+      var store = routeCopy[first];
+      routeCopy[first] = routeCopy[second];
+      routeCopy[second] = store;
+
+      iterations--;
+   }
+
+
+   return routeCopy;
+}
+
+
+var computeLength = function(points, route) {
+   var length = null;
+
+   route.forEach(function(pointIndex, i) {
+      if(route[i + 1]) {
+         // console.log(points[i + 1], points[i]);
+         var distance = computeDistance(points[route[i + 1]], points[pointIndex]);
+         length += distance;
+      }
+   })
+
+   return length;
+}
+
+var computeDistance = function(firstPoint, secondPoint) {
+   var distance = Math.sqrt(
+      Math.pow(firstPoint[0] - secondPoint[0], 2) +
+      Math.pow(firstPoint[1] - secondPoint[1], 2)
+   );
+
+   return distance;
+}
+
+
 
 // var testCompute = function() {
 //    var points = createPoints(30);
