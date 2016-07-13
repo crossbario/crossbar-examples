@@ -45,7 +45,8 @@ connection.onopen = function(newSession, details) {
    // set the URL prefix based on the compute group we are part of
    session.prefix("api", "io.crossbar.demo.tsp." + computeGroup);
 
-   session.register("api:compute_tsp", computeTsp);
+   session.register("api:compute_tsp", computeTsp, { invoke: "random"});
+   // session.register("api:compute_tsp", computeTsp);
 };
 
 connection.onclose = function(reason, details) {

@@ -49,6 +49,23 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "guest",
+            "executable": "node",
+            "arguments": [
+               "client.js",
+               "ws://127.0.0.1:8080/ws"
+            ],
+            "options": {
+                "workdir": "../javascript",
+                "watch": {
+                    "directories": [
+                        "../javascript"
+                    ],
+                    "action": "restart"
+                }
+            }
         }
     ]
 }

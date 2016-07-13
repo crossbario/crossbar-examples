@@ -54,6 +54,9 @@ var computeSlice = function(points, calcTime) {
 
    // P: We want a fixed time for the execution of the calculation. The usual method is to reduce the temperate after each iteration, and to stop when the temperatur has reached the lowest intended value.
 
+   var initialLength = computeLength(points);
+   var currentBestLength = initialLength;
+
    // initial random sort of points
    swappedPoints = randomSwapTwo(points, points.length);// should this be by a constant factor or power?
 
@@ -61,7 +64,7 @@ var computeSlice = function(points, calcTime) {
    while(temp > endTemp) {
       // get current length
       var currentLength = computeLength(swappedPoints);
-      var currentBestLength = computeLength(currentPoints);
+      var currentBestLength = c
 
       // decide whether to keep the current permutation
       if(

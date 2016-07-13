@@ -45,6 +45,8 @@ connection.onopen = function(newSession, details) {
    session = newSession;
 
    session.register("io.crossbar.demo.tsp.solve_tsp", solveTsp);
+
+   testSolveTsp();
 };
 
 connection.onclose = function(reason, details) {
@@ -60,110 +62,206 @@ connection.onclose = function(reason, details) {
 
 connection.open();
 
+var solvers = [];
 var solveTsp = function(args, kwargs) {
-   // needs to create an object which contains all the functionality, since this can be called multiple times in parallel! - FIXME
+   console.log("soveTsp called", kwargs);
 
-   // the data we receive to set this up
-   var points = kwargs.points;
-   var computeTime = kwargs.computeTime;
-   var computeGroup = kwargs.computeGroup;
+   // deferred which we resolve once the compute time has expired
+   var solution = when.defer();
 
-   // the data we need for coordination + results
-   var leaderBoard = []; // contains the 10 best routes + the ID of the components which found them
-   var nickRegistrations = {}; // nicks and the associated component IDs
-   var idsToNicks = {}; // generate this for lookup - needed to update nickStats + the leaderboard
-   var nickStats = {}; // number of connected components (current/max/total), number of total compute cylces contributed, current compute cycles/s
-   var currentBestRoute = []; // indices of points
-   var currentBestLength = null;
-   var temp = null; // the temperature to use for a compute_tsp call
-   var tempDecrease = 1; // none for the time being, temp is only decreased between compute calls, not during the actual computation
-   var iterations = 300; // adjust as needed once we have clients running on slow devices, so that we get a reasonable time until the computations return
-   var onErrorWait = 300; // timeout before attempting to send the next call when a call returns that all compute components are presently busy. Should really not be a hardcoded constant, but depend on the current average return time of calls - FIXME
-   var timeExpired = false;
+   // create the solver object
+   // this gets the call data + 'solution' deferred
+   // it resolves the deferred with the current best solution, leaderboard etc.
+   // once the compute time has expired
+   solvers.push(createSolver(kwargs, solution));
 
-   // calculate the temperature fall across the computeTime
-   // IMPLEMENT ME
+   return solution.promise;
+}
 
-   // create the computeTime timer
+var createSolver = function(startData, solution) {
+   console.log("createSolver called", startData, solution);
+
+   var solver = {};
+
+   // create the data structures we needed
+   solver.data = createDataStructure(startData, solution);
+
+   // set the timeout after which we resolve with our current solution
    setTimeout(function() {
-      timeExpired = true;
-   }, computeTime);
+      solver.data.timeExpired = true;
+   }, solver.data.computeTime);
+
+   // calculate the temperature fall across the compute timeout
+   // simple linear falling for now - FIXME - should instead be exponential!!
+   solver.data.timeTempDecrease = 1 / solver.data.computeTime * solver.data.timeTempDecreaseInterval;
 
    // check whether any compute nodes for our computeGroup are present, if so: start, else subscribe to the join event and start when this is called the first time
-   session.call("wamp.registration.match", ["io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"]).then(function(res) {
-      if(res.length > 0) {
+   session.call("wamp.registration.match", ["io.crossbar.demo.tsp." + solver.data.computeGroup + ".compute_tsp"]).then(function(res) {
+      console.log("wamp.registration.match", res);
+
+      if(res != null) {
          // start calling them
+         console.log("computeTsp registered, starting calling");
+         startCalling(solver);
       } else {
+         console.log("computeTsp not registered, subscribe to registration event");
          session.subscribe("wamp.registration.on_create", function(args, kwargs, details) {
+            console.log("registration event received, analyzing")
             // filter this for the first registration for "io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"
-            // start calling once this has been received
+            var registrationUri = args[1].uri;
+            if(registrationUri === "io.crossbar.demo.tsp." + solver.data.computeGroup + ".compute_tsp") {
+               console.log("registration for computeTsp received, starting calling")
+               // start the calling of compute nodes
+               startCalling(solver);
+            }
+
          });
       }
    }, session.log)
 
-   var startCalling = function() {
+   return solver;
+}
 
-      // trigger the temperature falling
-      // IMPLEMENT ME
+var createDataStructure = function(startData, solution) {
+   var data = {
+      // data we receive from the startTSP component
+      points: startData.points,
+      computeTime: startData.computeTime,
+      computeGroup: startData.computeGroup,
+      solution: solution, // the deferred object which we resolve at the end of compute time
 
-      var onComputation = function(res) {
-         // check whether time has expired - exit if so
-         if(timeExpired) {
-            deliverResult();
-            return;
-         }
+      // results storage
+      leaderBoard: [], // contains the 10 best routes + the ID of the components which found them
+      nickRegistrations:{}, // nicks and the associated component IDs
+      idsToNicks: {}, // generate this for lookup - needed to update nickStats + the leaderboard
+      nickStats: {}, // number of connected components (current/max/total), number of total compute cylces contributed, current compute cycles/s
+      currentBestRoute: [], // indices of points
+      currentBestLength: null,
 
-         var resultLength = res.length;
-         var resultRoute = res.route;
-
-         // check whether we have a new best route
-         if(resultLength < currentBestLength) {
-            currentBestLength = resultLength;
-            currentBestRoute = resultRoute;
-         }
-
-         // check whether/where this belongs into the leaderboard
-         // this may be expensive, so possibly do outside of this function
-         // and periodically. But needs to be triggered on a new best result, since this should be shown immediately
-         leaderBoard.forEach(function(el, i) {
-
-         })
-
-         // update the nickStats
-         
-
-         triggerComputation();
-      }
-
-      var onComputationError = function(error, details) {
-         console.log("computation call error", error, detaisl);
-         // wait the current timeout and then try to call again
-         setTimeout(function() {
-            triggerComputation();
-         }, onErrorWait)
-      }
-
-      var triggerComputation = function() {
-
-         session.call("io.crossbar.demo.tsp." + computeGroup + ".compute_tsp", [], {
-            points: points,
-            startRoute: currentBestRoute,
-            temp:temp,
-            tempDecrease: tempDecrease,
-            iterations: iterations
-         }).then(onComputation, onComputationError);
-
-      }
-
-      // create the initial route to send to the compute nodes
-      // store the length of this
-      var straightIndex = createPointsIndex(points);
-      currentBestRoute = randomSwapMultiple(straightIndex);
-      currentBestLength = computeLength(currentBestRoute);
-
-      triggerComputation();
-
+      // iteration related
+      callingStarted: false, // whether we've started calling the compute nodes
+      temp: 1, // the temperature to use for the compute_tsp call
+      tempDecrease: 1, // temp decrease factor to be applied after each computation cylce (1 = no temp decrease)
+      timeTempDecrease: null, // temp decrease per time interval, calculated based on compute time and timeTempDecreaseInterval
+      timeTempDecreaseInterval: 10, // decrease temperature every x ms during compute time
+      iterations: 300, // adjust as needed once we have clients running on slow devices, so that we get a reasonable time until the computations return
+      onErrorWait: 300, // timeout before attempting to send the next call when a call returns that all compute components are presently busy. Should really not be a hardcoded constant, but depend on the current average return time of calls - FIXME
+      timeExpired: false,
    }
+
+   return data;
+}
+
+
+
+
+
+var startCalling = function(solver) {
+
+   console.log("start calling", solver.data.computeGroup, solver.data.solution);
+
+   // trigger the temperature falling
+   // FIXME
+   setInterval(function() {
+      solver.data.temp -= solver.data.timeTempDecrease;
+   }, solver.data.timeTempDecreaseInterval);
+
+   // create the initial route to send to the compute nodes
+   // store the length of this
+   var straightIndex = createPointsIndex(solver.data.points);
+   currentBestRoute = randomSwapMultiple(straightIndex, straightIndex.length);
+   currentBestLength = computeLength(solver.data.points, currentBestRoute);
+
+   console.log("initial route", currentBestRoute, currentBestLength);
+
+   // // initial trigger of computation recursion
+   // triggerComputation();
+
+   // trigger loop:
+   // - has adjustable delay between issuing calls
+   // - checks for a "max concurrency reached" flag
+   // - if "max concurrency reached", then increase delay (e.g. by one order of magnitude)
+   // - delay on max concurrency reached may be adaptive, i.e. we check whether the next call after the delay succeeds and decrease the delay in this case, else increase it
+   // - checks whether the compute time has expired and stops in that case
+
+   // send current best result after end of compute time
+   setTimeout(function() {
+      solver.data.solution.resolve({
+         currentBestRoute: currentBestRoute,
+         currentBestLength: currentBestLength
+      });
+      solver.data.timeExpired = true; // should be checked before each sending of compute task
+   }, solver.data.computeTime);
+
+//    var onComputation = function(res) {
+//       // check whether time has expired - exit if so
+//       if(timeExpired) {
+//          deliverResult();
+//          return;
+//       }
+//
+//       var resultLength = res.length;
+//       var resultRoute = res.route;
+//
+//       // check whether we have a new best route
+//       if(resultLength < currentBestLength) {
+//          currentBestLength = resultLength;
+//          currentBestRoute = resultRoute;
+//       }
+//
+//       // check whether/where this belongs into the leaderboard
+//       // this may be expensive, so possibly do outside of this function
+//       // and periodically. But needs to be triggered on a new best result, since this should be shown immediately
+//       leaderBoard.forEach(function(el, i) {
+//
+//       })
+//
+//       // update the nickStats
+//
+//
+//       triggerComputation();
+//    }
+//
+//    var onComputationError = function(error, details) {
+//       console.log("computation call error", error, detaisl);
+//       // wait the current timeout and then try to call again
+//       setTimeout(function() {
+//          triggerComputation();
+//       }, onErrorWait)
+//    }
+//
+//    var triggerComputation = function() {
+//
+//       session.call("io.crossbar.demo.tsp." + computeGroup + ".compute_tsp", [], {
+//          points: points,
+//          startRoute: currentBestRoute,
+//          temp:temp,
+//          tempDecrease: tempDecrease,
+//          iterations: iterations
+//       }).then(onComputation, onComputationError);
+//
+//    }
+//
+//    // create the initial route to send to the compute nodes
+//    // store the length of this
+//    var straightIndex = createPointsIndex(points);
+//    currentBestRoute = randomSwapMultiple(straightIndex);
+//    currentBestLength = computeLength(currentBestRoute);
+//
+//    // initial trigger of computation recursion
+//    triggerComputation();
+
+}
+
+var triggerComputation = function(solver) {
+
+   session.call("io.crossbar.demo.tsp." + solver.data.computeGroup + ".compute_tsp", [], {
+      points: points,
+      startRoute: currentBestRoute,
+      temp:temp,
+      tempDecrease: tempDecrease,
+      iterations: iterations
+   }).then(onComputation, onComputationError);
 
 }
 
@@ -174,10 +272,9 @@ var createPoints = function(amount, maxCoordinates, minDistance) {
    var minDistance = minDistance || 10;
    var points = [];
 
-   console.log(amount, maxCoordinates, minDistance);
+   console.log("creating points", amount, maxCoordinates, minDistance);
 
    while(amount) {
-      console.log("creating a point");
 
       // create point
       var point = [
@@ -245,12 +342,15 @@ var randomSwapMultiple = function(route, iterations) {
 
 
 var computeLength = function(points, route) {
+   // console.log("computeLength", points, route);
+
    var length = null;
 
    route.forEach(function(pointIndex, i) {
       if(route[i + 1]) {
          // console.log(points[i + 1], points[i]);
-         var distance = computeDistance(points[route[i + 1]], points[pointIndex]);
+         // console.log("i", points[route[i + 1]], points[route[i]]);
+         var distance = computeDistance(points[route[i + 1]], points[route[i]]);
          length += distance;
       }
    })
@@ -268,31 +368,88 @@ var computeDistance = function(firstPoint, secondPoint) {
 }
 
 
+var deepCopyArray = function(array) {
+   var copiedArray = [];
+   array.forEach(function(el) {
+      copiedArray.push(el);
+   })
+   return copiedArray;
+}
 
-// var testCompute = function() {
-//    var points = createPoints(30);
-//    var startRoute = createPointsIndex(points);
-//    var temp = 1;
-//    var tempDecrease = 0.95;
-//    var iterations = 200;
+
+/*
+
+Test/Trial code below - weed out unneeded before release - FIXME
+
+*/
+
+var testComputeLength = function() {
+   var points = createPoints(10, [300, 300], 10);
+   var route = createPointsIndex(points);
+   var length = computeLength(points, route);
+
+   console.log("testComputeLength", length);
+}
+
+
+var testMetaRegistered = function(computeGroup) {
+   var computeGroup = computeGroup || "competition";
+
+   session.call("wamp.registration.match", ["io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"]).then(function(res) {
+      console.log("current registrations for " + computeGroup + ": ", res);
+   });
+}
+
+var testMetaSubscribe = function(computeGroup) {
+   var computeGroup = computeGroup || "competition";
+
+   session.subscribe("wamp.registration.on_create", function(args, kwargs, details) {
+      console.log("wamp.registration.on_create", args[0], args[1]);
+   })
+}
+
+var testSolveTsp = function() {
+
+   var testData = {
+      points: createPoints(40, [1000, 1000], 5),
+      computeTime: 3000,
+      computeGroup: "competition"
+   }
+
+   var solution = solveTsp([], testData);
+   console.log("solution - sync:", solution);
+
+   solution.then(
+      function(res) {
+         console.log("solveTsp returns", res);
+      },
+      function(err) {
+         console.log("solveTps error", err);
+      }
+   );
+
+}
+
+
+
+// var testDefer = function(returnTime) {
+//    var deferred = when.defer();
+//    var timeOut = returnTime || 1000;
 //
-//    // console.log("test result: ", computeTsp([], {
-//    //    points: points,
-//    //    startRoute: startRoute,
-//    //    temp: temp,
-//    //    tempDecrease: tempDecrease,
-//    //    iterations: iterations
-//    // }))
+//    setTimeout(function() {
+//       deferred.resolve("resolution value");
+//    }, timeOut);
 //
-//    var testResult = session.call("api:compute_tsp", [], {
-//       points: points,
-//       startRoute: startRoute,
-//       temp: temp,
-//       tempDecrease: tempDecrease,
-//       iterations: iterations
-//    });
+//    return deferred.promise;
 //
-//    testResult.then(function() {
-//       console.log("test done", arguments);
-//    });
-// }
+// };
+//
+// console.log("testDefer");
+// testDefer(5000).then(
+//    function() {
+//       console.log("resolved", arguments);
+//    },
+//    function() {
+//       console.log("error", arguments);
+//    }
+// );
