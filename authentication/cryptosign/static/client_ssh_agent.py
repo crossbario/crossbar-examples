@@ -26,6 +26,8 @@
 ##
 ###############################################################################
 
+import os
+
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
 
@@ -98,7 +100,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
     parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--pubkey', dest='pubkey', type=six.text_type, help='Filename of the client SSH Ed25519 public key.')
+    parser.add_argument('--pubkey', dest='pubkey', type=six.text_type, default=None, help='Filename of the client SSH Ed25519 public key.')
     parser.add_argument('--trustroot', dest='trustroot', type=six.text_type, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
     parser.add_argument('--url', dest='url', type=six.text_type, default=u'wss://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
@@ -106,6 +108,9 @@ if __name__ == '__main__':
     options = parser.parse_args()
 
     print("Connecting to {}: realm={}, authid={}, pubkey={}, trustroot={}".format(options.url, options.realm, options.authid, options.pubkey, options.trustroot))
+
+    if options.pubkey is None:
+        options.pubkey = os.path.expanduser('~/.ssh/id_ed25519.pub')
 
     # load client public key
     with open(options.pubkey, 'r') as f:
@@ -151,5 +156,5 @@ if __name__ == '__main__':
     # ctx = optionsForClientTLS(u'localhost', trustRoot=ca_certs)
 
     # connect to router and run ClientSession
-    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, ssl=ctx, debug=False, debug_wamp=options.trace)
+    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, ssl=ctx)
     runner.run(ClientSession)
