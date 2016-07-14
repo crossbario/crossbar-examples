@@ -66,7 +66,7 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "hello.AppSession",
+                    "classname": "service1.AppSession",
                     "realm": "realm1",
                     "transport": {
                         "type": "websocket",
@@ -79,6 +79,31 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "guest",
+            "executable": "./service2",
+            "arguments": [
+                "-h",
+                "127.0.0.1",
+                "-p",
+                "8080",
+                "-r",
+                "realm1"
+            ],
+            "options": {
+                "workdir": ".."
+            }
+        },
+        {
+            "type": "guest",
+            "executable": "node",
+            "arguments": [
+                "service3.js"
+            ],
+            "options": {
+                "workdir": ".."
+            }
         }
     ]
 }

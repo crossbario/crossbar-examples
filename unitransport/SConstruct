@@ -76,7 +76,7 @@ else:
 env.Append(CPPPATH=['/usr/local/include'])
 env.Append(LIBPATH=['/usr/lib'])
 
-sources = [('client.cpp', [])]
+sources = [('service2.cpp', [])]
 
 prgs = []
 
