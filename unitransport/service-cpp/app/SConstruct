@@ -1,0 +1,58 @@
+import os, commands
+
+env = Environment()
+
+if 'CXX' in os.environ:
+    env['CXX'] = os.environ['CXX']
+
+if 'clang++' in env['CXX']:
+
+    print('Using clang toolchain')
+
+    env.Append(CXXFLAGS=['-std=c++11',
+                         '-stdlib=libc++',
+                         '-O2',
+                         '-Wall',
+                         '-pedantic',
+                         '-Wno-unused-value',
+                         '-Wno-deprecated',
+                         '-pthread'])
+
+    env.Append(LINKFLAGS=['-stdlib=libc++', '-pthread'])
+
+elif 'g++' in env['CXX']:
+
+    print('Using GNU toolchain')
+
+    GCC_VERSION = commands.getoutput(env['CXX'] + ' -dumpversion')
+    if GCC_VERSION < '4.3.0':
+        raise Exception('GCC version {} detected with no or insufficient C++ 11 support detected'.format(GCC_VERSION))
+
+    env.Append(CXXFLAGS=['-std=c++11',
+                         '-O2',
+                         '-Wall',
+                         '-pedantic',
+                         '-Wno-deprecated-declarations',
+                         '-Wno-unused-local-typedefs',
+                         '-Wl,--no-as-needed',
+                         '-pthread'])
+
+    env.Append(LINKFLAGS=['-pthread'])
+
+else:
+    raise Exception('Uups. The toolchain {} is new to me =('.format(env['CXX']))
+
+
+env.Append(CPPPATH=['/usr/local/include'])
+env.Append(LIBPATH=['/usr/lib'])
+
+sources = [('client.cpp', [])]
+
+prgs = []
+
+for e, extralibs in sources:
+    prgs.append(env.Program(e, LIBS=[
+        'boost_thread-mt',
+        'boost_system',
+        'boost_program_options',
+        'msgpackc'] + extralibs))

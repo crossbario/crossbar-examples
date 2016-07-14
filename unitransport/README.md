@@ -52,10 +52,28 @@ The new transport is configured like in this snippet from this example configura
 
 ## How to run
 
-We are working on a Docker setup. Until then:
+This example is using Docker for quick startup.
 
+To start Crossbar.io, open a shell and change to the [crossbar](crossbar) directory. Then type:
+
+```console
+make test
 ```
-make requirements
-make build
+
+To start a first microservice written in Python using AutobahnPython, open another shell and change to the [service-py](service-py) directory. Then type:
+
+```console
+make test
+```
+
+To start a second microservice written in C++ using AutobahnC++, open another shell and change to the [service-cpp](service-cpp) directory. Then type:
+
+```console
+make test
+```
+
+To start a third microservice written in JavaScript using AutobahnJS, open another shell and change to the [service-js](service-js) directory. Then type:
+
+```console
 make test
 ```
