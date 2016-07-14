@@ -1,21 +1,37 @@
+import os
+import argparse
+import six
+import txaio
+txaio.use_twisted()
+
+from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
-from twisted.logger import Logger
+from twisted.internet.error import ReactorNotRunning
+from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
 from autobahn.twisted.util import sleep
-from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 from autobahn.wamp.types import SubscribeOptions, RegisterOptions
 
 
-class AppSession(ApplicationSession):
-
-    log = Logger()
+class ClientSession(ApplicationSession):
+    log = txaio.make_logger()
 
     _this_service = u'service1'
     _other_services = [u'service2', u'service3']
 
+
+    def onConnect(self):
+        self.log.info("Client connected")
+        self.join(self.config.realm, [u'anonymous'])
+
+    def onChallenge(self, challenge):
+        self.log.info("Challenge for method {authmethod} received", authmethod=challenge.method)
+        raise Exception("We haven't asked for authentication!")
+
     @inlineCallbacks
     def onJoin(self, details):
+        self.log.info("Client session joined {details}", details=details)
 
         # SUBSCRIBE to a topic and receive events
         #
@@ -64,3 +80,44 @@ class AppSession(ApplicationSession):
                         raise e
 
             yield sleep(1)
+
+    def onLeave(self, details):
+        self.log.info("Router session closed ({details})", details=details)
+        self.disconnect()
+
+    def onDisconnect(self):
+        self.log.info("Router connection closed")
+        try:
+            reactor.stop()
+        except ReactorNotRunning:
+            pass
+
+
+if __name__ == '__main__':
+
+    # Crossbar.io connection configuration
+    url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
+    realm = os.environ.get('CBREALM', u'realm1')
+
+    # parse command line parameters
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
+    parser.add_argument('--url', dest='url', type=six.text_type, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
+    parser.add_argument('--realm', dest='realm', type=six.text_type, default=realm, help='The realm to join (default: "realm1").')
+
+    args = parser.parse_args()
+
+    # start logging
+    if args.debug:
+        txaio.start_logging(level='debug')
+    else:
+        txaio.start_logging(level='info')
+
+    # any extra info we want to forward to our ClientSession (in self.config.extra)
+    extra = {
+        u'foobar': u'A custom value'
+    }
+
+    # now actually run a WAMP client using our session class ClientSession
+    runner = ApplicationRunner(url=args.url, realm=args.realm, extra=extra)
+    runner.run(ClientSession)
