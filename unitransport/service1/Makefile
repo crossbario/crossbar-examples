@@ -1,21 +1,17 @@
-test:
-	crossbar start --cbdir=./node/.crossbar --config config.json
+default: test
 
-test_with_guest:
-	crossbar start --cbdir=./node/.crossbar --config config-with-guests.json
+image:
+	time sudo docker build -t unitransport-service1 -f Dockerfile .
 
-docker:
-	sudo rm -f ./node/.crossbar/node.key
-	time sudo docker build -t cbdemo-crossbar1 -f Dockerfile .
+test: image
+	sudo docker run --rm -it -p 8080:8080 --name service1 --net=host unitransport-service1
 
-test_docker:
-	sudo docker run --rm -it -p 8080:8080 --name crossbar --net=host cbdemo-crossbar1
-
-test_docker_sh:
-	sudo docker run --rm -it -p 8080:8080 --name crossbar --entrypoint /bin/sh cbdemo-crossbar1
+shell: image
+	sudo docker run --rm -it -p 8080:8080 --name service1 --entrypoint /bin/sh --net=host unitransport-service1
 
 list:
 	sudo docker images
 
 clean:
-	sudo docker rmi cbdemo-crossbar1
+	cd app && scons -uc
+	sudo docker rmi unitransport-service1
