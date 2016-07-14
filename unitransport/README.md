@@ -52,4 +52,10 @@ The new transport is configured like in this snippet from this example configura
 
 ## How to run
 
-We are working on a Docker setup.
+We are working on a Docker setup. Until then:
+
+```
+make requirements
+make build
+make test
+```
