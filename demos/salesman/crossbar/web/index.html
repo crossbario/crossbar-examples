@@ -9,9 +9,105 @@
       TSP compute client
    </h1>
 
+   <p>
+      Runs as part of compute group 'competition'.
+   </p>
+
+   <div class="user">
+
+      Nick: <input type="text" data-bind="value: userNick">
+
+      <p class="userActions">
+         <button data-bind="click: connect; visible: !connected">
+            Connect & Start
+         </button>
+         <button data-bind="click: stop; visible: connected">
+            Stop Compute
+         </button>
+      </p>
+
+   </div>
+
+   <div class="localStats stats">
+      <h2>
+         Local Stats
+      </h2>
+      <!-- compute requests solved -->
+      <span>
+         Total Compute Requests - <span data-bind="text: totalComputeRequests">0</span>
+      </span>
+      <!-- current iterations/second -->
+      <span>
+         Iterations/second - <span data-bind="text: iterationsPerSecond">0</span>
+      </span>
+      <!-- best route locally found -->
+      <span>
+         Best Route Length found - <span data-bind="text: bestLocalRoute">0</span>
+      </span>
+   </div>
+
+   <div class="globalStats stats">
+      <h2>
+         Global Stats
+      </h2>
+
+      <!-- best route found globally -->
+         <!-- global value + compute group -->
+      <p>
+         Best Current Route Length - <span data-bind="text: bestCurrentRouteLength">0</span>
+      </p>
+      <p>
+         Time remaining - <span data-bind="text: timeRemaining">0</span>
+      </p>
+         <!-- per compute group (switchable) -->
+      <div class="solutionDisplay">
+         <div class="computeGroupSwitcher">
+            <!-- template this for final version, since there may be more than three groups -->
+            <div id="minimal" data-bind="click: onComputeGroupSwitcherClicked">
+               Minimal
+            </div>
+            <div id="larger" data-bind="click: onComputeGroupSwitcherClicked">
+               Larger
+            </div>
+            <div id="competition" data-bind="click: onComputeGroupSwitcherClicked">
+               Competition
+            </div>
+         </div>
+         <div class="computeGroupDisplay">
+            <div class="stats">
+               <p>
+                  Compute group - <span data-bind="text: displayedGroup.group">none</span>
+               </p>
+               <p>
+                  Currently has best total solution - <span data-bind="text: displayedGroup.isLeader">cat</span>
+               </p>
+               <p>
+                  Current best route length - <span data-bind="text: displayedGroup.bestRouteLength">0</span>
+               </p>
+               <p>
+                  Connected Compute Instances - <span data-bind="text: displayedGroup.connectedInstances">0</span>
+               </p>
+               <p>
+                  Iterations/second - <span data-bind="text: displayedGroup.iterationsPerSecond">0</span>
+               </p>
+            </div>
+            <!-- canvas should be square + adjust to the width of the viewport -->
+            <!-- on smaller devices - FIXME -->
+            <canvas id="tsp-canvas" width="600" height="600">
+					HTML5 Unsupported.
+				</canvas>
+
+         </div>
+      </div>
+   </div>
+
+
+   <!-- libraries should be loaded locally -->
    <!-- <script>AUTOBAHN_DEBUG = true;</script> -->
    <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
-   <!-- <script src="client.js"></script> -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+
    <script src="compute_tsp.js"></script>
+   <script src="compute_frontend.js"></script>
 </body>
 </html>

@@ -67,6 +67,8 @@ events are logged in the console. in addition, since we want feedback on mobile 
 */
 
 var computeTsp = function(args, kwargs, details) {
+   // console.log("computeTsp called", args, kwargs, details);
+
    var points = kwargs.points;
    var startRoute = kwargs.startRoute;
    var currentBestRoute = startRoute;
@@ -99,7 +101,7 @@ var computeTsp = function(args, kwargs, details) {
       temp *= tempDecrease;
 
       // console.log(iterations, currentLength, currentBestLength);
-      console.log(iterations, currentBestRoute.slice(-5));
+      // console.log(iterations, currentBestRoute.slice(-5));
       iterations--;
    }
 
@@ -169,10 +171,10 @@ var createPoints = function(amount, maxCoordinates, minDistance) {
    var minDistance = minDistance || 10;
    var points = [];
 
-   console.log(amount, maxCoordinates, minDistance);
+   // console.log(amount, maxCoordinates, minDistance);
 
    while(amount) {
-      console.log("creating a point");
+      // console.log("creating a point");
 
       // create point
       var point = [
@@ -214,8 +216,8 @@ var testCompute = function() {
    var points = createPoints(30);
    var startRoute = createPointsIndex(points);
    var temp = 1;
-   var tempDecrease = 0.95;
-   var iterations = 200;
+   var tempDecrease = 0.99;
+   var iterations = 100;
 
    // console.log("test result: ", computeTsp([], {
    //    points: points,
@@ -225,7 +227,7 @@ var testCompute = function() {
    //    iterations: iterations
    // }))
 
-   var testResult = session.call("api:compute_tsp", [], {
+   console.log("send to computeTsp: ", {
       points: points,
       startRoute: startRoute,
       temp: temp,
@@ -233,7 +235,27 @@ var testCompute = function() {
       iterations: iterations
    });
 
-   testResult.then(function() {
-      console.log("test done", arguments);
-   });
+   var i = 0;
+   var iMax = 1000;
+   var triggerCompute = function() {
+
+      var testResult = session.call("api:compute_tsp", [], {
+         points: points,
+         startRoute: startRoute,
+         temp: temp,
+         tempDecrease: tempDecrease,
+         iterations: iterations
+      });
+
+      testResult.then(function() {
+         i++;
+
+         // console.log("test iteation " + i + " done;" );
+         if(i < iMax) {
+            triggerCompute();
+         }
+      });
+   }
+   triggerCompute();
+
 }

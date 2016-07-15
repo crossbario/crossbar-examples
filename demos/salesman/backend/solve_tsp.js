@@ -119,6 +119,10 @@ var createSolver = function(startData, solution) {
       }
    }, session.log)
 
+   // needs to keep track of the number of currently connected compute instances
+   // so subscribe to the meta-events and filter these for joins/leaves
+   // FIXME
+
    return solver;
 }
 
@@ -144,16 +148,15 @@ var createDataStructure = function(startData, solution) {
       tempDecrease: 1, // temp decrease factor to be applied after each computation cylce (1 = no temp decrease)
       timeTempDecrease: null, // temp decrease per time interval, calculated based on compute time and timeTempDecreaseInterval
       timeTempDecreaseInterval: 10, // decrease temperature every x ms during compute time
-      iterations: 300, // adjust as needed once we have clients running on slow devices, so that we get a reasonable time until the computations return
+      iterations: 50, // adjust as needed once we have clients running on slow devices, so that we get a reasonable time until the computations return
       onErrorWait: 300, // timeout before attempting to send the next call when a call returns that all compute components are presently busy. Should really not be a hardcoded constant, but depend on the current average return time of calls - FIXME
+      onSuccessWait: 10,
       timeExpired: false,
+
    }
 
    return data;
 }
-
-
-
 
 
 var startCalling = function(solver) {
@@ -169,13 +172,20 @@ var startCalling = function(solver) {
    // create the initial route to send to the compute nodes
    // store the length of this
    var straightIndex = createPointsIndex(solver.data.points);
-   currentBestRoute = randomSwapMultiple(straightIndex, straightIndex.length);
-   currentBestLength = computeLength(solver.data.points, currentBestRoute);
+   console.log("straightIndex", straightIndex);
+   solver.data.currentBestRoute = randomSwapMultiple(straightIndex, straightIndex.length);
+   solver.data.currentBestLength = computeLength(solver.data.points, solver.data.currentBestRoute);
 
-   console.log("initial route", currentBestRoute, currentBestLength);
+   console.log("initial route", solver.data.currentBestRoute, solver.data.currentBestLength);
 
-   // // initial trigger of computation recursion
-   // triggerComputation();
+   // send current best result after end of compute time
+   setTimeout(function() {
+      solver.data.solution.resolve({
+         currentBestRoute: solver.data.currentBestRoute,
+         currentBestLength: solver.data.currentBestLength
+      });
+      solver.data.timeExpired = true; // should be checked before each sending of compute task
+   }, solver.data.computeTime);
 
    // trigger loop:
    // - has adjustable delay between issuing calls
@@ -184,43 +194,72 @@ var startCalling = function(solver) {
    // - delay on max concurrency reached may be adaptive, i.e. we check whether the next call after the delay succeeds and decrease the delay in this case, else increase it
    // - checks whether the compute time has expired and stops in that case
 
-   // send current best result after end of compute time
-   setTimeout(function() {
-      solver.data.solution.resolve({
-         currentBestRoute: currentBestRoute,
-         currentBestLength: currentBestLength
-      });
-      solver.data.timeExpired = true; // should be checked before each sending of compute task
-   }, solver.data.computeTime);
+   var triggerComputation = function() {
+      console.log("triggerComputation called");
 
-//    var onComputation = function(res) {
-//       // check whether time has expired - exit if so
-//       if(timeExpired) {
-//          deliverResult();
-//          return;
-//       }
-//
-//       var resultLength = res.length;
-//       var resultRoute = res.route;
-//
-//       // check whether we have a new best route
-//       if(resultLength < currentBestLength) {
-//          currentBestLength = resultLength;
-//          currentBestRoute = resultRoute;
-//       }
-//
-//       // check whether/where this belongs into the leaderboard
-//       // this may be expensive, so possibly do outside of this function
-//       // and periodically. But needs to be triggered on a new best result, since this should be shown immediately
-//       leaderBoard.forEach(function(el, i) {
-//
-//       })
-//
-//       // update the nickStats
-//
-//
-//       triggerComputation();
-//    }
+      if(solver.data.timeExpired || solver.data.stopCompute) {
+         return;
+      }
+
+      computeCall = callComputation(solver);
+
+      // for now, while there is no
+      computeCall.then(
+         function(res) {
+            console.log("received computation result", res);
+            // process the result
+            onComputationResult(solver, res);
+            // call triggerCompute after the shorter timeout
+            // setTimeout(function() {
+               triggerComputation();
+            // }, solver.data.onSuccessWait);
+         },
+         function(err) {
+            // check if error reason is that all slots are currently busy - FIXME
+            console.log("call error", err);
+            // // if so: call triggerCompute after longer timeout
+            // setTimeout(function() {
+            //    triggerComputation();
+            // }, solver.data.onErrorWait);
+         }
+      )
+
+   };
+   triggerComputation();
+
+}
+
+
+var onComputationResult = function(solver, res) {
+
+   var resultLength = res.length;
+   var resultRoute = res.route;
+
+   // check whether we have a new best route
+   if(resultLength < solver.data.currentBestLength) {
+      solver.data.currentBestLength = resultLength;
+      solver.data.currentBestRoute = resultRoute;
+
+      // announce the change in best results
+      session.publish("io.crossbar.demo.tsp.new_best_result", [], {
+         computeGroup: solver.data.computeGroup,
+         bestLength: resultLength,
+         bestRoute: resultRoute
+      })
+   }
+
+   // check whether/where this belongs into the leaderboard
+   // this may be expensive, so possibly do outside of this function
+   // and periodically. But needs to be triggered on a new best result, since this should be shown immediately
+   // solver.data.leaderBoard.forEach(function(el, i) {
+   //
+   // })
+
+   // update the nickStats
+
+
+   // triggerComputation();
+}
 //
 //    var onComputationError = function(error, details) {
 //       console.log("computation call error", error, detaisl);
@@ -251,17 +290,27 @@ var startCalling = function(solver) {
 //    // initial trigger of computation recursion
 //    triggerComputation();
 
-}
 
-var triggerComputation = function(solver) {
+var callComputation = function(solver) {
+   // console.log("callComputation called");
 
-   session.call("io.crossbar.demo.tsp." + solver.data.computeGroup + ".compute_tsp", [], {
-      points: points,
-      startRoute: currentBestRoute,
-      temp:temp,
-      tempDecrease: tempDecrease,
-      iterations: iterations
-   }).then(onComputation, onComputationError);
+   // console.log("call computeTsp: ", {
+   //    points: solver.data.points,
+   //    startRoute: solver.data.currentBestRoute,
+   //    temp:solver.data.temp,
+   //    tempDecrease: solver.data.tempDecrease,
+   //    iterations: solver.data.iterations
+   // });
+
+
+   return session.call("io.crossbar.demo.tsp." + solver.data.computeGroup + ".compute_tsp", [], {
+      points: solver.data.points,
+      startRoute: solver.data.currentBestRoute,
+      temp:solver.data.temp,
+      tempDecrease: solver.data.tempDecrease,
+      iterations: solver.data.iterations
+   });
+
 
 }
 
@@ -408,11 +457,12 @@ var testMetaSubscribe = function(computeGroup) {
    })
 }
 
+// currently called on connect to auto-test on page reload
 var testSolveTsp = function() {
 
    var testData = {
-      points: createPoints(40, [1000, 1000], 5),
-      computeTime: 3000,
+      points: createPoints(40, [600, 600], 5),
+      computeTime: 30000,
       computeGroup: "competition"
    }
 
@@ -427,6 +477,11 @@ var testSolveTsp = function() {
          console.log("solveTps error", err);
       }
    );
+
+   session.publish("io.crossbar.demo.tsp.started", [], {
+      points: testData.points,
+      computeTime: testData.computeTime
+   })
 
 }
 
