@@ -41,7 +41,7 @@
                     "rawsocket": {
                     },
                     "websocket": {
-                        "/ws": {
+                        "ws": {
                             "type": "websocket"
                         }
                     },

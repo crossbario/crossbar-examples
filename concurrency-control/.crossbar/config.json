@@ -33,7 +33,7 @@
             ],
             "transports": [
                 {
-                    "type": "unisocket",
+                    "type": "universal",
                     "endpoint": {
                         "type": "tcp",
                         "port": 8080
@@ -60,13 +60,13 @@
             "type": "container",
             "options": {
                 "pythonpath": [
-                    "../../service1/"
+                    ".."
                 ]
             },
             "components": [
                 {
                     "type": "class",
-                    "classname": "service1.AppSession",
+                    "classname": "compute.ComputeKernel",
                     "realm": "realm1",
                     "transport": {
                         "type": "websocket",
@@ -79,25 +79,6 @@
                     }
                 }
             ]
-        },
-        {
-            "type": "guest",
-            "executable": "service2",
-            "arguments": [
-            ],
-            "options": {
-                "workdir": "../../service2/"
-            }
-        },
-        {
-            "type": "guest",
-            "executable": "node",
-            "arguments": [
-                "service3.js"
-            ],
-            "options": {
-                "workdir": "../../service3/"
-            }
         }
     ]
 }
