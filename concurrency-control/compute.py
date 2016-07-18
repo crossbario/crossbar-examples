@@ -1,64 +1,49 @@
-###############################################################################
-##
-##  Copyright (C) 2015, Tavendo GmbH and/or collaborators. All rights reserved.
-##
-##  Redistribution and use in source and binary forms, with or without
-##  modification, are permitted provided that the following conditions are met:
-##
-##  1. Redistributions of source code must retain the above copyright notice,
-##     this list of conditions and the following disclaimer.
-##
-##  2. Redistributions in binary form must reproduce the above copyright notice,
-##     this list of conditions and the following disclaimer in the documentation
-##     and/or other materials provided with the distribution.
-##
-##  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-##  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-##  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-##  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-##  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-##  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-##  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-##  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-##  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-##  POSSIBILITY OF SUCH DAMAGE.
-##
-###############################################################################
-
 import time
 import random
 
 from six.moves import _thread
 
+import txaio
+txaio.use_twisted()
+
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks, returnValue
 
+from autobahn.util import utcnow
 from autobahn.wamp.types import RegisterOptions
 from autobahn.twisted.wamp import ApplicationSession
 
 from twisted.internet.threads import deferToThread
 
 
-def compute(runtime):
+log = txaio.make_logger()
+
+def do_compute(call_no, runtime):
+    started = utcnow()
     thread_id = _thread.get_ident()
-    print("compute() invoked on thread ID {}".format(thread_id))
+    #log.info("compute() invoked on thread ID {thread_id}", thread_id=thread_id)
 
     # yes, we do the evil blocking thing here!
     # this is to simulate CPU intensive stuff
     time.sleep(runtime)
 
-    return random.random()
+    result = {
+        u'call_no': call_no,
+        u'started': started,
+        u'thread': thread_id,
+        u'value': random.random()
+    }
+    return result
 
 
 class ComputeKernel(ApplicationSession):
 
-    max_concurrency = 4
+    max_concurrency = 8
 
     @inlineCallbacks
     def onJoin(self, details):
         self._current_concurrency = 0
-        self._invocations = 0
+        self._invocations_served = 0
 
         # adjust the background thread pool size
         reactor.suggestThreadPoolSize(self.max_concurrency)
@@ -67,14 +52,14 @@ class ComputeKernel(ApplicationSession):
         self.log.info('ComputeKernel ready with concurrency {}!'.format(self.max_concurrency))
 
     @inlineCallbacks
-    def compute(self, runtime=10):
-        self._invocations += 1
+    def compute(self, call_no, runtime=10):
+        self._invocations_served += 1
         self._current_concurrency += 1
-        self.log.info('starting compute() on background thread ({current_concurrency} current concurrency of max {max_concurrency}) ..', current_concurrency=self._current_concurrency, max_concurrency=self.max_concurrency)
+        self.log.info('starting compute() on background thread (current concurrency {current_concurrency} of max {max_concurrency}) ..', current_concurrency=self._current_concurrency, max_concurrency=self.max_concurrency)
 
         # now run our compute kernel on a background thread from the default Twisted reactor thread pool ..
-        res = yield deferToThread(self._compute, runtime)
+        res = yield deferToThread(do_compute, call_no, runtime)
 
         self._current_concurrency -= 1
-        self.log.info('compute() ended from background thread ({invocations} invocations, {current_concurrency} current concurrency of max {max_concurrency})', invocations=self._invocations, current_concurrency=self._current_concurrency, max_concurrency=self.max_concurrency)
+        self.log.info('compute() ended from background thread ({invocations} invocations, current concurrency {current_concurrency} of max {max_concurrency})', invocations=self._invocations_served, current_concurrency=self._current_concurrency, max_concurrency=self.max_concurrency)
         returnValue(res)
