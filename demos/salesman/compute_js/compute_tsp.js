@@ -37,6 +37,44 @@ var connection = new autobahn.Connection({
 });
 var session = null;
 
+// create the unique id and pin for this component
+var idchars = "0123456789abcdefghijklmnopqrstuvwxyz";
+
+var randomId = function(length, setLimit) {
+   var id = "";
+   for (var i = 0; i < length; i += 1) {
+      id += idchars.charAt(Math.floor(Math.random() * setLimit));
+   }
+   return id;
+};
+
+var ident = {
+   id: randomId(8, 36),
+   pin: randomId(6, 10)
+};
+
+console.log("Componet identification:");
+console.log("id: ", ident.id);
+console.log("pin: ", ident.pin);
+console.log("This will be logged again at the end if you are eligible for a prize.");
+
+// for browsers: we store the ident in session storage to enable the web ftontend to connect
+if(isBrowser) {
+      sessionStorage.setItem("tspCompetitionIdent", ident);
+}
+
+var onCompetitionUpdate = function(args, kwargs, details) {
+   // we log whether this component is currently at 1st or 2nd place
+
+   // possibly: log how the best solution found locally compares to the best one globally
+};
+
+var onCompetitionEnded = function(args, kwargs, details) {
+   // we log whether this component is at 1st or second place at the end of the competition
+
+   // we disconnect and, if we're in Node.js, exit the component
+};
+
 connection.onopen = function(newSession, details) {
    console.log("Connected");
 
@@ -45,20 +83,18 @@ connection.onopen = function(newSession, details) {
    // set the URL prefix based on the compute group we are part of
    session.prefix("api", "io.crossbar.demo.tsp." + computeGroup);
 
+   // we register the compute function
    session.register("api:compute_tsp", computeTsp, { invoke: "random"});
-   // session.register("api:compute_tsp", computeTsp);
+
+   // we subscribe to the competition update and end events and log the outcome on the console
+   session.subscribe("api:on_competition_update", onCompetitionUpdate);
+   session.subscribe("api:on_competition_ended", onCompetitionEnded);
+
 };
 
 connection.onclose = function(reason, details) {
    console.log("Connection fail: ", reason, details);
 };
-
-// // connect automatically in NodeJS, but only on user action in browser
-// if(!isBrowser) {
-//    connection.open();
-// } else {
-//    // add event listener to connect button
-// }
 
 connection.open();
 
@@ -110,21 +146,27 @@ var computeTsp = function(args, kwargs, details) {
       length: computeLength(points, currentBestRoute)
    };
 
-}
+};
 
 var computeLength = function(points, route) {
    var length = null;
+   var numberOfPoints = points.length;
+   var distance = null;
 
-   route.forEach(function(pointIndex, i) {
+   var addDistance = function(pointIndex, i) {
       if(route[i + 1]) {
          // console.log(points[i + 1], points[i]);
-         var distance = computeDistance(points[route[i + 1]], points[pointIndex]);
-         length += distance;
+         distance = computeDistance(points[route[i + 1]], points[pointIndex]);
+      } else if (i === numberOfPoints) {
+         distance = computeDistance(points[0], points[pointIndex]);
       }
-   })
+      length += distance;
+   };
+
+   route.forEach(addDistance);
 
    return length;
-}
+};
 
 var computeDistance = function(firstPoint, secondPoint) {
    var distance = Math.sqrt(
@@ -133,15 +175,15 @@ var computeDistance = function(firstPoint, secondPoint) {
    );
 
    return distance;
-}
+};
 
 var deepCopyArray = function(array) {
    var copiedArray = [];
    array.forEach(function(el) {
       copiedArray.push(el);
-   })
+   });
    return copiedArray;
-}
+};
 
 // random swap of two points
 var randomSwapTwo = function(route) {
@@ -162,7 +204,7 @@ var randomSwapTwo = function(route) {
    routeCopy[second] = store;
 
    return routeCopy;
-}
+};
 
 
 var createPoints = function(amount, maxCoordinates, minDistance) {
@@ -200,7 +242,7 @@ var createPoints = function(amount, maxCoordinates, minDistance) {
 
    return points;
 
-}
+};
 
 var createPointsIndex = function(points) {
    var index = [];
@@ -208,9 +250,9 @@ var createPointsIndex = function(points) {
    points.forEach(function(p, i) {
       index.push(i);
       i++;
-   })
+   });
    return index;
-}
+};
 
 var testCompute = function() {
    var points = createPoints(30);
@@ -255,7 +297,7 @@ var testCompute = function() {
             triggerCompute();
          }
       });
-   }
+   };
    triggerCompute();
 
-}
+};
