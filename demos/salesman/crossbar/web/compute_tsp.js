@@ -1,1 +1,0 @@
-/home/goeddea/scm/crossbar/crossbarexamples/demos/salesman/compute_js/compute_tsp.js

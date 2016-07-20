@@ -1,4 +1,12 @@
-// connect to the backend
+// needs to:
+   // connect to the backend
+   // subscribe to the on_competition_update and on_competition_ended events
+   // get the ident of the compute node loaded with it
+   // log:
+      // the fact that it's connected
+      // updates regarding the position of the component (is it 1st or 2nd)
+      // final update
+
 
 var frontend = {
    when: autobahn.when,
@@ -26,7 +34,7 @@ if (document.location.origin == "file://") {
 } else {
    frontend.wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
                document.location.host + "/ws";
-};
+}
 
 // the WAMP connection to the Router
 //
@@ -131,4 +139,4 @@ frontend.paint = function () {
 	frontend.tsp_ctx.closePath();
 
 
-}
+};

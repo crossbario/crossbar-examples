@@ -99,32 +99,32 @@ var createSolver = function(startData, solution) {
    session.call("wamp.registration.match", ["io.crossbar.demo.tsp." + solver.data.computeGroup + ".compute_tsp"]).then(function(res) {
       console.log("wamp.registration.match", res);
 
-      if(res != null) {
+      if(res !== null) {
          // start calling them
          console.log("computeTsp registered, starting calling");
          startCalling(solver);
       } else {
          console.log("computeTsp not registered, subscribe to registration event");
          session.subscribe("wamp.registration.on_create", function(args, kwargs, details) {
-            console.log("registration event received, analyzing")
+            console.log("registration event received, analyzing");
             // filter this for the first registration for "io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"
             var registrationUri = args[1].uri;
             if(registrationUri === "io.crossbar.demo.tsp." + solver.data.computeGroup + ".compute_tsp") {
-               console.log("registration for computeTsp received, starting calling")
+               console.log("registration for computeTsp received, starting calling");
                // start the calling of compute nodes
                startCalling(solver);
             }
 
          });
       }
-   }, session.log)
+   }, session.log);
 
    // needs to keep track of the number of currently connected compute instances
    // so subscribe to the meta-events and filter these for joins/leaves
    // FIXME
 
    return solver;
-}
+};
 
 var createDataStructure = function(startData, solution) {
    var data = {
@@ -153,10 +153,10 @@ var createDataStructure = function(startData, solution) {
       onSuccessWait: 10,
       timeExpired: false,
 
-   }
+   };
 
    return data;
-}
+};
 
 
 var startCalling = function(solver) {
@@ -222,12 +222,12 @@ var startCalling = function(solver) {
             //    triggerComputation();
             // }, solver.data.onErrorWait);
          }
-      )
+      );
 
    };
    triggerComputation();
 
-}
+};
 
 
 var onComputationResult = function(solver, res) {
@@ -245,7 +245,7 @@ var onComputationResult = function(solver, res) {
          computeGroup: solver.data.computeGroup,
          bestLength: resultLength,
          bestRoute: resultRoute
-      })
+      });
    }
 
    // check whether/where this belongs into the leaderboard
@@ -259,7 +259,7 @@ var onComputationResult = function(solver, res) {
 
 
    // triggerComputation();
-}
+};
 //
 //    var onComputationError = function(error, details) {
 //       console.log("computation call error", error, detaisl);
@@ -312,7 +312,7 @@ var callComputation = function(solver) {
    });
 
 
-}
+};
 
 
 var createPoints = function(amount, maxCoordinates, minDistance) {
@@ -349,7 +349,7 @@ var createPoints = function(amount, maxCoordinates, minDistance) {
 
    return points;
 
-}
+};
 
 var createPointsIndex = function(points) {
    var index = [];
@@ -357,9 +357,9 @@ var createPointsIndex = function(points) {
    points.forEach(function(p, i) {
       index.push(i);
       i++;
-   })
+   });
    return index;
-}
+};
 
 
 // random swap of multiple points (two points at a time)
@@ -387,7 +387,7 @@ var randomSwapMultiple = function(route, iterations) {
 
 
    return routeCopy;
-}
+};
 
 
 var computeLength = function(points, route) {
@@ -402,10 +402,10 @@ var computeLength = function(points, route) {
          var distance = computeDistance(points[route[i + 1]], points[route[i]]);
          length += distance;
       }
-   })
+   });
 
    return length;
-}
+};
 
 var computeDistance = function(firstPoint, secondPoint) {
    var distance = Math.sqrt(
@@ -414,16 +414,16 @@ var computeDistance = function(firstPoint, secondPoint) {
    );
 
    return distance;
-}
+};
 
 
 var deepCopyArray = function(array) {
    var copiedArray = [];
    array.forEach(function(el) {
       copiedArray.push(el);
-   })
+   });
    return copiedArray;
-}
+};
 
 
 /*
@@ -438,7 +438,7 @@ var testComputeLength = function() {
    var length = computeLength(points, route);
 
    console.log("testComputeLength", length);
-}
+};
 
 
 var testMetaRegistered = function(computeGroup) {
@@ -447,15 +447,15 @@ var testMetaRegistered = function(computeGroup) {
    session.call("wamp.registration.match", ["io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"]).then(function(res) {
       console.log("current registrations for " + computeGroup + ": ", res);
    });
-}
+};
 
 var testMetaSubscribe = function(computeGroup) {
    var computeGroup = computeGroup || "competition";
 
    session.subscribe("wamp.registration.on_create", function(args, kwargs, details) {
       console.log("wamp.registration.on_create", args[0], args[1]);
-   })
-}
+   });
+};
 
 // currently called on connect to auto-test on page reload
 var testSolveTsp = function() {
@@ -464,7 +464,7 @@ var testSolveTsp = function() {
       points: createPoints(40, [600, 600], 5),
       computeTime: 30000,
       computeGroup: "competition"
-   }
+   };
 
    var solution = solveTsp([], testData);
    console.log("solution - sync:", solution);
@@ -481,9 +481,11 @@ var testSolveTsp = function() {
    session.publish("io.crossbar.demo.tsp.started", [], {
       points: testData.points,
       computeTime: testData.computeTime
-   })
+   });
 
-}
+};
+
+
 
 
 
