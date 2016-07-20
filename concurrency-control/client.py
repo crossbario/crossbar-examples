@@ -24,18 +24,18 @@ class ComputeClient(ApplicationSession):
         started = time.time()
 
         i = 1
-        self._stop = False
+        stop = [False]
 
         def on_error(err):
-            if isinstance(err.value, ApplicationError) and err.value.error == u'io.crossbar.error.max_concurrency_reached':
-                if not self._stop:
-                    self._stop = True
-                    self.log.info('stopping to issue calls - maximum concurrency reached')
+            if isinstance(err.value, ApplicationError) and err.value.error == u'crossbar.error.max_concurrency_reached':
+                if not stop[0]:
+                    stop[0] = True
+                    self.log.info('stopping to issue calls - maximum concurrency reached: {}'.format(err.value.args[0]))
             else:
-                self._stop = True
+                stop[0] = True
                 return err
 
-        while not self._stop:
+        while not stop[0]:
             self.log.info('issueing call {i} ..', i=i)
             d = self.call(u'com.example.compute', i, 5)
             d.addErrback(on_error)
