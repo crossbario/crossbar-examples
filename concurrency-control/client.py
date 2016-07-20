@@ -37,11 +37,12 @@ class ComputeClient(ApplicationSession):
 
         while not stop[0]:
             self.log.info('issueing call {i} ..', i=i)
-            d = self.call(u'com.example.compute', i, 5)
+            # d = self.call(u'com.example.compute', i, mode='sleep', runtime=5)
+            d = self.call(u'com.example.compute', i, mode='fib', n=30)
             d.addErrback(on_error)
             i += 1
             calls.append(d)
-            yield sleep(0)
+            yield sleep(.01)
 
         results = yield txaio.gather(calls)
 
@@ -50,7 +51,8 @@ class ComputeClient(ApplicationSession):
 
         self.log.info('total run-time (wallclock): {runtime}', runtime=runtime)
         for result in results:
-            self.log.info('{result}', result=result)
+            if result:
+                self.log.info('{result}', result=result)
 
         yield self.leave()
 
