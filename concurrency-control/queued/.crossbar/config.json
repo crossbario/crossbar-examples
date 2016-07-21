@@ -1,0 +1,124 @@
+{
+    "version": 2,
+    "controller": {},
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "store": {
+                        "type": "memory",
+                        "call-queue": [
+                            {
+                                "uri": "com.example.compute",
+                                "match": "exact",
+                                "limit": 1000
+                            }
+                        ]
+                    }
+                }
+            ],
+            "transports": [
+                {
+                    "type": "universal",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "rawsocket": {
+                    },
+                    "websocket": {
+                        "ws": {
+                            "type": "websocket"
+                        }
+                    },
+                    "web": {
+                        "paths": {
+                            "/": {
+                                "type": "static",
+                                "directory": ".."
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "compute.ComputeKernel",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "127.0.0.1",
+                            "port": 8080
+                        },
+                        "url": "ws://127.0.0.1:8080/ws"
+                    },
+                    "extra": {
+                        "concurrency": 3
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "compute.ComputeKernel",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "127.0.0.1",
+                            "port": 8080
+                        },
+                        "url": "ws://127.0.0.1:8080/ws"
+                    },
+                    "extra": {
+                        "concurrency": 2
+                    }
+                }
+            ]
+        }
+    ]
+}
