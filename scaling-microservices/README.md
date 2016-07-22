@@ -8,9 +8,9 @@ Crossbar.io supports a number of features that when combined provide **transpare
 
 > You will need Crossbar.io and AutobahnPython >= 0.15.0 for the latter 2 features.
 
+For a complete example, please see [here](queued/README.md).
 
 ## Introduction
-
 
 ### Shared registrations
 
@@ -36,7 +36,6 @@ Crossbar.io will forward calls incoming for the respective procedure URI to all 
 
 This allows basic scale-out of microservices.
 
-
 ### Concurrency control
 
 A problem with the naive approach above is: when there are more calls incoming than the backend microservices (the callees) can handle, Crossbar.io will nevertheless continue to forward calls to the (already overloaded) clients implementing the procedure.
@@ -54,7 +53,6 @@ yield self.register(self.compute,
 With above, Crossbar.io will never forward more than 4 calls concurrently to the callee. When a 5th call comes in, this call will be immediately denied with "maximum concurrency reached".
 
 This error can then act as a backpressure signal to the caller to reduce its rate of issueing calls and prevents overloading a callee.
-
 
 ### Call queueing
 

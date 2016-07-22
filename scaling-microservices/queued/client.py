@@ -25,7 +25,7 @@ class ComputeClient(ApplicationSession):
 
         for i in range(20):
             self.log.info('issueing call {i} ..', i=i)
-            d = self.call(u'com.example.compute', i, mode='sleep', runtime=2)
+            d = self.call(u'com.example.compute', i, 2)
             calls.append(d)
 
         results = yield txaio.gather(calls)
