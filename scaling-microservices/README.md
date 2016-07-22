@@ -1,4 +1,4 @@
-# Concurrency control and call queuing
+# Transparent scaling of microservices
 
 Crossbar.io supports a number of features that when combined provide **transparent scale-out of microservices**:
 
