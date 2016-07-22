@@ -62,7 +62,11 @@ class ComputeKernel(ApplicationSession):
         # adjust the background thread pool size
         reactor.suggestThreadPoolSize(self._max_concurrency)
 
-        yield self.register(self.compute, u'com.example.compute', options=RegisterOptions(invoke=u'roundrobin', concurrency=self._max_concurrency))
+        yield self.register(self.compute,
+                            u'com.example.compute',
+                            options=RegisterOptions(invoke=u'roundrobin',
+                                                    concurrency=self._max_concurrency))
+
         self.log.info('ComputeKernel ready with concurrency {}!'.format(self._max_concurrency))
 
     @inlineCallbacks
