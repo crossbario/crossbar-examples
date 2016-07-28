@@ -80,7 +80,7 @@ var startOrchestration = function() {
            var registrationUri = args[1].uri;
            if(registrationUri === "io.crossbar.demo.tsp.compute_tsp") {
               console.log("registration for computeTsp received, starting calling");
-              // session.unsubscribe(sub); 
+              // session.unsubscribe(sub);
 
               // start the calling of compute nodes
               orchestrate();
@@ -127,25 +127,26 @@ var orchestrate = function() {
     }
   };
 
-  var call = function() {
-    console.log("issuing call", temp, currentBestLength);
-    var calls = [];
-    // below only scales up to max concurrency 30 across all nodes
-    // we could watch the registrations for our topic and adjust this,
-    // or work without queueing (see the crossbar config) and handle errors on max concurrency reached as back pressure
-    for(var i = 0; i < 30; i++) {
-      // issue call and push to array of deferreds
-      calls.push(session.call("api:compute_tsp", [], {
-         points: points,
-         startRoute: routeToSend,
-         temp: temp,
-         iterations: 400
-      }));
-    }
-    // when all calls return and deferreds are resolved, we trigger processing the results
-    when.all(calls).then(process);
-  };
-  call();
+   var call = function() {
+      console.log("issuing calls");
+
+      var calls = [];
+      // below only scales up to max concurrency 30 across all nodes
+      // we could watch the registrations for our topic and adjust this,
+      // or work without queueing (see the crossbar config) and handle errors on max concurrency reached as back pressure
+      for(var i = 0; i < 30; i++) {
+         // issue call and push to array of deferreds
+         calls.push(session.call("api:compute_tsp", [], {
+            points: points,
+            startRoute: routeToSend,
+            temp: temp,
+            iterations: 400
+         }));
+      }
+      // when all calls return and deferreds are resolved, we trigger processing the results
+      when.all(calls).then(process);
+   };
+   call();
 
 };
 

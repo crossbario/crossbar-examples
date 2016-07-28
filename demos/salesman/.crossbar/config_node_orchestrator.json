@@ -59,6 +59,22 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "guest",
+            "executable": "node",
+            "arguments": [
+                "orchestrator.js"
+            ],
+            "options": {
+                "workdir": "../node",
+                "watch": {
+                    "directories": [
+                        "../node"
+                    ],
+                    "action": "restart"
+                }
+            }
         }
     ]
 }

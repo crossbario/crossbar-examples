@@ -11,8 +11,6 @@ try {
 
 var when = autobahn.when;
 
-// console.log("isBrowser ", isBrowser);
-
 // the URL of the WAMP Router (Crossbar.io)
 //
 var wsuri = null;
@@ -89,6 +87,7 @@ var computeTsp = function(args, kwargs, details) {
       // temp *= tempDecrease;
 
       iterations--;
+
    }
 
    return {
@@ -100,20 +99,18 @@ var computeTsp = function(args, kwargs, details) {
 
 var computeLength = function(points, route) {
    var length = null;
-   var numberOfPoints = points.length;
-   var distance = null;
 
    var addDistance = function(pointIndex, i) {
       if(route[i + 1]) {
          // console.log(points[i + 1], points[i]);
-         distance = computeDistance(points[route[i + 1]], points[pointIndex]);
-      } else if (i === numberOfPoints) {
-         distance = computeDistance(points[0], points[pointIndex]);
+         length += computeDistance(points[route[i + 1]], points[pointIndex]);
       }
-      length += distance;
    };
 
    route.forEach(addDistance);
+
+   // distance from the last point back to the first
+   length += computeDistance(points[points.length - 1], points[0]);
 
    return length;
 };
@@ -127,19 +124,23 @@ var computeDistance = function(firstPoint, secondPoint) {
    return distance;
 };
 
-var deepCopyArray = function(array) {
-   var copiedArray = [];
-   array.forEach(function(el) {
-      copiedArray.push(el);
-   });
-   return copiedArray;
+// var copyArray = function(array) {
+//    var copiedArray = [];
+//    array.forEach(function(el) {
+//       copiedArray.push(el);
+//    });
+//    return copiedArray;
+// };
+
+var copyArray = function(array) {
+   return array.map(function(el) { return el;});
 };
 
 // random swap of two points
 var randomSwapTwo = function(route) {
 
-   // route is array, and since we don't want to overwrite this, wee need to deep-copy it
-   var routeCopy = deepCopyArray(route);
+   // route is array, and since we don't want to overwrite this, wee need to copy it
+   var routeCopy = copyArray(route);
 
    // pick the two elements to swap
    var first = Math.floor(Math.random() * routeCopy.length);
@@ -198,14 +199,20 @@ var createPoints = function(amount, maxCoordinates, minDistance) {
 
 };
 
+// var createPointsIndex = function(points) {
+//    var index = [];
+//    var i = 0;
+//    points.forEach(function(p, i) {
+//       index.push(i);
+//       i++;
+//    });
+//    return index;
+// };
+
 var createPointsIndex = function(points) {
-   var index = [];
-   var i = 0;
-   points.forEach(function(p, i) {
-      index.push(i);
-      i++;
+   return points.map(function(el,i) {
+      return i;
    });
-   return index;
 };
 
 var testCompute = function() {
@@ -214,14 +221,6 @@ var testCompute = function() {
    var temp = 1;
   //  var tempDecrease = 0.99;
    var iterations = 100;
-
-   // console.log("test result: ", computeTsp([], {
-   //    points: points,
-   //    startRoute: startRoute,
-   //    temp: temp,
-   //    tempDecrease: tempDecrease,
-   //    iterations: iterations
-   // }))
 
    console.log("send to computeTsp: ", {
       points: points,
