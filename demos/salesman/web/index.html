@@ -1,22 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
    <meta charset="UTF-8">
-   <title>TSP Demo Browser Compute Node</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+   <link rel="shortcut icon" href="img/favicon.ico">
+
+   <title>Vote</title>
+
+   <!--Import Google Icon Font-->
+   <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+   <!--Import materialize.css-->
+   <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css"> -->
+
+   <link rel="stylesheet" href="//tavendo-common-static.s3-eu-west-1.amazonaws.com/css/materialize_cb.min.css.gz">
+   <link rel="stylesheet" href="css/vote.css">
 
 </head>
+
+
+
 <body>
-    <h1>
-      TSP Demo Browser Compute Node
-    </h1>
 
-    <p>
-      Open dev tools console to see log output.
-    </p>
+   <nav>
+      <div class="nav-wrapper container">
+         <a href="/" class="brand-logo">
+            <img src="img/crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+            <img src="img/crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60" class="notOnNarrowScreens">
+         </a>
+         <span>
+            Traveling Salesman Problem - Scale-Out
+         </span>
+      </div>
+   </nav>
 
-    <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
-    <script src="compute_tsp.js"></script>
+   <div class="demo_links container">
+      <p>
+         Use as many browser/Node.js/Python compute nodes as you like to get a better solution for the <a href="https://en.wikipedia.org/wiki/Travelling_salesman_problem">traveling salesman problem</a>.
+         <br>
+         Execution is coordinated by a Node.js backend on our demo Crossbar.io instance. Compute nodes run locally with users.
+      </p>
+      <div>
+         <a id="secondInstance" href="#" target="_blank">
+            Open additional compute node in browser tab
+         </a>
+         <a href="https://github.com/crossbario/crossbarexamples/tree/master/demos/votes/nodejs">
+            Source Code
+         </a>
+         <a href="http://crossbar.io">
+            Crossbar.io Homepage
+         </a>
+      </div>
 
+   </div>
+
+   <div id="demo_body" class="container">
+
+      <div class="demoState">
+
+         Currently there are <span data-bind="text: connectedNodes">0</span> connected compute nodes.
+
+         <br>
+
+         <span data-bin="visible: isRunning">A computation is currently running!</span>
+         <span data-bin="visible: !isRunning">There is no current computation running.</span>
+         <span data-bin="visible: !isRunning && connectedNodes === 0">Connect a node to be able to start a computation run.</span>
+
+         <button data-bind="visible: !isRunning && connectedNodes > 0; click: startComputation">
+            Start Computation
+         </button>
+
+         <button data-bind="visible: !localCompueNodeConnected">Connect Local Compute Node</button>
+
+      </div>
+
+      <div class="computeState">
+         <div class="numbericData">
+            Number of cities: <span data-bind="text: numberOfCities">0</span>
+            <br>
+            Initial route length: <span data-bind="text: initialRouteLength">0</span>
+            <br>
+            Current best route length: <span data-bind="text: currentBestRouteLength">0</span>
+            <br>
+            Current temperature: <span data-bind="text: currentTemperature">1</span>
+            <br>
+            Running compute nodes: <span data-bind="text: runningComputeNodes">0</span>
+            <br>
+            Iterations/s: <span data-bind="text: iterationsPerSecond">0</span>
+         </div>
+
+         <div class="routePlot">
+
+            <!-- canvas should be square + adjust to the width of the viewport -->
+            <!-- on smaller devices - FIXME -->
+            <canvas id="tsp-canvas" width="600" height="600">
+               HTML5 Unsupported.
+            </canvas>
+
+         </div>
+
+      </div>
+
+      <p>
+         To start a Python or Node.js compute node, clone the Crossbarexamples repo.
+         <br>
+         For Python, do 'pip install autobahn' and then 'python compute_python.py' in the 'python' sub-directory of this demo.
+         <br>
+         For Node.js, do 'npm install' and then 'node compute_js.js' in the node sub-directory of this demo.
+         <br>
+         Both compute nodes connect automatically to our demo instance.
+      </p>
+
+
+
+      <div class="status_line">
+         Status: <span class="statusline"></span>
+      </div>
+   </div>
+
+
+   <!--Import jQuery before materialize.js-->
+   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+
+   <script>AUTOBAHN_DEBUG = true;</script>
+   <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+
+   <script src="js/frontend.js"></script>
 
 </body>
 </html>
