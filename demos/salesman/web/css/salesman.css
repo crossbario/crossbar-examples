@@ -81,8 +81,8 @@ a > img {
 button {
   background-color: #D4D0C8;
   border: 1px solid rgb(196, 191, 181);
-  padding: 0.8rem 1.7rem;
-  font-size: 28px;
+  padding: 0.4rem 0.8rem;
+  font-size: 18px;
   font-weight: normal;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.3), -1px 0 1px rgba(255, 255, 255, 0.5);
   box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.3);
@@ -172,7 +172,14 @@ nav {
 }
 
 @media (max-width: 900px) {
-  #demo_body {
-    width: 95%;
-  }
+   #demo_body {
+      width: 95%;
+   }
+}
+
+
+/* styles for this demo */
+
+.demoState {
+   margin-bottom: 3em;
 }

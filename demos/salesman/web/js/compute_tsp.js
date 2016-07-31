@@ -1,4 +1,4 @@
-console.log("loaded");
+console.log("compute tsp loaded");
 
 try {
    // for Node.js
@@ -26,23 +26,32 @@ if (isBrowser && document.location.origin == "file://") {
    computeGroup = process.argv[3] || 'competition';
 }
 
+var registerComputeNode = function() {
+   console.log("session.id", session.id);
+   session.register("api:compute_tsp", computeTsp, { invoke: "roundrobin", concurrency: 1 });
+}
+
 // the WAMP connection to the Router
 //
 var connection = new autobahn.Connection({
    url: wsuri,
-   realm: "realm1"
+   realm: "crossbardemo"
 });
 var session = null;
 
 connection.onopen = function(newSession, details) {
-   console.log("Connected");
-
    session = newSession;
+
+   console.log("Compute TSP connected", session.id);
+
 
    // set the URL prefix
    session.prefix("api", "io.crossbar.demo.tsp");
 
-  session.register("api:compute_tsp", computeTsp, { invoke: "roundrobin", concurrency: 1 });
+   // we automatically register our compute node automatically in Node.js only
+   if(!isBrowser) {
+      registerComputeNode();
+   }
 
 };
 
@@ -124,14 +133,6 @@ var computeDistance = function(firstPoint, secondPoint) {
    return distance;
 };
 
-// var copyArray = function(array) {
-//    var copiedArray = [];
-//    array.forEach(function(el) {
-//       copiedArray.push(el);
-//    });
-//    return copiedArray;
-// };
-
 var copyArray = function(array) {
    return array.map(function(el) { return el;});
 };
@@ -198,16 +199,6 @@ var createPoints = function(amount, maxCoordinates, minDistance) {
    return points;
 
 };
-
-// var createPointsIndex = function(points) {
-//    var index = [];
-//    var i = 0;
-//    points.forEach(function(p, i) {
-//       index.push(i);
-//       i++;
-//    });
-//    return index;
-// };
 
 var createPointsIndex = function(points) {
    return points.map(function(el,i) {
