@@ -1,3 +1,5 @@
+WORK IN PROGRESS - EXPECT THINGS TO FAIL (or not to exist at all!)
+
 # Transparent scaling of microservices
 
 Crossbar.io supports a number of features that when combined provide **transparent scale-out of microservices**:
