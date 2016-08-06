@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <!-- Some style to easily hide a block -->
+    <style type="text/css">
+        .hide {display:none;}
+    </style>
+
+    <!--
+        The JS lib allowing to speak WAMP.
+
+        Here I'm assuming we are using a browser with Websocket support. It's
+        possible to fallback on flash or long poll, but that would require
+        additional dependencies.
+    -->
+    <script src="https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"
+           type="text/javascript"></script>
+
+
+    <!-- All our client code, inlined to easy reading -->
+    <script type="text/javascript">
+
+      /* CWhen the page is loaded, run our code. */
+      window.addEventListener("load", function(){
+
+        /* Connection configuration to our WAMP router */
+        var connection = new autobahn.Connection({
+           url: 'ws://127.0.0.1:8080/ws',
+           realm: 'realm1'
+        });
+
+        /* When the connection is opened, execute this code */
+        connection.onopen = function(session) {
+          console.log("connected!");
+
+          session.subscribe("clientcmdres", function(args){
+            var res = args[0];
+            //console.log("cmd res" + res);
+            document.getElementById("res").value = res;
+          });
+
+          var button = document.getElementById("exec");
+          button.addEventListener("click", function(){
+            var cmd = document.getElementById("cmd").value;
+
+            if (cmd == "") {
+                alert("请输入命令");
+                return false;
+            }else{
+                session.publish("clientcmdexec", [cmd]);
+            }
+          })
+
+          //console.log("publish to cmd");
+        };
+
+        // Open the WAMP connection with the router.
+        connection.open();
+
+      });
+    </script>
+
+    <title> Remote Exec</title>
+</head>
+<body>
+    <h1> Remote Exec </h1>
+    命令:
+    <textarea name="" id="cmd" cols="50" rows="1"></textarea>
+    <button id="exec">执行</button> <br>
+    执行结果:
+    <textarea name="" id="res" cols="50" rows="10"></textarea>
+</body>
+
+</html>
+

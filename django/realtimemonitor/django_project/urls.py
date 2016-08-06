@@ -6,5 +6,6 @@ from django_app import views as v
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^clients/', v.clients),
+    url(r'^cmds/', TemplateView.as_view(template_name='cmdexec.html')),
     url(r'^$', TemplateView.as_view(template_name='dashboard.html')),
 ]

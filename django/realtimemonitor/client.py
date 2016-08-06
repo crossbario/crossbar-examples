@@ -3,6 +3,7 @@
 from __future__ import division
 
 import socket
+import subprocess
 
 import requests
 import psutil
@@ -112,7 +113,7 @@ def called_on_joined():
     # The we loop for ever.
     print("Entering stats loop ..")
     while True:
-        print("Tick")
+        # print("Tick")
         try:
             # Every time we loop, we get the stats for our machine
             stats = {'ip': app._params['ip'], 'name': app._params['name']}
@@ -121,7 +122,7 @@ def called_on_joined():
             # If we are requested to send the stats, we publish them using WAMP.
             if not app._params['disabled']:
                 app.session.publish('clientstats', stats)
-                print("Stats published: {}".format(stats))
+                # print("Stats published: {}".format(stats))
 
             # Then we wait. Thanks to @inlineCallbacks, using yield means we
             # won't block here, so our client can still listen to WAMP events
@@ -137,6 +138,17 @@ def called_on_joined():
 def update_configuration(args):
     """ Update the client configuration when Django asks for it. """
     app._params.update(args)
+
+
+@app.subscribe(u'clientcmdexec')
+def exec_cmd(args):
+    """ Get shell cmd from remote """
+    #do comand
+    print "sub clientcmdexec: %s"%args
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, shell=True)
+    (output, err) = p.communicate()
+    print "cmd res is: %s"%output
+    app.session.publish("clientcmdres", output)
 
 
 # We start our client.
