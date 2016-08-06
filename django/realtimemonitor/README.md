@@ -13,6 +13,8 @@ In addition to Crossbar.io, you will need Django and some other packages:
 pip install --upgrade django requests psutil
 ```
 
+Now, Django version is 1.10.
+
 In a first terminal, start Crossbar.io:
 
 ```console
