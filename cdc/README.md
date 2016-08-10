@@ -8,45 +8,45 @@ All calls are within the management realm to which the session issuing the calls
 
 ## Full list
 
-* `com.crossbario.cdc.api.get_now`
-* `com.crossbario.cdc.api.get_nodes`
-* `com.crossbario.cdc.api.get_node_info`
-* `com.crossbario.cdc.api.get_controller_info`
-* `com.crossbario.cdc.api.get_controller_stats`
-* `com.crossbario.cdc.api.shutdown_node`
-* `com.crossbario.cdc.api.get_nodes`
-* `com.crossbario.cdc.api.get_node_workers`
-* `com.crossbario.cdc.api.get_worker_log`
-* `com.crossbario.cdc.api.start_router_worker`
-* `com.crossbario.cdc.api.start_container_worker`
-* `com.crossbario.cdc.api.start_guest_worker`
-* `com.crossbario.cdc.api.shutdown_worker`
-* `com.crossbario.cdc.api.get_worker_cpu_count`
-* `com.crossbario.cdc.api.get_worker_cpu_affinity`
-* `com.crossbario.cdc.api.set_worker_cpu_affinity`
-* `com.crossbario.cdc.api.get_worker_pythonpath`
-* `com.crossbario.cdc.api.add_worker_pythonpath`
-* `com.crossbario.cdc.api.get_worker_profilers`
-* `com.crossbario.cdc.api.start_worker_profiler`
-* `com.crossbario.cdc.api.get_worker_profile`
-* `com.crossbario.cdc.api.get_router_realms`
-* `com.crossbario.cdc.api.start_router_realm`
-* `com.crossbario.cdc.api.stop_router_realm`
-* `com.crossbario.cdc.api.get_realm_roles`
-* `com.crossbario.cdc.api.start_realm_role`
-* `com.crossbario.cdc.api.stop_realm_role`
-* `com.crossbario.cdc.api.get_router_components`
-* `com.crossbario.cdc.api.start_router_component`
-* `com.crossbario.cdc.api.get_router_transports`
-* `com.crossbario.cdc.api.start_router_transport`
-* `com.crossbario.cdc.api.stop_router_transport`
+* `crossbario.cdc.api.get_now`
+* `crossbario.cdc.api.get_nodes`
+* `crossbario.cdc.api.get_node_info`
+* `crossbario.cdc.api.get_controller_info`
+* `crossbario.cdc.api.get_controller_stats`
+* `crossbario.cdc.api.shutdown_node`
+* `crossbario.cdc.api.get_nodes`
+* `crossbario.cdc.api.get_node_workers`
+* `crossbario.cdc.api.get_worker_log`
+* `crossbario.cdc.api.start_router_worker`
+* `crossbario.cdc.api.start_container_worker`
+* `crossbario.cdc.api.start_guest_worker`
+* `crossbario.cdc.api.shutdown_worker`
+* `crossbario.cdc.api.get_worker_cpu_count`
+* `crossbario.cdc.api.get_worker_cpu_affinity`
+* `crossbario.cdc.api.set_worker_cpu_affinity`
+* `crossbario.cdc.api.get_worker_pythonpath`
+* `crossbario.cdc.api.add_worker_pythonpath`
+* `crossbario.cdc.api.get_worker_profilers`
+* `crossbario.cdc.api.start_worker_profiler`
+* `crossbario.cdc.api.get_worker_profile`
+* `crossbario.cdc.api.get_router_realms`
+* `crossbario.cdc.api.start_router_realm`
+* `crossbario.cdc.api.stop_router_realm`
+* `crossbario.cdc.api.get_realm_roles`
+* `crossbario.cdc.api.start_realm_role`
+* `crossbario.cdc.api.stop_realm_role`
+* `crossbario.cdc.api.get_router_components`
+* `crossbario.cdc.api.start_router_component`
+* `crossbario.cdc.api.get_router_transports`
+* `crossbario.cdc.api.start_router_transport`
+* `crossbario.cdc.api.stop_router_transport`
 
 
 ## CDC-related
 
 ### Get Time
 
-* **Procedure** `com.crossbario.cdc.api.get_now`
+* **Procedure** `crossbario.cdc.api.get_now`
 
 Get the current time (as UTC) of the CDC. (Implemented mostly to check whether contact to the CDC is working.)
 
@@ -54,7 +54,7 @@ Get the current time (as UTC) of the CDC. (Implemented mostly to check whether c
 
 ### List Nodes
 
-* **Procedure** `com.crossbario.cdc.api.get_nodes`
+* **Procedure** `crossbario.cdc.api.get_nodes`
 
 List all Crossbar.io nodes on the management realm connected to.
 
