@@ -1,11 +1,15 @@
 import os
+
 import txaio
+#txaio.use_asyncio()
 txaio.use_twisted()
+
 from autobahn.wamp import cryptosign
 
 #from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
-from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
+from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
+from twisted.internet.defer import inlineCallbacks
 
 class MyComponent(ApplicationSession):
 
@@ -53,9 +57,31 @@ class MyComponent(ApplicationSession):
         # send back the signed challenge for verification
         return signed_challenge
 
+    @inlineCallbacks
     def onJoin(self, details):
         self.log.info("session joined: {details}", details=details)
         self.log.info("*** Hooray! We've been successfully authenticated with WAMP-cryptosign using Ed25519! ***")
+
+        try:
+            now = yield self.call(u'com.crossbario.cdc.api.get_now')
+        except:
+            self.log.failure()
+        else:
+            self.log.info("Current time at CDC: {now}", now=now)
+
+        try:
+            nodes = yield self.call(u'com.crossbario.cdc.api.get_nodes')
+            self.log.info("Nodes in management realm: {nodes}", nodes=nodes)
+            for node in nodes:
+                node_id = node[u'node_id']
+                if node[u'status'] == u'running':
+                    node_info = yield self.call(u'com.crossbario.cdc.api.get_node_info', node_id)
+                    self.log.info('Node info for "{node_id}": {node_info}', node_id=node_id, node_info=node_info)
+                else:
+                    self.log.info('Node "{node_id}" is not running', node_id=node_id)
+        except:
+            self.log.failure()
+
         self.leave()
 
     def onLeave(self, details):
