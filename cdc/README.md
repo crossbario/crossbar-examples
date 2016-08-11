@@ -8,18 +8,25 @@ All calls are within the management realm to which the session issuing the calls
 
 ## Full list
 
+### Global
+
 * `crossbario.cdc.api.get_now`
 * `crossbario.cdc.api.get_nodes`
+
+### Nodes
+
 * `crossbario.cdc.api.get_node_info`
 * `crossbario.cdc.api.get_controller_info`
 * `crossbario.cdc.api.get_controller_stats`
 * `crossbario.cdc.api.shutdown_node`
-* `crossbario.cdc.api.get_nodes`
 * `crossbario.cdc.api.get_node_workers`
 * `crossbario.cdc.api.get_worker_log`
 * `crossbario.cdc.api.start_router_worker`
 * `crossbario.cdc.api.start_container_worker`
 * `crossbario.cdc.api.start_guest_worker`
+
+### (Native) Workers
+
 * `crossbario.cdc.api.shutdown_worker`
 * `crossbario.cdc.api.get_worker_cpu_count`
 * `crossbario.cdc.api.get_worker_cpu_affinity`
@@ -29,6 +36,9 @@ All calls are within the management realm to which the session issuing the calls
 * `crossbario.cdc.api.get_worker_profilers`
 * `crossbario.cdc.api.start_worker_profiler`
 * `crossbario.cdc.api.get_worker_profile`
+
+### Routers
+
 * `crossbario.cdc.api.get_router_realms`
 * `crossbario.cdc.api.start_router_realm`
 * `crossbario.cdc.api.stop_router_realm`
@@ -40,6 +50,14 @@ All calls are within the management realm to which the session issuing the calls
 * `crossbario.cdc.api.get_router_transports`
 * `crossbario.cdc.api.start_router_transport`
 * `crossbario.cdc.api.stop_router_transport`
+
+### Containers
+
+* `crossbario.cdc.api.get_container_components`
+* `crossbario.cdc.api.start_container_component`
+* `crossbario.cdc.api.stop_container_component`
+* `crossbario.cdc.api.stop_container`
+* `crossbario.cdc.api.restart_container_component`
 
 
 ## CDC-related
