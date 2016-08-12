@@ -101,24 +101,56 @@ Drop us an email at **`support at crossbario dot com`** with subject line **`alp
 
 ### Routers
 
+#### Global
+
+#### Router Realms
+
 * `crossbario.cdc.api.get_router_realms`
+* `crossbario.cdc.api.get_router_realm_status`
 * `crossbario.cdc.api.start_router_realm`
 * `crossbario.cdc.api.stop_router_realm`
+
+#### Realm Roles
+
 * `crossbario.cdc.api.get_realm_roles`
+* `crossbario.cdc.api.get_realm_role_status`
 * `crossbario.cdc.api.start_realm_role`
 * `crossbario.cdc.api.stop_realm_role`
-* `crossbario.cdc.api.get_router_components`
-* `crossbario.cdc.api.start_router_component`
+
+#### Router Transports
+
 * `crossbario.cdc.api.get_router_transports`
+* `crossbario.cdc.api.get_router_transport_status`
 * `crossbario.cdc.api.start_router_transport`
 * `crossbario.cdc.api.stop_router_transport`
 
+#### Web Transport Services
+
+* `crossbario.cdc.api.get_web_services`
+* `crossbario.cdc.api.get_web_service_status`
+* `crossbario.cdc.api.start_web_service`
+* `crossbario.cdc.api.stop_web_service`
+
+#### Router Components
+
+* `crossbario.cdc.api.get_router_components`
+* `crossbario.cdc.api.get_router_component_status`
+* `crossbario.cdc.api.start_router_component`
+* `crossbario.cdc.api.stop_router_component`
+
 ### Containers
 
+#### Global
+
+* `crossbario.cdc.api.stop_container`
+
+#### Container Components
+
 * `crossbario.cdc.api.get_container_components`
+* `crossbario.cdc.api.get_container_component_status`
 * `crossbario.cdc.api.start_container_component`
 * `crossbario.cdc.api.stop_container_component`
-* `crossbario.cdc.api.stop_container`
+
 * `crossbario.cdc.api.restart_container_component`
 
 
