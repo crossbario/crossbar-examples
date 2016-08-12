@@ -126,9 +126,9 @@ The owner of the management realm can manage the realm by allowing new Crossbar.
 
 ### Global
 
-* `crossbario.cdc.get_now@1()`
-* `crossbario.cdc.get_nodes@1(<filter-status>)`
-* `crossbario.cdc.get_nodes@2(<filter-type>, <filter-status>)`
+* `crossbario.cdc.get_now@1() -> string` returing a string with UTC time at CDC in ISO 8601 format.
+* `crossbario.cdc.get_nodes@1(<filter_status|string>) -> [<node_info|dict>]` where `node_info` is a struct describing a node
+* `crossbario.cdc.get_nodes@2(<filter_type|string>, <filter_status|string>) -> {<node_id>: <node_info>}` where `node_id` is the ID of a node and `node_info` is a struct describing the node
 
 ### Nodes
 
