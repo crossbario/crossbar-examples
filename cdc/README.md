@@ -126,8 +126,9 @@ The owner of the management realm can manage the realm by allowing new Crossbar.
 
 ### Global
 
-* `crossbario.cdc.get_now@1`
-* `crossbario.cdc.get_nodes@1`
+* `crossbario.cdc.get_now@1()`
+* `crossbario.cdc.get_nodes@1(<filter-status>)`
+* `crossbario.cdc.get_nodes@2(<filter-type>, <filter-status>)`
 
 ### Nodes
 
