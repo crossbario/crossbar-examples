@@ -7,25 +7,14 @@ Since this API may be used by clients other than our own, it should be stable.
 All calls are within the management realm to which the session issuing the calls is connected.
 
 
+## Management Realms
+
+
 ## Authentication
 
 Both Crossbar.io nodes and CDC API clients authenticate to CDC via WAMP-cryptosign.
 
-WAMP-cryptosign is a public-private key authentication mechanism based on elliptic curve Curve25519, namely is adopts [Ed25519](http://ed25519.cr.yp.to/) to authenticate WAMP peers.
-
-
-### Node Authentication
-
-For Crossbar.io nodes, the public-private keys are automatically generated when a node first starts:
-
-* `CBDIR/.crossbar/key.priv` - the **private** node key
-* `CBDIR/.crossbar/key.pub` - the **public** node key
-
-Crossbar.io nodes need to be **paired** with CDC first. The node pairing makes the node's public key known to CDC, associates the node with a **management realm** and assign a node ID to the node.
-
-> The node ID is identical to the WAMP `authid` assigned by CDC during the authentication to the Crossbar.io node.
-
-All Crossbar.io nodes are assigned the authentication role `cdc-node` on the respective management realm after successfull authentication.
+WAMP-cryptosign is a public-private key authentication mechanism based on elliptic curve Curve25519, namely it adopts [Ed25519](http://ed25519.cr.yp.to/) to authenticate WAMP peers.
 
 
 ### User Authentication
@@ -46,6 +35,22 @@ Users are assigned one of the following authentication roles on the respective m
 * `cdc-user`
 * `cdc-admin`
 * `cdc-owner`
+
+
+### Node Authentication
+
+For Crossbar.io nodes, the public-private keys are automatically generated when a node first starts:
+
+* `CBDIR/.crossbar/key.priv` - the **private** node key
+* `CBDIR/.crossbar/key.pub` - the **public** node key
+
+Crossbar.io nodes need to be **paired** with CDC first. The node pairing makes the node's public key known to CDC, associates the node with a **management realm** and assign a node ID to the node.
+
+> The node ID is identical to the WAMP `authid` assigned by CDC during the authentication to the Crossbar.io node.
+
+All Crossbar.io nodes are assigned the authentication role `cdc-node` on the respective management realm after successfull authentication.
+
+
 
 
 
