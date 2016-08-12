@@ -29,8 +29,8 @@ ssh-keygen -t ed25519 -f oberstet
 
 Above will generate 2 files:
 
-* `oberstet` - the **private** user key
-* `oberstet.pub` - the **public** user key
+* `oberstet` - the **private** user key (OpenSSH format)
+* `oberstet.pub` - the **public** user key (OpenSSH format)
 
 Users are assigned one of the following authentication roles on the respective management realm upon successfull authentication:
 
@@ -43,14 +43,18 @@ Users are assigned one of the following authentication roles on the respective m
 
 For Crossbar.io nodes, the public-private keys are automatically generated when a node first starts:
 
-* `CBDIR/.crossbar/key.priv` - the **private** node key
-* `CBDIR/.crossbar/key.pub` - the **public** node key
+* `CBDIR/.crossbar/key.priv` - the **private** node key (Crossbar.io format)
+* `CBDIR/.crossbar/key.pub` - the **public** node key (Crossbar.io format)
 
 Crossbar.io nodes need to be **paired** with CDC first. The node pairing makes the node's public key known to CDC, associates the node with a **management realm** and assign a node ID to the node.
 
 > The node ID is identical to the WAMP `authid` assigned by CDC during the authentication to the Crossbar.io node.
 
-All Crossbar.io nodes are assigned the authentication role `cdc-node` on the respective management realm after successfull authentication.
+All Crossbar.io nodes are assigned the authentication role
+
+* `cdc-node`
+
+on the respective management realm after successfull authentication.
 
 ### CDC Pairing
 
@@ -61,8 +65,7 @@ During the alpha-testing of the first CDC ready Crossbar.io release 16.10, pairi
 * optionally, one or more **Crossbar.io node public keys** (Crossbar.io format) and
 * optionally, one or more **CDC API client public keys** (OpenSSH format)
 
-Please send to **`< support at crossbario dot com >`** with subject line **`alpha-16.10`**.
-
+Drop us an email at **`support at crossbario dot com`** with subject line **`alpha-16.10`** and we'll setup your management realm on our CDC alpha hosting service and provide you access from Web UIs, command line tools or programmatic and remote access to your Crossbar.io nodes.
 
 
 ## Full list
