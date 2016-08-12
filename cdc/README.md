@@ -80,7 +80,7 @@ The management realm owner's key pair should be protected well, and only used to
 The API (preliminary) may look like
 
 ```
-cdc.register_user(user_name, user_email, user_pub_key) -> registration_id
+crossbario.cdc.register_user(user_name, user_email, user_pub_key) -> registration_id
 ```
 
 to initiate registration of a new user providing a user name, email and first public key. The user name is checked that is does not yet exist and meets the requirements for user names. When these conditions are met, a challenge in form of a graphical captcha with an embedded, five digit numeric PIN is sent via email to the email address provided.
@@ -88,7 +88,7 @@ to initiate registration of a new user providing a user name, email and first pu
 The user will need to read the PIN from the captcha and enter that allowing to make the call to
 
 ```
-cdc.verify_user_registration(registration_id, pin) -> OK
+crossbario.cdc.verify_user_registration(registration_id, pin) -> OK
 ```
 
 When this call returns successfully, the user is created.
@@ -96,7 +96,7 @@ When this call returns successfully, the user is created.
 To register more public keys for the user, call
 
 ```
-cdc.register_user(user_name, user_email, user_pub_key) -> registration_id
+crossbario.cdc.register_user(user_name, user_email, user_pub_key) -> registration_id
 ```
 
 This will send a challenge as well and proceed exactly like above.
@@ -114,7 +114,7 @@ The public key must have been registered before for a user,
 The registering owner's email address is already known, and used for sending a captcha with a PIN like above to the owner. Verification is similar:
 
 ```
-cdc.verify_management_realm_registration(registration_id, pin) -> OK
+crossbario.cdc.verify_management_realm_registration(registration_id, pin) -> OK
 ```
 
 When this call returns successfully, the management realm is created.
@@ -126,32 +126,32 @@ The owner of the management realm can manage the realm by allowing new Crossbar.
 
 ### Global
 
-* `crossbario.cdc.api.get_now`
-* `crossbario.cdc.api.get_nodes`
+* `crossbario.cdc.get_now@1`
+* `crossbario.cdc.get_nodes@1`
 
 ### Nodes
 
-* `crossbario.cdc.api.get_node_info`
-* `crossbario.cdc.api.get_controller_info`
-* `crossbario.cdc.api.get_controller_stats`
-* `crossbario.cdc.api.shutdown_node`
-* `crossbario.cdc.api.get_node_workers`
-* `crossbario.cdc.api.get_worker_log`
-* `crossbario.cdc.api.start_router_worker`
-* `crossbario.cdc.api.start_container_worker`
-* `crossbario.cdc.api.start_guest_worker`
+* `crossbario.cdc.get_node_info@1`
+* `crossbario.cdc.get_controller_info@1`
+* `crossbario.cdc.get_controller_stats@1`
+* `crossbario.cdc.shutdown_node@1`
+* `crossbario.cdc.get_node_workers@1`
+* `crossbario.cdc.get_worker_log@1`
+* `crossbario.cdc.start_router_worker@1`
+* `crossbario.cdc.start_container_worker@1`
+* `crossbario.cdc.start_guest_worker@1`
 
 ### (Native) Workers
 
-* `crossbario.cdc.api.shutdown_worker`
-* `crossbario.cdc.api.get_worker_cpu_count`
-* `crossbario.cdc.api.get_worker_cpu_affinity`
-* `crossbario.cdc.api.set_worker_cpu_affinity`
-* `crossbario.cdc.api.get_worker_pythonpath`
-* `crossbario.cdc.api.add_worker_pythonpath`
-* `crossbario.cdc.api.get_worker_profilers`
-* `crossbario.cdc.api.start_worker_profiler`
-* `crossbario.cdc.api.get_worker_profile`
+* `crossbario.cdc.shutdown_worker`
+* `crossbario.cdc.get_worker_cpu_count`
+* `crossbario.cdc.get_worker_cpu_affinity`
+* `crossbario.cdc.set_worker_cpu_affinity`
+* `crossbario.cdc.get_worker_pythonpath`
+* `crossbario.cdc.add_worker_pythonpath`
+* `crossbario.cdc.get_worker_profilers`
+* `crossbario.cdc.start_worker_profiler`
+* `crossbario.cdc.get_worker_profile`
 
 ### Routers
 
@@ -159,60 +159,60 @@ The owner of the management realm can manage the realm by allowing new Crossbar.
 
 #### Router Realms
 
-* `crossbario.cdc.api.get_router_realms`
-* `crossbario.cdc.api.get_router_realm_status`
-* `crossbario.cdc.api.start_router_realm`
-* `crossbario.cdc.api.stop_router_realm`
+* `crossbario.cdc.get_router_realms`
+* `crossbario.cdc.get_router_realm_status`
+* `crossbario.cdc.start_router_realm`
+* `crossbario.cdc.stop_router_realm`
 
 #### Realm Roles
 
-* `crossbario.cdc.api.get_realm_roles`
-* `crossbario.cdc.api.get_realm_role_status`
-* `crossbario.cdc.api.start_realm_role`
-* `crossbario.cdc.api.stop_realm_role`
+* `crossbario.cdc.get_realm_roles`
+* `crossbario.cdc.get_realm_role_status`
+* `crossbario.cdc.start_realm_role`
+* `crossbario.cdc.stop_realm_role`
 
 #### Router Transports
 
-* `crossbario.cdc.api.get_router_transports`
-* `crossbario.cdc.api.get_router_transport_status`
-* `crossbario.cdc.api.start_router_transport`
-* `crossbario.cdc.api.stop_router_transport`
+* `crossbario.cdc.get_router_transports`
+* `crossbario.cdc.get_router_transport_status`
+* `crossbario.cdc.start_router_transport`
+* `crossbario.cdc.stop_router_transport`
 
 #### Web Transport Services
 
-* `crossbario.cdc.api.get_web_services`
-* `crossbario.cdc.api.get_web_service_status`
-* `crossbario.cdc.api.start_web_service`
-* `crossbario.cdc.api.stop_web_service`
+* `crossbario.cdc.get_web_services`
+* `crossbario.cdc.get_web_service_status`
+* `crossbario.cdc.start_web_service`
+* `crossbario.cdc.stop_web_service`
 
 #### Router Components
 
-* `crossbario.cdc.api.get_router_components`
-* `crossbario.cdc.api.get_router_component_status`
-* `crossbario.cdc.api.start_router_component`
-* `crossbario.cdc.api.stop_router_component`
+* `crossbario.cdc.get_router_components`
+* `crossbario.cdc.get_router_component_status`
+* `crossbario.cdc.start_router_component`
+* `crossbario.cdc.stop_router_component`
 
 ### Containers
 
 #### Global
 
-* `crossbario.cdc.api.stop_container`
+* `crossbario.cdc.stop_container`
 
 #### Container Components
 
-* `crossbario.cdc.api.get_container_components`
-* `crossbario.cdc.api.get_container_component_status`
-* `crossbario.cdc.api.start_container_component`
-* `crossbario.cdc.api.stop_container_component`
+* `crossbario.cdc.get_container_components`
+* `crossbario.cdc.get_container_component_status`
+* `crossbario.cdc.start_container_component`
+* `crossbario.cdc.stop_container_component`
 
-* `crossbario.cdc.api.restart_container_component`
+* `crossbario.cdc.restart_container_component`
 
 
 ## CDC-related
 
 ### Get Time
 
-* **Procedure** `crossbario.cdc.api.get_now`
+* **Procedure** `crossbario.cdc.get_now`
 
 Get the current time (as UTC) of the CDC. (Implemented mostly to check whether contact to the CDC is working.)
 
@@ -220,7 +220,7 @@ Get the current time (as UTC) of the CDC. (Implemented mostly to check whether c
 
 ### List Nodes
 
-* **Procedure** `crossbario.cdc.api.get_nodes`
+* **Procedure** `crossbario.cdc.get_nodes`
 
 List all Crossbar.io nodes on the management realm connected to.
 
