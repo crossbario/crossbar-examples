@@ -30,11 +30,12 @@ ssh-keygen -t ed25519 -f oberstet
 Above will generate 2 files:
 
 * `oberstet` - the **private** user key
-* `oberstet.pub' - the **public** user key
+* `oberstet.pub` - the **public** user key
 
 Users are assigned one of the following authentication roles on the respective management realm upon successfull authentication:
 
-* `cdc-user`
+* `cdc-guest`
+* `cdc-devop`
 * `cdc-admin`
 * `cdc-owner`
 
