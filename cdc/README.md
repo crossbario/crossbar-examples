@@ -1,6 +1,6 @@
 # Crossbar.io DevOps Center API
 
-The public API is used by clients of the Crossbar DevOps Center (CDC). Calls to the CDC may result in private API calls.
+The public API is used by clients of **Crossbar.io DevOps Center (CDC)**. Calls to CDC may result in private API calls.
 
 Since this API may be used by clients other than our own, it should be stable.
 
@@ -9,13 +9,15 @@ All calls are within the management realm to which the session issuing the calls
 
 ## Management Realms
 
+A management realm is a realm on CDC dedicated to one larger system of a customer with potentially many thousand Crossbar.io nodes attached to and many thousand CDC API clients, like customer operators or tools.
+
+Each management realm is fully isolated from all other management realms, serving different WAMP routing namespaces and with CDC backends running in dedicated processes, effectively preventing any data leakage.
 
 ## Authentication
 
 Both Crossbar.io nodes and CDC API clients authenticate to CDC via WAMP-cryptosign.
 
 WAMP-cryptosign is a public-private key authentication mechanism based on elliptic curve Curve25519, namely it adopts [Ed25519](http://ed25519.cr.yp.to/) to authenticate WAMP peers.
-
 
 ### User Authentication
 
@@ -36,7 +38,6 @@ Users are assigned one of the following authentication roles on the respective m
 * `cdc-admin`
 * `cdc-owner`
 
-
 ### Node Authentication
 
 For Crossbar.io nodes, the public-private keys are automatically generated when a node first starts:
@@ -50,8 +51,16 @@ Crossbar.io nodes need to be **paired** with CDC first. The node pairing makes t
 
 All Crossbar.io nodes are assigned the authentication role `cdc-node` on the respective management realm after successfull authentication.
 
+### CDC Pairing
 
+During the alpha-testing of the first CDC ready Crossbar.io release 16.10, pairing of Crossbar.io nodes and CDC API clients with CDC is not yet available and provisioning of new management realms and users involves some manual steps beginning with sending us
 
+* your desired **management realm name**,
+* the **owner's user public key** (OpenSSH format) and
+* optionally, one or more **Crossbar.io node public keys** (Crossbar.io format) and
+* optionally, one or more **CDC API client public keys** (OpenSSH format)
+
+Please send to **`< support at crossbario dot com >`** with subject line **`alpha-16.10`**.
 
 
 
