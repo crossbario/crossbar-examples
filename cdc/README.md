@@ -60,6 +60,8 @@ on the respective management realm after successfull authentication.
 
 ### CDC Pairing
 
+#### Manual
+
 During the alpha-testing of the first CDC ready Crossbar.io release 16.10, pairing of Crossbar.io nodes and CDC API clients with CDC is not yet available and provisioning of new management realms and users involves some manual steps beginning with sending us
 
 * your desired **management realm name**,
@@ -68,6 +70,56 @@ During the alpha-testing of the first CDC ready Crossbar.io release 16.10, pairi
 * optionally, one or more **CDC API client public keys** (OpenSSH format)
 
 Drop us an email at **`support at crossbario dot com`** with subject line **`alpha-16.10`** and we'll setup your management realm on our CDC alpha hosting service and provide you access from Web UIs, command line tools or programmatic and remote access to your Crossbar.io nodes.
+
+#### API based
+
+With API based pairing, the owner of a management realm will be able to call CDC procedures which add, provision and configure Crossbar.io node public keys and CDC API client public keys allowed access to that management realm.
+
+The management realm owner's key pair should be protected well, and only used to create day to day key pairs for administrators of the management realm itself.
+
+The API (preliminary) may look like
+
+```
+cdc.register_user(user_name, user_email, user_pub_key) -> registration_id
+```
+
+to initiate registration of a new user providing a user name, email and first public key. The user name is checked that is does not yet exist and meets the requirements for user names. When these conditions are met, a challenge in form of a graphical captcha with an embedded, five digit numeric PIN is sent via email to the email address provided.
+
+The user will need to read the PIN from the captcha and enter that allowing to make the call to
+
+```
+cdc.verify_user_registration(registration_id, pin) -> OK
+```
+
+When this call returns successfully, the user is created.
+
+To register more public keys for the user, call
+
+```
+cdc.register_user(user_name, user_email, user_pub_key) -> registration_id
+```
+
+This will send a challenge as well and proceed exactly like above.
+
+To register a new management realm, a similar API is available:
+
+```
+cdc.register_management_realm(management_realm, owner_pub_key) -> registration_id
+```
+
+to initiate registration of a new management realm providing the management realm name and owner's public key,
+
+The public key must have been registered before for a user,
+
+The registering owner's email address is already known, and used for sending a captcha with a PIN like above to the owner. Verification is similar:
+
+```
+cdc.verify_management_realm_registration(registration_id, pin) -> OK
+```
+
+When this call returns successfully, the management realm is created.
+
+The owner of the management realm can manage the realm by allowing new Crossbar.io node public keys and CDC API client public keys access to the management realm under respective roles.
 
 
 ## Full list
