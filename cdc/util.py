@@ -3,15 +3,18 @@ import os
 import txaio
 txaio.use_twisted()
 
+from twisted.internet import reactor
+from twisted.internet.error import ReactorNotRunning
+from twisted.internet.defer import inlineCallbacks
+
 from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
-from twisted.internet.defer import inlineCallbacks
 
 
 class CDCClient(ApplicationSession):
 
     def onConnect(self):
-        self.log.info("connected to router")
+        self.log.debug('CDC connection established - joining realm ..')
 
         # authentication extra information for wamp-cryptosign
         #
@@ -40,7 +43,7 @@ class CDCClient(ApplicationSession):
                   authextra=extra)
 
     def onChallenge(self, challenge):
-        self.log.info("authentication challenge received: {challenge}", challenge=challenge)
+        self.log.debug("CDC authentication challenge received: {challenge}", challenge=challenge)
         # alright, we've got a challenge from the router.
 
         # not yet implemented. check the trustchain the router provided against
@@ -56,19 +59,23 @@ class CDCClient(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        self.log.info("CDC session ready: {details}", details=details)
+        self.log.debug("CDC session ready: {details}", details=details)
         yield self.config.extra[u'on_ready'](self, details)
         self.leave()
 
     def onLeave(self, details):
-        self.log.info("session closed: {details}", details=details)
+        self.log.debug("CDC session closed: {details}", details=details)
         self.disconnect()
 
     def onDisconnect(self):
-        self.log.info("connection to router closed")
+        self.log.debug("CDC connection closed.")
+        try:
+            reactor.stop()
+        except ReactorNotRunning:
+            pass
 
 
-def run(on_ready, keyfile=None):
+def run(on_ready, keyfile='mykey'):
     if not keyfile:
         keyfile = os.path.join(os.path.expanduser('~'), '.ssh', 'id_ed25519')
 
