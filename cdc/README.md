@@ -120,6 +120,8 @@ The owner of the management realm can manage the realm by allowing new Crossbar.
 
 ### Connect to CDC
 
+Connecting to CDC and retrieving the management realm status:
+
 ```python
 from twisted.internet.defer import inlineCallbacks
 import util
@@ -137,9 +139,46 @@ def main(session, details):
 util.run(main)
 ```
 
+Here is a sample run:
+
+```console
+(cpy352_2) oberstet@office-corei7:~/scm/crossbario/crossbarexamples/cdc$ python tut1.py
+2016-08-13T16:16:48+0200 Connected to CDC management realm "com.crossbario.cdc.mrealm-test1" (current time at CDC is 2016-08-13T14:16:48.414Z)
+2016-08-13T16:16:48+0200 Main loop terminated.
+```
+
 ### Get Crossbar.io nodes
 
+Connecting to CDC, getting a list of Crossbar.io nodes provisioned on that realm and retrieving the current status of each node:
 
+```python
+from twisted.internet.defer import inlineCallbacks
+import util
+
+@inlineCallbacks
+def main(session, details):
+    try:
+        nodes = yield session.call(u'com.crossbario.cdc.management.get_nodes@1')
+    except:
+        session.log.failure()
+    else:
+        session.log.info('Nodes on management realm "{realm}"', realm=details.realm)
+        for node_id in nodes:
+            node_status = yield session.call(u'com.crossbario.cdc.management.get_node_status@1', node_id)
+            session.log.info('Node "{node_id}": {node_status}', node_id=node_id, node_status=node_status)
+
+util.run(main)
+```
+
+Here is a sample run:
+
+```console
+(cpy352_2) oberstet@office-corei7:~/scm/crossbario/crossbarexamples/cdc$ python tut2.py
+2016-08-13T16:17:52+0200 Nodes on management realm "com.crossbario.cdc.mrealm-test1"
+2016-08-13T16:17:52+0200 Node "node0": {'node_id': 'node0', 'extra': {'foo': 42, 'bar': 'baz'}, 'status': 'created'}
+2016-08-13T16:17:52+0200 Node "node1": {'node_id': 'node1', 'extra': {'foo': 23, 'bar': 'moo'}, 'status': 'running'}
+2016-08-13T16:17:52+0200 Main loop terminated.
+```
 
 ## API Reference
 
