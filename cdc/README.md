@@ -201,14 +201,20 @@ import util
 @inlineCallbacks
 def main(session, details):
     try:
+        # get list of node_ids of Crossbar.io nodes provisioned on this management realm
         nodes = yield session.call(u'com.crossbario.cdc.management.get_nodes@1')
+
+        for node_id in nodes:
+            # get node status given node_id
+            node_status = yield session.call(u'com.crossbario.cdc.management.get_node_status@1', node_id)
+            session.log.info('Node "{node_id}" status: {node_status}', node_id=node_id, node_status=node_status)
+
+            if node_status[u'status'] == u'online':
+                # if the node is online, get node controller status
+                node_info = yield session.call(u'com.crossbario.cdc.remote.get_controller_info@1', node_id)
+                session.log.info('Node "{node_id}" info: {node_info}', node_id=node_id, node_info=node_info)
     except:
         session.log.failure()
-    else:
-        session.log.info('Nodes on management realm "{realm}"', realm=details.realm)
-        for node_id in nodes:
-            node_status = yield session.call(u'com.crossbario.cdc.management.get_node_status@1', node_id)
-            session.log.info('Node "{node_id}": {node_status}', node_id=node_id, node_status=node_status)
 
 util.run(main)
 ```
@@ -216,11 +222,12 @@ util.run(main)
 Here is a sample run:
 
 ```console
-(cpy352_2) oberstet@office-corei7:~/scm/crossbario/crossbarexamples/cdc$ python tut2.py
-2016-08-13T16:17:52+0200 Nodes on management realm "com.crossbario.cdc.mrealm-test1"
-2016-08-13T16:17:52+0200 Node "node0": {'node_id': 'node0', 'extra': {'foo': 42, 'bar': 'baz'}, 'status': 'created'}
-2016-08-13T16:17:52+0200 Node "node1": {'node_id': 'node1', 'extra': {'foo': 23, 'bar': 'moo'}, 'status': 'running'}
-2016-08-13T16:17:52+0200 Main loop terminated.
+(cpy351_5) oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/cdc$ python tut2.py
+2016-08-14T22:55:47+0200 Node "node0" status: {'heartbeat_time': '2016-08-14T20:55:47.356Z', 'heartbeat': 21, 'status': 'online', 'extra': {'foo': 42, 'bar': 'baz'}, 'node_id': 'node0'}
+2016-08-14T22:55:47+0200 Node "node0" info: {'threads': 2, 'files': [], 'sockets': [{'status': 'ESTABLISHED', 'remote': '127.0.0.1:8080', 'local': '127.0.0.1:46277', 'type': 'tcp4'}], 'descriptors': 20}
+2016-08-14T22:55:47+0200 Node "node1" status: {'heartbeat_time': '2016-08-14T20:55:47.209Z', 'heartbeat': 22, 'status': 'online', 'extra': {'foo': 23, 'bar': 'moo'}, 'node_id': 'node1'}
+2016-08-14T22:55:47+0200 Node "node1" info: {'threads': 2, 'files': [], 'sockets': [{'status': 'ESTABLISHED', 'remote': '127.0.0.1:8080', 'local': '127.0.0.1:46276', 'type': 'tcp4'}], 'descriptors': 12}
+2016-08-14T22:55:48+0200 Main loop terminated.
 ```
 
 ### Tap worker log output
