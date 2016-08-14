@@ -154,6 +154,10 @@ The node public key is printed when the node starts:
 2016-08-14T22:25:45+0200 [Controller  20410] Running from node directory '/home/oberstet/foo/.crossbar'
 ```
 
+There is also a new `crossbar keys` command which prints both the release and node key in hex and as a qr code for scanning:
+
+![crossbar keys command output](cb-keys.png "crossbar keys command output")
+
 
 ## Tutorial
 
