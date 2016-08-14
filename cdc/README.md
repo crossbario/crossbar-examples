@@ -116,6 +116,45 @@ When this call returns successfully, the management realm is created.
 The owner of the management realm can manage the realm by allowing new Crossbar.io node public keys and CDC API client public keys access to the management realm under respective roles.
 
 
+### Displaying keys
+
+The Crossbar.io release key (which changes with each release) is displayed together with version information
+
+```console
+(cpy351_5) oberstet@thinkpad-t430s:~$ crossbar version
+     __  __  __  __  __  __      __     __
+    /  `|__)/  \/__`/__`|__) /\ |__)  |/  \
+    \__,|  \\__/.__/.__/|__)/~~\|  \. |\__/
+
+ Crossbar.io        : 16.10.dev1
+   Autobahn         : 0.16.0 (with JSON, MessagePack, CBOR, UBJSON)
+   Twisted          : 16.3.0-EPollReactor
+   LMDB             : 0.89/lmdb-0.9.18
+   Python           : 3.5.1/CPython
+ OS                 : Linux-3.13.0-92-generic-x86_64-with-debian-jessie-sid
+ Machine            : x86_64
+ Release key        : RWQ2MDk26PKBMNUZG2Jok1tMBB1SKyci+N7dtcep8jrikTl4NvI1Rnux
+```
+
+The node public key is printed when the node starts:
+
+```console
+(cpy351_5) oberstet@thinkpad-t430s:~/foo$ crossbar start
+2016-08-14T22:25:45+0200 [Controller  20410] New node key pair generated!
+2016-08-14T22:25:45+0200 [Controller  20410] File permissions on node public key fixed!
+2016-08-14T22:25:45+0200 [Controller  20410] File permissions on node private key fixed!
+2016-08-14T22:25:45+0200 [Controller  20410] Node configuration loaded from 'config.json'
+2016-08-14T22:25:45+0200 [Controller  20410]      __  __  __  __  __  __      __     __
+2016-08-14T22:25:45+0200 [Controller  20410]     /  `|__)/  \/__`/__`|__) /\ |__)  |/  \
+2016-08-14T22:25:45+0200 [Controller  20410]     \__,|  \\__/.__/.__/|__)/~~\|  \. |\__/
+2016-08-14T22:25:45+0200 [Controller  20410]
+2016-08-14T22:25:45+0200 [Controller  20410]     Crossbar.io Version: 16.10.dev1
+2016-08-14T22:25:45+0200 [Controller  20410]     Node Public Key: 0a439d8ec8a36c2a7ecd4388ed6f0221fa6e2e46a8e6c8481ab7950a4dc27735
+2016-08-14T22:25:45+0200 [Controller  20410]
+2016-08-14T22:25:45+0200 [Controller  20410] Running from node directory '/home/oberstet/foo/.crossbar'
+```
+
+
 ## Tutorial
 
 ### Connect to CDC
