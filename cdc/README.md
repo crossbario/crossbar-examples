@@ -223,6 +223,66 @@ Here is a sample run:
 2016-08-13T16:17:52+0200 Main loop terminated.
 ```
 
+### Tap worker log output
+
+Here is how to remotely retrieve the log history of a worker and tap into the live, real-time log output of that worker:
+
+```python
+from twisted.internet.defer import inlineCallbacks
+from autobahn.twisted.util import sleep
+import util
+
+NODE_ID = u'node0'
+WORKER_ID = u'worker-002'
+
+@inlineCallbacks
+def main(session, details):
+    try:
+        print('Worker {} on node {} log history:'.format(WORKER_ID, NODE_ID))
+        log = yield session.call(u'com.crossbario.cdc.remote.get_worker_log@1', NODE_ID, WORKER_ID, 30)
+        for log_rec in log:
+            print(log_rec)
+
+        print('Listening to live log output ..')
+        log_topic = u'com.crossbario.cdc.node.{}.worker.{}.on_log'.format(NODE_ID, WORKER_ID)
+
+        def on_worker_log(*args, **kwargs):
+            print(args, kwargs)
+
+        sub = yield session.subscribe(on_worker_log, log_topic)
+    except:
+        session.log.failure()
+    else:
+        yield sleep(15)
+
+util.run(main)
+```
+
+Here is a sample run:
+
+```console
+(cpy351_5) oberstet@thinkpad-t430s:~/scm/crossbario/crossbarexamples/cdc$ python tut3.py
+2016-08-14T22:49:01+0200 Worker worker-002 on node node0 log history:
+2016-08-14T22:49:01+0200 {'tick': 69, 'topic': 'com.example.on_tick', 'log_time': 1471207691.458671}
+2016-08-14T22:49:01+0200 {'tick': 70, 'topic': 'com.example.on_tick', 'log_time': 1471207696.4648347}
+2016-08-14T22:49:01+0200 {'tick': 71, 'topic': 'com.example.on_tick', 'log_time': 1471207701.470919}
+2016-08-14T22:49:01+0200 {'tick': 72, 'topic': 'com.example.on_tick', 'log_time': 1471207706.474243}
+2016-08-14T22:49:01+0200 {'tick': 73, 'topic': 'com.example.on_tick', 'log_time': 1471207711.4786506}
+2016-08-14T22:49:01+0200 {'tick': 74, 'topic': 'com.example.on_tick', 'log_time': 1471207716.4829242}
+2016-08-14T22:49:01+0200 {'tick': 75, 'topic': 'com.example.on_tick', 'log_time': 1471207721.4865615}
+2016-08-14T22:49:01+0200 {'tick': 76, 'topic': 'com.example.on_tick', 'log_time': 1471207726.4926562}
+2016-08-14T22:49:01+0200 {'tick': 77, 'topic': 'com.example.on_tick', 'log_time': 1471207731.49393}
+2016-08-14T22:49:01+0200 {'tick': 78, 'topic': 'com.example.on_tick', 'log_time': 1471207736.5004253}
+2016-08-14T22:49:01+0200 Listening to live log output ..
+2016-08-14T22:49:01+0200 ('published tick 79 to topic "com.example.on_tick"',) {}
+2016-08-14T22:49:06+0200 ('published tick 80 to topic "com.example.on_tick"',) {}
+2016-08-14T22:49:11+0200 ('published tick 81 to topic "com.example.on_tick"',) {}
+2016-08-14T22:49:16+0200 Main loop terminated.
+```
+
+> There currently is a difference in what is returned as log line objects via these APIs - this is a bug.
+
+
 ## API Reference
 
 ### API Versioning
