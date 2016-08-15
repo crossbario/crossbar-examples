@@ -309,22 +309,25 @@ Here is a sample run:
 
 * `com.crossbario.cdc.remote.get_controller_status@1(<node_id|string>) -> { // controller info dict // }`
 
-* `com.crossbario.cdc.remote.shutdown_node@1()`
-* `com.crossbario.cdc.remote.get_node_workers@1(<node_id|string>)`
-* `com.crossbario.cdc.remote.get_worker_status@1(<node_id|string>, <worker_id|string>) -> { // worker info dict // }`
-* `com.crossbario.cdc.remote.get_worker_log@1(<node_id|string>, <worker_id|string>) -> [ // log line dicts // ]`
-* `com.crossbario.cdc.remote.start_router_worker@1(<node_id|string>, <router_id|string>, <router_config|dict>) -> <started_at|string>`
-* `com.crossbario.cdc.remote.start_container_worker@1(<node_id|string>, <container_id|string>, <container_config|dict>) -> <started_at|string>`
-* `com.crossbario.cdc.remote.start_guest_worker@1(<node_id|string>, <guest_id|string>, <guest_config|dict>) -> <started_at|string>`
+* **`com.crossbario.cdc.remote.shutdown_node@1`**`()`
+* **`com.crossbario.cdc.remote.get_node_workers@1`**`(<node_id|string>)`
+* **`com.crossbario.cdc.remote.get_worker_status@1`**`(<node_id|string>, <worker_id|string>) -> { // worker info dict // }`
+* **`com.crossbario.cdc.remote.get_worker_log@1`**`(<node_id|string>, <worker_id|string>) -> [ // log line dicts // ]`
+* **`com.crossbario.cdc.remote.start_router_worker@1`**`(<node_id|string>, <router_id|string>, <router_config|dict>) -> <started_at|string>`
+* **`com.crossbario.cdc.remote.start_container_worker@1`**`(<node_id|string>, <container_id|string>, <container_config|dict>) -> <started_at|string>`
+* **`com.crossbario.cdc.remote.start_guest_worker@1`**`(<node_id|string>, <guest_id|string>, <guest_config|dict>) -> <started_at|string>`
 
 #### (Native) Workers
 
 * `com.crossbario.cdc.remote.shutdown_worker@1`
+
 * `com.crossbario.cdc.remote.get_worker_cpu_count@1`
 * `com.crossbario.cdc.remote.get_worker_cpu_affinity@1`
-* `com.crossbario.cdc.remote.set_worker_cpu_affinity@1(<node_id|string>, <worker_id|string>, [<cpu_no|int]) -> void`
-* `com.crossbario.cdc.remote.get_worker_pythonpath@1(<node_id|string>, <worker_id|string>) -> []`
-* `com.crossbario.cdc.remote.add_worker_pythonpath@1()`
+* `com.crossbario.cdc.remote.set_worker_cpu_affinity@1`
+
+* `com.crossbario.cdc.remote.get_worker_pythonpath@1`
+* `com.crossbario.cdc.remote.add_worker_pythonpath@1`
+
 * `com.crossbario.cdc.remote.get_worker_profilers@1`
 * `com.crossbario.cdc.remote.start_worker_profiler@1`
 * `com.crossbario.cdc.remote.get_worker_profile@1`
@@ -333,40 +336,47 @@ Here is a sample run:
 
 ##### Global
 
-##### Router Realms
+##### Realms
 
-* `com.crossbario.cdc.remote.get_router_realms@1`
-* `com.crossbario.cdc.remote.get_router_realm_status@1`
-* `com.crossbario.cdc.remote.start_router_realm@1`
-* `com.crossbario.cdc.remote.stop_router_realm@1`
+* `com.crossbario.cdc.remote.get_realms@1` - Get list of realms started on a router worker on a node.
+* `com.crossbario.cdc.remote.get_realm@1` - Get detailed info on a realm started on a router worker.
+* `com.crossbario.cdc.remote.start_realm@1` - Start a new routing realm on a router worker on a node.
+* `com.crossbario.cdc.remote.stop_realm@1` - Stop a realm currently started on a router worker on some node.
 
-##### Realm Roles
+##### Roles
 
-* `com.crossbario.cdc.remote.get_realm_roles@1`
-* `com.crossbario.cdc.remote.get_realm_role_status@1`
-* `com.crossbario.cdc.remote.start_realm_role@1`
-* `com.crossbario.cdc.remote.stop_realm_role@1`
+* `com.crossbario.cdc.remote.get_roles@1`
+* `com.crossbario.cdc.remote.get_role@1`
+* `com.crossbario.cdc.remote.start_role@1`
+* `com.crossbario.cdc.remote.stop_role@1`
 
-##### Router Transports
+##### Grants
 
-* `com.crossbario.cdc.remote.get_router_transports@1`
-* `com.crossbario.cdc.remote.get_router_transport_status@1`
-* `com.crossbario.cdc.remote.start_router_transport@1`
-* `com.crossbario.cdc.remote.stop_router_transport@1`
+* `com.crossbario.cdc.remote.get_grants@1`
+* `com.crossbario.cdc.remote.get_grant@1`
+* `com.crossbario.cdc.remote.start_grant@1`
+* `com.crossbario.cdc.remote.stop_grant@1`
 
-##### Web Transport Services
+##### Transports
 
-* `com.crossbario.cdc.remote.get_web_services@1`
-* `com.crossbario.cdc.remote.get_web_service_status@1`
-* `com.crossbario.cdc.remote.start_web_service@1`
-* `com.crossbario.cdc.remote.stop_web_service@1`
+* `com.crossbario.cdc.remote.get_transports@1`
+* `com.crossbario.cdc.remote.get_transport@1`
+* `com.crossbario.cdc.remote.start_transport@1`
+* `com.crossbario.cdc.remote.stop_transport@1`
 
-##### Router Components
+##### Web Services
 
-* `com.crossbario.cdc.remote.get_router_components@1`
-* `com.crossbario.cdc.remote.get_router_component_status@1`
-* `com.crossbario.cdc.remote.start_router_component@1`
-* `com.crossbario.cdc.remote.stop_router_component@1`
+* `com.crossbario.cdc.remote.get_webservices@1`
+* `com.crossbario.cdc.remote.get_webservice@1`
+* `com.crossbario.cdc.remote.start_webservice@1`
+* `com.crossbario.cdc.remote.stop_webservice@1`
+
+##### Components
+
+* `com.crossbario.cdc.remote.get_components@1`
+* `com.crossbario.cdc.remote.get_component@1`
+* `com.crossbario.cdc.remote.start_component@1`
+* `com.crossbario.cdc.remote.stop_component@1`
 
 #### Containers
 
@@ -381,166 +391,3 @@ Here is a sample run:
 * `com.crossbario.cdc.remote.start_container_component@1`
 * `com.crossbario.cdc.remote.stop_container_component@1`
 * `com.crossbario.cdc.remote.restart_container_component@1`
-
-
-### List Workers
-
-* **Procedure** `io.crossbar.cdc.list_workers`
-
-List all workers created for the given node.
-
-Arguments:
-
-   * `node_id` - *string* - the ID of the node to list the workers for (*required*)
-
-
-### Create Node
-
-* **Procedure** `io.crossbar.cdc.create_node`
-
-Create a new node.
-
-Arguments:
-
-   * `node_id` - *string* - an ID for the node to be created (*required*)
-   * `node_config` - *dictionary* - the node configuration (*required*)
-
-
-### List Node Workers
-
-* **Procedure** `io.crossbar.cdc.list_node_workers`
-
-List all workers created on the given node.
-
-Arguments:
-
-   * `node_id`- *string* - the id of the node for which to list workers (*required*)
-
-## Router-related
-
-* `get_router`
-* `create_router`
-* `modify_router`
-* `delete_router`
-* `start_router`
-* `stop_router`
-* `reload_router`
-
-
-### Get Router
-
-* **Procedure** `io.crossbar.cdc.get_router`
-
-Get configuration and status of existing router.
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node which hosts the router (*required*)
-   * `router_id` - *string* - the id of the router (*required*)
-
-
-### Create Router
-
-* **Procedure** `io.crossbar.cdc.create_router`
-
-Create a router on a node.
-
-> Note: This directly only creates a database entry with the set configuration. To actually start the router, the start router procedure needs to be called.
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the router is to be created (*required*)
-   * `router_id` - *string* - an ID for the router to be created (*required*)
-   * `router_config` - *dictionary* - the configuration for the router (*required*)
-
-
-### Modify Router
-
-* **Procedure** `io.crossbar.cdc.modify_router`
-
-Modify a router worker configuration on a given node.
-
-> Note: This directly only changes the database entry. To actually apply changes to a running router worker, the worker needs to be reloaded or restarted.
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the router is hosted (*required*)
-   * `router_id` - *string* - the id of the router to be modified (*required*)
-   * `router_config` - *dictionary* - the configuration change set for the router (*required*)
-
-
-### Delete Router
-
-* **Procedure** `io.crossbar.cdc.delete_router`
-
-Delete a router worker configuration on a given node. A router worker configuration can only be deleted when the respective router worker is currently stopped!
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the router is hosted (*required*)
-   * `router_id` - *string* - the id of the router to be deleted (*required*)
-
-
-### Start Router
-
-* **Procedure** `io.crossbar.cdc.start_router`
-
-Start a previously created router. The router worker will be started with the currently active configuration.
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the router is hosted (*required*)
-   * `router_id` - *string* - the id of the router to be started (*required*)
-
-
-### Stop Router
-
-* **Procedure** `io.crossbar.cdc.stop_router`
-
-Stop a running router worker.
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the router is hosted (*required*)
-   * `router_id` - *string* - the id of the router to be stopped (*required*)
-
-
-### Reload Router
-
-* **Procedure** `io.crossbar.cdc.reload_router`
-
-Reload the configuration of a currently running router worker. When a router configuration has changed, the changes will only be applied once this procedure is called (or the router is restarted).
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the router is hosted (*required*)
-   * `router_id` - *string* - the id of the router to be reloaded (*required*)
-   * `restart_if_required' - *boolean* - Restart the router if one or more configuration changes cannot be applied without a restart. An exception is raised if this is `false` and a restart would be required in order to apply all changes. (*optional*)
-
-
-## Worker-related
-
-* `profile_worker`
-* `get_stats`
-
-### Profile Worker
-
-Get a profile of the processor usage within a worker.
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the worker is hosted (*required*)
-   * `worker_id` - *string* - the id of the worker on which to run the profile (*required*)
-   * `profiler` - *string* - the profiler to start (currently only 'vmprof' is supported - (*optional* - default: `vmprof`)
-   * `runtime` - *integer* - the duration in seconds for which to enable profiling and generate a profile (*optional* - default: 10)
-   * `profiler` - *integer* - prune % (*optional* - default: 5)
-   * `profiler` - *integer* - prune level (*optional* - default: 1000)
-
-### Get Stats
-
-Get the generic worker statistics (e.g. cpu affinity, uptime) for a specific worker.
-
-Arguments:
-
-   * `node_id` - *string* - the id of the node on which the worker is hosted (*required*)
-   * `worker_id` - *string* - the id of the worker for which to receive the stats (*required*)
