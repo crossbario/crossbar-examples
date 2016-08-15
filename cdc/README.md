@@ -340,28 +340,28 @@ Here is a sample run:
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get-realms@1(<node_id>, <router_id>)`** - Get list of IDs of realms started on a router worker on a node.
-* **`com.crossbario.cdc.remote.query-realm@1(<node_id>, <router_id>, <realm_id>)`** - Get detailed info on a realm started on a router worker.
-* **`com.crossbario.cdc.remote.start-realm@1(<node_id>, <router_id>, <realm_id>, <realm_config>)`** - Start a new routing realm on a router worker on a node.
-* **`com.crossbario.cdc.remote.stop-realm@1(<node_id>, <router_id>, <realm_id>)`** - Stop a realm currently started on a router worker on some node.
+* **`com.crossbario.cdc.remote.get_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
+* **`com.crossbario.cdc.remote.query_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
+* **`com.crossbario.cdc.remote.start_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
+* **`com.crossbario.cdc.remote.stop_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
 
 Events:
 
-* **`com.crossbario.cdc.remote.on-realm-change@1`** - Fires when the state of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
+* **`com.crossbario.cdc.remote.on_realm_changed@1`** - Fires when the state of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
 
 
 ##### Roles
 
 Procedures:
 
-* `com.crossbario.cdc.remote.get_roles@1`
-* `com.crossbario.cdc.remote.get_role_state@1`
-* `com.crossbario.cdc.remote.start_role@1`
-* `com.crossbario.cdc.remote.stop_role@1`
+* **`com.crossbario.cdc.remote.get_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
+* **`com.crossbario.cdc.remote.query_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
+* **`com.crossbario.cdc.remote.start_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
+* **`com.crossbario.cdc.remote.stop_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
 
 Events:
 
-* `com.crossbario.cdc.remote.on_role_status@1` - (node_id, router_id, realm_id, role_id, old_status, new_status)
+* **`com.crossbario.cdc.remote.on_role_changed@1`** - Fires when the state of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`
 
 ##### Grants
 
