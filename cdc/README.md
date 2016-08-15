@@ -340,10 +340,10 @@ Here is a sample run:
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get-realms@1`** - Get list of IDs of realms started on a router worker on a node.
-* **`com.crossbario.cdc.remote.query-realm@1`** - Get detailed info on a realm started on a router worker.
-* **`com.crossbario.cdc.remote.start-realm@1`** - Start a new routing realm on a router worker on a node.
-* **`com.crossbario.cdc.remote.stop-realm@1`** - Stop a realm currently started on a router worker on some node.
+* **`com.crossbario.cdc.remote.get-realms@1(<node_id>, <router_id>)`** - Get list of IDs of realms started on a router worker on a node.
+* **`com.crossbario.cdc.remote.query-realm@1(<node_id>, <router_id>, <realm_id>)`** - Get detailed info on a realm started on a router worker.
+* **`com.crossbario.cdc.remote.start-realm@1(<node_id>, <router_id>, <realm_id>, <realm_config>)`** - Start a new routing realm on a router worker on a node.
+* **`com.crossbario.cdc.remote.stop-realm@1(<node_id>, <router_id>, <realm_id>)`** - Stop a realm currently started on a router worker on some node.
 
 Events:
 
