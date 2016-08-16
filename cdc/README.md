@@ -80,7 +80,7 @@ The management realm owner's key pair should be protected well, and only used to
 The API (preliminary) may look like
 
 ```
-com.crossbario.cdc.register_user@1(<user_name>, <user_email>, <user_pub_key>) -> <registration_id|int>
+cdc.register_user@1(<user_name>, <user_email>, <user_pub_key>) -> <registration_id|int>
 ```
 
 to initiate registration of a new user providing a user name, email and first public key. The user name is checked that is does not yet exist and meets the requirements for user names. When these conditions are met, a challenge in form of a graphical captcha with an embedded, five digit numeric PIN is sent via email to the email address provided.
@@ -88,7 +88,7 @@ to initiate registration of a new user providing a user name, email and first pu
 The user will need to read the PIN from the captcha and enter that allowing to make the call to
 
 ```
-com.crossbario.cdc.verify_user_registration(<registration_id|int>, <pin|int>) -> <OK>
+cdc.verify_user_registration(<registration_id|int>, <pin|int>) -> <OK>
 ```
 
 When this call returns successfully, the user is created.
@@ -98,7 +98,7 @@ To register more public keys for the user, calls abovr procedure again. This wil
 To register a new management realm, a similar API is available:
 
 ```
-com.crossbario.cdc.register_management_realm(<management_realm>, <owner_pub_key>) -> <registration_id|int>
+cdc.register_management_realm(<management_realm>, <owner_pub_key>) -> <registration_id|int>
 ```
 
 to initiate registration of a new management realm providing the management realm name and owner's public key,
@@ -108,7 +108,7 @@ The public key must have been registered before for a user,
 The registering owner's email address is already known, and used for sending a captcha with a PIN like above to the owner. Verification is similar:
 
 ```
-com.crossbario.cdc.verify_management_realm_registration(<registration_id|int>, <pin|int>) -> <OK>
+cdc.verify_management_realm_registration(<registration_id|int>, <pin|int>) -> <OK>
 ```
 
 When this call returns successfully, the management realm is created.
@@ -172,7 +172,7 @@ import util
 @inlineCallbacks
 def main(session, details):
     try:
-        status = yield session.call(u'com.crossbario.cdc.general.get_status@1')
+        status = yield session.call(u'cdc.general.get_status@1')
     except:
         session.log.failure()
     else:
@@ -186,7 +186,7 @@ Here is a sample run:
 
 ```console
 (cpy352_2) oberstet@office-corei7:~/scm/crossbario/crossbarexamples/cdc$ python tut1.py
-2016-08-13T16:16:48+0200 Connected to CDC management realm "com.crossbario.cdc.mrealm-test1" (current time at CDC is 2016-08-13T14:16:48.414Z)
+2016-08-13T16:16:48+0200 Connected to CDC management realm "cdc.mrealm-test1" (current time at CDC is 2016-08-13T14:16:48.414Z)
 2016-08-13T16:16:48+0200 Main loop terminated.
 ```
 
@@ -202,16 +202,16 @@ import util
 def main(session, details):
     try:
         # get list of node_ids of Crossbar.io nodes provisioned on this management realm
-        nodes = yield session.call(u'com.crossbario.cdc.management.get_nodes@1')
+        nodes = yield session.call(u'cdc.management.get_nodes@1')
 
         for node_id in nodes:
             # get node status given node_id
-            node_status = yield session.call(u'com.crossbario.cdc.management.get_node_status@1', node_id)
+            node_status = yield session.call(u'cdc.management.get_node_status@1', node_id)
             session.log.info('Node "{node_id}" status: {node_status}', node_id=node_id, node_status=node_status)
 
             if node_status[u'status'] == u'online':
                 # if the node is online, get node controller status
-                node_info = yield session.call(u'com.crossbario.cdc.remote.get_controller_info@1', node_id)
+                node_info = yield session.call(u'cdc.remote.get_controller_info@1', node_id)
                 session.log.info('Node "{node_id}" info: {node_info}', node_id=node_id, node_info=node_info)
     except:
         session.log.failure()
@@ -246,12 +246,12 @@ WORKER_ID = u'worker-002'
 def main(session, details):
     try:
         print('Worker {} on node {} log history:'.format(WORKER_ID, NODE_ID))
-        log = yield session.call(u'com.crossbario.cdc.remote.get_worker_log@1', NODE_ID, WORKER_ID, 30)
+        log = yield session.call(u'cdc.remote.get_worker_log@1', NODE_ID, WORKER_ID, 30)
         for log_rec in log:
             print(log_rec)
 
         print('Listening to live log output ..')
-        log_topic = u'com.crossbario.cdc.node.{}.worker.{}.on_log'.format(NODE_ID, WORKER_ID)
+        log_topic = u'cdc.node.{}.worker.{}.on_log'.format(NODE_ID, WORKER_ID)
 
         def on_worker_log(*args, **kwargs):
             print(args, kwargs)
@@ -294,9 +294,9 @@ Here is a sample run:
 
 We are using the following scheme for API versioning:
 
-* `com.crossbario.cdc.some_proc@1()`
-* `com.crossbario.cdc.some_proc@2(<filter_status>) -> [<node_info>]` where `node_info` is a struct describing a node
-* `com.crossbario.cdc.some_proc@3(<filter_type>, <filter_status>) -> {<node_id>: <node_info>}` where `node_id` is the ID of a node and `node_info` is a struct describing the node
+* `cdc.some_proc@1()`
+* `cdc.some_proc@2(<filter_status>) -> [<node_info>]` where `node_info` is a struct describing a node
+* `cdc.some_proc@3(<filter_type>, <filter_status>) -> {<node_id>: <node_info>}` where `node_id` is the ID of a node and `node_info` is a struct describing the node
 
 ---
 
@@ -306,41 +306,41 @@ We are using the following scheme for API versioning:
 
 Procedures:
 
-* `com.crossbario.cdc.get_status@1()` - returns management status information.
-* `com.crossbario.cdc.get_nodes@1()` - returns a list of ID of Crossbar.io nodes attached to this management realm
-* `com.crossbario.cdc.get_node_status@1(<node_id>) -> { // node info dict // }`
+* `cdc.get_status@1()` - returns management status information.
+* `cdc.get_nodes@1()` - returns a list of ID of Crossbar.io nodes attached to this management realm
+* `cdc.get_node_status@1(<node_id>) -> { // node info dict // }`
 
 ### Remote Node API
 
 Procedures:
 
-* `com.crossbario.cdc.remote.get_controller_status@1(<node_id>) -> { // controller info dict // }`
+* `cdc.remote.get_controller_status@1(<node_id>) -> { // controller info dict // }`
 
-* **`com.crossbario.cdc.remote.shutdown_node@1`**`()`
-* **`com.crossbario.cdc.remote.get_node_workers@1`**`(<node_id>)`
-* **`com.crossbario.cdc.remote.get_worker_status@1`**`(<node_id>, <worker_id>) -> { // worker info dict // }`
-* **`com.crossbario.cdc.remote.get_worker_log@1`**`(<node_id>, <worker_id>) -> [ // log line dicts // ]`
+* **`cdc.remote.shutdown_node@1`**`()`
+* **`cdc.remote.get_node_workers@1`**`(<node_id>)`
+* **`cdc.remote.get_worker_status@1`**`(<node_id>, <worker_id>) -> { // worker info dict // }`
+* **`cdc.remote.get_worker_log@1`**`(<node_id>, <worker_id>) -> [ // log line dicts // ]`
 
-* **`com.crossbario.cdc.remote.start_router@1`**`(<node_id>, <router_id>, <router_config>) -> <started_at>`
-* **`com.crossbario.cdc.remote.start_container@1`**`(<node_id>, <container_id>, <container_config>) -> <started_at>`
-* **`com.crossbario.cdc.remote.start_guest@1`**`(<node_id>, <guest_id>, <guest_config>) -> <started_at>`
+* **`cdc.remote.start_router@1`**`(<node_id>, <router_id>, <router_config>) -> <started_at>`
+* **`cdc.remote.start_container@1`**`(<node_id>, <container_id>, <container_config>) -> <started_at>`
+* **`cdc.remote.start_guest@1`**`(<node_id>, <guest_id>, <guest_config>) -> <started_at>`
 
 #### Native Workers
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.shutdown_worker@1`**`(<node_id>, <worker_id>)` -
+* **`cdc.remote.shutdown_worker@1`**`(<node_id>, <worker_id>)` -
 
-* **`com.crossbario.cdc.remote.get_worker_cpu_count@1`**`()` -
-* **`com.crossbario.cdc.remote.get_worker_cpu_affinity@1`**`()` -
-* **`com.crossbario.cdc.remote.set_worker_cpu_affinity@1`**`()` -
+* **`cdc.remote.get_worker_cpu_count@1`**`()` -
+* **`cdc.remote.get_worker_cpu_affinity@1`**`()` -
+* **`cdc.remote.set_worker_cpu_affinity@1`**`()` -
 
-* **`com.crossbario.cdc.remote.get_worker_pythonpath@1`**`()` -
-* **`com.crossbario.cdc.remote.add_worker_pythonpath@1`**`()` -
+* **`cdc.remote.get_worker_pythonpath@1`**`()` -
+* **`cdc.remote.add_worker_pythonpath@1`**`()` -
 
-* **`com.crossbario.cdc.remote.get_worker_profilers@1`**`()` -
-* **`com.crossbario.cdc.remote.start_worker_profiler@1`**`()` -
-* **`com.crossbario.cdc.remote.get_worker_profile@1`**`()` -
+* **`cdc.remote.get_worker_profilers@1`**`()` -
+* **`cdc.remote.start_worker_profiler@1`**`()` -
+* **`cdc.remote.get_worker_profile@1`**`()` -
 
 
 #### Routers
@@ -358,14 +358,14 @@ A **realm** is a separate namespace and isolated routing domain.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_router_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
-* **`com.crossbario.cdc.remote.query_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
-* **`com.crossbario.cdc.remote.start_router_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
-* **`com.crossbario.cdc.remote.stop_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
+* **`cdc.remote.get_router_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
+* **`cdc.remote.query_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
+* **`cdc.remote.start_router_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
+* **`cdc.remote.stop_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_router_realm@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
+* **`cdc.remote.on_router_realm@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
 
 
 ##### Realm **Roles**
@@ -374,14 +374,14 @@ Clients connecting are authenicated under **roles** on **realms**.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_realm_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
-* **`com.crossbario.cdc.remote.query_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
-* **`com.crossbario.cdc.remote.start_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
-* **`com.crossbario.cdc.remote.stop_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
+* **`cdc.remote.get_realm_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
+* **`cdc.remote.query_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
+* **`cdc.remote.start_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
+* **`cdc.remote.stop_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_router_role@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`.
+* **`cdc.remote.on_router_role@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`.
 
 ##### Role **Grants**
 
@@ -389,14 +389,14 @@ A **role** on a **realm** provides **grants** to clients.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_role_grants@1`**`()` -
-* **`com.crossbario.cdc.remote.query_role_grant@1`**`()` -
-* **`com.crossbario.cdc.remote.start_role_grant@1`**`()` -
-* **`com.crossbario.cdc.remote.stop_role_grant@1`**`()` -
+* **`cdc.remote.get_role_grants@1`**`()` -
+* **`cdc.remote.query_role_grant@1`**`()` -
+* **`cdc.remote.start_role_grant@1`**`()` -
+* **`cdc.remote.stop_role_grant@1`**`()` -
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_role_grant@1`** - Fires when the status of a grant changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`).
+* **`cdc.remote.on_role_grant@1`** - Fires when the status of a grant changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`).
 
 ##### Router **Transports**
 
@@ -404,14 +404,14 @@ Routers run listening **transports** for clients to connect.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_router_transports@1`**`(<node_id>, <router_id>)` -
-* **`com.crossbario.cdc.remote.query_router_transport@1`**`(<node_id>, <router_id>, <transport_id>)` -
-* **`com.crossbario.cdc.remote.start_router_transport@1`**`(<node_id>, <router_id>, <transport_id>, <transport_config>)` -
-* **`com.crossbario.cdc.remote.stop_router_transport@1`**`(<node_id>, <router_id>)` -
+* **`cdc.remote.get_router_transports@1`**`(<node_id>, <router_id>)` -
+* **`cdc.remote.query_router_transport@1`**`(<node_id>, <router_id>, <transport_id>)` -
+* **`cdc.remote.start_router_transport@1`**`(<node_id>, <router_id>, <transport_id>, <transport_config>)` -
+* **`cdc.remote.stop_router_transport@1`**`(<node_id>, <router_id>)` -
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_role_transport@1`** - Fires when the status of a transport changes (with a tuple `(node_id, router_id, transport_id, old_status, new_status)`).
+* **`cdc.remote.on_role_transport@1`** - Fires when the status of a transport changes (with a tuple `(node_id, router_id, transport_id, old_status, new_status)`).
 
 ##### Transport **Resources**
 
@@ -419,14 +419,14 @@ Certain transports like Web can host **resources**.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_transport_resources@1`**`(<node_id>, <router_id>, <transport_id>)` -
-* **`com.crossbario.cdc.remote.query_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
-* **`com.crossbario.cdc.remote.start_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>, <resource_config>)` -
-* **`com.crossbario.cdc.remote.stop_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
+* **`cdc.remote.get_transport_resources@1`**`(<node_id>, <router_id>, <transport_id>)` -
+* **`cdc.remote.query_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
+* **`cdc.remote.start_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>, <resource_config>)` -
+* **`cdc.remote.stop_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_transport_resource@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
+* **`cdc.remote.on_transport_resource@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
 
 ##### Router **Components**
 
@@ -434,14 +434,14 @@ Router can optionally host WAMP application **components**.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_router_components@1`**`(<node_id>, <router_id>)` -
-* **`com.crossbario.cdc.remote.query_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
-* **`com.crossbario.cdc.remote.start_router_component@1`**`(<node_id>, <router_id>, <component_id>, <component_config>)` -
-* **`com.crossbario.cdc.remote.stop_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
+* **`cdc.remote.get_router_components@1`**`(<node_id>, <router_id>)` -
+* **`cdc.remote.query_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
+* **`cdc.remote.start_router_component@1`**`(<node_id>, <router_id>, <component_id>, <component_config>)` -
+* **`cdc.remote.stop_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_router_component@1`** - Fires when the status of a router component changes (with a tuple `(node_id, router_id, component_id, old_status, new_status)`).
+* **`cdc.remote.on_router_component@1`** - Fires when the status of a router component changes (with a tuple `(node_id, router_id, component_id, old_status, new_status)`).
 
 
 #### Containers
@@ -450,15 +450,15 @@ Events:
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.stop_container@1`**`()` -
+* **`cdc.remote.stop_container@1`**`()` -
 
 ##### Container Components
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_container_components@1`**`()` -
-* **`com.crossbario.cdc.remote.query_container_component@1`**`()` -
-* **`com.crossbario.cdc.remote.start_container_component@1`**`()` -
-* **`com.crossbario.cdc.remote.stop_container_component@1`**`()` -
+* **`cdc.remote.get_container_components@1`**`()` -
+* **`cdc.remote.query_container_component@1`**`()` -
+* **`cdc.remote.start_container_component@1`**`()` -
+* **`cdc.remote.stop_container_component@1`**`()` -
 
-* **`com.crossbario.cdc.remote.restart_container_component@1`**`()` -
+* **`cdc.remote.restart_container_component@1`**`()` -
