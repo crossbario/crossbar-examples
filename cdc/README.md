@@ -80,7 +80,7 @@ The management realm owner's key pair should be protected well, and only used to
 The API (preliminary) may look like
 
 ```
-com.crossbario.cdc.register_user@1(<user_name|string>, <user_email|string>, <user_pub_key|string>) -> <registration_id|int>
+com.crossbario.cdc.register_user@1(<user_name>, <user_email>, <user_pub_key>) -> <registration_id|int>
 ```
 
 to initiate registration of a new user providing a user name, email and first public key. The user name is checked that is does not yet exist and meets the requirements for user names. When these conditions are met, a challenge in form of a graphical captcha with an embedded, five digit numeric PIN is sent via email to the email address provided.
@@ -98,7 +98,7 @@ To register more public keys for the user, calls abovr procedure again. This wil
 To register a new management realm, a similar API is available:
 
 ```
-com.crossbario.cdc.register_management_realm(<management_realm|string>, <owner_pub_key|string>) -> <registration_id|int>
+com.crossbario.cdc.register_management_realm(<management_realm>, <owner_pub_key>) -> <registration_id|int>
 ```
 
 to initiate registration of a new management realm providing the management realm name and owner's public key,
@@ -290,123 +290,158 @@ Here is a sample run:
 > There currently is a difference in what is returned as log line objects via these APIs - this is a bug.
 
 
-## API Reference
-
 ### API Versioning
 
-* `com.crossbario.cdc.some_proc@1()`
-* `com.crossbario.cdc.some_proc@2(<filter_status|string>) -> [<node_info|dict>]` where `node_info` is a struct describing a node
-* `com.crossbario.cdc.some_proc@3(<filter_type|string>, <filter_status|string>) -> {<node_id>: <node_info>}` where `node_id` is the ID of a node and `node_info` is a struct describing the node
+We are using the following scheme for API versioning:
 
+* `com.crossbario.cdc.some_proc@1()`
+* `com.crossbario.cdc.some_proc@2(<filter_status>) -> [<node_info>]` where `node_info` is a struct describing a node
+* `com.crossbario.cdc.some_proc@3(<filter_type>, <filter_status>) -> {<node_id>: <node_info>}` where `node_id` is the ID of a node and `node_info` is a struct describing the node
+
+---
+
+## API Reference
 
 ### Global API
 
+Procedures:
+
 * `com.crossbario.cdc.get_status@1()` - returns management status information.
 * `com.crossbario.cdc.get_nodes@1()` - returns a list of ID of Crossbar.io nodes attached to this management realm
-* `com.crossbario.cdc.get_node_status@1(<node_id|string>) -> { // node info dict // }`
+* `com.crossbario.cdc.get_node_status@1(<node_id>) -> { // node info dict // }`
 
 ### Remote Node API
 
-* `com.crossbario.cdc.remote.get_controller_status@1(<node_id|string>) -> { // controller info dict // }`
+Procedures:
+
+* `com.crossbario.cdc.remote.get_controller_status@1(<node_id>) -> { // controller info dict // }`
 
 * **`com.crossbario.cdc.remote.shutdown_node@1`**`()`
-* **`com.crossbario.cdc.remote.get_node_workers@1`**`(<node_id|string>)`
-* **`com.crossbario.cdc.remote.get_worker_status@1`**`(<node_id|string>, <worker_id|string>) -> { // worker info dict // }`
-* **`com.crossbario.cdc.remote.get_worker_log@1`**`(<node_id|string>, <worker_id|string>) -> [ // log line dicts // ]`
-* **`com.crossbario.cdc.remote.start_router_worker@1`**`(<node_id|string>, <router_id|string>, <router_config|dict>) -> <started_at|string>`
-* **`com.crossbario.cdc.remote.start_container_worker@1`**`(<node_id|string>, <container_id|string>, <container_config|dict>) -> <started_at|string>`
-* **`com.crossbario.cdc.remote.start_guest_worker@1`**`(<node_id|string>, <guest_id|string>, <guest_config|dict>) -> <started_at|string>`
+* **`com.crossbario.cdc.remote.get_node_workers@1`**`(<node_id>)`
+* **`com.crossbario.cdc.remote.get_worker_status@1`**`(<node_id>, <worker_id>) -> { // worker info dict // }`
+* **`com.crossbario.cdc.remote.get_worker_log@1`**`(<node_id>, <worker_id>) -> [ // log line dicts // ]`
 
-#### (Native) Workers
+* **`com.crossbario.cdc.remote.start_router@1`**`(<node_id>, <router_id>, <router_config>) -> <started_at>`
+* **`com.crossbario.cdc.remote.start_container@1`**`(<node_id>, <container_id>, <container_config>) -> <started_at>`
+* **`com.crossbario.cdc.remote.start_guest@1`**`(<node_id>, <guest_id>, <guest_config>) -> <started_at>`
 
-* `com.crossbario.cdc.remote.shutdown_worker@1`
-
-* `com.crossbario.cdc.remote.get_worker_cpu_count@1`
-* `com.crossbario.cdc.remote.get_worker_cpu_affinity@1`
-* `com.crossbario.cdc.remote.set_worker_cpu_affinity@1`
-
-* `com.crossbario.cdc.remote.get_worker_pythonpath@1`
-* `com.crossbario.cdc.remote.add_worker_pythonpath@1`
-
-* `com.crossbario.cdc.remote.get_worker_profilers@1`
-* `com.crossbario.cdc.remote.start_worker_profiler@1`
-* `com.crossbario.cdc.remote.get_worker_profile@1`
-
-#### Routers
-
-##### Global
-
-##### Realms
+#### Native Workers
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
-* **`com.crossbario.cdc.remote.query_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
-* **`com.crossbario.cdc.remote.start_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
-* **`com.crossbario.cdc.remote.stop_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
+* **`com.crossbario.cdc.remote.shutdown_worker@1`**`(<node_id>, <worker_id>)` -
+
+* **`com.crossbario.cdc.remote.get_worker_cpu_count@1`**
+* **`com.crossbario.cdc.remote.get_worker_cpu_affinity@1`**
+* **`com.crossbario.cdc.remote.set_worker_cpu_affinity@1`**
+
+* **`com.crossbario.cdc.remote.get_worker_pythonpath@1`**
+* **`com.crossbario.cdc.remote.add_worker_pythonpath@1`**
+
+* **`com.crossbario.cdc.remote.get_worker_profilers@1`**
+* **`com.crossbario.cdc.remote.start_worker_profiler@1`**
+* **`com.crossbario.cdc.remote.get_worker_profile@1`**
+
+#### Routers
+
+Crossbar.io **router workers** listen on **transports** providing routing for **realms**.
+
+
+##### Realms
+
+A **realm** is a separate namespace and isolated routing domain.
+
+Procedures:
+
+* **`com.crossbario.cdc.remote.get_router_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
+* **`com.crossbario.cdc.remote.query_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
+* **`com.crossbario.cdc.remote.start_router_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
+* **`com.crossbario.cdc.remote.stop_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_realm_changed@1`** - Fires when the state of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
+* **`com.crossbario.cdc.remote.on_router_realm@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
 
 
 ##### Roles
 
+Clients connecting are authenicated under **roles** on **realms**.
+
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
-* **`com.crossbario.cdc.remote.query_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
-* **`com.crossbario.cdc.remote.start_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
-* **`com.crossbario.cdc.remote.stop_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
+* **`com.crossbario.cdc.remote.get_realm_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
+* **`com.crossbario.cdc.remote.query_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
+* **`com.crossbario.cdc.remote.start_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
+* **`com.crossbario.cdc.remote.stop_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_role_changed@1`** - Fires when the state of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`
+* **`com.crossbario.cdc.remote.on_router_role@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`
 
 ##### Grants
 
+A **role** on a **realm** provides **grants** to clients.
+
 Procedures:
 
-* `com.crossbario.cdc.remote.get_grants@1`
-* `com.crossbario.cdc.remote.get_grant_status@1`
-* `com.crossbario.cdc.remote.start_grant@1`
-* `com.crossbario.cdc.remote.stop_grant@1`
+* **`com.crossbario.cdc.remote.get_role_grants@1`**
+* **`com.crossbario.cdc.remote.query_role_grant@1`**
+* **`com.crossbario.cdc.remote.start_role_grant@1`**
+* **`com.crossbario.cdc.remote.stop_role_grant@1`**
 
 Events:
 
-* `com.crossbario.cdc.remote.on_role_status@1` - (node_id, router_id, realm_id, role_id, old_status, new_status)
+* `com.crossbario.cdc.remote.on_role_grant@1` - (node_id, router_id, realm_id, role_id, old_status, new_status)
 
 ##### Transports
 
-* `com.crossbario.cdc.remote.get_transports@1`
-* `com.crossbario.cdc.remote.get_transport@1`
-* `com.crossbario.cdc.remote.start_transport@1`
-* `com.crossbario.cdc.remote.stop_transport@1`
+Routers run listening **transports** for clients to connect.
 
-##### Web Services
+Procedures:
 
-* `com.crossbario.cdc.remote.get_webservices@1`
-* `com.crossbario.cdc.remote.get_webservice@1`
-* `com.crossbario.cdc.remote.start_webservice@1`
-* `com.crossbario.cdc.remote.stop_webservice@1`
+* **`com.crossbario.cdc.remote.get_router_transports@1`**
+* **`com.crossbario.cdc.remote.query_router_transport@1`**
+* **`com.crossbario.cdc.remote.start_router_transport@1`**
+* **`com.crossbario.cdc.remote.stop_router_transport@1`**
+
+##### Transport Resources
+
+Certain transports like Web can host **resources**.
+
+Procedures:
+
+* **`com.crossbario.cdc.remote.get_transport_resources@1`**
+* **`com.crossbario.cdc.remote.query_transport_resource@1`**
+* **`com.crossbario.cdc.remote.start_transport_resource@1`**
+* **`com.crossbario.cdc.remote.stop_transport_resource@1`**
 
 ##### Components
 
-* `com.crossbario.cdc.remote.get_components@1`
-* `com.crossbario.cdc.remote.get_component@1`
-* `com.crossbario.cdc.remote.start_component@1`
-* `com.crossbario.cdc.remote.stop_component@1`
+Router can optionally host WAMP application **components**.
+
+Procedures:
+
+* **`com.crossbario.cdc.remote.get_router_components@1`**
+* **`com.crossbario.cdc.remote.query_router_component@1`**
+* **`com.crossbario.cdc.remote.start_router_component@1`**
+* **`com.crossbario.cdc.remote.stop_router_component@1`**
+
 
 #### Containers
 
 ##### Global
 
-* `com.crossbario.cdc.remote.stop_container@1`
+Procedures:
+
+* **`com.crossbario.cdc.remote.stop_container@1`**
 
 ##### Container Components
 
-* `com.crossbario.cdc.remote.get_container_components@1`
-* `com.crossbario.cdc.remote.get_container_component_status@1`
-* `com.crossbario.cdc.remote.start_container_component@1`
-* `com.crossbario.cdc.remote.stop_container_component@1`
-* `com.crossbario.cdc.remote.restart_container_component@1`
+Procedures:
+
+* **`com.crossbario.cdc.remote.get_container_components@1`**
+* **`com.crossbario.cdc.remote.query_container_component@1`**
+* **`com.crossbario.cdc.remote.start_container_component@1`**
+* **`com.crossbario.cdc.remote.stop_container_component@1`**
+
+* **`com.crossbario.cdc.remote.restart_container_component@1`**
