@@ -30,7 +30,7 @@ TRANSPORT_CONFIG = {
 }
 
 @inlineCallbacks
-def main(session, details):
+def main(session):
     try:
         nodes = yield session.call(u'com.crossbario.cdc.management.get_nodes@1')
         workers_started = []

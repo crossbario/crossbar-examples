@@ -1,28 +1,28 @@
 from twisted.internet.defer import inlineCallbacks
-from autobahn.twisted.util import sleep
 import util
 
-NODE_ID = u'node0'
-WORKER_ID = u'worker-002'
-
 @inlineCallbacks
-def main(session, details):
+def main(session):
     try:
-        print('Worker {} on node {} log history:'.format(WORKER_ID, NODE_ID))
-        log = yield session.call(u'com.crossbario.cdc.remote.get_worker_log@1', NODE_ID, WORKER_ID, 30)
-        for log_rec in log:
-            print(log_rec)
+        # get all nodes in state "online"
+        node_ids = yield session.call(u'cdc.remote.list_nodes@1',
+                                      filter_status=u'online')
 
-        print('Listening to live log output ..')
-        log_topic = u'com.crossbario.cdc.node.{}.worker.{}.on_log'.format(NODE_ID, WORKER_ID)
+        for node_id in node_ids:
+            # get workers for each node
+            worker_ids = yield session.call(u'cdc.remote.list_workers@1',
+                                            node_id)
 
-        def on_worker_log(*args, **kwargs):
-            print(args, kwargs)
+            for worker_id in worker_ids:
+                # query each worker found ..
+                worker = yield session.call(u'cdc.remote.query_worker@1',
+                                            node_id, worker_id)
 
-        sub = yield session.subscribe(on_worker_log, log_topic)
+                worker_type = worker[u'type']
+                print('worker "{}"-"{}": "{}"'.format(node_id,
+                                                      worker_id,
+                                                      worker_type))
     except:
         session.log.failure()
-    else:
-        yield sleep(15)
 
 util.run(main)

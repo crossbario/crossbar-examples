@@ -60,7 +60,7 @@ class CDCClient(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
         self.log.debug("CDC session ready: {details}", details=details)
-        yield self.config.extra[u'on_ready'](self, details)
+        yield self.config.extra[u'on_ready'](self)
         self.leave()
 
     def onLeave(self, details):
