@@ -325,16 +325,24 @@ Events:
 * **`cdc.remote.on_node_status@1`** - Fires when the status of a node changes (with a tuple `(node_id, old_status, new_status)` as event payload).
 
 
-### Config persistence
+#### Config persistence
 
 To promote operational independence even when no uplink CDC connection is available, the complete current node configuration can be written to the local node configuration file. Doing so allows the node to recover into the same state even when restarting without a CDC connection.
 
 Procedures:
 
-* **`cdc.remote.save@1`**`()` - Save the complete, current node configuration to the local node configuration file (in an atomic operation).
+* **`cdc.remote.save_config@1`**`(<node_id>)` - Save the complete, current node configuration to the local node configuration file (in an atomic operation).
 
 
 ### Workers
+
+Crossbar.io nodes provide services via worker processes, of which there are three types:
+
+* router workers
+* container workers
+* guest workers
+
+Workers on nodes can be managed remotely:
 
 Procedures:
 
@@ -352,16 +360,16 @@ Events:
 
 The log output from any worker process started on any node can be remotely accessed:
 
-1. **`cdc.remote.get_log@1`**`(<node_id>, <worker_id>, <limit=50>)` - Get the last N lines of log output from the specified worker.
+* **`cdc.remote.get_log@1`**`(<node_id>, <worker_id>, <limit=50>)` - Get the last N lines of log output from the specified worker.
 
 
 #### Resource Control
 
 Currently the only implemented worker resource control is *CPU affinity*.
 
-* **`cdc.remote.list_limits@1`**`(<node_id>, <worker_id>)` -
-* **`cdc.remote.get_limit@1`**`(<node_id>, <worker_id>, <limit_id>)` -
-* **`cdc.remote.set_limit@1`**`(<node_id>, <worker_id>, <limit_id>, <setting>)` -
+* **`cdc.remote.list_limits@1`**`(<node_id>, <worker_id>)` - Return list of IDs of resource limits for the given worker process.
+* **`cdc.remote.get_limit@1`**`(<node_id>, <worker_id>, <limit_id>)` - Get detailed status of a resource limit in a given worker process.
+* **`cdc.remote.set_limit@1`**`(<node_id>, <worker_id>, <limit_id>, <setting>)` - Set a resource limit on a worker resource limit. When `setting == null`, the resource limit is removed.
 
 Events:
 
@@ -372,21 +380,21 @@ Events:
 
 Native workers such as routers and containers, with or without running user app components can be profiled using the builtin vmprof profiler.
 
-1. **`cdc.remote.list_profilers@1`**`()` -
-2. **`cdc.remote.start_profile@1`**`(<node_id>, <worker_id>, <profiler_id>, <run_secs=10>, <run_async=True>) -> <profile_id>` - Start the specified profiler on the given worker. The run-time must also be given. When the profile is done, it can be retrieved.
-3. **`cdc.remote.get_profile@1`**`(<profile_id>)` - Returns data from a previously run profile.
+* **`cdc.remote.list_profilers@1`**`(<node_id>)` - Get a list of IDs for profilers available in the respective node.
+* **`cdc.remote.start_profile@1`**`(<node_id>, <worker_id>, <profiler_id>, <run_secs=10>, <run_async=True>)` - Start the specified profiler on the given worker returning a `<profile_id>`. The run-time must also be given. When the profile is done, it can be retrieved.
+* **`cdc.remote.get_profile@1`**`(<profile_id>)` - Returns data from a previously run profile.
 
 
 #### Router & Container Components
 
-Router and containeer workers can optionally host WAMP application **components**.
+Router and container workers can optionally host WAMP application **components**. This feature allows to dynamically and remotely start and stop application components in Crossbar.io (native) workers:
 
 Procedures:
 
-* **`cdc.remote.list_components@1`**`(<node_id>, <worker_id>)` -
-* **`cdc.remote.query_component@1`**`(<node_id>, <worker_id>, <component_id>)` -
-* **`cdc.remote.start_component@1`**`(<node_id>, <worker_id>, <component_id>, <component_config>)` -
-* **`cdc.remote.stop_component@1`**`(<node_id>, <worker_id>, <component_id>)` -
+* **`cdc.remote.list_components@1`**`(<node_id>, <worker_id>)` - Get list of IDs of components currently running in the given router/container worker.
+* **`cdc.remote.query_component@1`**`(<node_id>, <worker_id>, <component_id>)` - Get detailed status of a component currently running the the given router/container worker.
+* **`cdc.remote.start_component@1`**`(<node_id>, <worker_id>, <component_id>, <component_config>)` - Start a new component in the given router/container worker.
+* **`cdc.remote.stop_component@1`**`(<node_id>, <worker_id>, <component_id>)` - Stop a component currently running in the given router/container worker.
 
 Events:
 
@@ -408,14 +416,14 @@ A **realm** is a separate namespace and isolated routing domain.
 
 Procedures:
 
-* **`cdc.remote.list_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
-* **`cdc.remote.query_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
-* **`cdc.remote.start_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
-* **`cdc.remote.stop_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
+* **`cdc.remote.list_realms@1`**`(<node_id>, <worker_id>)` - Get list of IDs of realms started on a router worker on a node.
+* **`cdc.remote.query_realm@1`**`(<node_id>, <worker_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
+* **`cdc.remote.start_realm@1`**`(<node_id>, <worker_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
+* **`cdc.remote.stop_realm@1`**`(<node_id>, <worker_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
 
 Events:
 
-* **`cdc.remote.on_realm_status@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
+* **`cdc.remote.on_realm_status@1`** - Fires when the status of a realm changes (with a tuple `(node_id, worker_id, realm_id, old_status, new_status)` an event payload).
 
 
 #### Realm Roles
@@ -424,14 +432,14 @@ Clients connecting are authenicated under **roles** on **realms**.
 
 Procedures:
 
-* **`cdc.remote.list_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
-* **`cdc.remote.query_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
-* **`cdc.remote.start_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
-* **`cdc.remote.stop_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
+* **`cdc.remote.list_roles@1`**`(<node_id>, <worker_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
+* **`cdc.remote.query_role@1`**`(<node_id>, <worker_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
+* **`cdc.remote.start_role@1`**`(<node_id>, <worker_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
+* **`cdc.remote.stop_role@1`**`(<node_id>, <worker_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
 
 Events:
 
-* **`cdc.remote.on_role_status@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`.
+* **`cdc.remote.on_role_status@1`** - Fires when the status of a role changes (with a tuple `(node_id, worker_id, realm_id, role_id, old_status, new_status)`.
 
 
 #### Role Grants
@@ -440,42 +448,42 @@ A **role** on a **realm** provides **grants** to clients.
 
 Procedures:
 
-* **`cdc.remote.list_grants@1`**`()` -
-* **`cdc.remote.query_grant@1`**`()` -
-* **`cdc.remote.start_grant@1`**`()` -
-* **`cdc.remote.stop_role@1`**`()` -
+* **`cdc.remote.list_grants@1`**`(<node_id>, <worker_id>, <realm_id>, <role_id>)` - Get list of IDs of grants started on the respective realm role.
+* **`cdc.remote.query_grant@1`**`(<node_id>, <worker_id>, <realm_id>, <role_id>, <grant_id>)` - Get detailed status information on the respective grant.
+* **`cdc.remote.start_grant@1`**`(<node_id>, <worker_id>, <realm_id>, <role_id>, <grant_id>, <grant_config>)` - Start a new grant on the respective role.
+* **`cdc.remote.stop_role@1`**`(<node_id>, <worker_id>, <realm_id>, <role_id>, <grant_id>)` - Stop a currently running grant on a role.
 
 Events:
 
-* **`cdc.remote.on_grant_status@1`** - Fires when the status of a grant changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`).
+* **`cdc.remote.on_grant_status@1`** - Fires when the status of a grant changes (with a tuple `(node_id, worker_id, realm_id, role_id, old_status, new_status)`).
 
 
 ##### Router **Transports**
 
-Routers run listening **transports** for clients to connect.
+Routers run listening **transports** for clients to connect. Transports can be remotely managed using the following API:
 
 Procedures:
 
-* **`cdc.remote.list_transports@1`**`(<node_id>, <router_id>)` -
-* **`cdc.remote.query_transport@1`**`(<node_id>, <router_id>, <transport_id>)` -
-* **`cdc.remote.start_transport@1`**`(<node_id>, <router_id>, <transport_id>, <transport_config>)` -
-* **`cdc.remote.stop_transport@1`**`(<node_id>, <router_id>)` -
+* **`cdc.remote.list_transports@1`**`(<node_id>, <worker_id>)` - Get list of IDs of transports currently running in the specified router worker.
+* **`cdc.remote.query_transport@1`**`(<node_id>, <worker_id>, <transport_id>)` - Get detailed status information on a transport running in a router worker.
+* **`cdc.remote.start_transport@1`**`(<node_id>, <worker_id>, <transport_id>, <transport_config>)` - Start a new transport on a router worker.
+* **`cdc.remote.stop_transport@1`**`(<node_id>, <worker_id>)` - Stop the given transport currently running in a router worker.
 
 Events:
 
-* **`cdc.remote.on_transport_status@1`** - Fires when the status of a transport changes (with a tuple `(node_id, router_id, transport_id, old_status, new_status)`).
+* **`cdc.remote.on_transport_status@1`** - Fires when the status of a transport changes (with a tuple `(node_id, worker_id, transport_id, old_status, new_status)`).
 
 #### Transport Resources
 
-Certain transports like Web can host **resources**.
+Certain transports like Web transports, or the Web transport subservice of a Unisocket transport can host **resources**, eg a static Web resource serving static files from a directory.
 
 Procedures:
 
-* **`cdc.remote.list_web_resources@1`**`(<node_id>, <router_id>, <transport_id>)` -
-* **`cdc.remote.query_web_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
-* **`cdc.remote.start_web_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>, <resource_config>)` -
-* **`cdc.remote.stop_web_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
+* **`cdc.remote.list_web_resources@1`**`(<node_id>, <worker_id>, <transport_id>)` - Get list of IDs of Web resources running on the given Web or Unisocket transport.
+* **`cdc.remote.query_web_resource@1`**`(<node_id>, <worker_id>, <transport_id>, <resource_id>)` - Get detailed status information on a Web resource running on a Web or Unisocket transport.
+* **`cdc.remote.start_web_resource@1`**`(<node_id>, <worker_id>, <transport_id>, <resource_id>, <resource_config>)` - Start a new Web resource on the given Web or Unisocket transport.
+* **`cdc.remote.stop_web_resource@1`**`(<node_id>, <worker_id>, <transport_id>, <resource_id>)` - Stop the specified Web resource currently running on the Web transport given.
 
 Events:
 
-* **`cdc.remote.on_web_resource_status@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
+* **`cdc.remote.on_web_resource_status@1`** - Fires when the status of a Web resource changes (with a tuple `(node_id, worker_id, transport_id, resource_id, old_status, new_status)`).
