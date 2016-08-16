@@ -300,13 +300,14 @@ We are using the following scheme for API versioning:
 
 ---
 
+
 ## API Reference
 
-### Global API
+### General
 
 Procedures:
 
-* `cdc.query_status@1()` - returns management status information.
+* **`cdc.remote.status@1`**`()` - Returns Crossbar.io management & monitoring API remoting service status information.
 
 
 ### Nodes
@@ -347,6 +348,13 @@ Events:
 * **`cdc.remote.on_worker_status@1`** - Fires when the status of a worker changes (with a tuple `(node_id, worker_id, old_status, new_status)` as event payload).
 
 
+#### Remote Log
+
+The log output from any worker process started on any node can be remotely accessed:
+
+1. **`cdc.remote.get_log@1`**`(<node_id>, <worker_id>, <limit=50>)` - Get the last N lines of log output from the specified worker.
+
+
 #### Resource Control
 
 Currently the only implemented worker resource control is *CPU affinity*.
@@ -360,13 +368,6 @@ Events:
 * **`cdc.remote.on_limit_set@1`** - Fires when a limit on a worker changes (with a tuple `(node_id, worker_id, limit_id, old_setting, new_setting)` as event payload).
 
 
-#### Remote Log
-
-The log output from any worker process started on any node can be remotely accessed:
-
-1. **`cdc.remote.get_log@1`**`(<node_id>, <worker_id>, <limit=50>)` - Get the last N lines of log output from the specified worker.
-
-
 #### Profilers
 
 Native workers such as routers and containers, with or without running user app components can be profiled using the builtin vmprof profiler.
@@ -377,6 +378,8 @@ Native workers such as routers and containers, with or without running user app 
 
 
 #### Router & Container Components
+
+Router and containeer workers can optionally host WAMP application **components**.
 
 Procedures:
 
@@ -399,48 +402,48 @@ Crossbar.io **router workers** listen on **transports** providing routing for **
 * Components
 
 
-##### Router **Realms**
+#### Router Realms
 
 A **realm** is a separate namespace and isolated routing domain.
 
 Procedures:
 
-* **`cdc.remote.get_router_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
-* **`cdc.remote.query_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
-* **`cdc.remote.start_router_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
-* **`cdc.remote.stop_router_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
+* **`cdc.remote.list_realms@1`**`(<node_id>, <router_id>)` - Get list of IDs of realms started on a router worker on a node.
+* **`cdc.remote.query_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Get detailed info on a realm started on a router worker.
+* **`cdc.remote.start_realm@1`**`(<node_id>, <router_id>, <realm_id>, <realm_config>)` - Start a new routing realm on a router worker on a node.
+* **`cdc.remote.stop_realm@1`**`(<node_id>, <router_id>, <realm_id>)` - Stop a realm currently started on a router worker on some node.
 
 Events:
 
 * **`cdc.remote.on_realm_status@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
 
 
-##### Realm **Roles**
+#### Realm Roles
 
 Clients connecting are authenicated under **roles** on **realms**.
 
 Procedures:
 
-* **`cdc.remote.get_realm_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
-* **`cdc.remote.query_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
-* **`cdc.remote.start_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
-* **`cdc.remote.stop_realm_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
+* **`cdc.remote.list_roles@1`**`(<node_id>, <router_id>, <realm_id>)` - Get list of IDs of roles started on a realm on a router worker on a node.
+* **`cdc.remote.query_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Get detailed info on a role started on a routing realm.
+* **`cdc.remote.start_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>, <role_config>)` - Start a new role on a routing realm.
+* **`cdc.remote.stop_role@1`**`(<node_id>, <router_id>, <realm_id>, <role_id>)` - Stop a role running on a routing realm.
 
 Events:
 
 * **`cdc.remote.on_role_status@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`.
 
 
-##### Role **Grants**
+#### Role Grants
 
 A **role** on a **realm** provides **grants** to clients.
 
 Procedures:
 
-* **`cdc.remote.get_role_grants@1`**`()` -
-* **`cdc.remote.query_role_grant@1`**`()` -
-* **`cdc.remote.start_role_grant@1`**`()` -
-* **`cdc.remote.stop_role_grant@1`**`()` -
+* **`cdc.remote.list_grants@1`**`()` -
+* **`cdc.remote.query_grant@1`**`()` -
+* **`cdc.remote.start_grant@1`**`()` -
+* **`cdc.remote.stop_role@1`**`()` -
 
 Events:
 
@@ -453,41 +456,26 @@ Routers run listening **transports** for clients to connect.
 
 Procedures:
 
-* **`cdc.remote.get_router_transports@1`**`(<node_id>, <router_id>)` -
-* **`cdc.remote.query_router_transport@1`**`(<node_id>, <router_id>, <transport_id>)` -
-* **`cdc.remote.start_router_transport@1`**`(<node_id>, <router_id>, <transport_id>, <transport_config>)` -
-* **`cdc.remote.stop_router_transport@1`**`(<node_id>, <router_id>)` -
+* **`cdc.remote.list_transports@1`**`(<node_id>, <router_id>)` -
+* **`cdc.remote.query_transport@1`**`(<node_id>, <router_id>, <transport_id>)` -
+* **`cdc.remote.start_transport@1`**`(<node_id>, <router_id>, <transport_id>, <transport_config>)` -
+* **`cdc.remote.stop_transport@1`**`(<node_id>, <router_id>)` -
 
 Events:
 
 * **`cdc.remote.on_transport_status@1`** - Fires when the status of a transport changes (with a tuple `(node_id, router_id, transport_id, old_status, new_status)`).
 
-##### Transport **Resources**
+#### Transport Resources
 
 Certain transports like Web can host **resources**.
 
 Procedures:
 
-* **`cdc.remote.get_transport_resources@1`**`(<node_id>, <router_id>, <transport_id>)` -
-* **`cdc.remote.query_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
-* **`cdc.remote.start_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>, <resource_config>)` -
-* **`cdc.remote.stop_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
+* **`cdc.remote.list_web_resources@1`**`(<node_id>, <router_id>, <transport_id>)` -
+* **`cdc.remote.query_web_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
+* **`cdc.remote.start_web_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>, <resource_config>)` -
+* **`cdc.remote.stop_web_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
 
 Events:
 
-* **`cdc.remote.on_resource_status@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
-
-##### Router **Components**
-
-Router can optionally host WAMP application **components**.
-
-Procedures:
-
-* **`cdc.remote.get_router_components@1`**`(<node_id>, <router_id>)` -
-* **`cdc.remote.query_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
-* **`cdc.remote.start_router_component@1`**`(<node_id>, <router_id>, <component_id>, <component_config>)` -
-* **`cdc.remote.stop_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
-
-Events:
-
-* **`cdc.remote.on_component_status@1`** - Fires when the status of a router component changes (with a tuple `(node_id, router_id, component_id, old_status, new_status)`).
+* **`cdc.remote.on_web_resource_status@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
