@@ -312,26 +312,34 @@ Procedures:
 
 ### Nodes
 
-Procedures:
+#### Node Management
+
+Crossbar.io nodes connected to CDC can be managed remotely. Provisioned nodes can be listed and queried:
+
+**Procedures**
 
 * **`cdc.remote.list_nodes@1`**`()` - Returns a list of ID of Crossbar.io nodes attached to this management realm.
 * **`cdc.remote.query_node@1`**`(<node_id>)` - Get detailed info on a node provisioned on this management realm and remotely accessible.
 * **`cdc.remote.stop_node@1`**`(<node_id>)` - Remotely shut down a node.
 
-> Note that there is no way to remotely *start* a node (there is no `cdc.remote.start_node` procedure) - this should be done by the OS service startup system.
+> Note that there is no way to remotely *start* a node (there is no `cdc.remote.start_node` procedure) - this should be done by the OS service startup system. The latter will (when configured correctly) automatically restart the Crossbar.io (as it does when the machine hosting the node boots).
 
-Events:
+**Events**
 
 * **`cdc.remote.on_node_status@1`** - Fires when the status of a node changes (with a tuple `(node_id, old_status, new_status)` as event payload).
 
 
-#### Config persistence
+#### Node Configuration Persistence
 
 To promote operational independence even when no uplink CDC connection is available, the complete current node configuration can be written to the local node configuration file. Doing so allows the node to recover into the same state even when restarting without a CDC connection.
 
-Procedures:
+**Procedures**
 
-* **`cdc.remote.save_config@1`**`(<node_id>)` - Save the complete, current node configuration to the local node configuration file (in an atomic operation).
+* **`cdc.remote.save_config@1`**`(<node_id>)` - Save the live node configuration to the current node configuration file (in an atomic operation).
+* **`cdc.remote.upload_config@1`**`(<node_id>, <node_config>)` - Upload the given configuration to the current node configuration file.
+* **`cdc.remote.download_config@1`**`(<node_id>)` - Download the current node configuration file. Note that the live node configuration may differ from the current node configuration file
+
+> When the current configuration file has been modified via `cdc.remote.upload_config`, the live node configuration might be out of sync with the former. In this case the node must be shut down and restarted to bring both in sync.
 
 
 ### Workers
@@ -472,6 +480,7 @@ Procedures:
 Events:
 
 * **`cdc.remote.on_transport_status@1`** - Fires when the status of a transport changes (with a tuple `(node_id, worker_id, transport_id, old_status, new_status)`).
+
 
 #### Transport Resources
 
