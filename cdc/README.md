@@ -331,23 +331,28 @@ Procedures:
 
 * **`com.crossbario.cdc.remote.shutdown_worker@1`**`(<node_id>, <worker_id>)` -
 
-* **`com.crossbario.cdc.remote.get_worker_cpu_count@1`**
-* **`com.crossbario.cdc.remote.get_worker_cpu_affinity@1`**
-* **`com.crossbario.cdc.remote.set_worker_cpu_affinity@1`**
+* **`com.crossbario.cdc.remote.get_worker_cpu_count@1`**`()` -
+* **`com.crossbario.cdc.remote.get_worker_cpu_affinity@1`**`()` -
+* **`com.crossbario.cdc.remote.set_worker_cpu_affinity@1`**`()` -
 
-* **`com.crossbario.cdc.remote.get_worker_pythonpath@1`**
-* **`com.crossbario.cdc.remote.add_worker_pythonpath@1`**
+* **`com.crossbario.cdc.remote.get_worker_pythonpath@1`**`()` -
+* **`com.crossbario.cdc.remote.add_worker_pythonpath@1`**`()` -
 
-* **`com.crossbario.cdc.remote.get_worker_profilers@1`**
-* **`com.crossbario.cdc.remote.start_worker_profiler@1`**
-* **`com.crossbario.cdc.remote.get_worker_profile@1`**
+* **`com.crossbario.cdc.remote.get_worker_profilers@1`**`()` -
+* **`com.crossbario.cdc.remote.start_worker_profiler@1`**`()` -
+* **`com.crossbario.cdc.remote.get_worker_profile@1`**`()` -
+
 
 #### Routers
 
-Crossbar.io **router workers** listen on **transports** providing routing for **realms**.
+Crossbar.io **router workers** listen on **transports** providing routing for **realms**. The different features of router workers can be grouped into:
+
+* Realms, Roles and Grants
+* Transports and Resources
+* Components
 
 
-##### Realms
+##### Router **Realms**
 
 A **realm** is a separate namespace and isolated routing domain.
 
@@ -363,7 +368,7 @@ Events:
 * **`com.crossbario.cdc.remote.on_router_realm@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
 
 
-##### Roles
+##### Realm **Roles**
 
 Clients connecting are authenicated under **roles** on **realms**.
 
@@ -376,55 +381,67 @@ Procedures:
 
 Events:
 
-* **`com.crossbario.cdc.remote.on_router_role@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`
+* **`com.crossbario.cdc.remote.on_router_role@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`.
 
-##### Grants
+##### Role **Grants**
 
 A **role** on a **realm** provides **grants** to clients.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_role_grants@1`**
-* **`com.crossbario.cdc.remote.query_role_grant@1`**
-* **`com.crossbario.cdc.remote.start_role_grant@1`**
-* **`com.crossbario.cdc.remote.stop_role_grant@1`**
+* **`com.crossbario.cdc.remote.get_role_grants@1`**`()` -
+* **`com.crossbario.cdc.remote.query_role_grant@1`**`()` -
+* **`com.crossbario.cdc.remote.start_role_grant@1`**`()` -
+* **`com.crossbario.cdc.remote.stop_role_grant@1`**`()` -
 
 Events:
 
-* `com.crossbario.cdc.remote.on_role_grant@1` - (node_id, router_id, realm_id, role_id, old_status, new_status)
+* **`com.crossbario.cdc.remote.on_role_grant@1`** - Fires when the status of a grant changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`).
 
-##### Transports
+##### Router **Transports**
 
 Routers run listening **transports** for clients to connect.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_router_transports@1`**
-* **`com.crossbario.cdc.remote.query_router_transport@1`**
-* **`com.crossbario.cdc.remote.start_router_transport@1`**
-* **`com.crossbario.cdc.remote.stop_router_transport@1`**
+* **`com.crossbario.cdc.remote.get_router_transports@1`**`(<node_id>, <router_id>)` -
+* **`com.crossbario.cdc.remote.query_router_transport@1`**`(<node_id>, <router_id>, <transport_id>)` -
+* **`com.crossbario.cdc.remote.start_router_transport@1`**`(<node_id>, <router_id>, <transport_id>, <transport_config>)` -
+* **`com.crossbario.cdc.remote.stop_router_transport@1`**`(<node_id>, <router_id>)` -
 
-##### Transport Resources
+Events:
+
+* **`com.crossbario.cdc.remote.on_role_transport@1`** - Fires when the status of a transport changes (with a tuple `(node_id, router_id, transport_id, old_status, new_status)`).
+
+##### Transport **Resources**
 
 Certain transports like Web can host **resources**.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_transport_resources@1`**
-* **`com.crossbario.cdc.remote.query_transport_resource@1`**
-* **`com.crossbario.cdc.remote.start_transport_resource@1`**
-* **`com.crossbario.cdc.remote.stop_transport_resource@1`**
+* **`com.crossbario.cdc.remote.get_transport_resources@1`**`(<node_id>, <router_id>, <transport_id>)` -
+* **`com.crossbario.cdc.remote.query_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
+* **`com.crossbario.cdc.remote.start_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>, <resource_config>)` -
+* **`com.crossbario.cdc.remote.stop_transport_resource@1`**`(<node_id>, <router_id>, <transport_id>, <resource_id>)` -
 
-##### Components
+Events:
+
+* **`com.crossbario.cdc.remote.on_transport_resource@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
+
+##### Router **Components**
 
 Router can optionally host WAMP application **components**.
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_router_components@1`**
-* **`com.crossbario.cdc.remote.query_router_component@1`**
-* **`com.crossbario.cdc.remote.start_router_component@1`**
-* **`com.crossbario.cdc.remote.stop_router_component@1`**
+* **`com.crossbario.cdc.remote.get_router_components@1`**`(<node_id>, <router_id>)` -
+* **`com.crossbario.cdc.remote.query_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
+* **`com.crossbario.cdc.remote.start_router_component@1`**`(<node_id>, <router_id>, <component_id>, <component_config>)` -
+* **`com.crossbario.cdc.remote.stop_router_component@1`**`(<node_id>, <router_id>, <component_id>)` -
+
+Events:
+
+* **`com.crossbario.cdc.remote.on_router_component@1`** - Fires when the status of a router component changes (with a tuple `(node_id, router_id, component_id, old_status, new_status)`).
 
 
 #### Containers
@@ -433,15 +450,15 @@ Procedures:
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.stop_container@1`**
+* **`com.crossbario.cdc.remote.stop_container@1`**`()` -
 
 ##### Container Components
 
 Procedures:
 
-* **`com.crossbario.cdc.remote.get_container_components@1`**
-* **`com.crossbario.cdc.remote.query_container_component@1`**
-* **`com.crossbario.cdc.remote.start_container_component@1`**
-* **`com.crossbario.cdc.remote.stop_container_component@1`**
+* **`com.crossbario.cdc.remote.get_container_components@1`**`()` -
+* **`com.crossbario.cdc.remote.query_container_component@1`**`()` -
+* **`com.crossbario.cdc.remote.start_container_component@1`**`()` -
+* **`com.crossbario.cdc.remote.stop_container_component@1`**`()` -
 
-* **`com.crossbario.cdc.remote.restart_container_component@1`**
+* **`com.crossbario.cdc.remote.restart_container_component@1`**`()` -
