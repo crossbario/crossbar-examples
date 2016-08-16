@@ -306,41 +306,88 @@ We are using the following scheme for API versioning:
 
 Procedures:
 
-* `cdc.get_status@1()` - returns management status information.
-* `cdc.get_nodes@1()` - returns a list of ID of Crossbar.io nodes attached to this management realm
-* `cdc.get_node_status@1(<node_id>) -> { // node info dict // }`
+* `cdc.query_status@1()` - returns management status information.
 
-### Remote Node API
 
-Procedures:
-
-* `cdc.remote.get_controller_status@1(<node_id>) -> { // controller info dict // }`
-
-* **`cdc.remote.shutdown_node@1`**`()`
-* **`cdc.remote.get_node_workers@1`**`(<node_id>)`
-* **`cdc.remote.get_worker_status@1`**`(<node_id>, <worker_id>) -> { // worker info dict // }`
-* **`cdc.remote.get_worker_log@1`**`(<node_id>, <worker_id>) -> [ // log line dicts // ]`
-
-* **`cdc.remote.start_router@1`**`(<node_id>, <router_id>, <router_config>) -> <started_at>`
-* **`cdc.remote.start_container@1`**`(<node_id>, <container_id>, <container_config>) -> <started_at>`
-* **`cdc.remote.start_guest@1`**`(<node_id>, <guest_id>, <guest_config>) -> <started_at>`
-
-#### Native Workers
+### Nodes
 
 Procedures:
 
-* **`cdc.remote.shutdown_worker@1`**`(<node_id>, <worker_id>)` -
+* **`cdc.remote.list_nodes@1`**`()` - Returns a list of ID of Crossbar.io nodes attached to this management realm.
+* **`cdc.remote.query_node@1`**`(<node_id>)` - Get detailed info on a node provisioned on this management realm and remotely accessible.
+* **`cdc.remote.stop_node@1`**`(<node_id>)` - Remotely shut down a node.
 
-* **`cdc.remote.get_worker_cpu_count@1`**`()` -
-* **`cdc.remote.get_worker_cpu_affinity@1`**`()` -
-* **`cdc.remote.set_worker_cpu_affinity@1`**`()` -
+> Note that there is no way to remotely *start* a node (there is no `cdc.remote.start_node` procedure) - this should be done by the OS service startup system.
 
-* **`cdc.remote.get_worker_pythonpath@1`**`()` -
-* **`cdc.remote.add_worker_pythonpath@1`**`()` -
+Events:
 
-* **`cdc.remote.get_worker_profilers@1`**`()` -
-* **`cdc.remote.start_worker_profiler@1`**`()` -
-* **`cdc.remote.get_worker_profile@1`**`()` -
+* **`cdc.remote.on_node_status@1`** - Fires when the status of a node changes (with a tuple `(node_id, old_status, new_status)` as event payload).
+
+
+### Config persistence
+
+To promote operational independence even when no uplink CDC connection is available, the complete current node configuration can be written to the local node configuration file. Doing so allows the node to recover into the same state even when restarting without a CDC connection.
+
+Procedures:
+
+* **`cdc.remote.save@1`**`()` - Save the complete, current node configuration to the local node configuration file (in an atomic operation).
+
+
+### Workers
+
+Procedures:
+
+* **`cdc.remote.list_workers@1`**`(<node_id>)` - Returns a list of IDs of workers currently running on the given node.
+* **`cdc.remote.query_worker@1`**`(<node_id>, <worker_id>)` - Get detailed info on a worker running on a node.
+* **`cdc.remote.start_worker@1`**`(<node_id>, <worker_id>, <worker_config>)` - Remotely start a new worker on the node. A worker can be a router, container or guest worker.
+* **`cdc.remote.stop_worker@1`**`(<node_id>, <worker_id>)` - Stop a worker currently running on the given node.
+
+Events:
+
+* **`cdc.remote.on_worker_status@1`** - Fires when the status of a worker changes (with a tuple `(node_id, worker_id, old_status, new_status)` as event payload).
+
+
+#### Resource Control
+
+Currently the only implemented worker resource control is *CPU affinity*.
+
+* **`cdc.remote.list_limits@1`**`(<node_id>, <worker_id>)` -
+* **`cdc.remote.get_limit@1`**`(<node_id>, <worker_id>, <limit_id>)` -
+* **`cdc.remote.set_limit@1`**`(<node_id>, <worker_id>, <limit_id>, <setting>)` -
+
+Events:
+
+* **`cdc.remote.on_limit_set@1`** - Fires when a limit on a worker changes (with a tuple `(node_id, worker_id, limit_id, old_setting, new_setting)` as event payload).
+
+
+#### Remote Log
+
+The log output from any worker process started on any node can be remotely accessed:
+
+1. **`cdc.remote.get_log@1`**`(<node_id>, <worker_id>, <limit=50>)` - Get the last N lines of log output from the specified worker.
+
+
+#### Profilers
+
+Native workers such as routers and containers, with or without running user app components can be profiled using the builtin vmprof profiler.
+
+1. **`cdc.remote.list_profilers@1`**`()` -
+2. **`cdc.remote.start_profile@1`**`(<node_id>, <worker_id>, <profiler_id>, <run_secs=10>, <run_async=True>) -> <profile_id>` - Start the specified profiler on the given worker. The run-time must also be given. When the profile is done, it can be retrieved.
+3. **`cdc.remote.get_profile@1`**`(<profile_id>)` - Returns data from a previously run profile.
+
+
+#### Router & Container Components
+
+Procedures:
+
+* **`cdc.remote.list_components@1`**`(<node_id>, <worker_id>)` -
+* **`cdc.remote.query_component@1`**`(<node_id>, <worker_id>, <component_id>)` -
+* **`cdc.remote.start_component@1`**`(<node_id>, <worker_id>, <component_id>, <component_config>)` -
+* **`cdc.remote.stop_component@1`**`(<node_id>, <worker_id>, <component_id>)` -
+
+Events:
+
+* **`cdc.remote.on_component_status@1`** - Fires when the status of a component changes (with a tuple `(node_id, worker_id, component_id, old_status, new_status)` as event payload).
 
 
 #### Routers
@@ -365,7 +412,7 @@ Procedures:
 
 Events:
 
-* **`cdc.remote.on_router_realm@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
+* **`cdc.remote.on_realm_status@1`** - Fires when the status of a realm changes (with a tuple `(node_id, router_id, realm_id, old_status, new_status)` an event payload).
 
 
 ##### Realm **Roles**
@@ -381,7 +428,8 @@ Procedures:
 
 Events:
 
-* **`cdc.remote.on_router_role@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`.
+* **`cdc.remote.on_role_status@1`** - Fires when the status of a role changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`.
+
 
 ##### Role **Grants**
 
@@ -396,7 +444,8 @@ Procedures:
 
 Events:
 
-* **`cdc.remote.on_role_grant@1`** - Fires when the status of a grant changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`).
+* **`cdc.remote.on_grant_status@1`** - Fires when the status of a grant changes (with a tuple `(node_id, router_id, realm_id, role_id, old_status, new_status)`).
+
 
 ##### Router **Transports**
 
@@ -411,7 +460,7 @@ Procedures:
 
 Events:
 
-* **`cdc.remote.on_role_transport@1`** - Fires when the status of a transport changes (with a tuple `(node_id, router_id, transport_id, old_status, new_status)`).
+* **`cdc.remote.on_transport_status@1`** - Fires when the status of a transport changes (with a tuple `(node_id, router_id, transport_id, old_status, new_status)`).
 
 ##### Transport **Resources**
 
@@ -426,7 +475,7 @@ Procedures:
 
 Events:
 
-* **`cdc.remote.on_transport_resource@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
+* **`cdc.remote.on_resource_status@1`** - Fires when the status of a transport resource changes (with a tuple `(node_id, router_id, transport_id, resource_id, old_status, new_status)`).
 
 ##### Router **Components**
 
@@ -441,24 +490,4 @@ Procedures:
 
 Events:
 
-* **`cdc.remote.on_router_component@1`** - Fires when the status of a router component changes (with a tuple `(node_id, router_id, component_id, old_status, new_status)`).
-
-
-#### Containers
-
-##### Global
-
-Procedures:
-
-* **`cdc.remote.stop_container@1`**`()` -
-
-##### Container Components
-
-Procedures:
-
-* **`cdc.remote.get_container_components@1`**`()` -
-* **`cdc.remote.query_container_component@1`**`()` -
-* **`cdc.remote.start_container_component@1`**`()` -
-* **`cdc.remote.stop_container_component@1`**`()` -
-
-* **`cdc.remote.restart_container_component@1`**`()` -
+* **`cdc.remote.on_component_status@1`** - Fires when the status of a router component changes (with a tuple `(node_id, router_id, component_id, old_status, new_status)`).
