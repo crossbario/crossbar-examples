@@ -17,7 +17,7 @@
                                     "uri": "com.example.auth",
                                     "match": "exact",
                                     "allow": {
-                                        "call": true
+                                        "register": true
                                     }
                                 }
                             ]
