@@ -32,40 +32,40 @@ TRANSPORT_CONFIG = {
 @inlineCallbacks
 def main(session):
     try:
-        nodes = yield session.call(u'com.crossbario.cdc.management.get_nodes@1')
+        nodes = yield session.call(u'cdc.remote.list_nodes@1')
         workers_started = []
 
         for node_id in nodes:
-            node = yield session.call(u'com.crossbario.cdc.management.get_node_status@1', node_id)
+            node = yield session.call(u'cdc.remote.query_node@1', node_id)
             node_status = node[u'status']
 
-            session.log.info('provisioned node "{node_id}" in status "{node_status}"', node_id=node_id, node_status=node_status)
+            session.log.info('provisioned node "{node_id}" currently in status: "{node_status}"', node_id=node_id, node_status=node_status)
 
             if node_status != u'online':
                 session.log.info('node not online - skipping for test')
                 continue
 
-            workers = yield session.call(u'com.crossbario.cdc.remote.get_workers@1', node_id)
+            workers = yield session.call(u'cdc.remote.list_workers@1', node_id)
             if WORKER_ID in workers:
-                stopped = yield session.call(u'com.crossbario.cdc.remote.stop_worker@1', node_id, WORKER_ID)
+                stopped = yield session.call(u'cdc.remote.stop_worker@1', node_id, WORKER_ID)
                 session.log.info('worker stopped')
 
-            started = yield session.call(u'com.crossbario.cdc.remote.start_router@1', node_id, WORKER_ID)
+            started = yield session.call(u'cdc.remote.start_worker@1', node_id, WORKER_ID, u'router')
             session.log.info('worker started')
 
             workers_started.append((node_id, WORKER_ID))
 
-            started = yield session.call(u'com.crossbario.cdc.remote.start_router_realm@1', node_id, WORKER_ID, REALM_ID, REALM_CONFIG)
+            started = yield session.call(u'cdc.remote.start_router_realm@1', node_id, WORKER_ID, REALM_ID, REALM_CONFIG)
             session.log.info('realm started')
 
             for x in range(10):
                 role_id = u'user-{}'.format(x)
                 ROLE_CONFIG[u'name'] = role_id
                 ROLE_CONFIG[u'permissions'][0][u'uri'] = u'com.example.{}'.format(role_id)
-                started = yield session.call(u'com.crossbario.cdc.remote.start_realm_role@1', node_id, WORKER_ID, REALM_ID, role_id, ROLE_CONFIG)
+                started = yield session.call(u'cdc.remote.start_router_realm_role@1', node_id, WORKER_ID, REALM_ID, role_id, ROLE_CONFIG)
                 session.log.info('role started')
 
-            started = yield session.call(u'com.crossbario.cdc.remote.start_router_transport@1', node_id, WORKER_ID, TRANSPORT_ID, TRANSPORT_CONFIG)
+            started = yield session.call(u'cdc.remote.start_router_transport@1', node_id, WORKER_ID, TRANSPORT_ID, TRANSPORT_CONFIG)
             session.log.info('transport started')
             TRANSPORT_CONFIG[u'endpoint'][u'port'] += 1
 
@@ -73,8 +73,8 @@ def main(session):
         yield sleep(5)
 
         for node_id, worker_id in workers_started:
-            yield session.call(u'com.crossbario.cdc.remote.stop_worker@1', node_id, worker_id)
-            session.log.info('worker stopped')
+            res = yield session.call(u'cdc.remote.stop_worker@1', node_id, worker_id)
+            session.log.info('worker {worker_id} stopped: {res}', worker_id=worker_id, res=res)
     except:
         session.log.failure()
 
