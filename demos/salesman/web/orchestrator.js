@@ -41,6 +41,9 @@ var connection = new autobahn.Connection({
 var session = null;
 var registrationId = null;
 var registrations = 0;
+var registrationSub = null;
+var unregistrationSub = null;
+var computeProcedureUri = "io.crossbar.demo.tsp.compute_tsp";
 
 connection.onopen = function(newSession, details) {
    console.log("Connected");
@@ -53,13 +56,23 @@ connection.onopen = function(newSession, details) {
    session.register("api:get_demo_state", getDemoState);
    session.register("api:get_computation_state", getComputationState);
 
-   // we check if there is a registration for the compute_tsp function
-   // if so, we retrieve the number of callees and start calling them
-   // we subscribe to the registration created event (no registration exists, or all callees disconnected at some point and this gets re-created when one connects again)
-   // we also subscribe to the events for existing registrations (register, unregister, delete) and filter these based on the registation ID either of the above actions has retrieved
+   // check if there is a registration for the compute_tsp function
+   checkRegistration(computeProcedureUri).then(function(regId) {
+      console.log("checkRegistration", regId);
 
+      // check if there is a registration
+      if(regId != null) {
+         startOrchestration(regId);
+      }
+      // else: do nothing since we check via the registration event
+   });
 
-   // startOrchestration();
+   // we subscribe to the registration created event (no registration exists, or all callees disconnected at some point and this gets re-created when one connects again, so this is in addition to the checkRegistration call above)
+   watchCreation(computeProcedureUri, function(regId) {
+
+      startOrchestration(regId);
+
+   });
 
 };
 
@@ -117,52 +130,44 @@ var getComputationState = function() {
    return computationState;
 };
 
+var startOrchestration = function(regId) {
+   console.log("start orchestration", regId);
+   registrationId = regId;
 
 
+   // kill a possible previous subscription for the registration
+   if(registrationSub) {
+      registrationSub.unsubscribe();
+   }
+   if(unregistrationSub) {
+      unregistrationSub.unsubscribe();
+   }
 
-var startOrchestration = function() {
-   // we check whether there are any registered components, and only start once there are
-   // check whether any compute nodes for our computeGroup are present, if so: start, else subscribe to the join event and start when this is called the first time
-   session.call("wamp.registration.match", ["io.crossbar.demo.tsp.compute_tsp"]).then(function(res) {
+   // subscribe to the registration & unregistration events
+   // for the procedure now that we have a procedure uri
+   // (same happens with the branch that waits for an initial creation of the procedure)
+   // - when.all fires when all promises in an array are resolved
+   when.all(watchRegistrations(registrationId, updateRegistrations)).then(function(res) {
+      console.log("watchRegistrations resolves to ", res);
+      registrationSub = res[0];
+      unregistrationSub = res[1];
+   });
 
-      console.log("wamp.registration.match", res);
+   // retrieve the number of callees and start calling them
+   getNumberOfCallees(registrationId).then(function(res) {
+      console.log("getNumberOfCallees", res);
+      registrations = res;
 
-      if(res !== null) {
-
-         // start calling them
-         console.log("computeTsp registered, starting calling");
-
-         // store the registration Id
-         registrationId = res;
-
-         orchestrate();
-
-      } else {
-
-         console.log("computeTsp not registered, subscribe to registration event");
-
-         var sub = session.subscribe("wamp.registration.on_create", function(args, kwargs, details) {
-            console.log("registration event received, analyzing");
-            // filter this for the first registration for "io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"
-            var registrationUri = args[1].uri;
-            if(registrationUri === "io.crossbar.demo.tsp.compute_tsp") {
-               console.log("registration for computeTsp received, starting calling", args);
-               // we cancel the subscription since the orchestration should only be triggered once
-               // session.unsubscribe(sub);
-               console.log("sub", sub);
-               registrationId = args[1].id;
-
-               // start the calling of compute nodes
-               orchestrate();
-            }
-
-         });
-      }
-   }, session.log);
-
+      orchestrate();
+   })
 };
 
+
+
+
+// checks whether a registration for a URI exists
 var checkRegistration = function(callUri) {
+
    var isRegistration = when.defer();
 
    session.call("wamp.registration.match", [callUri]).then(function(res) {
@@ -172,6 +177,24 @@ var checkRegistration = function(callUri) {
    return isRegistration.promise;
 };
 
+// filters created procedures for a passed procedure uri
+// and calls a passed callback function with the procedure Id
+var watchCreation = function(callUri, onCreateCallback) {
+   console.log("watchCreation called");
+   session.subscribe("wamp.registration.on_create", function(args, kwargs, details) {
+      console.log("registration event received, analyzing", args, kwargs, details);
+
+      var registrationUri = args[1].uri;
+      if(registrationUri === callUri) {
+         var registrationId = args[1].id;
+         console.log("registration for callUri received: ", callUri, "calling callback");
+         onCreateCallback(registrationId);
+      }
+
+   })
+};
+
+// returns the number of callees for a registered procedure
 var getNumberOfCallees = function(registrationId) {
    var numberOfCallees = when.defer();
    session.call("wamp.registration.count_callees", [registrationId]).then(function(res) {
@@ -182,27 +205,69 @@ var getNumberOfCallees = function(registrationId) {
    return numberOfCallees.promise;
 };
 
-var watchRegistrations = function(callUri, onRegisterCallback) {
-   var sub = session.subscribe("wamp.registration.on_register", function(args, kwargs, details) {
-      console.log("registration event received, analyzing", args, kwargs, details);
 
+// watches registration & unregistration events
+// returns the an array of promises which resolve to the subscription objects
+// filters for a particular registration id
+// calls the passed callback on registration/unregistration
+var watchRegistrations = function(registrationId, onRegisterCallback) {
+   console.log("watchRegistrations called");
 
-      // filter this for the first registration for "io.crossbar.demo.tsp." + computeGroup + ".compute_tsp"
-      // var registrationUri = args[1].uri;
-      // if(registrationUri === callUri) {
-      //    console.log("registration for computeTsp received, starting calling", args);
-      //    // we cancel the subscription since the orchestration should only be triggered once
-      //    // session.unsubscribe(sub);
-      //
-      //    registrationId = args[1].id;
-      //
-      //    // start the calling of compute nodes
-      //    // orchestrate();
-      //    onRegisterCallback(registrationId);
-      // }
+   var watchRegSub = when.defer();
+   var watchUnregSub = when.defer();
+
+   var filter = function(regId) {
+      if(regId === registrationId) {
+         onRegisterCallback(registrationId);
+      }
+   };
+
+   session.subscribe("wamp.registration.on_register",
+      function(args, kwargs, details) {
+
+         console.log("registration event received, analyzing", args, kwargs, details);
+
+         filter(args[1]);
+
+      }
+   ).then(function(subscription) {
+
+      watchRegSub.resolve(subscription);
+      // console.log("watchRegistrations subscription", subscription);
 
    });
+
+   session.subscribe("wamp.registration.on_unregister",
+      function(args, kwargs, details) {
+
+         console.log("unregistration event received, analyzing", args, kwargs, details);
+
+         filter(args[1]);
+
+      }
+   ).then(function(subscription) {
+
+      watchUnregSub.resolve(subscription);
+      // console.log("watchRegistrations subscription", subscription);
+
+   });
+
+   return [watchRegSub.promise, watchUnregSub.promise];
 };
+
+// gets the current number of registrations for the compute_tsp functions
+// triggered by the registration event
+var updateRegistrations = function(registrationId) {
+   console.log("updateRegistrations called", registrationId);
+   getNumberOfCallees(registrationId).then(function(numberOfCallees) {
+      console.log("updated number of callees", numberOfCallees);
+
+      registrations = numberOfCallees;
+
+   })
+};
+
+var computationState = null;
 
 var orchestrate = function() {
    console.log("orchestrate called");
@@ -222,7 +287,11 @@ var orchestrate = function() {
       this.currentBestLength = this.initialLength;
       this.temp = 1;
       this.tempDecrease = 0.97;
+      this.runningComputeNodes = 0;
+      this.iterationsPerSecond = 0;
    });
+
+   computationState = cState;
 
    // we update the computation state with our initial values
    var vals = ["numberOfCities", "points", "initialRoute", "initialLength", "currentBestRoute", "currentBestLength", "temp"];
