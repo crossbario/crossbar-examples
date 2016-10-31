@@ -6,6 +6,10 @@ import argparse
 
 import RPi.GPIO as GPIO
 
+import six
+import txaio
+txaio.use_twisted()
+
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet.task import LoopingCall
 
@@ -25,10 +29,10 @@ class GpioAdapter(ApplicationSession):
         'board': GPIO.BOARD
     }
 
-    @inlineCallbacks
     def onJoin(self, details):
         # the component has now joined the realm on the WAMP router
         self.log.info("GpioAdapter connected.")
+	return
 
         # get custom configuration
         extra = self.config.extra
@@ -78,7 +82,7 @@ class GpioAdapter(ApplicationSession):
         self._tick_loop = LoopingCall(self._tick)
         self._tick_loop.start(5)
 
-    def onLeave(self, details):
+    def onLeave2(self, details):
         if self._tick_loop:
             self._tick_loop.stop()
             self._tick_loop = None
