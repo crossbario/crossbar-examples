@@ -1,6 +1,3 @@
-# Copyright (C) Tavendo GmbH. Open-source licensed under the
-# MIT License (http://opensource.org/licenses/MIT)
-
 import sys
 import argparse
 
@@ -12,12 +9,25 @@ txaio.use_twisted()
 
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet.task import LoopingCall
+from twisted.internet.error import ReactorNotRunning
 
 from autobahn import wamp
 from autobahn.wamp.exception import ApplicationError
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.twisted.choosereactor import install_reactor
+
+
+def get_serial():
+    """
+    Get the Pi's serial number.
+    """
+    with open('/proc/cpuinfo') as fd:
+        for line in fd.read().splitlines():
+            line = line.strip()
+            if line.startswith('Serial'):
+                _, serial = line.split(':')
+                return u'{}'.format(int(serial.strip(), 16))
 
 
 class GpioAdapter(ApplicationSession):
@@ -29,16 +39,19 @@ class GpioAdapter(ApplicationSession):
         'board': GPIO.BOARD
     }
 
+    @inlineCallbacks
     def onJoin(self, details):
-        # the component has now joined the realm on the WAMP router
-        self.log.info("GpioAdapter connected.")
-	return
+
+        self._serial = get_serial()
+        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.gpio'.format(self._serial)
+
+        self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
+        self.log.info("GpioAdapter connected: {details}", details=details)
 
         # get custom configuration
         extra = self.config.extra
 
         # Device ID and auxiliary info
-        self._id = extra['id']
         self._digout_pins = extra.get("digout_pins", [])
         self._digin_pins = extra.get("digin_pins", [])
         self._scan_rate = extra.get("scan_rate", 30)
@@ -64,7 +77,7 @@ class GpioAdapter(ApplicationSession):
 
         # register methods on this object for remote calling via WAMP
         for proc in [self.get_version, self.set_digout, self.get_digout, self.toggle_digout, self.get_digin]:
-            uri = u'io.crossbar.examples.iot.devices.pi.{}.gpio.{}'.format(self._id, proc.__name__)
+            uri = u'{}.{}'.format(self._prefix, proc.__name__)
             yield self.register(proc, uri)
             self.log.info("GpioAdapter registered procedure {}".format(uri))
 
@@ -73,19 +86,28 @@ class GpioAdapter(ApplicationSession):
         self._digin_scanner.start(1./float(self._scan_rate))
 
         # signal we are done with initializing our component
-        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.gpio.on_ready'.format(self._id))
-
-        self.log.info("GpioAdapter ready.")
+        self.publish(u'{}.on_ready'.format(self._prefix))
 
         # install a heartbeat logger
         self._tick_no = 0
         self._tick_loop = LoopingCall(self._tick)
         self._tick_loop.start(5)
 
-    def onLeave2(self, details):
+        self.log.info("GpioAdapter ready.")
+
+    def onLeave(self, details):
+        self.log.info("Session closed: {details}", details=details)
+        self.disconnect()
+
+    def onDisconnect(self):
+        self.log.info("Connection closed")
         if self._tick_loop:
             self._tick_loop.stop()
             self._tick_loop = None
+        try:
+            reactor.stop()
+        except ReactorNotRunning:
+            pass
 
     def _tick(self):
         self._tick_no += 1
@@ -122,7 +144,7 @@ class GpioAdapter(ApplicationSession):
             GPIO.output(self._digout_pins[digout], GPIO.HIGH if state else GPIO.LOW)
 
             # publish WAMP event
-            self.publish(u"io.crossbar.examples.iot.devices.pi.{}.gpio.on_digout_changed".format(self._id), digout=digout, state=state)
+            self.publish(u'{}.on_digout_changed'.format(self._prefix), digout=digout, state=state)
 
             if state:
                 self.log.info("digout {} asserted".format(digout))
@@ -176,26 +198,12 @@ class GpioAdapter(ApplicationSession):
                 self._digin_state[digin] = state
 
                 # publish WAMP event
-                self.publish(u"io.crossbar.examples.iot.devices.pi.{}.gpio.on_digin_changed".format(self._id), digin=digin, state=state)
+                self.publish(u'{}.on_digin_changed'.format(self._prefix), digin=digin, state=state)
 
                 if state:
                     self.log.info("digin {} state asserted".format(digin))
                 else:
                     self.log.info("digin {} state unasserted".format(digin))
-
-
-def get_serial():
-    """
-    Get the Pi's serial number.
-    """
-    try:
-        with open('/proc/cpuinfo') as f:
-            for line in f.read().splitlines():
-               if line.startswith('Serial'):
-                   return line.split(':')[1].strip()[8:]
-    except:
-        pass
-    return "00000000"
 
 
 if __name__ == '__main__':
@@ -206,7 +214,6 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
     parser.add_argument("--router", type=six.text_type, default=u"wss://demo.crossbar.io/ws", help='WAMP router URL.')
     parser.add_argument("--realm", type=six.text_type, default=u"crossbardemo", help='WAMP router realm.')
-    parser.add_argument("--id", type=unicode, default=None, help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()
 
@@ -215,15 +222,8 @@ if __name__ == '__main__':
     else:
         txaio.start_logging(level='info')
 
-    # get the Pi's serial number (allow override from command line)
-    if args.id is None:
-        args.id = get_serial()
-
     # custom configuration data
     extra = {
-        # device ID
-        'id': args.id,
-
         # PIN numbering mode (use "bcm" or "board")
         "pin_mode": "bcm",
 

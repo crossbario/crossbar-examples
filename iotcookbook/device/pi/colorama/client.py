@@ -18,6 +18,9 @@ from neopixel import Adafruit_NeoPixel, Color
 
 
 def get_serial():
+    """
+    Get the Pi's serial number.
+    """
     with open('/proc/cpuinfo') as fd:
         for line in fd.read().splitlines():
             line = line.strip()
@@ -30,13 +33,14 @@ class ColoramaDisplay(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        self.log.info("Session joined: {details}", details=details)
 
         self._serial = get_serial()
         self._prefix = u'io.crossbar.demo.iotstarterkit.{}.pixelstrip'.format(self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
+        self.log.info("ColoramaDisplay connected: {details}", details=details)
 
+        # get custom configuration
         cfg = self.config.extra
 
         self._leds = Adafruit_NeoPixel(
