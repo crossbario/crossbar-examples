@@ -128,8 +128,6 @@
                 {
                     "type": "websocket",
                     "serializers": [
-                        "cbor",
-                        "msgpack",
                         "json"
                     ],
                     "endpoint": {
@@ -189,8 +187,6 @@
                                 }
                             },
                             "serializers": [
-                                "cbor",
-                                "msgpack",
                                 "json"
                             ],
                             "options": {
