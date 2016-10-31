@@ -127,11 +127,13 @@ class VotesListener(ApplicationSession):
 
 if __name__ == '__main__':
 
+    # parse command line arguments
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
     parser.add_argument("--router", type=six.text_type, default=u"wss://demo.crossbar.io/ws", help='WAMP router URL.')
     parser.add_argument("--realm", type=six.text_type, default=u"crossbardemo", help='WAMP router realm.')
+    parser.add_argument("--id", type=unicode, default=None, help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()
 
@@ -140,6 +142,7 @@ if __name__ == '__main__':
     else:
         txaio.start_logging(level='info')
 
+    # custom configuration data
     extra = {
         # the voting subject the display will show, and the button
         # will trigger voting for
@@ -154,5 +157,6 @@ if __name__ == '__main__':
         u'brightness': 1.,
     }
 
+    # create and start app runner for our app component ..
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra)
-    runner.run(VotesListener)
+    runner.run(VotesListener, auto_reconnect=True)

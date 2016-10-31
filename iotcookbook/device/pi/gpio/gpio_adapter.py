@@ -6,7 +6,6 @@ import argparse
 
 import RPi.GPIO as GPIO
 
-from twisted.python import log
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet.task import LoopingCall
 
@@ -29,7 +28,7 @@ class GpioAdapter(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
         # the component has now joined the realm on the WAMP router
-        log.msg("GpioAdapter connected.")
+        self.log.info("GpioAdapter connected.")
 
         # get custom configuration
         extra = self.config.extra
@@ -63,7 +62,7 @@ class GpioAdapter(ApplicationSession):
         for proc in [self.get_version, self.set_digout, self.get_digout, self.toggle_digout, self.get_digin]:
             uri = u'io.crossbar.examples.iot.devices.pi.{}.gpio.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
-            log.msg("GpioAdapter registered procedure {}".format(uri))
+            self.log.info("GpioAdapter registered procedure {}".format(uri))
 
         # start digin scanner
         self._digin_scanner = LoopingCall(self._scan_digins)
@@ -71,7 +70,22 @@ class GpioAdapter(ApplicationSession):
 
         # signal we are done with initializing our component
         self.publish(u'io.crossbar.examples.iot.devices.pi.{}.gpio.on_ready'.format(self._id))
-        log.msg("GpioAdapter ready.")
+
+        self.log.info("GpioAdapter ready.")
+
+        # install a heartbeat logger
+        self._tick_no = 0
+        self._tick_loop = LoopingCall(self._tick)
+        self._tick_loop.start(5)
+
+    def onLeave(self, details):
+        if self._tick_loop:
+            self._tick_loop.stop()
+            self._tick_loop = None
+
+    def _tick(self):
+        self._tick_no += 1
+        self.log.info('I am alive [tick {}]'.format(self._tick_no))
 
     def get_version(self):
         """
@@ -107,9 +121,9 @@ class GpioAdapter(ApplicationSession):
             self.publish(u"io.crossbar.examples.iot.devices.pi.{}.gpio.on_digout_changed".format(self._id), digout=digout, state=state)
 
             if state:
-                log.msg("digout {} asserted".format(digout))
+                self.log.info("digout {} asserted".format(digout))
             else:
-                log.msg("digout {} deasserted".format(digout))
+                self.log.info("digout {} deasserted".format(digout))
 
             return True
         else:
@@ -161,9 +175,9 @@ class GpioAdapter(ApplicationSession):
                 self.publish(u"io.crossbar.examples.iot.devices.pi.{}.gpio.on_digin_changed".format(self._id), digin=digin, state=state)
 
                 if state:
-                    log.msg("digin {} state asserted".format(digin))
+                    self.log.info("digin {} state asserted".format(digin))
                 else:
-                    log.msg("digin {} state unasserted".format(digin))
+                    self.log.info("digin {} state unasserted".format(digin))
 
 
 def get_serial():
@@ -183,44 +197,29 @@ def get_serial():
 if __name__ == '__main__':
 
     # parse command line arguments
-    #
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-d", "--debug", action="store_true",
-                        help="Enable debug output.")
-
-    parser.add_argument("--router", type=unicode, required=True,
-                        help='URL of WAMP router to connect to.')
-
-    parser.add_argument("--realm", type=unicode, default=u"realm1",
-                        help='The WAMP realm to join on the router.')
-
-    parser.add_argument("--id", type=unicode, default=None,
-                        help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
+    parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
+    parser.add_argument("--router", type=six.text_type, default=u"wss://demo.crossbar.io/ws", help='WAMP router URL.')
+    parser.add_argument("--realm", type=six.text_type, default=u"crossbardemo", help='WAMP router realm.')
+    parser.add_argument("--id", type=unicode, default=None, help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()
 
-    # start logging to stdout
-    #
-    log.startLogging(sys.stdout)
+    if args.debug:
+        txaio.start_logging(level='debug')
+    else:
+        txaio.start_logging(level='info')
 
     # get the Pi's serial number (allow override from command line)
-    #
     if args.id is None:
         args.id = get_serial()
-    log.msg("GpioAdapter starting with Device ID {} ...".format(args.id))
-
-    # install the "best" available Twisted reactor
-    #
-    reactor = install_reactor()
-    log.msg("Running on reactor {}".format(reactor))
 
     # custom configuration data
-    #
     extra = {
         # device ID
         'id': args.id,
- 
+
         # PIN numbering mode (use "bcm" or "board")
         "pin_mode": "bcm",
 
@@ -235,6 +234,5 @@ if __name__ == '__main__':
     }
 
     # create and start app runner for our app component ..
-    #
-    runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra, debug=args.debug)
-    runner.run(GpioAdapter)
+    runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra)
+    runner.run(GpioAdapter, auto_reconnect=True)

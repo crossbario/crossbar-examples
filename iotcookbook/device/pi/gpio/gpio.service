@@ -1,0 +1,14 @@
+[Unit]
+Description=Crossbar.io IoT Starterkit GPIO Demo
+After=syslog.target network.target
+
+[Service]
+Type=simple
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+ExecStart=/usr/bin/python -u /home/pi/crossbarexamples/iotcookbook/device/pi/gpio/gpio_adapter.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

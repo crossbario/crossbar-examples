@@ -201,6 +201,8 @@ class ColoramaDisplay(ApplicationSession):
 
 
 if __name__ == '__main__':
+
+    # parse command line arguments
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
@@ -209,6 +211,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    # custom configuration data
     if args.debug:
         txaio.start_logging(level='debug')
     else:
@@ -223,5 +226,6 @@ if __name__ == '__main__':
         u'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
     }
 
+    # create and start app runner for our app component ..
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra)
-    runner.run(ColoramaDisplay)
+    runner.run(ColoramaDisplay, auto_reconnect=True)
