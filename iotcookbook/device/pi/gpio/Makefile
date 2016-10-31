@@ -14,7 +14,7 @@ status:
 	systemctl status gpio
 
 log:
-	journalctl -n 100 -f -u gpio
+	sudo journalctl -n 100 -f -u gpio
 
 install:
 	sudo cp gpio.service /etc/systemd/system/gpio.service
