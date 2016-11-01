@@ -292,7 +292,7 @@
                         },
                         "dispenser": {
                             "type": "static",
-                            "directory": "../../../iotcookbook/app/dispenser"
+                            "directory": "../../../iotcookbook/app/dispenser/frontend"
                         }
                     }
                 }

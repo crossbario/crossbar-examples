@@ -1,5 +1,5 @@
 [Unit]
-Description=Crossbar.io IoT Starterkit Dispenser Demo
+Description=Crossbar.io IoT Starterkit Dispenser Adapter
 After=syslog.target network.target
 
 [Service]
@@ -8,7 +8,7 @@ User=root
 StandardInput=null
 StandardOutput=journal
 StandardError=journal
-ExecStart=/usr/bin/python -u /home/pi/crossbarexamples/iotcookbook/app/dispenser/dispenser_adapter.py
+ExecStart=/usr/bin/python -u /home/pi/crossbarexamples/iotcookbook/app/dispenser/adapter/dispenser.py
 Restart=always
 
 [Install]
