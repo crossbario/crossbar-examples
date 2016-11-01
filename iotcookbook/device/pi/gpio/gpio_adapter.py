@@ -229,7 +229,7 @@ if __name__ == '__main__':
         "pin_mode": "bcm",
 
         # these Pins are wired to digouts
-        "digout_pins": [21, 22, 26],
+        "digout_pins": [21, 22, 26, 19],
 
         # these Pins are wired to digins
         "digin_pins": [17],
