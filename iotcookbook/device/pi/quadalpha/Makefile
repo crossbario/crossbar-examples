@@ -14,7 +14,7 @@ status:
 	systemctl status votes
 
 log:
-	journalctl -n 100 -f -u votes
+	sudo journalctl -n 100 -f -u votes
 
 install:
 	sudo cp votes.service /etc/systemd/system/votes.service

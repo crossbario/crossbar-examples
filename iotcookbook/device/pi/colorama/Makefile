@@ -14,7 +14,7 @@ status:
 	systemctl status colorama
 
 log:
-	journalctl -n 100 -f -u colorama
+	sudo journalctl -n 100 -f -u colorama
 
 install:
 	sudo cp colorama.service /etc/systemd/system/colorama.service
