@@ -77,7 +77,12 @@ class GpioAdapter(ApplicationSession):
         self._digin_state = [GPIO.input(digin_pin) == 1 for digin_pin in self._digin_pins]
 
         # register methods on this object for remote calling via WAMP
-        for proc in [self.get_version, self.set_digout, self.get_digout, self.toggle_digout, self.get_digin]:
+        for proc in [self.get_version,
+                     self.set_digout,
+                     self.get_digout,
+                     self.trigger_digout,
+                     self.toggle_digout,
+                     self.get_digin]:
             uri = u'{}.{}'.format(self._prefix, proc.__name__)
             yield self.register(proc, uri)
             self.log.info("GpioAdapter registered procedure {}".format(uri))
@@ -165,6 +170,17 @@ class GpioAdapter(ApplicationSession):
             return self._digout_state[digout]
         else:
             return self._digout_state
+
+    def trigger_digout(self, digout, period=500):
+        """
+        Trigger a digout.
+        """
+        self._check_digout_arg(digout)
+        self.set_digout(digout, True)
+        def clear():
+            self.set_digout(digout, False)
+
+        reactor.callLater(float(period)/1000., clear)
 
     def toggle_digout(self, digout):
         """
