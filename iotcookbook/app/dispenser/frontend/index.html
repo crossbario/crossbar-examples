@@ -21,7 +21,12 @@
    </head>
    <body>
       <h1>Crossbar IoT Starterkit - Dispenser Demo</h1>
-      <p>Open JavaScript console to watch output.</p>
+
+      <p>This demo is currently hardwired to the Starterkit with id <b><span id="serial" /></b>.</p>
+
+      <hr>
+
+      <p>These controls and indicators represent the dispenser hardware that is exposed as a WAMP component and connected to Crossbar.io:</p>
 
       <button onclick='trigger_digout(0)'>Trigger Relay A</button>
       <button onclick='trigger_digout(1)'>Trigger Relay B</button>
@@ -32,6 +37,8 @@
 
       <hr>
 
+      <p>Open JavaScript console to watch output.</p>
+
       <script>AUTOBAHN_DEBUG = true;</script>
       <script src='https://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz'></script>
 
@@ -41,6 +48,8 @@
          var device = '1307984267'; // on the Pi: cat /proc/cpuinfo | grep Serial
          var prefix = 'io.crossbar.demo.iotstarterkit.' + device + '.dispenser';
          var session = null;
+
+         document.getElementById('serial').innerHTML = device;
 
          function trigger_digout(idx) {
             if (session) {
