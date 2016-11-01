@@ -290,9 +290,9 @@
                             "type": "static",
                             "directory": "../../spread"
                         },
-                        "iotcookbook": {
+                        "dispenser": {
                             "type": "static",
-                            "directory": "../../../iotcookbook"
+                            "directory": "../../../iotcookbook/app/dispenser"
                         }
                     }
                 }
