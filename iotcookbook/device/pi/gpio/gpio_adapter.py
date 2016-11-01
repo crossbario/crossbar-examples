@@ -245,10 +245,10 @@ if __name__ == '__main__':
         "pin_mode": "bcm",
 
         # these Pins are wired to digouts
-        "digout_pins": [21, 22, 26, 19],
+        "digout_pins": [13, 19, 5, 6],
 
         # these Pins are wired to digins
-        "digin_pins": [17],
+        "digin_pins": [20, 21],
 
         # we will scan the digins at this rate (Hz)
         "scan_rate": 50
