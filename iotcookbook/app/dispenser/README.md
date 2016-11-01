@@ -1,61 +1,78 @@
-# Connecting the Pi's GPIOs to Crossbar.io
+# Crossbar.io IoT Starterkit: Dispenser Demo
 
-## Description
+## Hardware Setup
 
-The Pi has a number of [GPIOs ](https://www.raspberrypi.org/documentation/usage/gpio/) which allow you to hook up actuators and sensors.
+![](RP2_Pinout.png "RaspberryPi Pinout")
 
-The example shows how to expose two LEDs and a button wired to the Pi's GPIOs via WAMP so you can turn on/off the LEDs and sense the button from **any other** WAMP component.
+## Wifi Setup
 
-The code for the example consists of a adapter written in Python and AutobahnPython using Twisted. The adapter runs on the Pi and connects to Crossbar.io running on a network accessible from the Pi.
+In general, Wifi setup from the CLI isn't hard these days anymore .. see [here](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md) and [here](http://raspberrypi.stackexchange.com/questions/11631/how-to-setup-multiple-wifi-networks).
 
-The adapter exposes these procedures
-
-* `io.crossbar.examples.iot.devices.pi.<DEVICE ID>.gpio.set_digout`
-* `io.crossbar.examples.iot.devices.pi.<DEVICE ID>.gpio.get_digout`
-* `io.crossbar.examples.iot.devices.pi.<DEVICE ID>.gpio.toggle_digout`
-* `io.crossbar.examples.iot.devices.pi.<DEVICE ID>.gpio.get_digin`
-
-and publishes event on these topics
-
-* `io.crossbar.examples.iot.devices.pi.<DEVICE ID>.gpio.on_ready`
-* `io.crossbar.examples.iot.devices.pi.<DEVICE ID>.gpio.on_digout`
-* `io.crossbar.examples.iot.devices.pi.<DEVICE ID>.gpio.on_digin`
-
-Included with a frontend running in browsers. The frontend is written in JavaScript using AutobahnJS and connects to the same Crossbar.io router instance as the backend connects to. Consequently, the frontend is able to invoke the procedures exposed on the Pi and subscribe to events generated from there.
-
-
-## How to run
-
-If you don't have aleady, login to your Pi and install Autobahn:
+To configure your Wifi network, SSH into the Pi and edit the following file:
 
 ```console
-sudo pip install autobahn
+sudo vi /etc/wpa_supplicant/wpa_supplicant.conf
 ```
 
-> If you run a recent Raspbian, you are all set. If not, you might need to install [RPi.GPIO](https://pypi.python.org/pypi/RPi.GPIO) `sudo apt-get install python-dev python-rpi.gpio`
-
-
-Copy the backend component from your computer to the Pi:
+For example, here is mine (passwords stripped):
 
 ```console
-scp gpio_backend.py pi@<IP of your Pi>:~/
+pi@raspberrypi:~ $ sudo cat /etc/wpa_supplicant/wpa_supplicant.conf
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+    id_str="office"
+    ssid="ap-office"
+    psk="********"
+    priority=5
+}
+
+network={
+    id_str="home"
+    ssid="ap-home"
+    psk="********"
+    priority=3
+}
+
+network={
+    id_str="mobile"
+    ssid="ap-mobile"
+    psk="********"
+    priority=1
+}
 ```
 
-and login to start the component
+> You can have multiple networks defined, and have priorities on networks as well (when multiple configured networks are in reach). Switching between networks only works for me when rebooting! There are also recipes for making that automatic using some scripts, eg [here](http://raspberrypi.stackexchange.com/questions/11631/how-to-setup-multiple-wifi-networks) - I haven't explored that path yet.
 
+To scan for Wifi networks in reach:
+
+```console
+sudo iwlist wlan0 scan
 ```
-sudo python gpio_adapter.py --router <WebSocket URL of your Crossbar.io Router>
+
+To restart Wifi (without reboot):
+
+```console
+sudo ifdown wlan0
+sudo ifup wlan0
 ```
 
-> The backend has to run as root because it needs to access the GPIOs, which is a restricted operation. 
+To get the current Wifi configuration of the Wifi interface:
 
+```console
+ifconfig wlan0
+```
 
-## Pointers
+To find a Pi on some network:
 
-* http://pi.gadgetoid.com/pinout
-* http://makezine.com/projects/tutorial-raspberry-pi-gpio-pins-and-python/
-* https://learn.adafruit.com/playing-sounds-and-using-buttons-with-raspberry-pi/install-python-module-rpi-dot-gpio
+```console
+nmap 192.168.43.*
+```
 
+Eg given above, this Pi (MAC `F4:F2:6D:14:1B:56`) will join one of the Wifi network (depending on which one is in reach):
 
-
+* office: 192.168.1.142
+* mobile: 192.168.43.105
+* home: 192.168.55.104
 
