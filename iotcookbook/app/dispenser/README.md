@@ -1,8 +1,20 @@
 # Crossbar.io IoT Starterkit: Dispenser Demo
 
+The frontend for this demo is hosted [here](https://cbdemo-eu-central-1.crossbar.io/dispenser/).
+
+
 ## Hardware Setup
 
+The dispenser hardware consists of:
+
+* 2 x mechanical actuator (Pi/BCM pins 13 and 19)
+* 2 x LED (Pi/BCM pins 5 and 6)
+* 2 x Button (Pi/BCM pins 20 and 21)
+
+See here:
+
 ![](RP2_Pinout.png "RaspberryPi Pinout")
+
 
 ## Wifi Setup
 
