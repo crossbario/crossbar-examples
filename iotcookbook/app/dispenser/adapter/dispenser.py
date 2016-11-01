@@ -44,7 +44,7 @@ class DispenserAdapter(ApplicationSession):
     def onJoin(self, details):
 
         self._serial = get_serial()
-        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.gpio'.format(self._serial)
+        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.dispenser'.format(self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("DispenserAdapter connected: {details}", details=details)
