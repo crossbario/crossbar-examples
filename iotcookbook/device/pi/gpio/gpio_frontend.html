@@ -25,7 +25,10 @@
       <h1>RaspberryPi - GPIO-2-WAMP Bridge</h1>
       <p>Open JavaScript console to watch output.</p>
 
-      <button onclick="toggle_relay()">Toggle Relay</button>
+      <button onclick="trigger_relay(2)">Trigger Relay A</button>
+      <button onclick="trigger_relay(3)">Trigger Relay B</button>
+
+      <hr>
 
       <div id="leds"></div><br>
       <div id="btns"></div>
@@ -42,14 +45,14 @@
          var prefix = "io.crossbar.demo.iotstarterkit." + device + ".gpio";
          var session = null;
 
-         function toggle_relay() {
+         function trigger_relay(idx) {
             if (session) {
-               session.call(prefix + ".toggle_digout", [2]).then(
+               session.call(prefix + ".trigger_digout", [idx]).then(
                   function (res) {
-                     console.log("relay toggled");
+                     console.log("relay triggered");
                   },
                   function (e) {
-                     console.log("could not toggle relay:", e);
+                     console.log("could not trigger relay:", e);
                   }
                );
             }
