@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Open JavaScript console to watch log output (hit F12)</h1>
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script>
+         console.log("Running on AutobahnJS " + autobahn.version);
+
+         var url;
+         if (document.location.origin == "file://") {
+            url = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            url = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var msgpack_serializer = new autobahn.serializer.MsgpackSerializer();
+         var json_serializer = new autobahn.serializer.JSONSerializer();
+
+         var connection = new autobahn.Connection({
+            url: url,
+            realm: "realm1",
+            serializers: [msgpack_serializer, json_serializer]
+         });
+
+         connection.onopen = function (session, details) {
+            console.log("Connected:", details);
+            console.log("Talking " + details.transport.protocol + " over " + details.transport.type);
+            session.call('com.example.add2', [2, 3]).then(
+               function (res) {
+                  console.log("Procedure called with result: " + res);
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
