@@ -5,6 +5,7 @@
             "type": "router",
             "realms": [
                 {
+                    "id": "io.crossbar.demo",
                     "name": "crossbardemo",
                     "roles": [
                         {
@@ -20,8 +21,8 @@
                                         "subscribe": true
                                     },
                                     "disclose": {
-                                        "caller": false,
-                                        "publisher": false
+                                        "caller": true,
+                                        "publisher": true
                                     },
                                     "cache": true
                                 },
@@ -43,14 +44,130 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "id": "io.crossbar.publictest",
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "com.showroomdummy",
+                    "name": "showroomdummy",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "io.crossbar.iotcookbook",
+                    "name": "iot_cookbook",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
                 }
             ],
             "transports": [
                 {
-                    "type": "web",
+                    "type": "websocket",
+                    "serializers": [
+                        "json"
+                    ],
                     "endpoint": {
                         "type": "tcp",
                         "port": 8080
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 80
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../letsencrypt"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 443,
+                        "tls": {
+                            "key": "privkey.pem",
+                            "certificate": "cert.pem",
+                            "chain_certificates": [
+                                "chain.pem"
+                            ],
+                            "dhparam": "dhparam.pem",
+                            "ciphers": "ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA"
+                        }
+                    },
+                    "options": {
+                        "access_log": false,
+                        "display_tracebacks": false,
+                        "hsts": true,
+                        "hsts_max_age": 31536000
                     },
                     "paths": {
                         "/": {
@@ -58,7 +175,49 @@
                             "directory": "../web"
                         },
                         "ws": {
-                            "type": "websocket"
+                            "type": "websocket",
+                            "url": "wss://demo.crossbar.io",
+                            "cookie": {
+                                "name": "cbdemo",
+                                "length": 24,
+                                "max_age": 86400,
+                                "store": {
+                                    "type": "file",
+                                    "filename": "cookie.dat"
+                                }
+                            },
+                            "serializers": [
+                                "json"
+                            ],
+                            "options": {
+                                "enable_webstatus": true,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        },
+                        "call": {
+                            "type": "caller",
+                            "realm": "crossbardemo",
+                            "role": "anonymous",
+                            "options": {
+                                "debug": false
+                            }
                         },
                         "lp": {
                             "type": "longpoll"
@@ -66,6 +225,10 @@
                         "wpadlab": {
                             "type": "static",
                             "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                        },
+                        "wpadeuro": {
+                            "type": "static",
+                            "directory": "../../../iotcookbook/app/weights/wpadeuro"
                         },
                         "beatbox": {
                             "type": "static",
@@ -78,6 +241,10 @@
                         "colorpicker": {
                             "type": "static",
                             "directory": "../../colorpicker"
+                        },
+                        "colorama": {
+                            "type": "static",
+                            "directory": "../../colorama"
                         },
                         "editform": {
                             "type": "static",
@@ -122,6 +289,10 @@
                         "spreadsheet": {
                             "type": "static",
                             "directory": "../../spread"
+                        },
+                        "dispenser": {
+                            "type": "static",
+                            "directory": "../../../iotcookbook/app/dispenser/frontend"
                         }
                     }
                 }
@@ -192,3 +363,4 @@
         }
     ]
 }
+
