@@ -77,7 +77,9 @@ var updateStatusline = function (status) {
 function main (session) {
    // subscribe to future vote event
    session.subscribe("io.crossbar.demo.vote.onvote",
-      function(args) {
+      function (args, kwargs, details) {
+         console.log("Event received for topic io.crossbar.demo.vote.onvote", args, kwargs, details);
+
          var event = args[0];
          document.getElementById("votes" + event.subject).innerHTML =
             event.votes;
@@ -103,7 +105,10 @@ function main (session) {
    }
 
    // subscribe to vote reset event
-   session.subscribe("io.crossbar.demo.vote.onreset", function() {
+   session.subscribe("io.crossbar.demo.vote.onreset",
+      function (args, kwargs, details) {
+         console.log("Event received for topic io.crossbar.demo.vote.onreset", args, kwargs, details);
+
          var voteCounters = document.getElementById("voteContainer").
                                     getElementsByClassName("votesCounter");
                                     //  getElementsByTagName("input");
