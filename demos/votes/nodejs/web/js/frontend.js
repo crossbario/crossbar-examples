@@ -1,3 +1,5 @@
+console.log("Running on Autobahn " + autobahn.version);
+
 // the WAMP-over-WebSocket listening endpoint of Crossbar.io
 //
 var wsuri;
@@ -22,11 +24,10 @@ if (document.location.origin == "file://") {
 }
 
 
-// update UI status line
+// setup serializers we want to use
 //
-var updateStatusline = function (status) {
-   document.getElementsByClassName("statusline")[0].innerHTML = status;
-}
+var msgpack_serializer = new autobahn.serializer.MsgpackSerializer();
+var json_serializer = new autobahn.serializer.JSONSerializer();
 
 
 // configuration of the WAMP connection to Crossbar.io
@@ -43,7 +44,8 @@ var connection = new autobahn.Connection({
          'url': httpUri
       }
    ],
-   realm: "crossbardemo"
+   realm: "crossbardemo",
+   serializers: [msgpack_serializer, json_serializer]
 });
 
 
@@ -61,6 +63,13 @@ connection.onopen = function (session, details) {
 
    main(session);
 };
+
+
+// update UI status line
+//
+var updateStatusline = function (status) {
+   document.getElementsByClassName("statusline")[0].innerHTML = status;
+}
 
 
 // main entry point into the frontend
