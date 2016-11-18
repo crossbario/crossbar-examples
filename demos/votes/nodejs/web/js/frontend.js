@@ -1,4 +1,4 @@
-// the URL of the WAMP Router (Crossbar.io)
+// the WAMP-over-WebSocket listening endpoint of Crossbar.io
 //
 var wsuri;
 if (document.location.origin == "file://") {
@@ -9,8 +9,10 @@ if (document.location.origin == "file://") {
                document.location.host + "/ws";
 }
 
-var httpUri;
 
+// the WAMP-over-HTTP/Longpoll listening endpoint of Crossbar.io
+//
+var httpUri;
 if (document.location.origin == "file://") {
    httpUri = "http://127.0.0.1:8080/lp";
 
@@ -19,12 +21,15 @@ if (document.location.origin == "file://") {
                document.location.host + "/lp";
 }
 
+
+// update UI status line
+//
 var updateStatusline = function (status) {
    document.getElementsByClassName("statusline")[0].innerHTML = status;
 }
 
 
-// the WAMP connection to the Router
+// configuration of the WAMP connection to Crossbar.io
 //
 var connection = new autobahn.Connection({
    // url: wsuri,
@@ -46,6 +51,8 @@ var connection = new autobahn.Connection({
 //
 connection.onopen = function (session, details) {
 
+   console.log("Session established: ", details);
+
    if (details.x_cb_node_id) {
       updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
    } else {
@@ -53,10 +60,11 @@ connection.onopen = function (session, details) {
    }
 
    main(session);
-
-
 };
 
+
+// main entry point into the frontend
+//
 function main (session) {
    // subscribe to future vote event
    session.subscribe("io.crossbar.demo.vote.onvote",
@@ -106,7 +114,8 @@ function main (session) {
 // fired when connection was lost (or could not be established)
 //
 connection.onclose = function(reason, details) {
-   console.log("connection closed ", reason, details);
+
+   console.log("Sesssion closed: ", reason, details);
 
    if (details.will_retry) {
       updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
