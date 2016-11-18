@@ -36,4 +36,4 @@ log:
 	journalctl -f -n 120 -u crossbar
 
 test:
-	sudo -u crossbar /home/ubuntu/cpy351_1/bin/crossbar start --cbdir=/home/ubuntu/crossbarexamples/demos/_demo_launcher/.crossbar
+	sudo -u ubuntu /home/ubuntu/cpy351_1/bin/crossbar start --cbdir=/home/ubuntu/crossbarexamples/demos/_demo_launcher/.crossbar
