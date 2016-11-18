@@ -21,7 +21,7 @@ diff:
 	diff crossbar.service /etc/systemd/system/crossbar.service
 
 update:
-	/home/ubuntu/cpy351_1/bin/pip -U crossbar
+	/home/ubuntu/cpy351_1/bin/pip install -U crossbar
 	sed -i'' 's/python3.5/python3.5 -u/' /home/ubuntu/cpy351_1/bin/crossbar
 	sudo setcap cap_net_bind_service=+ep /home/ubuntu/cpy351_1/bin/python3.5
 	sudo setcap cap_net_bind_service=+ep /home/ubuntu/cpy351_1/bin/crossbar

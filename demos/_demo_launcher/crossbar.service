@@ -10,7 +10,7 @@ Environment="PYTHONUNBUFFERED=1"
 StandardInput=null
 StandardOutput=journal
 StandardError=journal
-ExecStart=/home/ubuntu/cpy351_1/bin/crossbar start --cbdir=/home/ubuntu/crossbarexamples/demos/_demo_launcher/.crossbardemos/_demo_launcher/.crossbar
+ExecStart=/home/ubuntu/cpy351_1/bin/crossbar start --cbdir=/home/ubuntu/crossbarexamples/demos/_demo_launcher/.crossbar
 ExecStart=/home/ubuntu/cpy351_1/bin/crossbar stop
 Restart=on-abort
 
