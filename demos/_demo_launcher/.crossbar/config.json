@@ -293,6 +293,10 @@
                         "dispenser": {
                             "type": "static",
                             "directory": "../../../iotcookbook/app/dispenser/frontend"
+                        },
+                        "smart-replenishment": {
+                            "type": "static",
+                            "directory": "/home/ubuntu/crossbario-hwproducts/smart-replenishment/gastrocool/"
                         }
                     }
                 }

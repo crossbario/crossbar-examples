@@ -34,6 +34,12 @@ ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 
 network={
+    ssid="SWEC16"
+    key_mgmt=NONE
+    priority=6
+}
+
+network={
     id_str="office"
     ssid="ap-office"
     psk="********"
