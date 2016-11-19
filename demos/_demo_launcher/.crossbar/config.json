@@ -296,7 +296,7 @@
                         },
                         "smart-replenishment": {
                             "type": "static",
-                            "directory": "/home/ubuntu/crossbario-hwproducts/smart-replenishment/gastrocool/"
+                            "directory": "/home/ubuntu/crossbario-hwproducts/smart-replenishment/gastrocool"
                         }
                     }
                 }
