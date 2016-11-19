@@ -10,7 +10,8 @@
 "use strict";
 
 // serial numbers from IoT Starterkit devices
-var devices_serials = [1307984267, 3711643271];
+//var devices_serials = [1307984267, 3711643271];
+var devices_serials = [3623412118, 3711643271];
 
 // the URL of the WAMP Router (Crossbar.io)
 var wsuri;
