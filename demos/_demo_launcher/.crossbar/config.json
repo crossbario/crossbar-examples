@@ -297,10 +297,12 @@
                         "smart-replenishment": {
                             "type": "static",
                             "directory": "/home/ubuntu/crossbario-hwproducts/smart-replenishment/gastrocool/web",
-                            "enable_directory_listing": true,
-                            "mime_types": {
-                                "png": "image/png",
-                                "svg": "image/svg+xml"
+                            "options": {
+                                "enable_directory_listing": true,
+                                "mime_types": {
+                                    "png": "image/png",
+                                    "svg": "image/svg+xml"
+                                }
                             }
                         }
                     }
