@@ -12,6 +12,7 @@ import shelve
 import time
 from collections import deque
 
+import psutil
 
 import RPi.GPIO as GPIO
 import Adafruit_ADS1x15
