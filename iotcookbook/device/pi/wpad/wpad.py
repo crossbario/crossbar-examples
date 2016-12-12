@@ -39,6 +39,8 @@ import socket
 import RPi.GPIO as GPIO
 from neopixel import Adafruit_NeoPixel, Color
 
+from Adafruit_QuadAlphanum import QuadAlphanum
+
 
 def get_serial():
     """
