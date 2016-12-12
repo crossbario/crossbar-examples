@@ -182,7 +182,6 @@ class WPad(ApplicationSession):
 
         self._tick_loop = LoopingCall(tick).start(1)
 
-        LoopingCall(self.show_load).start(1)
 
         self.flash()
 
