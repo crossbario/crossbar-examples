@@ -36,8 +36,6 @@ from autobahn.twisted.util import sleep
 
 import socket
 import RPi.GPIO as GPIO
-from Adafruit_QuadAlphanum import QuadAlphanum
-from neopixel import Adafruit_NeoPixel, Color
 
 
 def get_serial():
@@ -73,10 +71,9 @@ class WPad(ApplicationSession):
             if row is None or row != i:
                 GPIO.output(pin, GPIO.HIGH)
             else:
-                GPIO.output(pin, GPIO.HIGH)
+                GPIO.output(pin, GPIO.LOW)
             i += 1
 
-    @inlineCallbacks
     def onJoin(self, details):
 
         extra = self.config.extra
@@ -101,6 +98,8 @@ class WPad(ApplicationSession):
         GPIO.cleanup()
 
         self._row_pins = extra.get("row_pins", [])
+        for pin in self._row_pins:
+            GPIO.setup(pin, GPIO.OUT)
         self._select_row(0)
 
         # setup ADC
@@ -109,7 +108,7 @@ class WPad(ApplicationSession):
         def log_adc():
             values = []
             for i in range(4):
-                values.append(adc.read_adc(i, gain=8))
+                values.append(self._adc.read_adc(i, gain=8))
             print(values)
 
         LoopingCall(log_adc).start(.5)
@@ -153,4 +152,4 @@ if __name__ == '__main__':
 
     # create and start app runner for our app component ..
     runner = ApplicationRunner(url=args.router, realm=args.realm, extra=extra)
-    runner.run(Dispenser, auto_reconnect=True)
+    runner.run(WPad, auto_reconnect=True)
