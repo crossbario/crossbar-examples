@@ -10,6 +10,7 @@ import sys
 import argparse
 import shelve
 import time
+from collections import deque
 
 
 import RPi.GPIO as GPIO
