@@ -135,15 +135,23 @@ class WPad(ApplicationSession):
         self._adc = Adafruit_ADS1x15.ADS1015()
 
         def log_adc():
+            # read values from ADC
             values = []
             for i in range(4):
                 values.append(self._adc.read_adc(i, gain=8))
+
+            # normalize values
             nvalues = [int(round(100. * ((2048. - float(x)) / 2048.))) for x in values]
             nvalues = [nvalues[2], nvalues[3], nvalues[1], nvalues[0]]
+
+            # illuminate neopixel strip
             for i in range(4):
                 col = int(round(255. * nvalues[i]))
-                self.set_color(0, col, 0, i * 2)
-                self.set_color(0, col, 0, i * 2 + 1)
+                self._ledstrip.setPixelColorRGB(i * 2, col, col, col)
+                self._ledstrip.setPixelColorRGB(i * 2 + 1, col, col, col)
+            self._ledstrip.show()
+
+            # publish WAMP event
             self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
             print(nvalues)
 
