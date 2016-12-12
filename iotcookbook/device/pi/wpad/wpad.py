@@ -36,6 +36,7 @@ from autobahn.twisted.util import sleep
 
 import socket
 import RPi.GPIO as GPIO
+from neopixel import Adafruit_NeoPixel, Color
 
 
 def get_serial():
@@ -74,6 +75,30 @@ class WPad(ApplicationSession):
                 GPIO.output(pin, GPIO.LOW)
             i += 1
 
+    def set_color(self, red, green, blue, k=None):
+        if k is None:
+            for i in range(self._ledstrip.numPixels()):
+                # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
+                self._ledstrip.setPixelColorRGB(i, green, red, blue)
+                color_change = {
+                    u'led': i,
+                    u'r': red,
+                    u'g': green,
+                    u'b': blue
+                }
+                self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
+        else:
+                # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
+            self._ledstrip.setPixelColorRGB(k, green, red, blue)
+            color_change = {
+                u'led': k,
+                u'r': red,
+                u'g': green,
+                u'b': blue
+            }
+            self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
+        self._ledstrip.show()
+
     def onJoin(self, details):
 
         extra = self.config.extra
@@ -87,6 +112,17 @@ class WPad(ApplicationSession):
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("WPad connected: {details}", details=details)
+
+        # setup Neopixel LED strip
+        self._ledstrip = Adafruit_NeoPixel(
+            extra['led_count'],
+            extra['led_pin'],
+            extra['led_freq_hz'],
+            extra['led_dma'],
+            extra['led_invert'],
+            extra['led_brightness'])
+
+        self._ledstrip.begin()
 
         # setup GPIO
         GPIO.setwarnings(False)
@@ -111,8 +147,12 @@ class WPad(ApplicationSession):
                 values.append(self._adc.read_adc(i, gain=8))
             nvalues = [int(round(100. * ((2048. - float(x)) / 2048.))) for x in values]
             nvalues = [nvalues[2], nvalues[3], nvalues[1], nvalues[0]]
-            print(nvalues)
+            for i in range(4):
+                col = int(round(255. * nvalues[i]))
+                self.set_color(i * 2,     0, col, 0)
+                self.set_color(i * 2 + 1, 0, col, 0)
             self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
+            print(nvalues)
 
         LoopingCall(log_adc).start(.5)
 
@@ -147,10 +187,17 @@ if __name__ == '__main__':
     # custom configuration data
     extra = {
         # PIN numbering mode (use "bcm" or "board")
-        "pin_mode": "bcm",
+        u'pin_mode': 'bcm',
 
         # these pins are digouts wired to the sensor matrix rows (active GND!)
-        "row_pins": [26, 19, 13, 6],
+        u'row_pins': [26, 19, 13, 6],
+
+        u'led_count': 8,            # Number of LED pixels.
+        u'led_pin': 12,             # GPIO pin connected to the pixels (must support PWM!).
+        u'led_freq_hz': 800000,     # LED signal frequency in hertz (usually 800khz)
+        u'led_dma': 5,              # DMA channel to use for generating signal (try 5)
+        u'led_brightness': 96,      # Set to 0 for darkest and 255 for brightest
+        u'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
     }
 
     # create and start app runner for our app component ..
