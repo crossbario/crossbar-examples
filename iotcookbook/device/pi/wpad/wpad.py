@@ -93,6 +93,34 @@ class WPad(ApplicationSession):
             yield sleep(delay)
 
     @inlineCallbacks
+    def _tick(self):
+        self._tick_no += 1
+        now = time.time()
+        self._tick_sent[self._tick_no] = now
+        try:
+            pub = yield self.publish(u'{}.on_alive'.format(self._prefix), self._tick_no, options=PublishOptions(acknowledge=True, exclude_me=False))
+        except:
+            self.log.failure()
+        else:
+            self.log.info('TICK sent [tick {}, pub {}]'.format(self._tick_no, pub.id))
+
+    def show_load(self):
+        cpu_load = int(round(psutil.cpu_percent(interval=None)))
+        mem_load = int(round(psutil.virtual_memory().percent))
+        if cpu_load > 99:
+            cpu_load = 99
+        if mem_load > 99:
+            mem_load = 99
+
+        self._cpu_load.popleft()
+        self._cpu_load.append(cpu_load)
+
+        if not self._is_scrolling:
+            text = "{:0>2d}{:0>2d}".format(mem_load, cpu_load)
+            self._disp.setMessage(text)
+
+
+    @inlineCallbacks
     def onJoin(self, details):
 
         self._tick_sent = {}
@@ -164,26 +192,45 @@ class WPad(ApplicationSession):
         LoopingCall(log_adc).start(1. / 50.)
 
 
-        if True:
-            self._tick_no = 0
+        self._cpu_load = deque()
+        for i in range(self._ledstrip.numPixels()):
+            self._cpu_load.append(0)
 
-            @inlineCallbacks
-            def _tick():
-                self._tick_no += 1
-                try:
-                    pub = yield self.publish(u'{}.on_alive'.format(self._prefix), self._tick_no, options=PublishOptions(acknowledge=True, exclude_me=False))
-                except:
-                    self.log.failure()
-                else:
-                    self.log.info('TICK sent [tick {}, pub {}]'.format(self._tick_no, pub.id))
 
-            def _on_tick(tick_no):
-                self.log.info('got tick: {}'.format(tick_no))
-                self.flash(r=0, g=255, b=0, repeat=1)
+        # our quad, alphanumeric display: https://www.adafruit.com/products/2157
+        self._disp = QuadAlphanum(extra[u'i2c_address'])
+        self._disp.clear()
+        self._disp.setBrightness(int(round(extra[u'brightness'] * 15)))
 
-            yield self.subscribe(_on_tick, u'{}.on_alive'.format(self._prefix))
+        @inlineCallbacks
+        def displayNotice():
+            yield self.scroll_text(self._disp, "IP {} ({})    ".format(self._my_ip, self._joined_at).upper())
 
-            self._tick_loop = LoopingCall(_tick).start(1.)
+        # every couple of secs, display a notice
+        LoopingCall(displayNotice).start(53)
+
+        @inlineCallbacks
+        def on_tick(tick_no):
+            if tick_no in self._tick_sent:
+                rtt = 1000. * (time.time() - self._tick_sent[tick_no])
+                del self._tick_sent[tick_no]
+            else:
+                rtt = None
+            self.log.info('TICK received [tick {}, rtt {}]'.format(tick_no, rtt))
+            self.flash(r=20, g=80, b=255, repeat=1)
+            yield self.scroll_text(self._disp, "RTT {} MS    ".format(int(round(rtt))).upper())
+
+        yield self.subscribe(on_tick, u'{}.on_alive'.format(self._prefix))
+
+        self._tick_no = 0
+        self._tick_loop = LoopingCall(self._tick)
+        self._tick_loop.start(33)
+
+        LoopingCall(self.show_load).start(1)
+
+        # signal we are done with initializing our component
+        self.publish(u'{}.on_ready'.format(self._prefix))
+        self.log.info("WPad ready.")
 
         self.flash()
 
@@ -229,6 +276,10 @@ if __name__ == '__main__':
         u'led_dma': 5,              # DMA channel to use for generating signal (try 5)
         u'led_brightness': 96,      # Set to 0 for darkest and 255 for brightest
         u'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
+
+        # the quad-alpha display hardware configuration
+        u'i2c_address': 0x77,
+        u'brightness': 1.,
     }
 
     # create and start app runner for our app component ..
