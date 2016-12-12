@@ -231,14 +231,14 @@ class WPad(ApplicationSession):
             else:
                 rtt = None
             self.log.info('TICK received [tick {}, rtt {}]'.format(tick_no, rtt))
-            self.flash(r=20, g=80, b=255, repeat=1)
+            self.flash(r=0, g=255, b=0, repeat=1)
             yield self.scroll_text(self._disp, "RTT {} MS    ".format(int(round(rtt))).upper())
 
         yield self.subscribe(on_tick, u'{}.on_alive'.format(self._prefix))
 
         self._tick_no = 0
         self._tick_loop = LoopingCall(self._tick)
-        self._tick_loop.start(33)
+        self._tick_loop.start(7)
 
         LoopingCall(self.show_load).start(1)
 
