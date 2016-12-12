@@ -78,26 +78,19 @@ class WPad(ApplicationSession):
     def set_color(self, red, green, blue, k=None):
         if k is None:
             for i in range(self._ledstrip.numPixels()):
-                # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
                 self._ledstrip.setPixelColorRGB(i, green, red, blue)
-                color_change = {
-                    u'led': i,
-                    u'r': red,
-                    u'g': green,
-                    u'b': blue
-                }
-                self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
         else:
-                # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
             self._ledstrip.setPixelColorRGB(k, green, red, blue)
-            color_change = {
-                u'led': k,
-                u'r': red,
-                u'g': green,
-                u'b': blue
-            }
-            self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
         self._ledstrip.show()
+
+    @inlineCallbacks
+    def flash(self, r=255, g=255, b=255, delay=25, repeat=10):
+        delay = float(delay) / 1000.
+        for i in range(repeat):
+            self.set_color(r, g, b)
+            yield sleep(2 * delay)
+            self.set_color(0, 0, 0)
+            yield sleep(delay)
 
     def onJoin(self, details):
 
@@ -149,12 +142,14 @@ class WPad(ApplicationSession):
             nvalues = [nvalues[2], nvalues[3], nvalues[1], nvalues[0]]
             for i in range(4):
                 col = int(round(255. * nvalues[i]))
-                self.set_color(i * 2,     0, col, 0)
-                self.set_color(i * 2 + 1, 0, col, 0)
+                self.set_color(0, col, 0, i * 2)
+                self.set_color(0, col, 0, i * 2 + 1)
             self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
             print(nvalues)
 
         LoopingCall(log_adc).start(.5)
+
+        self.flash()
 
     def onLeave(self, details):
         self.log.info("Session closed: {details}", details=details)
