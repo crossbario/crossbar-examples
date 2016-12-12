@@ -122,6 +122,16 @@ class WPad(ApplicationSession):
             text = "{:0>2d}{:0>2d}".format(mem_load, cpu_load)
             self._disp.setMessage(text)
 
+    @inlineCallbacks
+    def scroll_text(self, disp, text):
+        if self._is_scrolling:
+            return
+        self._is_scrolling = True
+        s = text + "    "
+        for i in range(len(s)):
+            disp.setMessage(s[i:i+4])
+            yield sleep(.2)
+        self._is_scrolling = False
 
     @inlineCallbacks
     def onJoin(self, details):
