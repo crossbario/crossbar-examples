@@ -109,7 +109,9 @@ class WPad(ApplicationSession):
             values = []
             for i in range(4):
                 values.append(self._adc.read_adc(i, gain=8))
-            print(values)
+            nvalues = [int(round(100. * ((2048. - float(x)) / 2048.))) for x in values]
+            print(nvalues)
+            self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
 
         LoopingCall(log_adc).start(.5)
 
