@@ -232,7 +232,6 @@ class WPad(ApplicationSession):
                 rtt = None
             self.log.info('TICK received [tick {}, rtt {}]'.format(tick_no, rtt))
             self.flash(r=0, g=255, b=0, repeat=1)
-            yield self.scroll_text(self._disp, "RTT {} MS    ".format(int(round(rtt))).upper())
 
         yield self.subscribe(on_tick, u'{}.on_alive'.format(self._prefix))
 
