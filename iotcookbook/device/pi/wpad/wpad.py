@@ -164,11 +164,11 @@ class WPad(ApplicationSession):
         LoopingCall(log_adc).start(1. / 50.)
 
 
-        if False:
+        if True:
             self._tick_no = 0
 
             @inlineCallbacks
-            def tick(self):
+            def _tick():
                 self._tick_no += 1
                 try:
                     pub = yield self.publish(u'{}.on_alive'.format(self._prefix), self._tick_no, options=PublishOptions(acknowledge=True, exclude_me=False))
@@ -177,13 +177,13 @@ class WPad(ApplicationSession):
                 else:
                     self.log.info('TICK sent [tick {}, pub {}]'.format(self._tick_no, pub.id))
 
-
-            def on_tick(tick_no):
+            def _on_tick(tick_no):
+                self.log.info('got tick: {}'.format(tick_no))
                 self.flash(r=0, g=255, b=0, repeat=1)
 
-            yield self.subscribe(on_tick, u'{}.on_alive'.format(self._prefix))
+            yield self.subscribe(_on_tick, u'{}.on_alive'.format(self._prefix))
 
-            self._tick_loop = LoopingCall(tick).start(1)
+            self._tick_loop = LoopingCall(_tick).start(1.)
 
         self.flash()
 
