@@ -223,7 +223,6 @@ class WPad(ApplicationSession):
         # every couple of secs, display a notice
         LoopingCall(displayNotice).start(53)
 
-        @inlineCallbacks
         def on_tick(tick_no):
             if tick_no in self._tick_sent:
                 rtt = 1000. * (time.time() - self._tick_sent[tick_no])
