@@ -40,6 +40,21 @@
                                         "publisher": false
                                     },
                                     "cache": true
+                                },
+                                {
+                                    "uri": "wamp.subscription.get_events",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": true,
+                                        "register": false,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
