@@ -187,21 +187,18 @@ class WPad(ApplicationSession):
                 values.append(self._adc.read_adc(i, gain=8))
 
             # normalize values
-            nvalues = [int(round(100. * ((2048. - float(x)) / 2048.))) for x in values]
+            nvalues = [round(100. * ((2048. - float(x)) / 2048.), 3) for x in values]
             nvalues = [nvalues[2], nvalues[3], nvalues[1], nvalues[0]]
 
             # illuminate neopixel strip
-            if True:
-                for i in range(4):
-                    col = int(round(255. * float(nvalues[i]) / 100.))
-                    self._ledstrip.setPixelColorRGB(i * 2, col, col, col)
-                    self._ledstrip.setPixelColorRGB(i * 2 + 1, col, col, col)
-                self._ledstrip.show()
+            for i in range(4):
+                col = int(round(255. * float(nvalues[i]) / 100.))
+                self._ledstrip.setPixelColorRGB(i * 2, col, col, col)
+                self._ledstrip.setPixelColorRGB(i * 2 + 1, col, col, col)
+            self._ledstrip.show()
 
             # publish WAMP event
-            if True:
-                self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
-            #print(nvalues)
+            self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
 
         LoopingCall(log_adc).start(1. / 50.)
 
