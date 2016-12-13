@@ -43,7 +43,16 @@
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "store": {
+                        "type": "memory",
+                        "event-history": [
+                            {
+                                "uri": "io.crossbar.demo.wpad.wpad.4126748144.on_wpad"
+                            }
+                        ],
+                        "limit": 2000
+                    }
                 },
                 {
                     "id": "io.crossbar.publictest",
