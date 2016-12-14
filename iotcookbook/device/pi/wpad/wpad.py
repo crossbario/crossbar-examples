@@ -200,8 +200,9 @@ class WPad(ApplicationSession):
             # publish WAMP event
             self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
 
-        LoopingCall(log_adc).start(1. / 50.)
-
+        scan_rate = float(extra.get(u'scan_rate', 50))
+        self.log.info('Scanning sensors with {} Hz ..'.format(scan_rate))
+        LoopingCall(log_adc).start(1. / scan_rate)
 
         self._cpu_load = deque()
         for i in range(self._ledstrip.numPixels()):
@@ -263,6 +264,7 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
     parser.add_argument("--router", type=six.text_type, default=u"wss://demo.crossbar.io/ws", help='WAMP router URL.')
     parser.add_argument("--realm", type=six.text_type, default=u"crossbardemo", help='WAMP router realm.')
+    parser.add_argument("--scanrate", type=int, default=50, help="Sensor scan rate in Hz (should be 5-100 Hz)")
 
     args = parser.parse_args()
 
@@ -271,8 +273,13 @@ if __name__ == '__main__':
     else:
         txaio.start_logging(level='info')
 
+    print('connecting to {} to realm {} ..'.format(args.router, args.realm))
+
     # custom configuration data
     extra = {
+        # sensor scan rate in Hz
+        u'scan_rate': args.scanrate,
+
         # PIN numbering mode (use "bcm" or "board")
         u'pin_mode': 'bcm',
 
