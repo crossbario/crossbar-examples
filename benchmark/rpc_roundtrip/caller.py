@@ -21,7 +21,7 @@ class AppSession(ApplicationSession):
             batch_started = time()
             while (time() - batch_started) < period:
                 ts_req = time()
-                res = yield self.call(u'{}.echo'.format(prefix), counter)
+                res = yield self.call(u'{}.echo'.format(prefix), ts_req)
                 ts_res = time()
                 rtt = ts_res - ts_req
                 rtts.append(rtt)
