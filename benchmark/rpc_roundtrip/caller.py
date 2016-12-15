@@ -29,10 +29,11 @@ class AppSession(ApplicationSession):
             batch_duration = float(batch_ended - batch_started)
             count = len(rtts)
             rtts = sorted(rtts)
-            avg_rtt = 1000. * batch_duration / float(count)
-            max_rtt = 1000 * rtts[-1]
-            q50_rtt = 1000 * rtts[count/2]
-            print("[{}] - {} calls | {} calls/sec; RTT (ms): avg {} | max {} | q50 {}".format(logname, count, float(count) / batch_duration, avg_rtt, max_rtt, q50_rtt))
+            avg_rtt = round(1000. * batch_duration / float(count), 1)
+            max_rtt = round(1000 * rtts[-1], 1)
+            q50_rtt = round(1000 * rtts[count/2], 1)
+            calls_per_sec = round(float(count) / batch_duration, 1)
+            print("[{}] - {} calls | {} calls/sec; RTT (ms): avg {} | max {} | q50 {}".format(logname, count, calls_per_sec, avg_rtt, max_rtt, q50_rtt))
 
 if __name__ == '__main__':
 
