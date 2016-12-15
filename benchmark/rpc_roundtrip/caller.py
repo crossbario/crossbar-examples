@@ -26,9 +26,13 @@ class AppSession(ApplicationSession):
                 rtt = ts_res - ts_req
                 rtts.append(rtt)
             batch_ended = time()
+            batch_duration = float(batch_ended - batch_started)
             count = len(rtts)
-            avg_rtt = 1000. * float(batch_ended - batch_started) / float(count)
-            print("[{}] - average round-trip time (ms): {}".format(logname, avg_rtt))
+            rtts = sorted(rtts)
+            avg_rtt = 1000. * batch_duration / float(count)
+            max_rtt = 1000 * rtts[-1]
+            q50_rtt = 1000 * rtts[count/2]
+            print("[{}] - {} calls | {} calls/sec; RTT (ms): avg {} | max {} | q50 {}".format(logname, count, float(count) / batch_duration, avg_rtt, max_rtt, q50_rtt))
 
 if __name__ == '__main__':
 
