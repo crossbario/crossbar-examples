@@ -35,7 +35,7 @@ class AppSession(ApplicationSession):
             q99_rtt = round(1000 * rtts[-(count / 100)], 1)
             q995_rtt = round(1000 * rtts[-(count / 995)], 1)
             calls_per_sec = round(float(count) / batch_duration, 1)
-            print("{}: {} calls | {} calls/sec; RTT (ms): avg {} | q50 {}| q99 {}| q995 {} | max {}".format(logname, count, calls_per_sec, avg_rtt, q50_rtt, q99_rtt, q995_rtt, max_rtt))
+            print("{}: {} calls | {} calls/sec; RTT (ms): q50 {} | avg {} | q99 {}| q995 {} | max {}".format(logname, count, calls_per_sec, q50_rtt, avg_rtt, q99_rtt, q995_rtt, max_rtt))
 
 if __name__ == '__main__':
 
