@@ -18,14 +18,14 @@ class AppSession(ApplicationSession):
 
         while True:
             rtts = []
-            batch_started = now()
-            while (now() - batch_started) < period:
+            batch_started = time()
+            while (time() - batch_started) < period:
                 ts_req = time()
                 res = yield self.call(u'{}.echo'.format(prefix), counter)
                 ts_res = time()
                 rtt = ts_res - ts_req
                 rtts.append(rtt)
-            batch_ended = now()
+            batch_ended = time()
             count = len(rtts)
             avg_rtt = 1000. * float(batch_ended - batch_started) / float(count)
             print("[{}] - average round-trip time (ms): {}".format(logname, avg_rtt))
