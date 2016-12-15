@@ -1,0 +1,105 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "websocket",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 9000
+                    },
+                    "serializers": [
+                        "json"
+                    ]
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "callee.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "127.0.0.1",
+                            "port": 9000
+                        },
+                        "url": "ws://localhost:9000",
+                        "serializers": ["json"]
+                    },
+                    "extra": {
+                        "prefix": "com.example.websocket-json",
+                        "logname": "WAMP-TCP-WebSocket-JSON"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "caller.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "127.0.0.1",
+                            "port": 9000
+                        },
+                        "url": "ws://localhost:9000",
+                        "serializers": ["json"]
+                    },
+                    "extra": {
+                        "prefix": "com.example.websocket-json",
+                        "logname": "WAMP-TCP-WebSocket-JSON"
+                    }
+                }
+            ]
+        }
+    ]
+}
