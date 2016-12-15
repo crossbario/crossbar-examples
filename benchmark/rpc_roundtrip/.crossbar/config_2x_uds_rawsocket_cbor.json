@@ -92,7 +92,7 @@
                     },
                     "extra": {
                         "prefix": "com.example.rawsocket-cbor",
-                        "logname": "WAMP-UDS-RawSocket-CBOR"
+                        "logname": "WAMP-UDS-RawSocket-CBOR - I"
                     }
                 }
             ]
@@ -119,7 +119,7 @@
                     },
                     "extra": {
                         "prefix": "com.example.rawsocket-cbor",
-                        "logname": "WAMP-UDS-RawSocket-CBOR"
+                        "logname": "WAMP-UDS-RawSocket-CBOR - II"
                     }
                 }
             ]

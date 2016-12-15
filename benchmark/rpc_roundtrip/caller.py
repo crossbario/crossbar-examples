@@ -14,18 +14,21 @@ class AppSession(ApplicationSession):
 
         prefix = self.config.extra[u'prefix']
         logname = self.config.extra[u'logname']
+        period = self.config.extra.get(u'period', 2.)
 
-        counter = 0
-        batch_size = 1000
-        ts_start = time()
         while True:
-            counter += 1
-            res = yield self.call(u'{}.echo'.format(prefix), counter)
-            if counter % batch_size == 0:
-                ts_end = time()
-                avg_rtt = 1000. * float(ts_end - ts_start) / float(batch_size)
-                print("[{}] - average round-trip time (ms): {}".format(logname, avg_rtt))
-                ts_start = ts_end
+            rtts = []
+            batch_started = now()
+            while (now() - batch_started) < period:
+                ts_req = time()
+                res = yield self.call(u'{}.echo'.format(prefix), counter)
+                ts_res = time()
+                rtt = ts_res - ts_req
+                rtts.append(rtt)
+            batch_ended = now()
+            count = len(rtts)
+            avg_rtt = 1000. * float(batch_ended - batch_started) / float(count)
+            print("[{}] - average round-trip time (ms): {}".format(logname, avg_rtt))
 
 if __name__ == '__main__':
 
