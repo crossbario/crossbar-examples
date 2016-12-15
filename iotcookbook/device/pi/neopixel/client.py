@@ -25,7 +25,7 @@ if __name__ == '__main__':
 	strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
 	strip.begin()
 
-	while False:
+	while True:
 		c = 800.
 		value = 0
 		for i in range(2):

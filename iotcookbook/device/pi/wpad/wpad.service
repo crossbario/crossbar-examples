@@ -1,0 +1,15 @@
+[Unit]
+Description=Crossbar.io IoT Starterkit HMI Demo
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=root
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+ExecStart=/usr/bin/python -u /home/pi/crossbarexamples/iotcookbook/device/pi/wpad/wpad.py --router=ws://192.168.70.103:8080/ws --scanrate=20
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

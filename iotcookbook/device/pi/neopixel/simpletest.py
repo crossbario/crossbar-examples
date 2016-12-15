@@ -50,4 +50,4 @@ while True:
     # Print the ADC values.
     print('| {0:>6} | {1:>6} | {2:>6} | {3:>6} |'.format(*values))
     # Pause for half a second.
-    time.sleep(0.5)
+    time.sleep(0.1)

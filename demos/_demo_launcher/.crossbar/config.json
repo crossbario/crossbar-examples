@@ -40,10 +40,34 @@
                                         "publisher": false
                                     },
                                     "cache": true
+                                },
+                                {
+                                    "uri": "wamp.subscription.get_events",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": true,
+                                        "register": false,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
                                 }
                             ]
                         }
-                    ]
+                    ],
+                    "store": {
+                        "type": "memory",
+                        "event-history": [
+                            {
+                                "uri": "io.crossbar.demo.wpad.wpad.4126748144.on_wpad"
+                            }
+                        ],
+                        "limit": 2000
+                    }
                 },
                 {
                     "id": "io.crossbar.publictest",
