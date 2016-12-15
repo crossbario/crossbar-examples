@@ -14,7 +14,7 @@ class AppSession(ApplicationSession):
 
         prefix = self.config.extra[u'prefix']
         logname = self.config.extra[u'logname']
-        period = self.config.extra.get(u'period', 2.)
+        period = self.config.extra.get(u'period', 5.)
 
         while True:
             rtts = []
@@ -31,7 +31,9 @@ class AppSession(ApplicationSession):
             rtts = sorted(rtts)
             avg_rtt = round(1000. * batch_duration / float(count), 1)
             max_rtt = round(1000 * rtts[-1], 1)
-            q50_rtt = round(1000 * rtts[count/2], 1)
+            q50_rtt = round(1000 * rtts[count / 2], 1)
+            q99_rtt = round(1000 * rtts[-(count / 100)], 1)
+            q999_rtt = round(1000 * rtts[-(count / 1000)], 1)
             calls_per_sec = round(float(count) / batch_duration, 1)
             print("[{}] - {} calls | {} calls/sec; RTT (ms): avg {} | max {} | q50 {}".format(logname, count, calls_per_sec, avg_rtt, max_rtt, q50_rtt))
 
