@@ -1,0 +1,21 @@
+{
+    "version": 2,
+    "controller": {
+        "options": {
+            "pythonpath": [
+                ".."
+            ],
+            "expose_shared": true
+        },
+        "components": [
+            {
+                "type": "class",
+                "classname": "myapp.MySession",
+                "extra": {
+                    "foo": [1, 2, 3],
+                    "bar": "baz"
+                }
+            }
+        ]
+    }
+}
