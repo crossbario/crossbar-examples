@@ -1,6 +1,11 @@
 {
     "version": 2,
-    "controller": {},
+    "controller": {
+        "extra": {
+            "foo": "bar",
+            "baz": [1, 2, 3]
+        }
+    },
     "workers": [
         {
             "type": "router",
