@@ -126,7 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--key', dest='key', type=six.text_type, required=True, help='The private client key to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')
     parser.add_argument('--routerkey', dest='routerkey', type=six.text_type, default=None, help='The public router key to verify the remote router against. A 32 bytes file containing the raw Ed25519 public key.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=u'wss://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
     options = parser.parse_args()
 
@@ -134,24 +134,6 @@ if __name__ == '__main__':
         txaio.start_logging(level='debug')
     else:
         txaio.start_logging(level='info')
-
-
-    # create client SSL context from router CA and intermediate certificate
-    from twisted.internet.ssl import Certificate
-    from twisted.internet.ssl import optionsForClientTLS
-    from twisted.internet._sslverify import OpenSSLCertificateAuthorities
-    from OpenSSL import crypto
-    import six
-
-    ca_certs = []
-    for cert_fname in ['.crossbar/ca.cert.pem', '.crossbar/intermediate.cert.pem']:
-        cert = crypto.load_certificate(
-            crypto.FILETYPE_PEM,
-            six.u(open(cert_fname, 'r').read())
-        )
-        ca_certs.append(cert)
-    ca_certs = OpenSSLCertificateAuthorities(ca_certs)
-    ctx = optionsForClientTLS(u'localhost', trustRoot=ca_certs)
 
     # forward requested authid and key filename to ClientSession
     extra = {
@@ -161,5 +143,5 @@ if __name__ == '__main__':
     print("Connecting to {}: realm={}, authid={}".format(options.url, options.realm, options.authid))
 
     # connect to router and run ClientSession
-    runner = ApplicationRunner(url=options.url, ssl=ctx, realm=options.realm, extra=extra)
+    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)
     runner.run(ClientSession)

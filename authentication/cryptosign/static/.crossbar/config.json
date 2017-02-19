@@ -35,11 +35,7 @@
                "type": "websocket",
                "endpoint": {
                   "type": "tcp",
-                  "port": 8080,
-                  "tls": {
-                     "certificate": "server.crt",
-                     "key": "server.key"
-                  }
+                  "port": 8080
                },
                "auth": {
                   "cryptosign": {

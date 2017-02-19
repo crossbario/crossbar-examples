@@ -46,8 +46,7 @@ class ClientSession(ApplicationSession):
     def onConnect(self):
         print("onConnect()")
 
-        from binascii import b2a_hex
-        print(b2a_hex(self._transport.get_channel_id()))
+        print('Using public key {}'.format(self.config.extra[u'pubkey']))
 
         # create a proxy signing key with the private key being held in SSH agent
         self._key = yield SSHAgentSigningKey.new(self.config.extra[u'pubkey'])
@@ -102,7 +101,7 @@ if __name__ == '__main__':
     parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--pubkey', dest='pubkey', type=six.text_type, default=None, help='Filename of the client SSH Ed25519 public key.')
     parser.add_argument('--trustroot', dest='trustroot', type=six.text_type, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=u'wss://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
     parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
     options = parser.parse_args()
@@ -133,28 +132,5 @@ if __name__ == '__main__':
         u'trustroot': trustroot
     }
 
-    from twisted.internet.ssl import Certificate
-    from twisted.internet.ssl import optionsForClientTLS
-    from twisted.internet._sslverify import OpenSSLCertificateAuthorities
-    from OpenSSL import crypto
-    import six
-
-    ca_certs = []
-    for cert_fname in ['.crossbar/ca.cert.pem', '.crossbar/intermediate.cert.pem']:
-        cert = crypto.load_certificate(
-            crypto.FILETYPE_PEM,
-            six.u(open(cert_fname, 'r').read())
-        )
-        ca_certs.append(cert)
-    ca_certs = OpenSSLCertificateAuthorities(ca_certs)
-    ctx = optionsForClientTLS(u'localhost', trustRoot=ca_certs)
-
-    # for cert in ['.crossbar/ca.cert.pem', '.crossbar/intermediate.cert.pem']:
-    #     with open(cert) as f:
-    #         ca_cert = Certificate.loadPEM(f.read())
-    #         ca_certs.append(ca_cert)
-    # ctx = optionsForClientTLS(u'localhost', trustRoot=ca_certs)
-
-    # connect to router and run ClientSession
-    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra, ssl=ctx)
+    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)
     runner.run(ClientSession)
