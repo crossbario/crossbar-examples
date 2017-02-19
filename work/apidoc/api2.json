@@ -1,0 +1,110 @@
+[
+    {
+        "$schema": "http://wamp-proto.org/schema#",
+        "uri": "com.example.store.create_product",
+        "type": "procedure",
+        "title": "Create Product",
+        "description": "Create a new product in the store catalog.",
+        "parameters": {
+            "kwargs": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The unique identifier for a product",
+                        "type": "integer"
+                    },
+                    "name": {
+                        "description": "Name of the product",
+                        "type": "string"
+                    },
+                    "price": {
+                        "type": "number",
+                        "minimum": 0,
+                        "exclusiveMinimum": true
+                    }
+                },
+                "required": ["id", "name", "price"]
+            }
+        },
+        "result": {
+            "args": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "number",
+                        "title": "Current Inventory",
+                        "description": "Total number of product items in inventory."
+                    }
+                ]
+            }
+        },
+        "events": [
+            "com.example.store.on_create_product"
+        ],
+        "errors": [
+            "com.example.store.error.no_such_product",
+            "com.example.store.error.invalid_price"
+        ]
+    },
+    {
+        "$schema": "http://wamp-proto.org/schema#",
+        "uri": "com.example.store.on_create_product",
+        "type": "topic",
+        "title": "Product created",
+        "description": "Fired when a product was created.",
+        "result": {
+            "args": {
+                "type": "array",
+                "items": [
+                    {
+                        "type": "number",
+                        "title": "Product ID",
+                        "description": "The ID of the product that was created."
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "$schema": "http://wamp-proto.org/schema#",
+        "uri": "com.example.store.error.no_such_product",
+        "type": "error",
+        "title": "No such Product",
+        "description": "This error is raised when an operation is performed on a product that does not exist in the catalog.",
+        "args": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string",
+                    "title": "Reason",
+                    "description": "A human readable message, intended for development and logging purposes."
+                }
+            ]
+        }
+    },
+    {
+        "$schema": "http://wamp-proto.org/schema#",
+        "uri": "com.example.store.error.invalid_price",
+        "type": "error",
+        "title": "Invalid Price",
+        "description": "This error is raised when an invalid price is being applied to an entity.",
+        "args": {
+            "type": "array",
+            "items": [
+                {
+                    "type": "string",
+                    "title": "Reason",
+                    "description": "A human readable message, intended for development and logging purposes."
+                },
+                {
+                    "type": "number",
+                    "title": "Minimum permissible price"
+                },
+                {
+                    "type": "number",
+                    "title": "Maximum permissible price"
+                }
+            ]
+        }
+    }
+]
