@@ -4,6 +4,9 @@ crossbar:
 client_raw_key:
 	python client_raw_key.py --realm devices --authid client01@example.com --key client01.key
 
+client_raw_key_aio:
+	python client_raw_key_aio.py --realm devices --authid client01@example.com --key client01.key
+
 client_raw_key_debug:
 	python client_raw_key.py --debug --realm devices --authid client01@example.com --key client01.key
 

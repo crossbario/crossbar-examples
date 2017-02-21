@@ -1,11 +1,7 @@
-import txaio
-txaio.use_twisted()
-
-from twisted.internet import reactor
-from twisted.internet.error import ReactorNotRunning
-from autobahn.twisted.wamp import ApplicationSession
+from os import environ
+import asyncio
+from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp import cryptosign
-
 
 class ClientSession(ApplicationSession):
 
@@ -78,10 +74,8 @@ class ClientSession(ApplicationSession):
 
     def onDisconnect(self):
         self.log.info("connection to router closed")
-        try:
-            reactor.stop()
-        except ReactorNotRunning:
-            pass
+        loop = asyncio.get_event_loop()
+        loop.stop()
 
 
 if __name__ == '__main__':
@@ -89,7 +83,6 @@ if __name__ == '__main__':
     import six
     import sys
     import argparse
-    from autobahn.twisted.wamp import ApplicationRunner
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
@@ -101,11 +94,6 @@ if __name__ == '__main__':
     parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
     options = parser.parse_args()
-
-    if options.debug:
-        txaio.start_logging(level='debug')
-    else:
-        txaio.start_logging(level='info')
 
     # forward requested authid and key filename to ClientSession
     extra = {

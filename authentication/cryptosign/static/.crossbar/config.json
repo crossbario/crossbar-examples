@@ -33,6 +33,7 @@
          "transports": [
             {
                "type": "websocket",
+               "serializers": ["json"],
                "endpoint": {
                   "type": "tcp",
                   "port": 8080
