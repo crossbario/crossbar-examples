@@ -23,6 +23,18 @@ class NumberValidator(Validator):
             raise ValidationError(message='This input contains non-numeric characters',
                                   cursor_position=i)
 
+class AsyncNumberValidator(Validator):
+
+    def __init__(self, session):
+        self._session = session
+        Validator.__init__(self)
+
+    async def validate(self, document):
+        print('AsyncNumberValidator.validate')
+        res = await self._session.call(u'com.example.validate_int', document.text)
+        print(res)
+        return res
+
 
 class MyComponent(ApplicationSession):
 
@@ -34,10 +46,14 @@ class MyComponent(ApplicationSession):
             self._ticks += 1
         await self.subscribe(onevent, u'com.example.tick')
 
+        #validator = AsyncNumberValidator(self)
+        validator = NumberValidator()
+        print(validator)
+
         # we are waiting for user input now - but without blocking!
         # that is, eg the above event handler will continue to receive events while
         # the user is still not finished with input
-        x = await prompt_async('x: ', validator=NumberValidator(), patch_stdout=False)
+        x = await prompt_async('x: ', validator=validator, patch_stdout=False)
 
         # user input is validated (in above, against a number validator) - but the value is
         # still returned as string, and hence needs to be converted

@@ -44,7 +44,8 @@
                     },
                     "websocket": {
                         "ws": {
-                            "type": "websocket"
+                            "type": "websocket",
+                            "serializers": ["cbor"]
                         }
                     },
                     "web": {
