@@ -28,10 +28,23 @@ class MyComponent(ApplicationSession):
 
     async def onJoin(self, details):
         print('Connected!')
-        x = await prompt_async('x: ', validator=NumberValidator(), patch_stdout=True)
+
+        self._ticks = 0
+        def onevent():
+            self._ticks += 1
+        await self.subscribe(onevent, u'com.example.tick')
+
+        # we are waiting for user input now - but without blocking!
+        # that is, eg the above event handler will continue to receive events while
+        # the user is still not finished with input
+        x = await prompt_async('x: ', validator=NumberValidator(), patch_stdout=False)
+
+        # user input is validated (in above, against a number validator) - but the value is
+        # still returned as string, and hence needs to be converted
         x = int(x)
-        y = 23
+        y = self._ticks
         res = await self.call(u'com.example.add2', x, y)
+
         print("RPC succeded: {} + {} = {}".format(x, y, res))
         self.leave()
 
