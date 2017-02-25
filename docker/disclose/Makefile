@@ -1,6 +1,4 @@
-.PHONY: crossbar client
-
-REPOS=../..
+.PHONY: crossbar client docker
 
 crossbar:
 	sudo docker run \
@@ -14,3 +12,6 @@ client:
 		-v ${PWD}/client:/root --link crossbar \
 		--rm -it crossbario/autobahn-python:cpy3-alpine \
 		python /root/client.py --url ws://crossbar:8080/ws --realm realm1
+
+docker:
+	time sudo docker build -f Dockerfile .
