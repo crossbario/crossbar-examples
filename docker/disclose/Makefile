@@ -13,5 +13,16 @@ client:
 		--rm -it crossbario/autobahn-python:cpy3-alpine \
 		python /root/client.py --url ws://crossbar:8080/ws --realm realm1
 
-docker:
-	time sudo docker build -f Dockerfile .
+clean:
+	-rm -f crossbar/.crossbar/key.*
+	-rm -rf crossbar/__pycache__/
+
+docker: clean
+	sudo docker build -t myimage -f Dockerfile .
+
+docker-test:
+	sudo docker run --rm -it -p 8080:8080 myimage
+
+docker-shell:
+	sudo docker run --rm -it -p 8080:8080 --entrypoint /bin/sh myimage
+
