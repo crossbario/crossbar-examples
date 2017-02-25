@@ -3,6 +3,9 @@
    "workers": [
       {
          "type": "router",
+	 "options": {
+	 	"pythonpath": [".."]
+	 },
          "realms": [
             {
                "name": "realm1",
@@ -47,7 +50,14 @@
                   }
                }
             }
-         ]
+         ],
+	"components": [ 
+		{
+			"type": "class",
+			"classname": "backend.Backend",
+			"realm": "realm1"
+		}
+	]
       }
    ]
 }

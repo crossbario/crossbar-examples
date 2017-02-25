@@ -4,7 +4,7 @@ REPOS=../..
 
 crossbar:
 	sudo docker run \
-		-v ${PWD}/crossbar:/var/crossbar \
+		-v ${PWD}/crossbar:/node \
 		-p 8080:8080 \
 		--name crossbar \
 		--rm -it crossbario/crossbar
