@@ -1,0 +1,130 @@
+{
+    "version": 2,
+    "controller": {},
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "demo_realm",
+                    "roles": [
+                        {
+                            "name": "public",
+                            "permissions": [
+                                {
+                                    "uri": "public.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "alpha",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "subscribe": true,
+                                        "register": true,
+                                        "publish": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "beta",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "subscribe": true,
+                                        "register": true,
+                                        "publish": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "universal",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "rawsocket": {
+                    },
+                    "websocket": {
+                        "ws": {
+                            "type": "websocket",
+                            "auth": {
+                                "anonymous": {
+                                    "type": "static",
+                                    "role": "public"
+                                },
+                                "cryptosign": {
+                                    "type": "static",
+                                    "principals": {
+                                        "alice": {
+                                            "realm": "demo_realm",
+                                            "role": "alpha",
+                                            "authorized_keys": [
+                                                "def759096ec79634c762a63d7f17aeb7d709cc8178dcb129a6367ceed539986e"
+                                            ]
+                                        },
+                                        "bob": {
+                                            "realm": "demo_realm",
+                                            "role": "alpha",
+                                            "authorized_keys": [
+                                                "404800331fc097ba88b86ad3e3de8a67aa1b4c9838b3f7a59c363ef7e3d639ae"
+                                            ]
+                                        },
+                                        "carol": {
+                                            "realm": "demo_realm",
+                                            "role": "beta",
+                                            "authorized_keys": [
+                                                "77f429b71013b0d23051ff2694b78ecd1ea6fd94c634e3fa3f1e2c72ac383711"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "web": {
+                        "paths": {
+                            "/": {
+                                "type": "static",
+                                "directory": ".."
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
