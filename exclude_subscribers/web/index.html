@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+   </head>
+   <body>
+      <h1>Exclude by authid, authrole</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+      <script>
+         console.log("Ok, AutobahnJS loaded", autobahn.version);
+
+         var user = "dave";
+         var key = "seekrit";
+
+         // this callback is fired during WAMP-CRA authentication
+         //
+         function onchallenge (session, method, extra) {
+            console.log("onchallenge", method, extra);
+            if (method === "wampcra") {
+               console.log("authenticating via '" + method + "' and challenge '" + extra.challenge + "'");
+               return autobahn.auth_cra.sign(key, extra.challenge);
+            } else {
+               throw "don't know how to authenticate using '" + method + "'";
+            }
+         }
+
+         var connection = new autobahn.Connection({
+            url: "ws://127.0.0.1:8080/ws",
+            realm: "demo_realm",
+
+            // the following attributes must be set of WAMP-CRA authentication
+            //
+            authmethods: ["wampcra"],
+            authid: user,
+            onchallenge: onchallenge
+         });
+
+         connection.onopen = function (session, details) {
+             console.log("connected session with ID " + session.id);
+             console.log("authenticated using method '" + details.authmethod + "' and provider '" + details.authprovider + "'");
+             console.log("authenticated with authid '" + details.authid + "' and authrole '" + details.authrole + "'");
+
+             function got_pub(args, kwargs, details) {
+                 console.log("got a publish from " + details.publisher_authid + ": " + args);
+             }
+             session.subscribe(
+                 "public.heartbeat", got_pub,
+                 {match: "prefix"}
+             );
+
+             function do_pub() {
+                 session.publish("public.heartbeat.dave", ["from javascript"], null,
+                                 {exclude_authid: ["alice", "bob"], detail_arg: "details"});
+             }
+             do_pub();
+             setInterval(do_pub, 3000);
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("disconnected", reason, details.reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

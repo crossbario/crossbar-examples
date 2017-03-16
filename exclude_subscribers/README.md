@@ -14,4 +14,6 @@ carol for use of exclude_authid= and exclude_authrole= options.
 Note: if you change the .priv key files you'll have to change
 .crossbar/config.json to update the authorized public keys.
 
-alice and bob are in the "alpha" role and carol is in the "beta" role.
+alice and bob are in the "alpha" role and carol is in the "beta"
+role. dave is the Web page that you can visit at http://localhost:8080
+and is also in role "alpha"
