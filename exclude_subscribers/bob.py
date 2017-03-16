@@ -32,7 +32,7 @@ class Component(ApplicationSession):
         def got_heartbeat(name, counter):
             print("hearbeat: {}: {}".format(name, counter))
 
-        for name in ['alice', 'carol']:
+        for name in ['alice', 'carol', 'dave']:
             yield self.subscribe(
                 partial(got_heartbeat, name),
                 u'public.heartbeat.{}'.format(name),

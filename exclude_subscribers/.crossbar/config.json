@@ -20,7 +20,7 @@
                                     },
                                     "disclose": {
                                         "caller": true,
-                                        "publisher": false
+                                        "publisher": true
                                     },
                                     "cache": true
                                 }
@@ -40,7 +40,7 @@
                                     },
                                     "disclose": {
                                         "caller": true,
-                                        "publisher": false
+                                        "publisher": true
                                     },
                                     "cache": true
                                 }
@@ -60,7 +60,7 @@
                                     },
                                     "disclose": {
                                         "caller": true,
-                                        "publisher": false
+                                        "publisher": true
                                     },
                                     "cache": true
                                 }
@@ -85,6 +85,15 @@
                                 "anonymous": {
                                     "type": "static",
                                     "role": "public"
+                                },
+                                "wampcra": {
+                                    "type": "static",
+                                    "users": {
+                                        "dave": {
+                                            "secret": "seekrit",
+                                            "role": "alpha"
+                                        }
+                                    }
                                 },
                                 "cryptosign": {
                                     "type": "static",
@@ -119,7 +128,7 @@
                         "paths": {
                             "/": {
                                 "type": "static",
-                                "directory": ".."
+                                "directory": "../web"
                             }
                         }
                     }
