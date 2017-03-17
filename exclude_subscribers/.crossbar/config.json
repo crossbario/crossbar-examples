@@ -118,6 +118,13 @@
                                             "authorized_keys": [
                                                 "77f429b71013b0d23051ff2694b78ecd1ea6fd94c634e3fa3f1e2c72ac383711"
                                             ]
+                                        },
+                                        "erin": {
+                                            "realm": "demo_realm",
+                                            "role": "beta",
+                                            "authorized_keys": [
+                                                "68c0ac3dc3377a5b68a3cbfaaf9926fe4dd42332dd814ae068c097feebfdf78d"
+                                            ]
                                         }
                                     }
                                 }
