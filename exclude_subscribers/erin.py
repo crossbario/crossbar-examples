@@ -48,6 +48,14 @@ class Component(ApplicationSession):
                     eligible_authid=[u'alice', u'bob', u'dave'],
                 ),
             )
+            if counter % 2:
+                self.publish(
+                    topic, '{}: "beta" role'.format(counter),
+                    options=PublishOptions(
+                        eligible_authrole=u"beta",
+                        exclude_me=False,
+                    ),
+                )
             counter += 1
             yield sleep(3)
 
