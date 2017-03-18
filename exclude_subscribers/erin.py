@@ -13,15 +13,15 @@ from autobahn.wamp import cryptosign
 from autobahn.wamp.types import PublishOptions
 
 
-if not exists('alice.priv'):
-    with open('alice.priv', 'wb') as f:
+if not exists('erin.priv'):
+    with open('erin.priv', 'wb') as f:
         f.write(urandom(32))
 
 
 class Component(ApplicationSession):
     """
     """
-    key = cryptosign.SigningKey.from_raw_key(u'alice.priv')
+    key = cryptosign.SigningKey.from_raw_key(u'erin.priv')
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -32,28 +32,27 @@ class Component(ApplicationSession):
         def got_heartbeat(name, counter):
             print("hearbeat: {}: {}".format(name, counter))
 
-        for name in ['alice', 'bob', 'carol', 'dave', 'erin']:
+        for name in ['erin', 'bob', 'carol', 'dave', 'erin']:
             yield self.subscribe(
                 partial(got_heartbeat, name),
                 u'public.heartbeat.{}'.format(name),
             )
 
         counter = 0
-        topic = u'public.heartbeat.alice'
+        topic = u'public.heartbeat.erin'
         while True:
             print("publish '{}'".format(topic))
             self.publish(
-                topic, counter,
+                topic, '{}: to alice, bob, dave'.format(counter),
                 options=PublishOptions(
-                    exclude_authid=[u'bob'],
-                    exclude=12345,
+                    eligible_authid=[u'alice', u'bob', u'dave'],
                 ),
             )
             if counter % 2:
                 self.publish(
-                    topic, u"to everyone with 'alpha' role",
+                    topic, '{}: "beta" role'.format(counter),
                     options=PublishOptions(
-                        eligible_authrole=[u'alpha'],
+                        eligible_authrole=u"beta",
                         exclude_me=False,
                     ),
                 )
@@ -69,7 +68,7 @@ class Component(ApplicationSession):
         # now request to join ..
         self.join(self.config.realm,
                   authmethods=[u'cryptosign'],
-                  authid=u'alice',
+                  authid=u'erin',
                   authextra=extra)
 
     def onChallenge(self, challenge):
@@ -93,5 +92,5 @@ if __name__ == '__main__':
         environ.get("AUTOBAHN_DEMO_ROUTER", u"ws://127.0.0.1:8080/ws"),
         u"crossbardemo",
     )
-    print("Alice pubkey: {}".format(Component.key.public_key()))
+    print("Erin pubkey: {}".format(Component.key.public_key()))
     runner.run(Component)
