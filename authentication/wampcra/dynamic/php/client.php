@@ -30,7 +30,7 @@
 
 use Psr\Log\NullLogger;
 use Thruway\ClientSession;
-use Thruway\ClientWampCraAuthenticator;
+use Thruway\Authentication\ClientWampCraAuthenticator;
 use Thruway\Connection;
 use Thruway\Logging\Logger;
 use Thruway\Message\ChallengeMessage;
