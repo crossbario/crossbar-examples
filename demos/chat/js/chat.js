@@ -60,7 +60,7 @@ var windowUrl = document.URL; // string
 if (windowUrl.indexOf('#') !== -1) {
    initialChannel = windowUrl.split('#')[1];
 } else {
-   console.log("no fragment yet");
+   window.location.hash = "ch1";
 }
 
 setupDemo();
@@ -131,7 +131,7 @@ function connect() {
       sess = session;
 
       sess.prefix("api", demoPrefix + ".chat");
-      
+
       if (details.x_cb_node_id) {
          updateStatusline("Connected to node <strong>" + details.x_cb_node_id + "</strong> at " + wsuri);
       } else {
@@ -152,11 +152,11 @@ function connect() {
    connection.onclose = function(reason, details) {
       sess = null;
       console.log("connection closed ", reason, details);
-   
+
        if (details.will_retry) {
          updateStatusline("Trying to reconnect in " + parseInt(details.retry_delay) + " s.");
       } else {
-         updateStatusline("Disconnected");   
+         updateStatusline("Disconnected");
       }
    }
 
