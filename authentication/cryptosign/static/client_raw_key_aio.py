@@ -1,7 +1,13 @@
 from os import environ
-import asyncio
+
+try:
+    import asyncio
+except ImportError:
+    import trollius as asyncio
+
 from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp import cryptosign
+
 
 class ClientSession(ApplicationSession):
 

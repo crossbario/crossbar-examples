@@ -33,7 +33,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn import util
 from autobahn.twisted.wamp import ApplicationSession
-from autobahn.wamp.cryptosign import SSHAgentSigningKey
+from autobahn.twisted.cryptosign import SSHAgentSigningKey
 
 
 class ClientSession(ApplicationSession):

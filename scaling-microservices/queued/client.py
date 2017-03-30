@@ -1,6 +1,8 @@
 import argparse
 import time
 
+import six
+
 import txaio
 txaio.use_twisted()
 
@@ -57,8 +59,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument('--router', type=unicode, default=u'ws://127.0.0.1:8080/ws', help='WAMP router URL.')
-    parser.add_argument('--realm', type=unicode, default=u'realm1', help='WAMP router realm.')
+    parser.add_argument('--router', type=six.text_type, default=u'ws://127.0.0.1:8080/ws', help='WAMP router URL.')
+    parser.add_argument('--realm', type=six.text_type, default=u'realm1', help='WAMP router realm.')
 
     args = parser.parse_args()
 

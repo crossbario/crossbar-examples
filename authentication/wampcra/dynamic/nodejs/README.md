@@ -1,4 +1,10 @@
+# WAMP-CRA with a JavaScript (Node) dynamic authenticator
+
 This example demonstrates how to authenticate WAMP clients using WAMP-CRA and a custom authentication procedure written in JavaScript (running under Node).
+
+**Please see the installation notes for Node and Autobahn [here](https://github.com/crossbario/autobahn-js#nodejs-development)**.
+
+## How it works
 
 The `authenticator.js` provides a single procedure `com.example.authenticate`. This procedure is configured in Crossbar.io node configuration to be called whenever a WAMP client is connecting to the router via `ws://<router hostname>:8080/ws`. Within this procedure, you can hook up to any user database you already have.
 
