@@ -32,7 +32,7 @@ from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp.types import PublishOptions, CallOptions
 from autobahn.wamp.exception import ApplicationError
-from autobahn.wamp.keyring import KeyRing, Key
+from autobahn.wamp.cryptobox import KeyRing, Key
 
 from sample_keys import PRIVKEY, ORIGINATOR_PRIV, RESPONDER_PUB
 

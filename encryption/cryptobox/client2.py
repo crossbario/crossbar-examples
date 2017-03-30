@@ -30,7 +30,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp.types import SubscribeOptions, RegisterOptions
-from autobahn.wamp.keyring import KeyRing, Key
+from autobahn.wamp.cryptobox import KeyRing, Key
 from autobahn.wamp.exception import ApplicationError
 
 from sample_keys import PRIVKEY, RESPONDER_PRIV, ORIGINATOR_PUB
