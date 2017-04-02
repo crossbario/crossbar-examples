@@ -187,6 +187,10 @@
                             "type": "static",
                             "directory": "../web"
                         },
+                        "shared": {
+                            "type": "static",
+                            "directory": "../../../_shared-web-resources"
+                        },
                         "ws": {
                             "type": "websocket",
                             "url": "wss://demo.crossbar.io",
