@@ -150,16 +150,6 @@
             ],
             "transports": [
                 {
-                    "type": "websocket",
-                    "serializers": [
-                        "json"
-                    ],
-                    "endpoint": {
-                        "type": "tcp",
-                        "port": 8080
-                    }
-                },
-                {
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
@@ -167,8 +157,8 @@
                     },
                     "paths": {
                         "/": {
-                            "type": "static",
-                            "directory": "../letsencrypt"
+                            "type": "redirect",
+                            "url": "https://cbdemo.crossbar.io"
                         }
                     }
                 },
@@ -181,7 +171,6 @@
                             "key": "privkey.pem",
                             "certificate": "cert.pem",
                             "chain_certificates": [
-                                "chain.pem"
                             ],
                             "dhparam": "dhparam.pem",
                             "ciphers": "ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:DHE-RSA-AES128-SHA"
