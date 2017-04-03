@@ -150,6 +150,17 @@
             ],
             "transports": [
                 {
+                    "type": "websocket",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "interface": "127.0.0.1"
+                    },
+                    "serializers": [
+                        "cbor", "msgpack", "ubjson", "json"
+                    ]
+                },
+                {
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
