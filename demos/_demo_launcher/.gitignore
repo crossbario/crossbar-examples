@@ -3,3 +3,7 @@
 .crossbar/cookie.dat
 letsencrypt.log
 .crossbar/*.pem
+*.key
+*.crt
+*.priv
+*.pub
