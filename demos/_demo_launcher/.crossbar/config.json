@@ -199,8 +199,7 @@
                                 "length": 24,
                                 "max_age": 86400,
                                 "store": {
-                                    "type": "file",
-                                    "filename": "cookie.dat"
+                                    "type": "memory"
                                 }
                             },
                             "serializers": [
