@@ -312,7 +312,7 @@
                         },
                         "smart-replenishment": {
                             "type": "static",
-                            "directory": "/home/ubuntu/crossbario-hwproducts/smart-replenishment/gastrocool/web",
+                            "directory": "../../../../crossbario-projects/smart-replenishment/gastrocool/web",
                             "options": {
                                 "enable_directory_listing": true,
                                 "mime_types": {
@@ -395,7 +395,7 @@
                 "backend.js"
             ],
             "options": {
-                "workdir": "/home/ubuntu/crossbario-hwproducts/smart-replenishment/gastrocool/node",
+                "workdir": "../../../../crossbario-projects/smart-replenishment/gastrocool/node",
                 "env": {
                     "vars": {
                         "NODE_PATH": "../node_modules"
