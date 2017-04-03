@@ -205,14 +205,6 @@
                         "ws": {
                             "type": "websocket",
                             "url": "wss://demo.crossbar.io",
-                            "cookie": {
-                                "name": "cbdemo",
-                                "length": 24,
-                                "max_age": 86400,
-                                "store": {
-                                    "type": "memory"
-                                }
-                            },
                             "serializers": [
                                 "cbor", "msgpack", "ubjson", "json"
                             ],
