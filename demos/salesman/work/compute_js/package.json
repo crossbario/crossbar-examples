@@ -1,14 +1,15 @@
 {
-  "name": "compute_js",
-  "version": "1.0.0",
-  "description": "traveling salesman compute node - for both Node.js and the browser",
-  "main": "compute_tsp.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "autobahn": "^0.10.1"
-  }
+    "name": "compute_js",
+    "version": "1.0.0",
+    "description": "traveling salesman compute node - for both Node.js and the browser",
+    "main": "compute_tsp.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "Apache-2.0",
+    "dependencies": {
+        "ws": "< 2.0.0",
+        "autobahn": ">= 0.12.0"
+    }
 }
