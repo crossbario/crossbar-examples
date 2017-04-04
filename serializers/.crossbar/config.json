@@ -49,7 +49,7 @@
                         },
                         "ws": {
                             "type": "websocket",
-                            "serializers": ["msgpack"]
+                            "serializers": ["msgpack", "json"]
                         },
                         "shared": {
                             "type": "static",
@@ -57,12 +57,29 @@
                         }
                     }
                 }
-            ],
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
             "components": [
                 {
                     "type": "class",
                     "classname": "backend.Backend",
-                    "realm": "realm1"
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "127.0.0.1",
+                            "port": 8080
+                        },
+                        "url": "ws://127.0.0.1:8080/ws"
+                    }
                 }
             ]
         }

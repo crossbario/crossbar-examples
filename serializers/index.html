@@ -16,21 +16,42 @@
                         document.location.host + "/ws";
          }
 
+         var cbor_serializer = new autobahn.serializer.CBORSerializer();
          var msgpack_serializer = new autobahn.serializer.MsgpackSerializer();
          var json_serializer = new autobahn.serializer.JSONSerializer();
 
          var connection = new autobahn.Connection({
             url: url,
             realm: "realm1",
-            serializers: [msgpack_serializer, json_serializer]
+            //serializers: [cbor_serializer, msgpack_serializer, json_serializer]
+            //serializers: [msgpack_serializer, json_serializer]
+            serializers: [json_serializer]
          });
 
          connection.onopen = function (session, details) {
             console.log("Connected:", details);
             console.log("Talking " + details.transport.protocol + " over " + details.transport.type);
+
             session.call('com.example.add2', [2, 3]).then(
                function (res) {
-                  console.log("Procedure called with result: " + res);
+                  console.log("Procedure add2() called with result: " + res);
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
+
+            session.call('com.example.rand', [10]).then(
+               function (res) {
+                  console.log("Procedure rand() called with result: " + res);
+                  session.call('com.example.blen', [res]).then(
+                     function (res) {
+                        console.log("Procedure blen() called with result: " + res);
+                     },
+                     function (err) {
+                        console.log(err);
+                     }
+                  );
                },
                function (err) {
                   console.log(err);
