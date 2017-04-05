@@ -57,6 +57,43 @@
                   console.log(err);
                }
             );
+
+            var dl = [];
+
+            dl.push(session.call('com.example.rand', [10]));
+            dl.push(session.call('com.example.rand', [10]));
+
+            autobahn.when.all(dl).then(
+               function (res) {
+                  console.log(res);
+
+                  // https://developer.mozilla.org/en/docs/Web/API/WindowBase64/Base64_encoding_and_decoding
+                  var bin1 = atob(res[0].substring(1));
+                  var bin2 = atob(res[1].substring(1));
+
+                  console.log(bin1);
+                  console.log(bin2);
+                  console.log(bin1.length);
+                  console.log(bin2.length);
+
+                  session.call('com.example.xor', res).then(
+                     function (res) {
+                        console.log("Procedure xor() called with result: " + res);
+
+                        var bin = atob(res.substring(1));
+                        console.log(bin);
+                        console.log(bin.length);
+                     },
+                     function (err) {
+                        console.log(err);
+                     }
+                  );
+
+               },
+               function (err) {
+                  console.log(err);
+               }
+            );
          };
 
          connection.onclose = function (reason, details) {

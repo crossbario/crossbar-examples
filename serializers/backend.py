@@ -1,6 +1,9 @@
 import os
 import six
+
 from twisted.internet.defer import inlineCallbacks
+
+from autobahn import util
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
@@ -30,5 +33,10 @@ class Backend(ApplicationSession):
             return len(binary)
 
         yield self.register(blen, u'com.example.blen')
+
+        def xor(bin1, bin2):
+            return util.xor(bin1, bin2)
+
+        yield self.register(xor, u'com.example.xor')
 
         self.log.info("BACKEND READY!")
