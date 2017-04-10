@@ -24,8 +24,8 @@
 #
 ###############################################################################
 
-from __future__ import print_function
 
+import txaio
 from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
@@ -40,29 +40,32 @@ class Component2(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        print("joined")
+        self.log.info('session joined: {details}', details=details)
 
         # setup application payload end-to-end encryption ("WAMP-cryptobox")
         # when a keyring was set, end-to-end encryption is performed automatically
-        if True:
+        if False:
+            # this is simplest keyring: for all URIs, use one key for both
+            # originators and responders.
             keyring = KeyRing(PRIVKEY)
         else:
-            # this works the same as in Component1, but the keys
-            # loaded is different.
+            # this is a more specialized keyring: we only make URIs starting
+            # with "com.myapp.encrypted." encrypted, and only with private key
+            # for originator (= this session, as it is "calling" and "publishing")
             keyring = KeyRing()
 
-            # since we want to act as "callee" (and "subscriber"), we are thus a "responder"
+            # since we want to act as "callee" and "subscriber") we are thus a "responder"
             # and responders need the responder private key. however, we don't act as "callers"
-            # (or "publishers"), and hence can get away with the public key for the originator only!
-            key = Key(responder_priv=RESPONDER_PRIV, originator_pub=ORIGINATOR_PUB)
+            # or "publishers", and hence can get away with the public key for the originator only!
+            key = Key(originator_pub=ORIGINATOR_PUB, responder_priv=RESPONDER_PRIV)
             keyring.set_key(u'com.myapp.encrypted.', key)
 
-        self.set_keyring(keyring)
+        self.set_payload_codec(keyring)
 
         # now start the testing ..
 
         def add2(a, b, details=None):
-            print("call received: a={}, b={}, details={}".format(a, b, details))
+            self.log.info('call received: a={a}, b={b}, details={details}', a=a, b=b, details=details)
 
             # when the procedure args were encrypted, the result will be always encrypted too!
             return a + b
@@ -72,9 +75,9 @@ class Component2(ApplicationSession):
         reg2 = yield self.register(add2, u'com.myapp.encrypted.add2', options=options)
 
         def failme(encrypted_error, details=None):
-            # independent of whether the "failme" procedure args were encrypted or not,
+            # IMPORTANT: independent of whether the "failme" procedure args were encrypted or not,
             # an error returned to the caller will be encrypted or not depending soley
-            # on the error URI
+            # on the error URI!
             if encrypted_error:
                 raise ApplicationError(u"com.myapp.encrypted.error1", custom1=23, custom2=u'Hello')
             else:
@@ -84,22 +87,25 @@ class Component2(ApplicationSession):
         reg4 = yield self.register(failme, u'com.myapp.encrypted.failme', options=options)
 
         def on_hello(msg, details=None):
-            print("event received: msg='{}', details={}".format(msg, details))
+            self.log.info('event received: msg="{}", details={}', msg=msg, details=details)
 
         options = SubscribeOptions(details_arg='details')
         sub1 = yield self.subscribe(on_hello, u'com.myapp.hello', options=options)
         sub2 = yield self.subscribe(on_hello, u'com.myapp.encrypted.hello', options=options)
 
-        print("ready!")
+        self.log.info('session ready!')
 
     def onLeave(self, details):
-        self.disconnect()
+        self.log.info('session left: {details}',details=details)
+        ApplicationSession.onLeave(self, details)
 
     def onDisconnect(self):
+        ApplicationSession.onDisconnect(self)
         from twisted.internet import reactor
         reactor.stop()
 
 
 if __name__ == '__main__':
+    txaio.start_logging(level='info')
     runner = ApplicationRunner(u"ws://127.0.0.1:8080", u"realm1")
     runner.run(Component2)
