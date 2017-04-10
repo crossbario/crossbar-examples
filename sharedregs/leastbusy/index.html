@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <style>
+         body {
+            font-family: sans-serif;
+         }
+         h2 {
+            margin-top: 2em;
+            color: #038;
+         }
+         h3 {
+            margin-top: 1.3em;
+            color: #06c;
+         }
+      </style>
+   </head>
+   <body>
+      <h1>Example: Shared Registrations - Client / Caller with LEASTBUSY policy</h1>
+      <p>Open JavaScript console to watch output.</p>
+      <p>There are 8 workers registered. To experience the leastbusy balancing policy
+      click 7 times on the 5sec butten and then repeatedly on the 0sec button. 
+      The 0sec calls will then all be routed to the remaining worker as long as the
+      other 7 workers are busy (5sec).  </p>
+      <button onclick="call_procedure()">Call 0sec Procedure</button>
+      <button onclick="call_procedure(5)">Call 5sec Procedure</button>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="http://autobahn.s3.amazonaws.com/autobahnjs/latest/autobahn.min.jgz"></script>
+
+      <script>
+         var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         var session = null;
+
+         function call_procedure (wait) {
+            wait = wait || 0.01
+            if (session) {
+               var a = Math.random();
+               var b = Math.random();
+               session.call("com.example.add2", [a, b, wait]).then(
+                  function (res) {
+                     console.log("Call succeeded: ", res.callnum, res.ident);
+                  },
+                  function (err) {
+                     console.log("Call failed", err);
+                  }
+               );
+            } else {
+               console.log("not connected!");
+            }
+         }
+
+         connection.onopen = function (new_session, details) {
+
+            session = new_session;
+
+            console.log("Connected with session ID " + session.id);
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("Connection lost: " + reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
+
