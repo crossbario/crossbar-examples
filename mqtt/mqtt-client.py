@@ -21,10 +21,12 @@ print('MQTT client starting with PID {}..'.format(pid))
 
 client = paho.Client()
 
-# Called when a message has been received on a topic that the client subscribes to.
+# called when the client has connected to the MQTT broker (or when the client reconnects
+# upon a lost connection)
 def on_connect(client, userdata, flags, rc):
     print('on_connect({}, {}, {}, {})'.format(client, userdata, flags, rc))
 
+# called when a message has been received on a topic that the client subscribes to.
 def on_message(client, userdata, msg):
     pid, seq, ran = struct.unpack(FORMAT, msg.payload)
     print('event received on topic {}: pid={}, seq={}, ran={}'.format(msg.topic, pid, seq, binascii.b2a_hex(ran)))
