@@ -33,7 +33,7 @@ class MyCodec(object):
 
     # binary payload format we use in this example:
     # unsigned short + signed int + 8 bytes (all big endian)
-    FORMAT = '<Hl8s'
+    FORMAT = '>Hl8s'
 
     def encode(self, is_originating, uri, args=None, kwargs=None):
         # Autobahn wants to send custom payload: convert to an instance

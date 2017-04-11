@@ -1,57 +1,36 @@
-# MQTT Bridge
+# Using MQTT with Crossbar.io
 
-Crossbar.io includes a MQTT bridge that not only makes it a full scale, great MQTT broker on its own, but also allows WAMP and MQTT publishers and subscribers talk to each other transparently.
+Crossbar.io is a multi-protocol router with support for MQTT Version 3.1.1. You can use Crossbar.io both as a standalone MQTT broker, and to integrate MQTT clients with a WAMP based system.
 
-This opens up whole new possibilities, eg immediately integrate MQTT client devices into a larger WAMP based application or system
+In **[passthrough mode](passthrough)**, MQTT payloads are transmitted in *payload transparency mode* on the wire, which means, Crossbar.io will not touch the (arbitrary binary) MQTT payload at all.
 
-## Demo
+In **[dynamic mode](dynamic)**, MQTT payloads are converted between arbitrary binary and WAMP structured application payload by calling into a user provided *payload transformer function*, which can be implemented in any WAMP supported language.
 
-The demo make use of the MQTT bridge now included with Crossbar.io 17.2.1 and later.
-
-You need to install `paho-mqtt` to run the MQTT client which you can
-do via pip:
-
-   pip install paho-mqtt
-
-Then, with the Crossbar.io router running from [examples/router](https://github.com/crossbario/autobahn-python/tree/master/examples/router) dir you
-can start up either the WAMP or MQTT client first (ideally in
-different shells):
-
-   python wamp-client.py
-   python mqtt-client.py
-
-They both subscribe to `mqtt.test_topic` and then publish some data to
-that same topic (so try starting them in different orders etc).
-
-## Configuration
-
-To configure MQTT in Crossbar.io, add a MQTT transport item to a router worker like here:
+In **[static mode](static)**, MQTT payloads are converted between WAMP structured application payload and MQTT binary payload using a statically configured serializer such as JSON, CBOR, MessagePack or UBJSON.
 
 
-```
-"transports": [
-    {
-        "type": "mqtt",
-        "endpoint": {
-            "type": "tcp",
-            "port": 1883
-        },
-        "options": {
-            "realm": "crossbardemo",
-            "role": "anonymous"
-        }
-    }
-]
+## Testing
+
+For testing, we use the following two MQTT clients from the [Eclipse Paho project](https://eclipse.org/paho/):
+
+* [Paho Python](https://eclipse.org/paho/clients/python/)
+* [Paho C](https://eclipse.org/paho/clients/c/)
+* [MQTT.js](https://github.com/mqttjs/MQTT.js)
+
+To install Paho Python, create a fresh virtualenv and do:
+
+```console
+pip install paho-mqtt
 ```
 
-Besides the listening endpoint configuration, you can configure the mapping to a WAMP realm.
+To build and install Paho C, do:
 
+```console
+cd /tmp
+git clone https://github.com/eclipse/paho.mqtt.c.git
+cd org.eclipse.paho.mqtt.c
+make
+sudo make install
+```
 
-# note that unlike Autobahn and Crossbar, this MQTT client is threaded
-# / synchronous
-# http://www.steves-internet-guide.com/loop-python-mqtt-client/
-# http://www.steves-internet-guide.com/subscribing-topics-mqtt-client/
-# http://www.steves-internet-guide.com/publishing-messages-mqtt-client/
-# http://www.steves-internet-guide.com/mqtt/
-# http://www.steves-internet-guide.com/into-mqtt-python-client/
-
+> This will install shared libraries into `/usr/local/lib` and headers into `/usr/local/include`

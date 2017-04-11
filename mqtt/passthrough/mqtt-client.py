@@ -11,7 +11,7 @@ import paho.mqtt.client as paho
 
 # binary payload format we use in this example:
 # unsigned short + signed int + 8 bytes (all big endian)
-FORMAT = '<Hl8s'
+FORMAT = '>Hl8s'
 
 # topic we publish and subscribe to
 TOPIC = u'mqtt/test/mytopic1'
@@ -26,6 +26,9 @@ client = paho.Client()
 def on_connect(client, userdata, flags, rc):
     print('on_connect({}, {}, {}, {})'.format(client, userdata, flags, rc))
 
+    # subscribe to a topic, this will fire on_message() upon receiving events
+    client.subscribe(TOPIC, qos=0)
+
 # called when a message has been received on a topic that the client subscribes to.
 def on_message(client, userdata, msg):
     pid, seq, ran = struct.unpack(FORMAT, msg.payload)
@@ -39,9 +42,6 @@ client.connect('localhost', port=8080)
 
 # connect to the dedicated MQTT transport we configured in Crossbar.io
 # client.connect('localhost', port=1883)
-
-# subscribe to a topic, this will fire on_message() upon receiving events
-client.subscribe(TOPIC, qos=0)
 
 # start the network loop in a background thread
 # see: https://pypi.python.org/pypi/paho-mqtt#network-loop
