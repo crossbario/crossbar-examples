@@ -3,10 +3,11 @@ txaio.use_twisted()
 
 import os
 import struct
+import binascii
 
 from twisted.internet.defer import inlineCallbacks
 
-from autobahn.wamp.types import PublishOptions, EncodedPayload
+from autobahn.wamp.types import PublishOptions, SubscribeOptions,EncodedPayload
 from autobahn.wamp.interfaces import IPayloadCodec
 
 from autobahn.twisted.util import sleep
@@ -17,10 +18,10 @@ TOPIC = u'mqtt.test.mytopic1'
 
 class MyCodec(object):
 
-    FORMAT = '<Hl'
+    FORMAT = '<Hl8s'
 
     def encode(self, is_originating, uri, args=None, kwargs=None):
-        payload = struct.pack(self.FORMAT, args[0], args[1])
+        payload = struct.pack(self.FORMAT, args[0], args[1], args[2])
         return EncodedPayload(payload, u'mqtt')
 
     def decode(self, is_originating, uri, encoded_payload):
@@ -37,22 +38,23 @@ class MySession(ApplicationSession):
 
         self.set_payload_codec(MyCodec())
 
-        def on_event(pid, seq):
-            self.log.info('event received on topic {topic}: pid={pid}, seq={seq}', topic=TOPIC, pid=pid, seq=seq)
+        def on_event(pid, seq, ran, details=None):
+            self.log.info('event received on topic {topic}: pid={pid}, seq={seq}, ran={ran}, details={details}\n', topic=TOPIC, pid=pid, seq=seq, ran=binascii.b2a_hex(ran), details=details)
 
-        yield self.subscribe(on_event, TOPIC)
+        reg = yield self.subscribe(on_event, TOPIC, options=SubscribeOptions(details=True))
 
-        self.log.info('subscribed to topic {topic}', topic=TOPIC)
+        self.log.info('subscribed to topic {topic}: registration={reg}', topic=TOPIC, reg=reg)
 
         pid = os.getpid()
         seq = 1
 
         while True:
-            yield self.publish(
+            pub = yield self.publish(
                 TOPIC,
-                pid, seq,
+                pid, seq, os.urandom(8),
                 options=PublishOptions(acknowledge=True, exclude_me=False),
             )
+            self.log.info('event published: publication={pub}\n', pub=pub)
             seq += 1
             yield sleep(1)
 
@@ -60,4 +62,4 @@ class MySession(ApplicationSession):
 if __name__ == '__main__':
     txaio.start_logging(level='info')
     runner = ApplicationRunner(u'ws://localhost:8080/ws', u'realm1')
-    runner.run(MySession, auto_reconnect=True)
+    runner.run(MySession)

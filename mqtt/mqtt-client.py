@@ -5,11 +5,13 @@
 import os
 import time
 import struct
+import binascii
 
 import paho.mqtt.client as paho
 
-# binary payload format we use in this example (unsigned short + signed int, big endian)
-FORMAT = '<Hl'
+# binary payload format we use in this example:
+# unsigned short + signed int + 8 bytes (all big endian)
+FORMAT = '<Hl8s'
 
 # topic we publish and subscribe to
 TOPIC = u'mqtt/test/mytopic1'
@@ -24,8 +26,8 @@ def on_connect(client, userdata, flags, rc):
     print('on_connect({}, {}, {}, {})'.format(client, userdata, flags, rc))
 
 def on_message(client, userdata, msg):
-    pid, seq = struct.unpack(FORMAT, msg.payload)
-    print('event received on topic {}: pid={}, seq={}'.format(msg.topic, pid, seq))
+    pid, seq, ran = struct.unpack(FORMAT, msg.payload)
+    print('event received on topic {}: pid={}, seq={}, ran={}'.format(msg.topic, pid, seq, binascii.b2a_hex(ran)))
 
 client.on_connect = on_connect
 client.on_message = on_message
@@ -46,7 +48,10 @@ client.loop_start()
 # publish once a second forever ..
 seq = 1
 while True:
-    payload = struct.pack(FORMAT, pid, seq)
-    client.publish(TOPIC, payload, qos=0, retain=False)
+    payload = struct.pack(FORMAT, pid, seq, os.urandom(8))
+
+    result, mid = client.publish(TOPIC, payload, qos=0, retain=True)
+    print('event published: result={}, mid={}'.format(result, mid))
+
     seq += 1
     time.sleep(1)
