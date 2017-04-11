@@ -37,6 +37,6 @@ client.on('connect', function () {
 client.on('message', function (topic, message) {
   // parse message (a binary buffer) into a structured object
   var data = myparser.parse(message);
-  console.log('event receivedon topic ' + topic + ': pid=' + data.pid + ', seq=' + data.seq + ', ran=' + data.ran);
+  console.log('event received topic ' + topic + ': pid=' + data.pid + ', seq=' + data.seq + ', ran=' + data.ran);
   //client.end();
 });
