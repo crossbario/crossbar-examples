@@ -1,0 +1,17 @@
+{
+  "name": "native",
+  "version": "1.0.0",
+  "description": "Crossbar.io includes a MQTT bridge that not only makes it a full scale, great MQTT broker on its own, but also allows WAMP and MQTT publishers and subscribers talk to each other transparently.",
+  "main": "mqtt-client.js",
+  "dependencies": {
+    "cbor": "^3.0.0",
+    "crypto": "0.0.3",
+    "mqtt": "^2.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

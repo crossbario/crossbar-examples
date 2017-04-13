@@ -3,7 +3,7 @@
 //
 
 var mqtt = require('mqtt');
-var parser = require('binary-parser');
+var cbor = require('cbor');
 var crypto = require('crypto');
 
 
@@ -11,34 +11,23 @@ var crypto = require('crypto');
 var topic = 'mqtt/test/mytopic1';
 
 
-// hexlify a byte array
-function hexlify (arr) {
-  return arr.map(function (byte) {
-    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
-  }).join('');
-}
-
-
 // payload decoder for receiving
-var decoder = new parser.Parser()
-    .endianess('big')
-    .uint16('pid')
-    .int32('seq')
-    .array('ran', {
-        type: 'uint8',
-        length: 8,
-        formatter: hexlify
-    });
+function decode (payload) {
+    //var obj = cbor.decodeFirstSync(payload);
+    var obj = cbor.decodeAllSync(payload)[0];
+    return obj;
+}
 
 
 // payload encoder for sending
-function encoder (pid, seq) {
-    var buf = new Buffer(14);
-    buf.writeUInt16BE(pid, 0);
-    buf.writeInt32BE(seq, 2);
-    crypto.randomBytes(8).copy(buf, 6);
-    return buf;
+function encode (pid, seq) {
+    var obj = {
+        args: [pid, seq, crypto.randomBytes(8)]
+    };
+    var payload = cbor.encode(obj);
+    return payload;
 }
+
 
 // connect to the universal transport we configured in Crossbar.io
 var client  = mqtt.connect('mqtt://localhost:8080');
@@ -57,7 +46,7 @@ client.on('connect', function () {
     client.subscribe(topic);
 
     function publish () {
-        var payload = encoder(pid, seq);
+        var payload = encode(pid, seq);
         client.publish(topic, payload);
         seq += 1;
     }
@@ -67,9 +56,13 @@ client.on('connect', function () {
 
 
 // called when a message has been received on a topic that the client subscribes to.
-client.on('message', function (topic, message) {
-  // parse message (a binary buffer) into a structured object
-  var data = decoder.parse(message);
-  console.log('event received topic ' + topic + ': pid=' + data.pid + ', seq=' + data.seq + ', ran=' + data.ran);
-  //client.end();
+client.on('message', function (topic, payload) {
+    // parse payload (a binary buffer) into a structured object
+    var obj = decode(payload);
+    console.log(obj);
+    var pid = obj.args[0];
+    var seq = obj.args[1];
+    var ran = obj.args[2];
+    console.log('event received topic ' + topic + ': pid=' + pid + ', seq=' + seq + ', ran=' + ran.toString('hex'));
+    //client.end();
 });
