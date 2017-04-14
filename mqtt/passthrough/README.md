@@ -6,9 +6,9 @@ This means, unmodified MQTT clients can connect to Crossbar.io, and events publi
 
 The MQTT application payload is transmitted without modification passing through the payload as a binary string.
 
-This is using a WAMP AP feature: **payload transparency**.
+This is using **payload transparency**, a WAMP AP feature implemented by Crossbar.io and AutobahnPython currently.
 
-WAMP subscribers need to be aware of the binary payload they will receive, and hence will need to have a **payload codec** defined, like in the example:
+Since the application payload is raw MQTT left untouched by Crossbar.io, WAMP subscribers need to be aware of the binary payload they will receive, and hence will need to have a **payload codec** defined, like in the example:
 
 ```python
 class MyCodec(object):
