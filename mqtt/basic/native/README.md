@@ -1,65 +1,37 @@
-# MQTT in passthrough mode
+# MQTT in native mode
 
-In **passthrough mode**, arbitrary MQTT binary payloads are routed "as is" by Crossbar.io without touching or interpretation.
+In **native mode**, MQTT binary payloads are expected to contain a serialized WAMP aware payload, and this is parsed by Crossbar.io according to the configured serialized, such a CBOR or MessagePack, ..
 
-This means, unmodified MQTT clients can connect to Crossbar.io, and events published by these clients are dispatched to both other MQTT subscribers as well as WAMP subscribers.
+This means, WAMP aware MQTT clients can connect to Crossbar.io, and events published by these clients are dispatched to both other WAMP aware MQTT subscribers as well as native WAMP subscribers.
 
-The MQTT application payload is transmitted without modification passing through the payload as a binary string.
-
-This is using **payload transparency**, a WAMP AP feature implemented by Crossbar.io and AutobahnPython currently.
+The WAMP aware MQTT client can use many of WAMPs advanced features, such us subscriber black-/whitelisting.
 
 ## When to use
 
-Use **passthrough mode** when you
+Use **native mode** when you
 
-* can't change the MQTT client code
-* want lowest latency
-* want lowest load on router
+* want advanced WAMP features also for MQTT clients
+* can change the MQTT client code
+* can't change the WAMP client code
 
-## Payload Codecs
+## WAMP Payloads
 
-Since the application payload is raw MQTT left untouched by Crossbar.io, WAMP subscribers need to be aware of the binary payload they will receive, and hence will need to have a **payload codec** defined, like in the example:
+WAMP-aware MQTT clients will publish events with a application payload consisting of a dictionary serialized using a agreed serializer such as CBOR.
 
-```python
-class MyCodec(object):
-    """
-    Our codec to encode/decode our custom binary payload. This is needed
-    in "payload transparency mode" (a WAMP AP / Crossbar.io feature), so
-    the app code is shielded, so you can write your code as usual in Autobahn/WAMP.
-    """
+The dictionary can contain attributes
 
-    # binary payload format we use in this example:
-    # unsigned short + signed int + 8 bytes (all big endian)
-    FORMAT = '>Hl8s'
-
-    def encode(self, is_originating, uri, args=None, kwargs=None):
-        # Autobahn wants to send custom payload: convert to an instance
-        # of EncodedPayload
-        payload = struct.pack(self.FORMAT, args[0], args[1], args[2])
-        return EncodedPayload(payload, u'mqtt')
-
-    def decode(self, is_originating, uri, encoded_payload):
-        # Autobahn has received a custom payload.
-        # convert it into a tuple: (uri, args, kwargs)
-        return uri, struct.unpack(self.FORMAT, encoded_payload.payload), None
-
-# we need to register our codec!
-IPayloadCodec.register(MyCodec)
+```json
+{
+    "args": [],
+    "kwargs": {},
+    "exclude": null,
+    "exclude_authid": null,
+    "exclude_authrole": null,
+    "eligible": null,
+    "eligible_authid": null,
+    "eligible_authrole'": null
+}
 ```
-
-The payload codec then needs to be set on the client session:
-
-```python
-class MySession(ApplicationSession):
-
-    def onJoin(self, details):
-        self.set_payload_codec(MyCodec())
-```
-
-Setting of the payload codec is the only code change required. After that, incoming WAMP events carrying MQTT payloads (via payload transparency mode and `enc_algo="mqtt"`) are automatically and transparently decoded by the configured payload codec, and application code such as event handlers are called as normal, with `args` and `kwargs` already extracted.
-
-Similar, when publishing events from WAMP client app code, the `args` and `kwargs` are encoded automatically and transparently using the configured payload codec, and carried as raw binary MQTT payload (again via payload transparency mode and `enc_algo="mqtt"`) by Crossbar.io and received by unmodified MQTT clients.
-
 
 ## Testing
 
@@ -69,30 +41,26 @@ In a first terminal, start Crossbar.io from this directory:
 crossbar start
 ```
 
-In a second terminal, start a WAMP client that includes a payload codec (`MyCodec`) for the MQTT payload we use in this example:
+In a second terminal, start a WAMP aware MQTT client:
 
 ```console
-python wamp-client-mqtt.py
+python mqtt-client-wamp.py
+node mqtt-client-wamp.js
 ```
 
-Then start a native, unmodified MQTT client in Python
+Then start a native, unmodified WAMP client
 
 ```console
-python mqtt-client.py
+python wamp-client.py
+node wamp-client.js
 ```
 
-or JavaScript under NodeJS
-
-```console
-node mqtt-client.js
-```
-
-All clients should now seamlessly interoperate, publishing and receiving events in the native MQTT payload format.
+All clients should now seamlessly interoperate, publishing and receiving events in the native WAMP payload format.
 
 
 ## Configuration
 
-Here is an example that configured **passthrough mode** on a MQTT transport for all mapped URI having the empty string as prefix, which means all URIs:
+Here is an example that configured **native mode** on a MQTT transport for all mapped URI having the empty string as prefix, which means all URIs:
 
 ```json
 {
@@ -106,7 +74,8 @@ Here is an example that configured **passthrough mode** on a MQTT transport for 
         "role": "anonymous",
         "payload_mapping": {
             "": {
-                "type": "passthrough"
+                "type": "native",
+                "serializer": "cbor"
             }
         }
     }
@@ -132,8 +101,8 @@ Similar to configuring payload modes for standalone MQTT transport, the same `op
             "role": "anonymous",
             "payload_mapping": {
                 "": {
-                    "match": "prefix",
-                    "type": "passthrough"
+                    "type": "native",
+                    "serializer": "cbor"
                 }
             }
         }
