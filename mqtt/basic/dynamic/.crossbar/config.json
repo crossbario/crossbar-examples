@@ -8,6 +8,31 @@
             },
             "realms": [
                 {
+                    "name": "codec",
+                    "roles": [
+                        {
+                            "name": "codec",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.mqtt.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": false,
+                                        "register": true,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "name": "realm1",
                     "roles": [
                         {
@@ -66,7 +91,7 @@
                             "payload_mapping": {
                                 "": {
                                     "type": "dynamic",
-                                    "realm": "realm1",
+                                    "realm": "codec",
                                     "encoder": "com.example.mqtt.encode",
                                     "decoder": "com.example.mqtt.decode"
                                 }
@@ -103,8 +128,8 @@
                 {
                     "type": "class",
                     "classname": "codec.MyCodec",
-                    "realm": "realm1",
-                    "role": "anonymous"
+                    "realm": "codec",
+                    "role": "codec"
                 }
             ]
         }
