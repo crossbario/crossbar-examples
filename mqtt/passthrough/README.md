@@ -13,6 +13,7 @@ This is using **payload transparency**, a WAMP AP feature implemented by Crossba
 Use **passthrough mode** when you
 
 * can't change the MQTT client code
+* want lowest latency
 * want lowest load on router
 
 ## Payload Codecs
@@ -105,7 +106,6 @@ Here is an example that configured **passthrough mode** on a MQTT transport for 
         "role": "anonymous",
         "payload_mapping": {
             "": {
-                "match": "prefix",
                 "type": "passthrough"
             }
         }
@@ -113,7 +113,9 @@ Here is an example that configured **passthrough mode** on a MQTT transport for 
 }
 ```
 
-You can configured different modes on different URI patterns by adding more entries to the `payload_mapping` attribute.
+You can configure different modes on different URI prefixes by adding more entries to the `payload_mapping` attribute. Hence, the keys of the `payload_mapping` dict are interpreted as WAMP URI prefixes, and the matching will alway be on the longest matching prefix over the configured keys.
+
+**IMPORTANT: When no matching payload mapping could be found for the URI of an event to be transferred, the event is discarded. This applies to any event directions, including MQTT-to-MQTT traffic.**
 
 Similar to configuring payload modes for standalone MQTT transport, the same `options` dictionary attribute can be used with MQTT factories on **universal transports**:
 

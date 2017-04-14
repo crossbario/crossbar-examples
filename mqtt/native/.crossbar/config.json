@@ -40,7 +40,12 @@
                     "options": {
                         "realm": "realm1",
                         "role": "anonymous",
-                        "payload_format": "cbor"
+                        "payload_mapping": {
+                            "": {
+                                "type": "native",
+                                "serializer": "cbor"
+                            }
+                        }
                     }
                 },
                 {
@@ -53,7 +58,12 @@
                         "options": {
                             "realm": "realm1",
                             "role": "anonymous",
-                            "payload_format": "cbor"
+                            "payload_mapping": {
+                                "": {
+                                    "type": "native",
+                                    "serializer": "cbor"
+                                }
+                            }
                         }
                     },
                     "rawsocket": {

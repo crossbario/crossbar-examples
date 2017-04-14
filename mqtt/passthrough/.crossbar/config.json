@@ -40,7 +40,11 @@
                     "options": {
                         "realm": "realm1",
                         "role": "anonymous",
-                        "payload_format": "passthrough"
+                        "payload_mapping": {
+                            "": {
+                                "type": "passthrough"
+                            }
+                        }
                     }
                 },
                 {
@@ -53,7 +57,11 @@
                         "options": {
                             "realm": "realm1",
                             "role": "anonymous",
-                            "payload_format": "passthrough"
+                            "payload_mapping": {
+                                "": {
+                                    "type": "passthrough"
+                                }
+                            }
                         }
                     },
                     "rawsocket": {
