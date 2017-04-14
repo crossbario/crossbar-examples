@@ -8,6 +8,15 @@ The MQTT application payload is transmitted without modification passing through
 
 This is using **payload transparency**, a WAMP AP feature implemented by Crossbar.io and AutobahnPython currently.
 
+## When to use
+
+Use **passthrough mode** when you
+
+* can't change the MQTT client code
+* want lowest load on router
+
+## Payload Codecs
+
 Since the application payload is raw MQTT left untouched by Crossbar.io, WAMP subscribers need to be aware of the binary payload they will receive, and hence will need to have a **payload codec** defined, like in the example:
 
 ```python
@@ -46,7 +55,9 @@ class MySession(ApplicationSession):
         self.set_payload_codec(MyCodec())
 ```
 
-Setting of the payload codec is the only code change required. After that, incoming WAMP events carrying MQTT payloads (via payload transparency mode and `enc_algo=mqtt`) are automatically and transparently decoded by the configured payload codec, and application code such as event handlers are called as normal, with `args` and `kwargs` already extracted.
+Setting of the payload codec is the only code change required. After that, incoming WAMP events carrying MQTT payloads (via payload transparency mode and `enc_algo="mqtt"`) are automatically and transparently decoded by the configured payload codec, and application code such as event handlers are called as normal, with `args` and `kwargs` already extracted.
+
+Similar, when publishing events from WAMP client app code, the `args` and `kwargs` are encoded automatically and transparently using the configured payload codec, and carried as raw binary MQTT payload (again via payload transparency mode and `enc_algo="mqtt"`) by Crossbar.io and received by unmodified MQTT clients.
 
 
 ## Testing
@@ -57,7 +68,7 @@ In a first terminal, start Crossbar.io from this directory:
 crossbar start
 ```
 
-In a second termina, start a WAMP client that includes a payload codec (`MyCodec`) for the MQTT payload we use in this example:
+In a second terminal, start a WAMP client that includes a payload codec (`MyCodec`) for the MQTT payload we use in this example:
 
 ```console
 python wamp-client-mqtt.py
@@ -74,6 +85,9 @@ or JavaScript under NodeJS
 ```console
 node mqtt-client.js
 ```
+
+All clients should now seamlessly interoperate, publishing and receiving events in the native MQTT payload format.
+
 
 ## Configuration
 
