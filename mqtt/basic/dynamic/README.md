@@ -1,14 +1,12 @@
 # MQTT in dynamic mode
 
-In **dynamic mode**, arbitrary MQTT binary payloads are received by Crossbar.io, transformed by a user codec procedure pair, and router as regular WAMP traffic by Crossbar.io.
+In **dynamic mode**, arbitrary MQTT binary payloads are received by Crossbar.io, transformed by a user codec procedure pair, and further routed as regular WAMP traffic by Crossbar.io.
 
-This means, unmodified MQTT clients can connect to Crossbar.io, and events published by these clients are dispatched to both other MQTT subscribers as well as WAMP subscribers - each in their native format!
+This means, unmodified MQTT clients can connect to Crossbar.io, and events published by these clients are dispatched to both other unmodified MQTT subscribers as well as unmodified WAMP subscribers - each in their native format!
 
 The MQTT application payload is transformed by user code that is called by Crossbar.io to convert the native MQTT application payload to and from WAMP. Crossbar.io will cache a converted payload within the message.
 
 When the payload codec procedures registered and configured for MQTT co-reside within the routing core, and hence are written in Python/Twisted (the same as Crossbar.io), then the overhead and added latency of the router side, and cached payload conversion is very low.
-
-This is using **payload transparency**, a WAMP AP feature implemented by Crossbar.io and AutobahnPython currently.
 
 ## When to use
 
@@ -17,7 +15,6 @@ Use **dynamic mode** when you
 * can't change the MQTT client code
 * can't change the WAMP client code
 * want low latency (under restrictions)
-
 
 ## Payload Codecs
 

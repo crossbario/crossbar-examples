@@ -71,7 +71,7 @@
                         "payload_mapping": {
                             "": {
                                 "type": "dynamic",
-                                "realm": "realm1",
+                                "realm": "codec",
                                 "encoder": "com.example.mqtt.encode",
                                 "decoder": "com.example.mqtt.decode"
                             }
