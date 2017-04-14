@@ -8,7 +8,46 @@ The MQTT application payload is transmitted without modification passing through
 
 This is using a WAMP AP feature: **payload transparency**.
 
-WAMP subscribers need to be aware of the binary payload they will receive, and hence will need to have a **payload codec** set on the client session.
+WAMP subscribers need to be aware of the binary payload they will receive, and hence will need to have a **payload codec** defined, like in the example:
+
+```python
+class MyCodec(object):
+    """
+    Our codec to encode/decode our custom binary payload. This is needed
+    in "payload transparency mode" (a WAMP AP / Crossbar.io feature), so
+    the app code is shielded, so you can write your code as usual in Autobahn/WAMP.
+    """
+
+    # binary payload format we use in this example:
+    # unsigned short + signed int + 8 bytes (all big endian)
+    FORMAT = '>Hl8s'
+
+    def encode(self, is_originating, uri, args=None, kwargs=None):
+        # Autobahn wants to send custom payload: convert to an instance
+        # of EncodedPayload
+        payload = struct.pack(self.FORMAT, args[0], args[1], args[2])
+        return EncodedPayload(payload, u'mqtt')
+
+    def decode(self, is_originating, uri, encoded_payload):
+        # Autobahn has received a custom payload.
+        # convert it into a tuple: (uri, args, kwargs)
+        return uri, struct.unpack(self.FORMAT, encoded_payload.payload), None
+
+# we need to register our codec!
+IPayloadCodec.register(MyCodec)
+```
+
+The payload codec then needs to be set on the client session:
+
+```python
+class MySession(ApplicationSession):
+
+    def onJoin(self, details):
+        self.set_payload_codec(MyCodec())
+```
+
+Setting of the payload codec is the only code change required. After that, incoming WAMP events carrying MQTT payloads (via payload transparency mode and `enc_algo=mqtt`) are automatically and transparently decoded by the configured payload codec, and application code such as event handlers are called as normal, with `args` and `kwargs` already extracted.
+
 
 ## Testing
 
