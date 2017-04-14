@@ -1,57 +1,111 @@
-# MQTT Bridge
+# MQTT in passthrough mode
 
-Crossbar.io includes a MQTT bridge that not only makes it a full scale, great MQTT broker on its own, but also allows WAMP and MQTT publishers and subscribers talk to each other transparently.
+In **passthrough mode**, arbitrary MQTT binary payloads are routed "as is" by Crossbar.io without touching or interpretation.
 
-This opens up whole new possibilities, eg immediately integrate MQTT client devices into a larger WAMP based application or system
+This means, unmodified MQTT clients can connect to Crossbar.io, and events published by these clients are dispatched to both other MQTT subscribers as well as WAMP subscribers.
 
-## Demo
+The MQTT application payload is transmitted without modification passing through the payload as a binary string.
 
-The demo make use of the MQTT bridge now included with Crossbar.io 17.2.1 and later.
+This is using a WAMP AP feature: **payload transparency**.
 
-You need to install `paho-mqtt` to run the MQTT client which you can
-do via pip:
+WAMP subscribers need to be aware of the binary payload they will receive, and hence will need to have a **payload codec** set on the client session.
 
-   pip install paho-mqtt
+## Testing
 
-Then, with the Crossbar.io router running from [examples/router](https://github.com/crossbario/autobahn-python/tree/master/examples/router) dir you
-can start up either the WAMP or MQTT client first (ideally in
-different shells):
+In a first terminal, start Crossbar.io from this directory:
 
-   python wamp-client.py
-   python mqtt-client.py
+```console
+crossbar start
+```
 
-They both subscribe to `mqtt.test_topic` and then publish some data to
-that same topic (so try starting them in different orders etc).
+In a second termina, start a WAMP client that includes a payload codec (`MyCodec`) for the MQTT payload we use in this example:
+
+```console
+python wamp-client-mqtt.py
+```
+
+Then start a native, unmodified MQTT client in Python
+
+```console
+python mqtt-client.py
+```
+
+or JavaScript under NodeJS
+
+```console
+node mqtt-client.js
+```
 
 ## Configuration
 
-To configure MQTT in Crossbar.io, add a MQTT transport item to a router worker like here:
+Here is an example that configured **passthrough mode** on a MQTT transport for all mapped URI having the empty string as prefix, which means all URIs:
 
-
-```
-"transports": [
-    {
-        "type": "mqtt",
+```json
+{
+    "type": "mqtt",
         "endpoint": {
-            "type": "tcp",
-            "port": 1883
-        },
-        "options": {
-            "realm": "crossbardemo",
-            "role": "anonymous"
+        "type": "tcp",
+        "port": 1883
+    },
+    "options": {
+        "realm": "realm1",
+        "role": "anonymous",
+        "payload_mapping": {
+            "": {
+                "match": "prefix",
+                "type": "passthrough"
+            }
         }
     }
-]
+}
 ```
 
-Besides the listening endpoint configuration, you can configure the mapping to a WAMP realm.
+You can configured different modes on different URI patterns by adding more entries to the `payload_mapping` attribute.
 
+Similar to configuring payload modes for standalone MQTT transport, the same `options` dictionary attribute can be used with MQTT factories on **universal transports**:
 
-# note that unlike Autobahn and Crossbar, this MQTT client is threaded
-# / synchronous
-# http://www.steves-internet-guide.com/loop-python-mqtt-client/
-# http://www.steves-internet-guide.com/subscribing-topics-mqtt-client/
-# http://www.steves-internet-guide.com/publishing-messages-mqtt-client/
-# http://www.steves-internet-guide.com/mqtt/
-# http://www.steves-internet-guide.com/into-mqtt-python-client/
-
+```json
+{
+    "type": "universal",
+    "endpoint": {
+        "type": "tcp",
+        "port": 8080
+    },
+    "mqtt": {
+        "options": {
+            "realm": "realm1",
+            "role": "anonymous",
+            "payload_mapping": {
+                "": {
+                    "match": "prefix",
+                    "type": "passthrough"
+                }
+            }
+        }
+    },
+    "rawsocket": {
+        "serializers": [
+            "cbor", "msgpack", "ubjson", "json"
+        ]
+    },
+    "websocket": {
+        "ws": {
+            "type": "websocket",
+            "serializers": [
+                "cbor", "msgpack", "ubjson", "json"
+            ]
+        }
+    },
+    "web": {
+        "paths": {
+            "/": {
+                "type": "static",
+                "directory": "..",
+                "options": {
+                    "enable_directory_listing": true
+                }
+            }
+        }
+    }
+}
+```
