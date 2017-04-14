@@ -1,5 +1,62 @@
 # Using MQTT with Crossbar.io
 
+## Testing
+
+There are 3 Crossbar.io test node configurations
+
+* [passthrough](passthrough)
+* [native](native)
+* [dynamic](dynamic)
+
+and 8 example clients:
+
+* [mqtt-client.js](mqtt-client.js)
+* [mqtt-client.py](mqtt-client.py)
+* [mqtt-client-wamp.js](mqtt-client-wamp.js)
+* [mqtt-client-wamp.py](mqtt-client-wamp.py)
+* [wamp-client.js](wamp-client.js)
+* [wamp-client.py](wamp-client.py)
+* [wamp-client-mqtt.js](wamp-client-mqtt.js)
+* [wamp-client-mqtt.py](wamp-client-mqtt.py)
+
+These can be run in the following combinations:
+
+### Testing passthrough mode
+
+In a first terminal, run Crossbar.io from the [passthrough](passthrough) directory.
+
+In further terminals, run any of the following example clients
+
+* [mqtt-client.js](mqtt-client.js)
+* [mqtt-client.py](mqtt-client.py)
+* [wamp-client-mqtt.js](wamp-client-mqtt.js)
+* [wamp-client-mqtt.py](wamp-client-mqtt.py)
+
+### Testing native mode
+
+In a first terminal, run Crossbar.io from the [native](native) directory.
+
+In further terminals, run any of the following example clients
+
+* [mqtt-client-wamp.js](mqtt-client-wamp.js)
+* [mqtt-client-wamp.py](mqtt-client-wamp.py)
+* [wamp-client.py](wamp-client.py)
+* [wamp-client.js](wamp-client.js)
+
+### Testing dynamic mode
+
+In a first terminal, run Crossbar.io from the [dynamic](dynamic) directory.
+
+In further terminals, run any of the following example clients
+
+* [mqtt-client.js](mqtt-client.js)
+* [mqtt-client.py](mqtt-client.py)
+* [wamp-client.js](wamp-client.js)
+* [wamp-client.py](wamp-client.py)
+
+
+### Appendix
+
 MQTT is completely agnostic to application payload. Application payload in MQTT is a (single) binary string.
 
 In WAMP, application payload is carried in structured form (args, kwargs), and auxiliary information for the interaction (call, invocation, publish, event) is exposed as well to enable rich, standard and custom semantics.
