@@ -3,6 +3,9 @@
     "workers": [
         {
             "type": "router",
+            "options": {
+                "pythonpath": [".."]
+            },
             "realms": [
                 {
                     "name": "realm1",
@@ -40,7 +43,14 @@
                     "options": {
                         "realm": "realm1",
                         "role": "anonymous",
-                        "payload_format": "cbor"
+                        "payload_mapping": {
+                            "": {
+                                "type": "dynamic",
+                                "realm": "realm1",
+                                "encoder": "com.example.mqtt.encode",
+                                "decoder": "com.example.mqtt.decode"
+                            }
+                        }
                     }
                 },
                 {
@@ -53,7 +63,14 @@
                         "options": {
                             "realm": "realm1",
                             "role": "anonymous",
-                            "payload_format": "cbor"
+                            "payload_mapping": {
+                                "": {
+                                    "type": "dynamic",
+                                    "realm": "realm1",
+                                    "encoder": "com.example.mqtt.encode",
+                                    "decoder": "com.example.mqtt.decode"
+                                }
+                            }
                         }
                     },
                     "rawsocket": {
@@ -80,6 +97,14 @@
                             }
                         }
                     }
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "codec.MyCodec",
+                    "realm": "realm1",
+                    "role": "anonymous"
                 }
             ]
         }
