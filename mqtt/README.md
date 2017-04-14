@@ -2,11 +2,13 @@
 
 ## Introduction
 
-Crossbar.io includes a MQTT bridge that not only makes it a full scale, great MQTT broker on its own, but also allows WAMP and MQTT publishers and subscribers talk to each other transparently.
+Crossbar.io is a multi-protocol router with support for MQTT Version 3.1.1.
 
-This opens up whole new possibilities, eg immediately integrate MQTT client devices into a larger WAMP based application or system
+You can use Crossbar.io both as a standalone MQTT broker, and to integrate MQTT clients with a WAMP based system.
 
-Crossbar.io is a multi-protocol router with support for MQTT Version 3.1.1. You can use Crossbar.io both as a standalone MQTT broker, and to integrate MQTT clients with a WAMP based system.
+The latter is possible as Crossbar.io includes a MQTT bridge that allows WAMP and MQTT publishers and subscribers talk to each other transparently.
+
+This opens up whole new possibilities, eg immediately integrate MQTT client devices into a larger WAMP based application, add native remote procedure call functionality to an MQTT based system or gradually migrating an existing MQTT system towards WAMP.
 
 
 ## Payload Mapping
@@ -84,6 +86,9 @@ In further terminals, run any of the following example clients
 * [wamp-client-mqtt.js](wamp-client-mqtt.js)
 * [wamp-client-mqtt.py](wamp-client-mqtt.py)
 
+In passthrough mode, Crossbar.io is completely unaware of the MQTT payload it transfers, and the MQTT clients are left unchanged completely, but the WAMP clients need to have codecs set for the incoming native MQTT payload to get parsed.
+
+
 ### Testing native mode
 
 In a first terminal, run Crossbar.io from the [native](native) directory.
@@ -95,6 +100,9 @@ In further terminals, run any of the following example clients
 * [wamp-client.py](wamp-client.py)
 * [wamp-client.js](wamp-client.js)
 
+In native mode, Crossbar.io will parse the binary MQTT application payload according to the configured serializer, and expect a dict with `args` and `kwargs`, and possibly options.
+
+
 ### Testing dynamic mode
 
 In a first terminal, run Crossbar.io from the [dynamic](dynamic) directory.
@@ -105,3 +113,5 @@ In further terminals, run any of the following example clients
 * [mqtt-client.py](mqtt-client.py)
 * [wamp-client.js](wamp-client.js)
 * [wamp-client.py](wamp-client.py)
+
+In dynamic mode, both unmodified MQTT and unmodified WAMP clients talk with each other. This is possible as Crossbar.io calls into a custom payload codec provided as two user WAMP procedures.
