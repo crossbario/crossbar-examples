@@ -87,9 +87,9 @@ class Component2(ApplicationSession):
         reg4 = yield self.register(failme, u'com.myapp.encrypted.failme', options=options)
 
         def on_hello(msg, details=None):
-            self.log.info('event received: msg="{}", details={}', msg=msg, details=details)
+            self.log.info('event received: msg="{msg}", details={details}', msg=msg, details=details)
 
-        options = SubscribeOptions(details_arg='details')
+        options = SubscribeOptions(details=True)
         sub1 = yield self.subscribe(on_hello, u'com.myapp.hello', options=options)
         sub2 = yield self.subscribe(on_hello, u'com.myapp.encrypted.hello', options=options)
 
