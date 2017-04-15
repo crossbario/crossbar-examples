@@ -19,13 +19,13 @@ class MyCodec(ApplicationSession):
             options = {
                 'args': [pid, seq, ran]
             }
-            self.log.info('decode {mapped_topic}: {from_mqtt} -> {to_wamp}', mapped_topic=mapped_topic, from_mqtt=payload, to_wamp=options)
+            self.log.info('MyCodec.decode "{topic}": from_mqtt={from_mqtt} -> to_wamp={to_wamp}', topic=topic, from_mqtt=payload, to_wamp=options)
             return options
 
         def encode(mapped_topic, topic, args, kwargs):
             pid, seq, ran = args
             payload = struct.pack(FORMAT, pid, seq, ran)
-            self.log.info('encode {mapped_topic}: {from_wamp} -> {to_mqtt}', mapped_topic=mapped_topic, from_wamp={u'args': args}, to_mqtt=payload)
+            self.log.info('MyCodec.encode "{topic}": from_wamp={from_wamp} -> to_mqtt={to_mqtt}', topic=topic, from_wamp={u'args': args}, to_mqtt=payload)
             return payload
 
         prefix = u'com.example.mqtt'
