@@ -5,7 +5,11 @@ from flask import Flask, render_template
 #
 app = Flask(__name__)
 
+app.config.seq = 0
 
 @app.route('/')
 def page_home():
-    return render_template('index.html', message="Hello from Crossbar.io")
+    app.config.seq += 1
+    return render_template('index.html',
+                           message="Hello from Crossbar.io",
+                           seq=app.config.seq)

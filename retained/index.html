@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Retained Publications</h1>
+      <p>Open JavaScript console to watch output.</p>
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="/shared/autobahn/autobahn.min.js"></script>
+
+      <script>
+         console.log("Runnning on AutobahnJS ", autobahn.version);
+
+         var wsuri;
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         var t1 = null;
+         var topic = 'com.example.topic1';
+
+         connection.onopen = function (session, details) {
+
+            console.log("connected:", details);
+
+            function on_event (args, kwargs, details) {
+               if (details.retained) {
+                  console.log('retained event received!', args[0], details);
+               } else {
+                  console.log('regular event received', args[0], details);
+               }
+            }
+
+            var subscribe_options = {
+               match: 'exact',
+               get_retained: true
+            };
+
+            session.subscribe(topic, on_event, subscribe_options).then(
+               function (sub) {
+                  console.log("subscribed successfully", sub);
+               },
+               function (err) {
+                  console.log("failed to subscribed: " + err);
+               }
+            );
+
+            var counter = 0;
+            t1 = setInterval(function () {
+
+               var publish_options = {
+                  acknowledge: true,
+                  exclude_me: false,
+                  retain: true
+               };
+
+               session.publish(topic, [counter], null, publish_options).then(
+                  function (pub) {
+                     console.log('published to "' + topic + '" with counter=' + counter, pub);
+                  },
+                  function (err) {
+                     console.log('failed to publish: ' + err);
+                  }
+               );
+
+               counter += 1;
+            }, 2000);
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("connection closed: " + reason, details);
+            if (t1) {
+               clearInterval(t1);
+               t1 = null;
+            }
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
