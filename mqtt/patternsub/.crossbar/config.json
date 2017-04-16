@@ -1,0 +1,137 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "pythonpath": [".."]
+            },
+            "realms": [
+                {
+                    "name": "codec",
+                    "roles": [
+                        {
+                            "name": "codec",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.mqtt.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": false,
+                                        "register": true,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "mqtt",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 1883
+                    },
+                    "options": {
+                        "realm": "realm1",
+                        "role": "anonymous",
+                        "payload_mapping": {
+                            "": {
+                                "type": "dynamic",
+                                "realm": "codec",
+                                "encoder": "com.example.mqtt.encode",
+                                "decoder": "com.example.mqtt.decode"
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "universal",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "mqtt": {
+                        "options": {
+                            "realm": "realm1",
+                            "role": "anonymous",
+                            "payload_mapping": {
+                                "": {
+                                    "type": "dynamic",
+                                    "realm": "codec",
+                                    "encoder": "com.example.mqtt.encode",
+                                    "decoder": "com.example.mqtt.decode"
+                                }
+                            }
+                        }
+                    },
+                    "rawsocket": {
+                        "serializers": [
+                            "cbor", "msgpack", "ubjson", "json"
+                        ]
+                    },
+                    "websocket": {
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "ubjson", "json"
+                            ]
+                        }
+                    },
+                    "web": {
+                        "paths": {
+                            "/": {
+                                "type": "static",
+                                "directory": "..",
+                                "options": {
+                                    "enable_directory_listing": true
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "codec.MyCodec",
+                    "realm": "codec",
+                    "role": "codec"
+                }
+            ]
+        }
+    ]
+}
