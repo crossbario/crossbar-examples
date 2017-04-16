@@ -32,7 +32,7 @@
 
             function on_event (args, kwargs, details) {
                if (details.retained) {
-                  console.log('retained event received!', args[0], details);
+                  console.log('RETAINED event received!', args[0], details);
                } else {
                   console.log('regular event received', args[0], details);
                }
@@ -43,6 +43,8 @@
                get_retained: true
             };
 
+            // subscribe to a topic, and request to receive any retained
+            // events immediately
             session.subscribe(topic, on_event, subscribe_options).then(
                function (sub) {
                   console.log("subscribed successfully", sub);
@@ -52,6 +54,7 @@
                }
             );
 
+            // publish a new event every 2s with "retain flag" set
             var counter = 0;
             t1 = setInterval(function () {
 

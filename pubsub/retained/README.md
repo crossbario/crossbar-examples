@@ -1,5 +1,14 @@
 # Event Retention
 
+## tl;dr
+
+* `PublishOptions.retain`: set to `true` to publish an event that should be retained
+* `SubscribeOptions.get_retained`: subscribe and immediately receive retained events (if any)
+* `EventDetails.retained`: in an event received, this flags signal if the event was retained, or an event normally dispatched
+
+
+## Background
+
 When a client subscribes to a topic, it will receive all events published to that topic _after_ it has subscribed. Events published _before_ a client has subscribed to a topic are missed.
 
 There are different ways for a client to get at events it missed:
@@ -15,6 +24,9 @@ For example, imagine a sensor publishing a new sensor reading every 60s. When a 
 Usually, you would need to implement a remote procedure either in the sensor component or in a separate backend component that caches the last known good event published to the topic, and returns the event upon being called.
 
 With **event retention**, Crossbar.io will remember the last know good event published to a topic and provide the event to new subscribers as if the event would have been in the moment the subscriber subscribes.
+
+
+## Usage
 
 To publish an event to be available as the retained event, set the `retain` flag to `true`. Eg in AutobahnJS:
 
