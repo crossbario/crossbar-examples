@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Retained Publications</h1>
+      <p>Open JavaScript console to watch output.</p>
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="/shared/autobahn/autobahn.min.js"></script>
+
+      <script>
+         console.log("Runnning on AutobahnJS ", autobahn.version);
+
+         var wsuri;
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" +
+                        document.location.host + "/ws";
+         }
+
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: "realm1"
+         });
+
+         var testament_topic = 'com.example.testament';
+
+         connection.onopen = function (session, details) {
+
+            console.log("connected: " + session.id, details);
+
+            function on_testament (args, kwargs, details) {
+               console.log('testament event received', args, kwargs, details);
+            }
+
+            session.subscribe(testament_topic, on_testament).then(
+               function (sub) {
+                  console.log("subscribed successfully to testament events", sub);
+               },
+               function (err) {
+                  console.log("failed to subscribed to testament events " + err);
+               }
+            );
+
+            for (var i = 0; i < 5; ++i) {
+
+               testament_args = ['this is my testament!'];
+               testament_kwargs = {foo: i, bar: 'baz', sess: session.id};
+
+               session.call('wamp.session.add_testament',
+                            [testament_topic, testament_args, testament_kwargs],
+                            {scope: 'destroyed'}).then(
+                  function (res) {
+                     console.log('testament added!', res);
+                  },
+                  function (err) {
+                     console.log('adding testament failed!', err);
+                  }
+               );
+            }
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("connection closed: " + reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
