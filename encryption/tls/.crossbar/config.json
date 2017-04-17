@@ -144,12 +144,12 @@
                                 "certificate": "client.crt",
                                 "key": "client.key",
                                 "ca_certificates": [
-                                    "intermediate.cert.pem",
-                                    "ca.cert.pem"
+                                    "ca.cert.pem",
+                                    "intermediate.cert.pem"
                                 ]
                             }
                         },
-                        "url": "wss://127.0.0.1/ws"
+                        "url": "wss://localhost:8083/ws"
                     }
                 }
             ]
