@@ -80,7 +80,7 @@
                         "tls": {
                             "certificate": "server.crt",
                             "key": "server.key",
-                            "dhparam": "dhparam",
+                            "dhparam": "dhparam.pem",
                             "ca_certificates": [
                                 "intermediate.cert.pem",
                                 "ca.cert.pem"
@@ -144,8 +144,8 @@
                                 "certificate": "client.crt",
                                 "key": "client.key",
                                 "ca_certificates": [
-                                    "ca.cert.pem",
-                                    "intermediate.cert.pem"
+                                    "intermediate.cert.pem",
+                                    "ca.cert.pem"
                                 ]
                             }
                         },
