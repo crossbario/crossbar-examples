@@ -12,5 +12,8 @@ start:
 		-e CBREALM='crossbardemo' \
 		crossbario/autobahn-python-armhf
 
+build:
+	docker build -t iotcookbook-colostrip -f Dockerfile .
+
 setup:
 	sudo sh -c 'echo "blacklist snd_bcm2835" > /etc/modprobe.d/snd-blacklist.conf'

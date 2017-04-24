@@ -1,5 +1,0 @@
-#!/bin/sh
-
-pip install --no-cache -r requirements.txt
-
-python -u client.py
