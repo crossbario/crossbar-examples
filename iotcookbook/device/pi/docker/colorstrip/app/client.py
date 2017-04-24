@@ -207,8 +207,8 @@ class ColoramaDisplay(ApplicationSession):
 if __name__ == '__main__':
 
     # Crossbar.io connection configuration
-    url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
-    realm = os.environ.get('CBREALM', u'realm1')
+    url = os.environ.get('CBURL', u'wss://demo.crossbar.io/ws')
+    realm = os.environ.get('CBREALM', u'crossbardemo')
 
     # parse command line parameters
     parser = argparse.ArgumentParser()

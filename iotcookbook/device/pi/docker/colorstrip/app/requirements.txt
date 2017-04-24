@@ -1,1 +1,2 @@
 # add component specific requirements here
+rpi_ws281x
