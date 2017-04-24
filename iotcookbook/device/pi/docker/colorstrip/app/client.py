@@ -68,18 +68,22 @@ class ColoramaDisplay(ApplicationSession):
         ]:
             yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
 
-        self.flash()
+        yield self.color_wipe(255, 255, 255)
 
         self.log.info("ColoramaDisplay ready!")
 
-    @inlineCallbacks
-    def flash(self, delay=50, repeat=5):
-        delay = float(delay) / 1000.
-        for i in range(repeat):
-            self.set_color(0xe1, 0xda, 0x05)
-            yield sleep(2 * delay)
-            self.set_color(0x52, 0x42, 0x00)
-            yield sleep(delay)
+        yield self.flash()
+
+    def wheel(self, pos):
+        """Generate rainbow colors across 0-255 positions."""
+        if pos < 85:
+            return (pos * 3, 255 - pos * 3, 0)
+        elif pos < 170:
+            pos -= 85
+            return (255 - pos * 3, 0, pos * 3)
+        else:
+            pos -= 170
+            return (0, pos * 3, 255 - pos * 3)
 
     @inlineCallbacks
     def lightshow(self):
@@ -94,13 +98,23 @@ class ColoramaDisplay(ApplicationSession):
         # Rainbow animations.
         yield self.rainbow()
         yield self.rainbow_cycle()
-        #yield self.theater_chase_rainbow()
-        yield self.flash()
+        yield self.theater_chaserainbow()
+
+    @inlineCallbacks
+    def flash(self, delay=50, repeat=5):
+        self.log.info('flash animation starting ..')
+        delay = float(delay) / 1000.
+        for i in range(repeat):
+            self.set_color(0xe1, 0xda, 0x05)
+            yield sleep(2 * delay)
+            self.set_color(0x52, 0x42, 0x00)
+            yield sleep(delay)
 
     # Define functions which animate LEDs in various ways.
     @inlineCallbacks
     def color_wipe(self, r, g, b, wait_ms=50):
         """Wipe color across display a pixel at a time."""
+        self.log.info('color-wipe animation starting ..')
         for i in range(self._leds.numPixels()):
             self.set_color(r, g, b, i)
             yield sleep(wait_ms / 1000.0)
@@ -108,6 +122,7 @@ class ColoramaDisplay(ApplicationSession):
     @inlineCallbacks
     def theater_chase(self, r, g, b, wait_ms=50, iterations=10):
         """Movie theater light style chaser animation."""
+        self.log.info('theater-chase animation starting ..')
         for j in range(iterations):
             for q in range(3):
                 for i in range(0, self._leds.numPixels(), 3):
@@ -116,20 +131,10 @@ class ColoramaDisplay(ApplicationSession):
                 for i in range(0, self._leds.numPixels(), 3):
                     self.set_color(0, 0, 0, i + q)
 
-    def wheel(self, pos):
-        """Generate rainbow colors across 0-255 positions."""
-        if pos < 85:
-            return (pos * 3, 255 - pos * 3, 0)
-        elif pos < 170:
-            pos -= 85
-            return (255 - pos * 3, 0, pos * 3)
-        else:
-            pos -= 170
-            return (0, pos * 3, 255 - pos * 3)
-
     @inlineCallbacks
     def rainbow(self, wait_ms=20, iterations=1):
         """Draw rainbow that fades across all pixels at once."""
+        self.log.info('rainbow animation starting ..')
         for j in range(256 * iterations):
             for i in range(self._leds.numPixels()):
                 r, g, b = self.wheel((i + j) & 255)
@@ -139,15 +144,17 @@ class ColoramaDisplay(ApplicationSession):
     @inlineCallbacks
     def rainbow_cycle(self, wait_ms=20, iterations=5):
         """Draw rainbow that uniformly distributes itself across all pixels."""
+        self.log.info('rainbow-cycle animation starting ..')
         for j in range(256 * iterations):
             for i in range(self._leds.numPixels()):
-                r, g, b = self.wheel(((i * 256 / self._leds.numPixels()) + j) & 255)
+                r, g, b = self.wheel(int((i * 256 / self._leds.numPixels()) + j) & 255)
                 self.set_color(r, g, b, i)
             yield sleep(wait_ms / 1000.0)
 
     @inlineCallbacks
     def theater_chaserainbow(self, wait_ms=50):
         """Rainbow movie theater light style chaser animation."""
+        self.log.info('theater-chaserainbow animation starting ..')
         for j in range(256):
             for q in range(3):
                 for i in range(0, self._leds.numPixels(), 3):
@@ -230,7 +237,7 @@ if __name__ == '__main__':
         u'led_pin': 12,             # GPIO pin connected to the pixels (must support PWM!).
         u'led_freq_hz': 800000,     # LED signal frequency in hertz (usually 800khz)
         u'led_dma': 5,              # DMA channel to use for generating signal (try 5)
-        u'led_brightness': 96,      # Set to 0 for darkest and 255 for brightest
+        u'led_brightness': 255,      # Set to 0 for darkest and 255 for brightest
         u'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
     }
 
