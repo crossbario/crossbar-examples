@@ -6,6 +6,7 @@ start:
 		--device /dev/mem \
 		--device /dev/gpiomem \
 		--privileged \
+		--net=host \
 		-v ${PWD}/app:/app \
 		-e CBURL='wss://demo.crossbar.io/ws' \
 		-e CBREALM='crossbardemo' \
