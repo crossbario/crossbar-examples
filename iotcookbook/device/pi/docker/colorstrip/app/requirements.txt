@@ -1,2 +1,4 @@
 # add component specific requirements here
+pyopenssl
+service_identity
 rpi_ws281x

@@ -1,7 +1,15 @@
 .PHONY: start
 
 start:
-	docker run -v ${PWD}/app:/app  -it --rm --link crossbar crossbario/autobahn-python-armhf
+	docker run -it --rm \
+		--device /dev/ttyAMA0 \
+		--device /dev/mem \
+		--device /dev/gpiomem \
+		--privileged \
+		-v ${PWD}/app:/app \
+		-e CBURL='wss://demo.crossbar.io/ws' \
+		-e CBREALM='crossbardemo' \
+		crossbario/autobahn-python-armhf
 
 setup:
 	sudo sh -c 'echo "blacklist snd_bcm2835" > /etc/modprobe.d/snd-blacklist.conf'
