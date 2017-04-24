@@ -1,0 +1,7 @@
+#!/bin/sh
+
+pip install --no-cache -r requirements.txt
+
+python -u client_tx.py
+
+python -u client_aio.py
