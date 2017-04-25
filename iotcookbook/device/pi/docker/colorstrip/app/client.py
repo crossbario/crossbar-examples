@@ -37,7 +37,7 @@ class ColoramaDisplay(ApplicationSession):
     def onJoin(self, details):
 
         self._serial = get_serial()
-        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.pixelstrip'.format(self._serial)
+        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.colorstrip'.format(self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("ColoramaDisplay connected: {details}", details=details)
