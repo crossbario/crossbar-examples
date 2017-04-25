@@ -1,7 +1,7 @@
 FROM crossbario/autobahn-python-armhf
 
 # install component specific dependencies
-RUN pip install pyopenssl service_identity rpi_ws281x
+RUN pip install pyopenssl service_identity RPi.GPIO Adafruit_GPIO
 
 # copy the component into the image
 RUN rm -rf /app/*
