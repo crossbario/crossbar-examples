@@ -1,6 +1,7 @@
 import os
 import time
 import argparse
+import random
 
 import six
 import txaio
@@ -72,7 +73,14 @@ class ColoramaDisplay(ApplicationSession):
 
         self.log.info("ColoramaDisplay ready!")
 
-        yield self.flash()
+        while True:
+            yield self.flash(delay=20, repeat=5)
+            yield self.set_color(40, 40, 40)
+            yield sleep(5)
+            cols = []
+            for i in range(3):
+                cols.append(random.randint(0, 255))
+            yield self.color_wipe(*cols, wait_ms=20, repeat=5)
 
     def wheel(self, pos):
         """Generate rainbow colors across 0-255 positions."""
@@ -105,19 +113,21 @@ class ColoramaDisplay(ApplicationSession):
         self.log.info('flash animation starting ..')
         delay = float(delay) / 1000.
         for i in range(repeat):
-            self.set_color(0xe1, 0xda, 0x05)
+            self.set_color(0xff, 0xff, 0xff)
             yield sleep(2 * delay)
-            self.set_color(0x52, 0x42, 0x00)
+            self.set_color(0x00, 0x00, 0x00)
             yield sleep(delay)
 
     # Define functions which animate LEDs in various ways.
     @inlineCallbacks
-    def color_wipe(self, r, g, b, wait_ms=50):
+    def color_wipe(self, r, g, b, wait_ms=50, repeat=1):
         """Wipe color across display a pixel at a time."""
         self.log.info('color-wipe animation starting ..')
-        for i in range(self._leds.numPixels()):
-            self.set_color(r, g, b, i)
-            yield sleep(wait_ms / 1000.0)
+        for i in range(repeat):
+            yield self.set_color(0, 0, 0)
+            for i in range(self._leds.numPixels()):
+                self.set_color(r, g, b, i)
+                yield sleep(wait_ms / 1000.0)
 
     @inlineCallbacks
     def theater_chase(self, r, g, b, wait_ms=50, iterations=10):
