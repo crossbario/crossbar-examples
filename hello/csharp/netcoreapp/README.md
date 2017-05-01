@@ -1,4 +1,5 @@
 Run 
 > dotnet restore src 
-and then
+
+and then run
 > crossbar start
