@@ -1,6 +1,6 @@
 ﻿//###############################################################################
 //##
-//##  Copyright (C) 2014, Tavendo GmbH and/or collaborators. All rights reserved.
+//##  Copyright (C) 2017, Tavendo GmbH and/or collaborators. All rights reserved.
 //##
 //##  Redistribution and use in source and binary forms, with or without
 //##  modification, are permitted provided that the following conditions are met:
@@ -27,12 +27,14 @@
 //###############################################################################
 
 using System;
-using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using SystemEx;
 using WampSharp.Core.Listener;
 using WampSharp.V2;
 using WampSharp.V2.Client;
 using WampSharp.V2.Core.Contracts;
+using WampSharp.V2.Fluent;
+using WampSharp.V2.PubSub;
 using WampSharp.V2.Realm;
 using WampSharp.V2.Rpc;
 
@@ -62,10 +64,13 @@ namespace Hello
         {
             Console.WriteLine("Connecting to {0}, realm {1}", wsuri, realm);
 
-            DefaultWampChannelFactory factory = new DefaultWampChannelFactory();
+            WampChannelFactory factory = new WampChannelFactory();
 
             IWampChannel channel =
-                factory.CreateJsonChannel(wsuri, realm);
+                factory.ConnectToRealm(realm)
+                .WebSocketTransport(wsuri)
+                .JsonSerialization()
+                .Build();
 
             IWampClientConnectionMonitor monitor = channel.RealmProxy.Monitor;
             
@@ -77,28 +82,30 @@ namespace Hello
             IWampRealmServiceProvider services = channel.RealmProxy.Services;
 
             // SUBSCRIBE to a topic and receive events
-            ISubject<string> helloSubject = 
-                services.GetSubject<string>("com.example.onhello");
+            HelloSubscriber subscriber = new HelloSubscriber();
 
-            IDisposable subscription =
-                helloSubject.Subscribe
-                    (x => Console.WriteLine("event for 'onhello' received: {0}", x));
+            IAsyncDisposable subscriptionDisposable =
+                await services.RegisterSubscriber(subscriber)
+                              .ConfigureAwait(false);
 
             Console.WriteLine("subscribed to topic 'onhello'");
-
 
             // REGISTER a procedure for remote calling
             Add2Service callee = new Add2Service();
 
-            await services.RegisterCallee(callee)
+            IAsyncDisposable registrationDisposable =
+                await services.RegisterCallee(callee)
                 .ConfigureAwait(false);
             
             Console.WriteLine("procedure add2() registered");
 
 
             // PUBLISH and CALL every second... forever
-            ISubject<int> onCounterSubject =
-                services.GetSubject<int>("com.example.oncounter");
+            CounterPublisher publisher =
+                new CounterPublisher();
+
+            IDisposable publisherDisposable =
+                channel.RealmProxy.Services.RegisterPublisher(publisher);
 
             IMul2Service proxy =
                 services.GetCalleeProxy<IMul2Service>();
@@ -108,7 +115,7 @@ namespace Hello
             while (true)
             {
                 // PUBLISH an event
-                onCounterSubject.OnNext(counter);
+                publisher.Publish(counter);
                 Console.WriteLine("published to 'oncounter' with counter {0}", counter);
                 counter++;
 
@@ -129,11 +136,49 @@ namespace Hello
                     }
                 }
 
-
                 await Task.Delay(TimeSpan.FromSeconds(1))
                     .ConfigureAwait(false);
             }
         }
+
+        #region Subscriber
+
+        public interface IHelloSubscriber
+        {
+            [WampTopic("com.example.onhello")]
+            void OnHello(string msg);
+        }
+
+        public class HelloSubscriber : IHelloSubscriber
+        {
+            public void OnHello(string msg)
+            {
+                Console.WriteLine("event for 'onhello' received: {0}", msg);
+            }
+        }
+
+
+        #endregion
+
+        #region Publisher
+
+        public interface ICounterPublisher
+        {
+            [WampTopic("com.example.oncounter")]
+            event Action<int> OnCounter;
+        }
+
+        public class CounterPublisher : ICounterPublisher
+        {
+            public event Action<int> OnCounter;
+
+            public void Publish(int value)
+            {
+                OnCounter?.Invoke(value);
+            }
+        }
+
+        #endregion
 
         #region Callee
 
