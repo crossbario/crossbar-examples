@@ -3,6 +3,7 @@
 crossbar:
 	sudo docker run \
 		-v ${PWD}/crossbar:/node \
+		-u 1000 \
 		-p 8080:8080 \
 		--name crossbar \
 		--rm -it crossbario/crossbar

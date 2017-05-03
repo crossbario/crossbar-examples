@@ -47,7 +47,7 @@ class AppSession(ApplicationSession):
         def onhello(msg):
             self.log.info("event for 'onhello' received: {msg}", msg=msg)
 
-        sub = yield self.subscribe(onhello, 'com.example.onhello')
+        sub = yield self.subscribe(onhello, u'com.example.onhello')
         self.log.info("subscribed to topic 'onhello'")
 
 
@@ -57,7 +57,7 @@ class AppSession(ApplicationSession):
             self.log.info("add2() called with {x} and {y}", x=x, y=y)
             return x + y
 
-        reg = yield self.register(add2, 'com.example.add2')
+        reg = yield self.register(add2, u'com.example.add2')
         self.log.info("procedure add2() registered")
 
 
@@ -68,7 +68,7 @@ class AppSession(ApplicationSession):
 
             ## PUBLISH an event
             ##
-            yield self.publish('com.example.oncounter', counter)
+            yield self.publish(u'com.example.oncounter', counter)
             self.log.info("published to 'oncounter' with counter {counter}",
                           counter=counter)
             counter += 1
@@ -77,13 +77,13 @@ class AppSession(ApplicationSession):
             ## CALL a remote procedure
             ##
             try:
-                res = yield self.call('com.example.mul2', counter, 3)
+                res = yield self.call(u'com.example.mul2', counter, 3)
                 self.log.info("mul2() called with result: {result}",
                               result=res)
             except ApplicationError as e:
                 ## ignore errors due to the frontend not yet having
                 ## registered the procedure we would like to call
-                if e.error != 'wamp.error.no_such_procedure':
+                if e.error != u'wamp.error.no_such_procedure':
                     raise e
 
 
