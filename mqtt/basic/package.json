@@ -4,6 +4,7 @@
   "description": "Crossbar.io-MQTT integration MQTT test clients.",
   "main": "mqtt-client.js",
   "dependencies": {
+    "autobahn": ">=17.5.1",
     "binary-parser": "^1.1.5",
     "cbor": "^3.0.0",
     "crypto": "0.0.3",
