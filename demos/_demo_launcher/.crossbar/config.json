@@ -174,7 +174,7 @@
                     }
                 },
                 {
-                    "type": "web",
+                    "type": "universal",
                     "endpoint": {
                         "type": "tcp",
                         "port": 443,
@@ -188,21 +188,20 @@
                             "ciphers": "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256"
                         }
                     },
-                    "options": {
-                        "access_log": false,
-                        "display_tracebacks": false,
-                        "hsts": true,
-                        "hsts_max_age": 31536000
+                    "mqtt": {
+                        "options": {
+                            "realm": "iot_cookbook",
+                            "role": "anonymous",
+                            "payload_mapping": {
+                                "": {
+                                    "type": "passthrough"
+                                }
+                            }
+                        }
                     },
-                    "paths": {
-                        "/": {
-                            "type": "static",
-                            "directory": "../web"
-                        },
-                        "shared": {
-                            "type": "static",
-                            "directory": "../../../_shared-web-resources"
-                        },
+                    "rawsocket": {
+                    },
+                    "websocket": {
                         "ws": {
                             "type": "websocket",
                             "url": "wss://demo.crossbar.io",
@@ -230,98 +229,116 @@
                                     }
                                 }
                             }
+                        }
+                    },
+                    "web": {
+                        "options": {
+                            "access_log": false,
+                            "display_tracebacks": false,
+                            "hsts": true,
+                            "hsts_max_age": 31536000
                         },
-                        "call": {
-                            "type": "caller",
-                            "realm": "crossbardemo",
-                            "role": "anonymous",
-                            "options": {
-                                "debug": false
-                            }
-                        },
-                        "lp": {
-                            "type": "longpoll"
-                        },
-                        "wpadlab": {
-                            "type": "static",
-                            "directory": "../../../iotcookbook/app/weights/wpadlab/web"
-                        },
-                        "wpadeuro": {
-                            "type": "static",
-                            "directory": "../../../iotcookbook/app/weights/wpadeuro"
-                        },
-                        "beatbox": {
-                            "type": "static",
-                            "directory": "../../beatbox"
-                        },
-                        "chat": {
-                            "type": "static",
-                            "directory": "../../chat"
-                        },
-                        "colorpicker": {
-                            "type": "static",
-                            "directory": "../../colorpicker"
-                        },
-                        "colorama": {
-                            "type": "static",
-                            "directory": "../../colorama"
-                        },
-                        "editform": {
-                            "type": "static",
-                            "directory": "../../editform/web"
-                        },
-                        "gauges": {
-                            "type": "static",
-                            "directory": "../../gauges"
-                        },
-                        "notification": {
-                            "type": "static",
-                            "directory": "../../notification"
-                        },
-                        "pubsub": {
-                            "type": "static",
-                            "directory": "../../pubsub"
-                        },
-                        "sliders": {
-                            "type": "static",
-                            "directory": "../../sliders"
-                        },
-                        "votes": {
-                            "type": "static",
-                            "directory": "../../votes/nodejs/web"
-                        },
-                        "visitors_counter": {
-                            "type": "static",
-                            "directory": "../../visitors_counter"
-                        },
-                        "dashboard": {
-                            "type": "static",
-                            "directory": "../../dashboard/board"
-                        },
-                        "dashboardcontroller": {
-                            "type": "static",
-                            "directory": "../../dashboard/controller"
-                        },
-                        "videocontrol": {
-                            "type": "static",
-                            "directory": "../../videocontrol/web"
-                        },
-                        "spreadsheet": {
-                            "type": "static",
-                            "directory": "../../spread"
-                        },
-                        "dispenser": {
-                            "type": "static",
-                            "directory": "../../../iotcookbook/app/dispenser/frontend"
-                        },
-                        "smart-replenishment": {
-                            "type": "static",
-                            "directory": "../../../../crossbario-projects/smart-replenishment/gastrocool/web",
-                            "options": {
-                                "enable_directory_listing": true,
-                                "mime_types": {
-                                    "png": "image/png",
-                                    "svg": "image/svg+xml"
+                        "paths": {
+                            "/": {
+                                "type": "static",
+                                "directory": "../web"
+                            },
+                            "shared": {
+                                "type": "static",
+                                "directory": "../../../_shared-web-resources"
+                            },
+                            "call": {
+                                "type": "caller",
+                                "realm": "crossbardemo",
+                                "role": "anonymous",
+                                "options": {
+                                    "debug": false
+                                }
+                            },
+                            "lp": {
+                                "type": "longpoll"
+                            },
+                            "wpadlab": {
+                                "type": "static",
+                                "directory": "../../../iotcookbook/app/weights/wpadlab/web"
+                            },
+                            "wpadeuro": {
+                                "type": "static",
+                                "directory": "../../../iotcookbook/app/weights/wpadeuro"
+                            },
+                            "beatbox": {
+                                "type": "static",
+                                "directory": "../../beatbox"
+                            },
+                            "chat": {
+                                "type": "static",
+                                "directory": "../../chat"
+                            },
+                            "colorpicker": {
+                                "type": "static",
+                                "directory": "../../colorpicker"
+                            },
+                            "colorama": {
+                                "type": "static",
+                                "directory": "../../colorama"
+                            },
+                            "editform": {
+                                "type": "static",
+                                "directory": "../../editform/web"
+                            },
+                            "gauges": {
+                                "type": "static",
+                                "directory": "../../gauges"
+                            },
+                            "notification": {
+                                "type": "static",
+                                "directory": "../../notification"
+                            },
+                            "pubsub": {
+                                "type": "static",
+                                "directory": "../../pubsub"
+                            },
+                            "sliders": {
+                                "type": "static",
+                                "directory": "../../sliders"
+                            },
+                            "votes": {
+                                "type": "static",
+                                "directory": "../../votes/nodejs/web"
+                            },
+                            "visitors_counter": {
+                                "type": "static",
+                                "directory": "../../visitors_counter"
+                            },
+                            "dashboard": {
+                                "type": "static",
+                                "directory": "../../dashboard/board"
+                            },
+                            "dashboardcontroller": {
+                                "type": "static",
+                                "directory": "../../dashboard/controller"
+                            },
+                            "videocontrol": {
+                                "type": "static",
+                                "directory": "../../videocontrol/web"
+                            },
+                            "spreadsheet": {
+                                "type": "static",
+                                "directory": "../../spread"
+                            },
+                            "dispenser": {
+                                "type": "static",
+                                "directory": "../../../iotcookbook/app/dispenser/frontend"
+                            },
+                            "smart-replenishment": {
+                                "type": "static",
+                                "directory": "../../../../crossbario-projects/smart-replenishment/gastrocool/web",
+                                "options": {
+                                    "enable_directory_listing": true,
+                                    "mime_types": {
+                                        "png": "image/png",
+                                        "svg": "image/svg+xml"
+                                    }
                                 }
                             }
                         }
