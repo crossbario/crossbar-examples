@@ -200,6 +200,9 @@
                         }
                     },
                     "rawsocket": {
+                        "serializers": [
+                            "cbor", "msgpack", "ubjson", "json"
+                        ]
                     },
                     "websocket": {
                         "ws": {
@@ -232,12 +235,6 @@
                         }
                     },
                     "web": {
-                        "options": {
-                            "access_log": false,
-                            "display_tracebacks": false,
-                            "hsts": true,
-                            "hsts_max_age": 31536000
-                        },
                         "paths": {
                             "/": {
                                 "type": "static",
@@ -246,6 +243,9 @@
                             "shared": {
                                 "type": "static",
                                 "directory": "../../../_shared-web-resources"
+                            },
+                            "info": {
+                                "type": "nodeinfo"
                             },
                             "call": {
                                 "type": "caller",
