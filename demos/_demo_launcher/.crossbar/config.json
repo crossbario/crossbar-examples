@@ -258,6 +258,10 @@
                             "lp": {
                                 "type": "longpoll"
                             },
+                            "starterkit": {
+                                "type": "static",
+                                "directory": "../../../../iotcookbook/device/pi/components"
+                            },
                             "wpadlab": {
                                 "type": "static",
                                 "directory": "../../../iotcookbook/app/weights/wpadlab/web"
