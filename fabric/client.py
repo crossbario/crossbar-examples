@@ -1,13 +1,38 @@
+
+import six
+import sys
+import os
+import argparse
+
 import txaio
 txaio.use_twisted()
 
 from twisted.internet import reactor
 from twisted.internet.error import ReactorNotRunning
+
 from autobahn.twisted.wamp import ApplicationSession
+from autobahn.twisted.wamp import ApplicationRunner
 from autobahn.wamp import cryptosign
 
 
 class ClientSession(ApplicationSession):
+
+    GLOBAL_USER_REALM = u'com.crossbario.fabric'
+    """
+    Global users realm on Crossbar.io Fabric.
+    """
+
+    GLOBAL_USER_REALM_USER_ROLE = u'user'
+    """
+    The WAMP authrole regular users get on the Crossbar.io Fabric global users
+    realm. A role different from this only makes sense for Crossbar Fabric admins.
+    """
+
+    MREALM_USER_ROLES = [u'guest', u'developer', u'operator', u'admin', u'owner']
+    """
+    All permissible roles a user can take on a management realm. This is a fixed
+    set hardwired into Crossbar.io Fabric!
+    """
 
     def __init__(self, config=None):
         self.log.info("initializing component: {config}", config=config)
@@ -171,22 +196,15 @@ class ClientSession(ApplicationSession):
 
 
 def main():
-    import six
-    import sys
-    import os
-    import argparse
-    from autobahn.twisted.wamp import ApplicationRunner
-
     # parse command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', dest='debug', action='store_true', default=False, help='Enable logging at level "debug".')
     parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid.')
     parser.add_argument('--activation_code', dest='activation_code', type=six.text_type, default=None, help='An activation code when still pairing the authentication key pair with CDC.')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
+    parser.add_argument('--request_new_activation_code', dest='request_new_activation_code', type=bool, default=False, help='Excplicitly request a _new_ activation code, when another one is still outstanding.')
+    parser.add_argument('--realm', dest='realm', type=six.text_type, default=u'com.crossbario.fabric', help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--key', dest='key', type=six.text_type, default=u'priv.key', help='The private client key file to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')
-    parser.add_argument('--routerkey', dest='routerkey', type=six.text_type, default=None, help='The public router key to verify the remote router against. A 32 bytes file containing the raw Ed25519 public key.')
     parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:9000/ws', help='The router URL (default: ws://localhost:8080/ws).')
-    parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
     options = parser.parse_args()
 
     # authid=
@@ -197,6 +215,7 @@ def main():
     else:
         txaio.start_logging(level='info')
 
+    # generate a new (private) key file when none exists
     if not os.path.exists(options.key):
         with open(options.key, 'wb') as f:
             # generate new key: simply, 32 bytes cryptographically strong random noise
@@ -211,7 +230,7 @@ def main():
         u'authid': options.authid,
         u'key': options.key,
         u'activation_code': options.activation_code,
-        u'request_new_activation_code': False
+        u'request_new_activation_code': options.request_new_activation_code
     }
     print("Connecting to {}: realm={}, authid={}".format(options.url, options.realm, options.authid))
 
