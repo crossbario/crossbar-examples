@@ -27,7 +27,7 @@ The new transport is configured like in this snippet from this example configura
 
 ```json
 {
-    "type": "unisocket",
+    "type": "universal",
     "endpoint": {
         "type": "tcp",
         "port": 8080

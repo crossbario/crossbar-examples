@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd /app
+scons
+./client
+scons -uc

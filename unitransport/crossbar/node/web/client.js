@@ -1,12 +1,10 @@
-var autobahn = require('autobahn');
-
 var connection = new autobahn.Connection({
-   url: 'ws://crossbar:8080/ws',
+   url: 'ws://localhost:8080/ws',
    realm: 'realm1'}
 );
 
-var this_service = "service3";
-var other_services = ["service0", "service1", "service2"];
+var this_service = "service0";
+var other_services = ["service1", "service2", "service3"];
 
 connection.onopen = function (session) {
 

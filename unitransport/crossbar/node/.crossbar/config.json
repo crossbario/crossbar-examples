@@ -33,7 +33,7 @@
             ],
             "transports": [
                 {
-                    "type": "unisocket",
+                    "type": "universal",
                     "endpoint": {
                         "type": "tcp",
                         "port": 8080
@@ -50,6 +50,13 @@
                             "/": {
                                 "type": "static",
                                 "directory": "../web"
+                            },
+                            "shared": {
+                                "type": "static",
+                                "directory": "../_shared-web-resources",
+                                "options": {
+                                    "enable_directory_listing": true
+                                }
                             }
                         }
                     }

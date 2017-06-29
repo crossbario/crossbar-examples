@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# we don't have additional dependencies for this demo (besides AutobahnJS,
+# which is already installed within the Docker image). But if we had,
+# we could npm install those here
+
+# npm install
+
+NODE_PATH=/usr/lib/node_modules/ node client.js
+
+# rm -rf ./node_modules
+# rm -rf .npm

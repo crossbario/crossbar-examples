@@ -18,7 +18,7 @@ class ClientSession(ApplicationSession):
     log = txaio.make_logger()
 
     _this_service = u'service1'
-    _other_services = [u'service2', u'service3']
+    _other_services = [u'service0', u'service2', u'service3']
 
 
     def onConnect(self):

@@ -9,7 +9,7 @@
 #include <tuple>
 
 static const std::string this_service = "service2";
-static const std::vector<std::string> other_services = {"service1", "service3"};
+static const std::vector<std::string> other_services = {"service0", "service1", "service3"};
 
 
 void add2(autobahn::wamp_invocation invocation)
@@ -28,8 +28,17 @@ int main(int argc, char** argv)
 
     try {
         boost::asio::io_service io;
-        auto transport = std::make_shared<autobahn::wamp_tcp_transport>(
-                io, boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(std::string("127.0.0.1")), 8080), false);
+
+        // resolve hostname "crossbar" to IP
+        boost::asio::ip::tcp::resolver resolver(io);
+        boost::asio::ip::tcp::resolver::query query("crossbar", "8080");
+        boost::asio::ip::tcp::resolver::iterator iter = resolver.resolve(query);
+        boost::asio::ip::tcp::endpoint endpoint = iter->endpoint();
+
+        // this is how you could get an endpoint given an IP directly
+        // boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string(std::string("127.0.0.1")), 8080);
+
+        auto transport = std::make_shared<autobahn::wamp_tcp_transport>(io, endpoint, false);
 
         auto session = std::make_shared<autobahn::wamp_session>(io, false);
 

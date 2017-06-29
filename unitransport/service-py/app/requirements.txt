@@ -1,1 +1,1 @@
-autobahn[twisted]
+# put your additional dependencies here
