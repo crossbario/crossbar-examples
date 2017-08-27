@@ -1,6 +1,6 @@
 # run this on 10.0.1.2
 crossbar:
-	PYTHONPATH="../../../crossbar" python -m crossbar.controller.cli start
+	crossbar start --personality=community
 
 curl:
 	curl -H "Content-Type: application/json" \
