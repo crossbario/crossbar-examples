@@ -1,8 +1,6 @@
 update:
 	docker pull crossbario/crossbar-fabric:latest
 
-build:
-	docker build -t crossbar-demos -f Dockerfile .
 
 start_cf_interactive:
 	docker run \
@@ -21,6 +19,7 @@ start_cf:
 		--detach \
 		--restart always \
 		--net=host \
+		-p 80:80 \
 		-p 443:443 \
 		-v ${PWD}:/node \
 		--name cf-node \
