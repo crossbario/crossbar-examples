@@ -1,7 +1,8 @@
+# update CF image
 update:
 	docker pull crossbario/crossbar-fabric:latest
 
-
+# start cbdemo node from CF image - interactively
 start_cf_interactive:
 	docker run \
 		--rm \
@@ -13,7 +14,7 @@ start_cf_interactive:
 		crossbario/crossbar-fabric:latest \
 			start --personality fabric --cbdir /node/.crossbar
 
-
+# start cbdemo node from CF image - daemonized
 start_cf:
 	docker run \
 		--detach \
@@ -24,5 +25,5 @@ start_cf:
 		-v ${PWD}:/node \
 		--name cbdemo \
 		--entrypoint /usr/local/bin/crossbar \
-		crossbario/crossbar-fabric:latest
+		crossbario/crossbar-fabric:latest \
 			start --personality fabric --cbdir /node/.crossbar
