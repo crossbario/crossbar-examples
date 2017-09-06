@@ -6,10 +6,10 @@
             "realms": [
                 {
                     "id": "io.crossbar.demo",
-                    "name": "xxx_crossbardemo",
+                    "name": "crossbardemo",
                     "roles": [
                         {
-                            "name": "anonymous",
+                            "name": "xxx",
                             "permissions": [
                                 {
                                     "uri": "io.crossbar.demo.",
@@ -71,10 +71,10 @@
                 },
                 {
                     "id": "io.crossbar.iotcookbook",
-                    "name": "xxx_iot_cookbook",
+                    "name": "iot_cookbook",
                     "roles": [
                         {
-                            "name": "anonymous",
+                            "name": "xxx",
                             "permissions": [
                                 {
                                     "uri": "",
@@ -184,17 +184,6 @@
                             },
                             "info": {
                                 "type": "nodeinfo"
-                            },
-                            "call": {
-                                "type": "caller",
-                                "realm": "xxx_crossbardemo",
-                                "role": "anonymous",
-                                "options": {
-                                    "debug": false
-                                }
-                            },
-                            "lp": {
-                                "type": "longpoll"
                             },
                             "starterkit": {
                                 "type": "static",
