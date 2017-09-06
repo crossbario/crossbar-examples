@@ -135,6 +135,9 @@
                         }
                     },
                     "web": {
+                        "options": {
+                            "access_log": true
+                        },
                         "paths": {
                             "/": {
                                 "type": "nodeinfo"
