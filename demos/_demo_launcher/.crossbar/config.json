@@ -178,7 +178,7 @@
                                 "type": "static",
                                 "directory": "../web"
                             },
-                            "shared": {
+                            "xxx_shared": {
                                 "type": "static",
                                 "directory": "../../../_shared-web-resources"
                             },
