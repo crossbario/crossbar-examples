@@ -192,7 +192,7 @@
                                         "https://cbdemo-ap-southeast-1.crossbar.io:*",
                                         "http://crossbar.io:*"
                                 ],
-                                "allow_null_origin": false,
+                                "allow_null_origin": true,
                                 "enable_webstatus": true,
                                 "max_frame_size": 1048576,
                                 "max_message_size": 1048576,
