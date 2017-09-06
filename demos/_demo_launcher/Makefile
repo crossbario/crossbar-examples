@@ -1,6 +1,8 @@
 update:
 	docker pull crossbario/crossbar-fabric:latest
 
+build:
+	docker build -t crossbar-demos -f Dockerfile .
 
 start_cf_interactive:
 	docker run \
@@ -10,7 +12,7 @@ start_cf_interactive:
 		-p 443:443 \
 		-v ${PWD}:/node \
 		--entrypoint /usr/local/bin/crossbar \
-		crossbario/crossbar-fabric:latest \
+		crossbar-demos \
 			start --personality fabric --cbdir /node/.crossbar
 
 
@@ -23,5 +25,5 @@ start_cf:
 		-v ${PWD}:/node \
 		--name cf-node \
 		--entrypoint /usr/local/bin/crossbar \
-		crossbario/crossbar-fabric:latest \
+		crossbar-demos \
 			start --personality fabric --cbdir /node/.crossbar
