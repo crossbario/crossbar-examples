@@ -10,7 +10,7 @@ start_cf_interactive:
 		-p 443:443 \
 		-v ${PWD}:/node \
 		--entrypoint /usr/local/bin/crossbar \
-		crossbar-demos \
+		crossbario/crossbar-fabric:latest \
 			start --personality fabric --cbdir /node/.crossbar
 
 
@@ -22,7 +22,7 @@ start_cf:
 		-p 80:80 \
 		-p 443:443 \
 		-v ${PWD}:/node \
-		--name cf-node \
+		--name cbdemo \
 		--entrypoint /usr/local/bin/crossbar \
-		crossbar-demos \
+		crossbar-demoscrossbario/crossbar-fabric:latest
 			start --personality fabric --cbdir /node/.crossbar
