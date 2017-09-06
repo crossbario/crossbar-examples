@@ -101,7 +101,7 @@
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 90
+                        "port": 80
                     },
                     "paths": {
                         "/": {
@@ -115,7 +115,7 @@
                     "url": "ws://localhost:8080",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 9080,
+                        "port": 8080,
                         "interface": "127.0.0.1"
                     }
                 },
