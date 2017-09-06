@@ -6,7 +6,7 @@
             "realms": [
                 {
                     "id": "io.crossbar.demo",
-                    "name": "crossbardemo",
+                    "name": "xxx_crossbardemo",
                     "roles": [
                         {
                             "name": "anonymous",
@@ -70,60 +70,8 @@
                     }
                 },
                 {
-                    "id": "io.crossbar.publictest",
-                    "name": "realm1",
-                    "roles": [
-                        {
-                            "name": "anonymous",
-                            "permissions": [
-                                {
-                                    "uri": "",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "call": true,
-                                        "register": true,
-                                        "publish": true,
-                                        "subscribe": true
-                                    },
-                                    "disclose": {
-                                        "caller": true,
-                                        "publisher": true
-                                    },
-                                    "cache": true
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "id": "com.showroomdummy",
-                    "name": "showroomdummy",
-                    "roles": [
-                        {
-                            "name": "anonymous",
-                            "permissions": [
-                                {
-                                    "uri": "",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "call": true,
-                                        "register": true,
-                                        "publish": true,
-                                        "subscribe": true
-                                    },
-                                    "disclose": {
-                                        "caller": false,
-                                        "publisher": false
-                                    },
-                                    "cache": true
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
                     "id": "io.crossbar.iotcookbook",
-                    "name": "iot_cookbook",
+                    "name": "xxx_iot_cookbook",
                     "roles": [
                         {
                             "name": "anonymous",
