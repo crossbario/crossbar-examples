@@ -150,17 +150,6 @@
             ],
             "transports": [
                 {
-                    "type": "websocket",
-                    "endpoint": {
-                        "type": "tcp",
-                        "port": 8080,
-                        "interface": "127.0.0.1"
-                    },
-                    "serializers": [
-                        "cbor", "msgpack", "ubjson", "json"
-                    ]
-                },
-                {
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
@@ -188,30 +177,16 @@
                             "ciphers": "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256"
                         }
                     },
-                    "mqtt": {
-                        "options": {
-                            "realm": "iot_cookbook",
-                            "role": "anonymous",
-                            "payload_mapping": {
-                                "": {
-                                    "type": "passthrough"
-                                }
-                            }
-                        }
-                    },
-                    "rawsocket": {
-                        "serializers": [
-                            "cbor", "msgpack", "ubjson", "json"
-                        ]
-                    },
                     "websocket": {
                         "ws": {
                             "type": "websocket",
                             "url": "wss://demo.crossbar.io",
                             "serializers": [
-                                "cbor", "msgpack", "ubjson", "json"
+                                "cbor", "msgpack", "json"
                             ],
                             "options": {
+                                "allowed_origins": ["demo.crossbar.io"],
+                                "allow_null_origin": false,
                                 "enable_webstatus": true,
                                 "max_frame_size": 1048576,
                                 "max_message_size": 1048576,
