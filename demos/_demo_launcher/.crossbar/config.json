@@ -185,7 +185,7 @@
                                 "cbor", "msgpack", "json"
                             ],
                             "options": {
-                                "allowed_origins": ["https://demo.crossbar.io"],
+                                "allowed_origins": ["https://demo.crossbar.io", "http://crossbar.io"],
                                 "allow_null_origin": false,
                                 "enable_webstatus": true,
                                 "max_frame_size": 1048576,
