@@ -187,7 +187,7 @@
                             },
                             "call": {
                                 "type": "caller",
-                                "realm": "crossbardemo",
+                                "realm": "xxx_crossbardemo",
                                 "role": "anonymous",
                                 "options": {
                                     "debug": false
