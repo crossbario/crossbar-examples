@@ -9,10 +9,10 @@ start_cf_interactive:
 		--net=host \
 		-p 80:80 \
 		-p 443:443 \
-		-v ${PWD}:/node \
+		-v ${PWD}/..:/node \
 		--entrypoint /usr/local/bin/crossbar \
 		crossbario/crossbar-fabric:latest \
-			start --personality fabric --cbdir /node/.crossbar
+			start --personality fabric --cbdir /node/_demo_launcher/.crossbar
 
 # start cbdemo node from CF image - daemonized
 start_cf:
@@ -22,8 +22,8 @@ start_cf:
 		--net=host \
 		-p 80:80 \
 		-p 443:443 \
-		-v ${PWD}:/node \
+		-v ${PWD}/..:/node \
 		--name cbdemo \
 		--entrypoint /usr/local/bin/crossbar \
 		crossbario/crossbar-fabric:latest \
-			start --personality fabric --cbdir /node/.crossbar
+			start --personality fabric --cbdir /node/_demo_launcher/.crossbar
