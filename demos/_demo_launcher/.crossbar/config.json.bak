@@ -276,6 +276,84 @@
                     }
                 }
             ]
+        },
+        {
+            "type": "guest",
+            "executable": "node",
+            "arguments": [
+                "backend.js"
+            ],
+            "options": {
+                "workdir": "../../votes/nodejs/node",
+                "watch": {
+                    "directories": [
+                        "../../votes/nodejs/node"
+                    ],
+                    "action": "restart"
+                },
+                "env": {
+                    "vars": {
+                        "NODE_PATH": "./node_modules"
+                    }
+                }
+            }
+        },
+        {
+            "type": "guest",
+            "executable": "node",
+            "arguments": [
+                "editform_backend.js"
+            ],
+            "options": {
+                "workdir": "../../editform/node",
+                "watch": {
+                    "directories": [
+                        "../../editform/node"
+                    ],
+                    "action": "restart"
+                },
+                "env": {
+                    "vars": {
+                        "NODE_PATH": "../node_modules"
+                    }
+                }
+            }
+        },
+        {
+            "type": "guest",
+            "executable": "node",
+            "arguments": [
+                "backend.js"
+            ],
+            "options": {
+                "workdir": "../../visitors_counter/js",
+                "watch": {
+                    "directories": [
+                        "../../visitors_counter/js"
+                    ],
+                    "action": "restart"
+                },
+                "env": {
+                    "vars": {
+                        "NODE_PATH": "../node_modules"
+                    }
+                }
+            }
+        },
+        {
+            "type": "guest",
+            "executable": "node",
+            "arguments": [
+                "backend.js"
+            ],
+            "options": {
+                "workdir": "../../../../crossbario-projects/smart-replenishment/gastrocool/node",
+                "env": {
+                    "vars": {
+                        "NODE_PATH": "../node_modules"
+                    }
+                }
+            }
         }
     ]
 }
