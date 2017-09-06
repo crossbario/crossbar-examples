@@ -135,8 +135,8 @@
                         }
                     },
                     "web": {
-                        "/": {
-                            "info": {
+                        "paths": {
+                            "/": {
                                 "type": "nodeinfo"
                             }
                         }
