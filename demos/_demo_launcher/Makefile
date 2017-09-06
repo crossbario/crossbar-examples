@@ -24,5 +24,5 @@ start_cf:
 		-v ${PWD}:/node \
 		--name cbdemo \
 		--entrypoint /usr/local/bin/crossbar \
-		crossbar-demoscrossbario/crossbar-fabric:latest
+		crossbario/crossbar-fabric:latest
 			start --personality fabric --cbdir /node/.crossbar
