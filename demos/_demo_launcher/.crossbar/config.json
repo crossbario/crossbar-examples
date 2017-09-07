@@ -147,7 +147,8 @@
                                         "https://cbdemo-eu-central-1.crossbar.io:*",
                                         "https://cbdemo-us-west-1.crossbar.io:*",
                                         "https://cbdemo-ap-southeast-1.crossbar.io:*",
-                                        "http://crossbar.io:*"
+                                        "https://crossbario.com:*"
+                                        "https://crossbar.io:*"
                                 ],
                                 "allow_null_origin": false,
                                 "enable_webstatus": true,
