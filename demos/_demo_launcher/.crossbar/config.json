@@ -147,10 +147,16 @@
                                         "https://cbdemo-eu-central-1.crossbar.io:*",
                                         "https://cbdemo-us-west-1.crossbar.io:*",
                                         "https://cbdemo-ap-southeast-1.crossbar.io:*",
+
                                         "https://crossbario.com:*",
-                                        "https://crossbar.io:*"
+                                        "https://crossbar.io:*",
+
+                                        "http://localhost:*",
+                                        "https://localhost:*",
+                                        "file://",
+                                        "http://192.168.*.*:*"
                                 ],
-                                "allow_null_origin": false,
+                                "allow_null_origin": true,
                                 "enable_webstatus": true,
                                 "max_frame_size": 1048576,
                                 "max_message_size": 1048576,
