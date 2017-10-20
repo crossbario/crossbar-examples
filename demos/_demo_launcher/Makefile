@@ -1,6 +1,8 @@
 # update CF image
 update:
 	docker pull crossbario/crossbar-fabric:latest
+	docker stop cbdemo
+	docker rm cbdemo
 
 # start cbdemo node from CF image - interactively
 start_cf_interactive:
