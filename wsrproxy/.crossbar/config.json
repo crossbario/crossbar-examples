@@ -1,0 +1,78 @@
+{
+    "version": 2,
+    "controller": {},
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web"
+                        },
+                        "ws": {
+                            "type": "websocket"
+                        },
+                        "proxy1": {
+                            "type": "websocket-reverseproxy",
+                            "backend": {
+                                "type": "websocket",
+                                "endpoint": {
+                                    "type": "tcp",
+                                    "host": "127.0.0.1",
+                                    "port": 9000
+                                },
+                                "url": "ws://localhost:9000"
+                            }
+                        },
+                        "proxy2": {
+                            "type": "websocket-reverseproxy",
+                            "backend": {
+                                "type": "websocket",
+                                "endpoint": {
+                                    "type": "tcp",
+                                    "host": "127.0.0.1",
+                                    "port": 9001
+                                },
+                                "url": "ws://localhost:9001"
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
