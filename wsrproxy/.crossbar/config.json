@@ -33,6 +33,13 @@
             ],
             "transports": [
                 {
+                    "type": "websocket",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 9002
+                    }
+                },
+                {
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
@@ -68,6 +75,18 @@
                                     "port": 9001
                                 },
                                 "url": "ws://localhost:9001"
+                            }
+                        },
+                        "proxy3": {
+                            "type": "websocket-reverseproxy",
+                            "backend": {
+                                "type": "websocket",
+                                "endpoint": {
+                                    "type": "tcp",
+                                    "host": "127.0.0.1",
+                                    "port": 9002
+                                },
+                                "url": "ws://localhost:9002"
                             }
                         }
                     }
