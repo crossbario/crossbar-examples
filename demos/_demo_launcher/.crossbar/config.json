@@ -281,7 +281,7 @@
                             },
                             "prodisys": {
                                 "type": "static",
-                                "directory": "../../../../project-prodysis/test/web"
+                                "directory": "../../../../project-prodisys/test/web"
                             }
                         }
                     }
