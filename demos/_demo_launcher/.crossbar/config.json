@@ -278,6 +278,10 @@
                                         "svg": "image/svg+xml"
                                     }
                                 }
+                            },
+                            "prodisys": {
+                                "type": "static",
+                                "directory": "../../../../project-prodysis/test/web"
                             }
                         }
                     }
@@ -286,4 +290,3 @@
         }
     ]
 }
-
