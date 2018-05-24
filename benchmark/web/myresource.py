@@ -9,9 +9,9 @@ class MyResource(resource.Resource):
 
     def render_GET(self, request):
         count = 10
-        if 'count' in request.args:
+        if b'count' in request.args:
             try:
-                count = int(request.args['count'][-1])
-            except ValueError:
-                pass
-        return '*' * count
+                count = int(request.args[b'count'][-1].decode())
+            except ValueError as e:
+                print(e)
+        return b'*' * count
