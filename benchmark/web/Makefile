@@ -1,3 +1,5 @@
+TESTEE=http://matterhorn:8080
+
 # start different numbers of workers on the testee host
 crossbar_w1:
 	crossbar start --config config_w1.json
