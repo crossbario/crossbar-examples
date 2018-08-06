@@ -28,7 +28,6 @@ from __future__ import print_function
 from os import environ
 
 import os
-import argparse
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
 
@@ -45,8 +44,8 @@ class ClientSession(ApplicationSession):
     def onJoin(self, details):
         print("session attached")
         self.received = 0
-        sub = yield self.subscribe(self.on_event, u'com.myapp.hello')
-        print("Subscribed to com.myapp.hello with {}".format(sub.id))
+        sub = yield self.subscribe(self.on_event, u'com.myapp.topic1')
+        print("Subscribed to com.myapp.topic1 with {}".format(sub.id))
 
     def on_event(self, i):
         print("Got event: {}".format(i))
@@ -67,22 +66,11 @@ if __name__ == '__main__':
     url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
     realm = os.environ.get('CBREALM', u'realm1')
 
-    # parse command line parameters
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=realm, help='The realm to join (default: "realm1").')
-
-    args = parser.parse_args()
     # any extra info we want to forward to our ClientSession (in self.config.extra)
     extra=dict(
         max_events=5,  # [A] pass in additional configuration
     )
-    #url = environ.get("AUTOBAHN_DEMO_ROUTER", u"ws://192.168.0.15:8080/ws")
-    #if six.PY2 and type(url) == six.binary_type:
-    #    url = url.decode('utf8')
-    #realm = u"realm1"
-    runner = ApplicationRunner(url=args.url, realm=args.realm, extra=extra)
+    runner = ApplicationRunner(url=url, realm=realm, extra=extra)
     runner.run(ClientSession, auto_reconnect=True)
 
 
