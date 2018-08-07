@@ -7,7 +7,7 @@ try {
 
 var connection = new autobahn.Connection({
    url: 'ws://127.0.0.1:8080/ws',
-   realm: 'crossbardemo'}
+   realm: 'realm1'}
 );
 
 connection.onopen = function (session) {
@@ -23,7 +23,7 @@ connection.onopen = function (session) {
       }
    }
 
-   session.subscribe('com.myapp.hello', onevent1);
+   session.subscribe('my.com.hello', onevent1);
 };
 
 connection.open();
