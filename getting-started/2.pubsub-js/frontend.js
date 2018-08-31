@@ -23,7 +23,7 @@ connection.onopen = function (session) {
       }
    }
 
-   session.subscribe('my.com.hello', onevent1);
+   session.subscribe('com.myapp.hello', onevent1);
 };
 
 connection.open();
