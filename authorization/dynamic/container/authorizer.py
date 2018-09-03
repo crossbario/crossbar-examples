@@ -16,6 +16,7 @@ class Authorizer(ApplicationSession):
     def onJoin(self, details):
         yield self.register(self.authorize, u'com.example.auth')
 
-    def authorize(self, session, uri, action):
-        self.log.info('authorize: session={session}, uri={uri}, action={action}', session=session, uri=uri, action=action)
+    def authorize(self, session, uri, action, options):
+        self.log.info('authorize: session={session}, uri={uri}, action={action}, options={options}',
+                      session=session, uri=uri, action=action, options=options)
         return True
