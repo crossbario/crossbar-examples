@@ -31,6 +31,7 @@ import os
 
 url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
 realmvalue = os.environ.get('CBREALM', u'realm1')
+topic  = os.environ.get('CBTOPIC', u'my.com.hello')
 component = Component(transports=url, realm=realmvalue)
 
 
