@@ -42,7 +42,7 @@ var connection = new autobahn.Connection({
 
 function callbackgyro(o) {
     sessionvar.publish ('com.example.image',[JSON.stringify(o)]);
-    document.getElementById('WAMPEvent').innerHTML =JSON.stringify(o undefined, 2));
+    document.getElementById('WAMPEvent').innerHTML =JSON.stringify(o undefined, 2);
 
     }
 
