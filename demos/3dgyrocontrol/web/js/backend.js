@@ -45,7 +45,6 @@ function callbackgyro(o) {
     document.getElementById('WAMPEvent').innerHTML =JSON.stringify(o ,undefined, 2);
 
     }
-
  
 connection.onopen = function (session) {
 

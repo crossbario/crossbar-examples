@@ -35,8 +35,6 @@ document.getElementById("directlink").href = controlUrl1 ;
 
 
 var xvalue = 0, yvalue = 0, zvalue = 0;
-var dx = 0,dy = 0,dz = 0;
-
   
 var camera, scene, renderer;
 var geometry, material, mesh;
@@ -64,15 +62,10 @@ function init() {
 }
 
 function animate() {
-
-	
 	mesh.rotation.x = xvalue;
 	mesh.rotation.y = yvalue;
-    mesh.rotation.z = zvalue;
-    
-
+        mesh.rotation.z = zvalue;
 	renderer.render( scene, camera );
-
 }
 
 // the WAMP connection to the Router
@@ -101,9 +94,6 @@ connection.onopen = function (session) {
             yvalue = obj.alpha/30;
             zvalue = obj.gamma/30;
             requestAnimationFrame( animate );
-
-
-
 }
 
 session.subscribe('com.example.image', VRCam).then(
