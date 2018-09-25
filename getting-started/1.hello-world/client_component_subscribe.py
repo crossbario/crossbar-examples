@@ -44,7 +44,7 @@ def joined(session, details):
         print("event received: {0}", count)
 
     try:
-        yield session.subscribe(oncounter, u'my.com.hello')
+        yield session.subscribe(oncounter, topic)
         print("subscribed to topic")
     except Exception as e:
         print("could not subscribe to topic: {0}".format(e))
