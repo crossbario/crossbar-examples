@@ -33,6 +33,7 @@ import six
 
 url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
 realmv = os.environ.get('CBREALM', u'realm1')
+topic = os.environ.get('CBTOPIC', u'com.myapp.hello')
 print(url, realmv)
 component = Component(transports=url, realm=realmv)
 
@@ -44,7 +45,7 @@ def joined(session, details):
     counter = 0
     while True:
         # publish() only returns a Deferred if we asked for an acknowledgement
-        session.publish(u'my.com.hello', "Hello World %d"%counter)
+        session.publish(topic , "Hello World %d"%counter)
         counter += 1
         yield sleep(1)
 
