@@ -29,9 +29,14 @@
 var autobahn = require('autobahn');
 
 var connection = new autobahn.Connection({
-   url: 'ws://localhost:8080/ws',
-   realm: 'realm1'}
-);
+   realm: "realm1",
+   transports: [
+      {
+         url: 'ws://localhost:8080/ws',
+         type: 'websocket'
+      }
+   ]
+});
 
 connection.onopen = function (session) {
 
