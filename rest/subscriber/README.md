@@ -3,7 +3,7 @@
 Crossbar includes a HTTP Subscriber which forwards WAMP PubSub messages to a HTTP server.
 The message is serialised to JSON and (by default) HTTP POSTed to a URL.
 
-To configure the service, set up a component with the classname `crossbar.adapter.rest.MessageForwarder` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](http://crossbar.io/docs/HTTP-Bridge-Services/).
+To configure the service, set up a component with the classname `crossbar.adapter.rest.MessageForwarder` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](https://crossbar.io/docs/HTTP-Bridge/).
 
 ## Example
 
