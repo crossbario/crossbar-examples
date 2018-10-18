@@ -11,17 +11,25 @@
                             "name": "anonymous",
                             "permissions": [
                                 {
-                                    "uri": "",
-                                    "match": "prefix",
+                                    "uri": "com.example.oncounter",
+                                    "match": "exact",
                                     "allow": {
-                                        "call": true,
-                                        "register": true,
                                         "publish": true,
                                         "subscribe": true
                                     },
                                     "disclose": {
-                                        "caller": false,
-                                        "publisher": false
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "wamp.subscription.get_events",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": true
+                                    },
+                                    "disclose": {
+                                        "caller": true
                                     },
                                     "cache": true
                                 }
