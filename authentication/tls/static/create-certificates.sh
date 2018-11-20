@@ -150,6 +150,7 @@ mv server.new.key server.key
 
 openssl rsa -passin pass:xyzzy -in client.key -out client.new.key
 mv client.new.key client.key
+popd
 
 echo "creating dhparam file"
 openssl dhparam -outform PEM -out ./.crossbar/dhparam 2048
