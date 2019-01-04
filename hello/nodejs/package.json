@@ -13,6 +13,6 @@
   "author": "Tavendo GmbH",
   "license": "Apache 2.0",
   "dependencies": {
-    "autobahn": "^0.9.5"
+    "autobahn": "^18.10.2"
   }
 }

@@ -48,6 +48,13 @@
                             "type": "static",
                             "directory": "../web"
                         },
+                        "shared": {
+                            "type": "static",
+                            "directory": "../../../_shared-web-resources",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
                         "ws": {
                             "type": "websocket"
                         }
