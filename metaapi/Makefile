@@ -1,5 +1,5 @@
 crossbar:
-	PYTHONPATH=../../crossbar python -m crossbar.controller.cli start
+	crossbar start
 
 monitor:
-	PYTHONPATH=../../autobahn-python python monitor.py
+	python monitor.py
