@@ -32,5 +32,8 @@ requirements:
 run:
 	crossbarfx edge start
 
-run_exe:
+run_exe_standalone:
 	~/crossbarfx-linux-amd64-20190120-1765597 edge start
+
+run_exe_managed:
+	CROSSBAR_FABRIC_URL="ws://localhost:9000/ws" ~/crossbarfx-linux-amd64-20190120-1765597 edge start
