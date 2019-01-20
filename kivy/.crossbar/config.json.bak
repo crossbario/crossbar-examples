@@ -56,13 +56,23 @@
         },
         {
             "type": "guest",
-            "executable": "python",
+            "executable": "/home/oberstet/cpy372_1/bin/python",
             "arguments": [
                 "backend.py",
                 "--url",
                 "ws://localhost:8080/ws",
                 "--realm",
                 "realm1"
+            ],
+            "options": {
+                "workdir": ".."
+            }
+        },
+        {
+            "type": "guest",
+            "executable": "/home/oberstet/cpy372_1/bin/python",
+            "arguments": [
+                "kivyapp.py"
             ],
             "options": {
                 "workdir": "..",

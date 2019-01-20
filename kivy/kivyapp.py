@@ -1,3 +1,9 @@
+import os
+from pprint import pprint
+
+pprint(dict(os.environ))
+
+
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
@@ -25,7 +31,7 @@ class MyComponent(ApplicationSession):
         ui.on_session(self)
 
         # subscribe to WAMP PubSub event and call the Kivy UI component when events are received
-        self.subscribe(ui.print_message, u"com.example.kivy")
+        self.subscribe(ui.print_message, u"com.example.topic1")
 
 
 class CrossbarKivyApp(App):
