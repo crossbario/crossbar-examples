@@ -1,0 +1,365 @@
+{
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
+    "version": 2,
+    "controller": {
+       "fabric": {
+       }
+    },
+    "workers": [
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [0]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [1]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [2]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [3]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [4]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [5]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [6]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [7]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+        },
+
+
+        {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [8]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [9]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [10]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [11]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [12]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [13]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [14]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       },
+       {
+          "type": "websocket-testee",
+          "options": {
+             "cpu_affinity": [15]
+          },
+          "transport": {
+             "type": "websocket",
+             "endpoint": {
+                "type": "tcp",
+                "port": 8080,
+                "backlog": 2048,
+                "shared": true
+             },
+             "url": "ws://localhost:8080",
+             "options": {
+                "compression": {
+                   "deflate": {
+                   }
+                }
+             }
+          }
+       }
+   ]
+ }
+ 
