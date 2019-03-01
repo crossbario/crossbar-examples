@@ -58,8 +58,14 @@ wstest:
 		crossbario/autobahn-testsuite \
 		/usr/local/bin/wstest --mode fuzzingclient --spec /config/fuzzingclient.json
 
+upload_wstest:
+	aws s3 sync test-results s3://crossbario.com/reports/autobahn-testsuite \
+		--delete --acl public-read --region=eu-central-1
+
+
 wsperf:
 	k6 run --vus 100 --duration 30s k6-ws-echo.js
+
 
 
 # wsperf:
