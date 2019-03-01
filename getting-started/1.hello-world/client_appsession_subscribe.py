@@ -43,17 +43,12 @@ class ClientSession(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
         print("session attached")
-        self.received = 0
         sub = yield self.subscribe(self.on_event, u'com.myapp.hello')
         print("Subscribed to com.myapp.hello with {}".format(sub.id))
 
     def on_event(self, i):
         print("Got event: {}".format(i))
-        self.received += 1
         # self.config.extra for configuration, etc. (see [A])
-        if self.received > self.config.extra['max_events']:
-            print("Received enough events; disconnecting.")
-            self.leave()
 
     def onDisconnect(self):
         print("disconnected")
