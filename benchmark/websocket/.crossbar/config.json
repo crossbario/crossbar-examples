@@ -3,7 +3,6 @@
     "version": 2,
     "controller": {
        "fabric": {
-           "transport": null
        }
     },
      "workers": [

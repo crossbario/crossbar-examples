@@ -1,14 +1,14 @@
 crossbarfx_host_w1:
-	crossbarfx edge start --cbdir=/node/.crossbar --config=config_w1.json
+	crossbarfx edge start --cbdir=./.crossbar --config=config_w1.json
 
 crossbarfx_host_w2:
-	crossbarfx edge start --cbdir=/node/.crossbar --config=config_w2.json
+	crossbarfx edge start --cbdir=./.crossbar --config=config_w2.json
 
 crossbarfx_host_w4:
-	crossbarfx edge start --cbdir=/node/.crossbar --config=config_w4.json
+	crossbarfx edge start --cbdir=./.crossbar --config=config_w4.json
 
 crossbarfx_host_w8:
-	crossbarfx edge start --cbdir=/node/.crossbar --config=config_w8.json
+	crossbarfx edge start --cbdir=./.crossbar --config=config_w8.json
 
 crossbarfx_docker_w1:
 	docker run -it --rm \
