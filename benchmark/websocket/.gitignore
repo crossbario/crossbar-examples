@@ -1,3 +1,5 @@
 reports
 results.json
 results*.json
+test-results/
+wsperf-results/

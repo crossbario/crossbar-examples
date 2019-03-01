@@ -1,0 +1,12 @@
+{
+   "outdir": "./reports/",
+   "servers": [
+                  {
+                     "agent": "CrossbarFX",
+                     "url": "ws://127.0.0.1:8080"
+                  }
+              ],
+   "cases": ["*"],
+   "exclude-cases": [],
+   "exclude-agent-cases": {}
+}

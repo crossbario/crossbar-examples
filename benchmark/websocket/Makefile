@@ -1,40 +1,49 @@
 crossbar_w1:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --config config_w1.json
+	docker run -it --rm \
+		--network host \
+		-v ${PWD}/.crossbar:/node/.crossbar \
+		crossbario/crossbarfx:pypy-slim-amd64 \
+		edge start --cbdir=/node/.crossbar --config=config_w1.json
 
 crossbar_w2:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --config config_w2.json
+	docker run -it --rm \
+		-p 8080:8080 \
+		-v ${PWD}:/node \
+		crossbario/crossbarfx:pypy-slim-amd64 \
+		edge start --cbdir=/node/.crossbar --config=config_w2.json
 
 crossbar_w4:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --config config_w4.json
+	docker run -it --rm \
+		-p 8080:8080 \
+		-v ${PWD}:/node \
+		crossbario/crossbarfx:pypy-slim-amd64 \
+		edge start --cbdir=/node/.crossbar --config=config_w4.json
 
 crossbar_w8:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --config config_w8.json
-
-crossbar_debug_w1:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --loglevel=debug --config config_w1.json
-
-crossbar_debug_w2:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --loglevel=debug --config config_w2.json
-
-crossbar_debug_w4:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --loglevel=debug --config config_w4.json
-
-crossbar_debug_w8:
-	PYTHONPATH=../../../crossbar python -m crossbar.controller.cli start --loglevel=debug --config config_w8.json
+	docker run -it --rm \
+		-p 8080:8080 \
+		-v ${PWD}:/node \
+		crossbario/crossbarfx:pypy-slim-amd64 \
+		edge start --cbdir=/node/.crossbar --config=config_w8.json
 
 wstest:
-	~/wstest/bin/wstest -m fuzzingclient
+	docker run -it --rm \
+		--network host \
+		-v ${PWD}/test-config:/config \
+		-v ${PWD}/test-results:/reports \
+		crossbario/autobahn-testsuite \
+		/usr/local/bin/wstest --mode fuzzingclient --spec /config/fuzzingclient.json
 
 wsperf:
-	~/wsperf ws://127.0.0.1:9001 1 10000 1000 2000 results.json
+	wsperf ws://127.0.0.1:8080 1 10000 1000 2000 ./wsperf-results/results.json
 
 analyze:
-	python ../../../wsperf/analyze.py results.json
+	python analyze.py ./wsperf-results/results.json
 
 test:
-	~/wsperf ws://127.0.0.1:9001 8 500000 1000 2000 results_1.json
-#	~/wsperf ws://127.0.0.1:9001 2 10000 1000 2000 results_2.json
-#	~/wsperf ws://127.0.0.1:9001 4 10000 1000 2000 results_4.json
-	python ../../../wsperf/analyze.py results_1.json
-#	python ../../../wsperf/analyze.py results_2.json
-#	python ../../../wsperf/analyze.py results_4.json
+	wsperf ws://127.0.0.1:8080 8 500000 1000 2000 ./wsperf-results/results_1.json
+#	wsperf ws://127.0.0.1:8080 2 10000 1000 2000 ./wsperf-results/results_2.json
+#	wsperf ws://127.0.0.1:8080 4 10000 1000 2000 ./wsperf-results/results_4.json
+	python analyze.py ./wsperf-results/results_1.json
+#	python analyze.py ./wsperf-results/results_2.json
+#	python analyze.py ./wsperf-results/results_4.json

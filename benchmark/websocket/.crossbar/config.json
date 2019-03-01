@@ -12,11 +12,11 @@
                 "type": "websocket",
                 "endpoint": {
                     "type": "tcp",
-                    "port": 9001,
+                    "port": 8080,
                     "backlog": 2048,
                     "shared": true
                 },
-                "url": "ws://localhost:9001",
+                "url": "ws://localhost:8080",
                 "options": {
                     "compression": {
                         "deflate": {}
@@ -35,11 +35,11 @@
                 "type": "websocket",
                 "endpoint": {
                     "type": "tcp",
-                    "port": 9001,
+                    "port": 8080,
                     "backlog": 2048,
                     "shared": true
                 },
-                "url": "ws://localhost:9001",
+                "url": "ws://localhost:8080",
                 "options": {
                     "compression": {
                         "deflate": {}
@@ -58,11 +58,11 @@
                 "type": "websocket",
                 "endpoint": {
                     "type": "tcp",
-                    "port": 9001,
+                    "port": 8080,
                     "backlog": 2048,
                     "shared": true
                 },
-                "url": "ws://localhost:9001",
+                "url": "ws://localhost:8080",
                 "options": {
                     "compression": {
                         "deflate": {}
@@ -81,11 +81,11 @@
                 "type": "websocket",
                 "endpoint": {
                     "type": "tcp",
-                    "port": 9001,
+                    "port": 8080,
                     "backlog": 2048,
                     "shared": true
                 },
-                "url": "ws://localhost:9001",
+                "url": "ws://localhost:8080",
                 "options": {
                     "compression": {
                         "deflate": {}
