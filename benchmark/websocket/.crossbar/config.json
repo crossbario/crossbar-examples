@@ -1,6 +1,12 @@
 {
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
     "version": 2,
-    "workers": [
+    "controller": {
+       "fabric": {
+           "transport": null
+       }
+    },
+     "workers": [
         {
             "type": "websocket-testee",
             "options": {

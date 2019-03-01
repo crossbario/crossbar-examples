@@ -52,35 +52,38 @@ def printStats(timestamps):
    r = sorted(timestamps)
    r_cnt = len(timestamps)
    r_min = float(r[0])
-   r_median = float(r[len(r)/2])
+   r_median = float(r[len(r)//2])
    r_avg = float(sum(timestamps)) / float(r_cnt)
    r_sd = math.sqrt(sum([((float(x) - r_avg)**2.) for x in timestamps]) / (float(r_cnt) - 1.))
-   r_q90 = float(r[-len(r)/10])
-   r_q95 = float(r[-len(r)/20])
-   r_q99 = float(r[-len(r)/100])
-   r_q999 = float(r[-len(r)/1000])
-   r_q9999 = float(r[-len(r)/10000])
+   r_q90 = float(r[-len(r) // 10])
+   r_q95 = float(r[-len(r) // 20])
+   r_q99 = float(r[-len(r) // 100])
+   r_q999 = float(r[-len(r) // 1000])
+   r_q9999 = float(r[-len(r) // 10000])
    r_max = float(r[-1])
 
-   print ("     Min: %9.1f ms\n" + \
-          "      SD: %9.1f ms\n" + \
-          "     Avg: %9.1f ms\n" + \
-          "  Median: %9.1f ms\n" + \
-          "  q90   : %9.1f ms\n" + \
-          "  q95   : %9.1f ms\n" + \
-          "  q99   : %9.1f ms\n" + \
-          "  q99.9 : %9.1f ms\n" + \
-          "  q99.99: %9.1f ms\n" + \
-          "     Max: %9.1f ms\n") % (r_min / 1000.,
-                                     r_sd / 1000.,
-                                     r_avg / 1000.,
-                                     r_median / 1000.,
-                                     r_q90 / 1000.,
-                                     r_q95 / 1000.,
-                                     r_q99 / 1000.,
-                                     r_q999 / 1000.,
-                                     r_q9999 / 1000.,
-                                     r_max / 1000.)
+   s = """
+      Min: {:9} ms
+       SD: {:9} ms
+      Avg: {:9} ms
+   Median: {:9} ms
+   q90   : {:9} ms
+   q95   : {:9} ms
+   q99   : {:9} ms
+   q99.9 : {:9} ms
+   q99.99: {:9} ms
+      Max: {:9} ms 
+   """.format(r_min / 1000.,
+              r_sd / 1000.,
+              r_avg / 1000.,
+              r_median / 1000.,
+              r_q90 / 1000.,
+              r_q95 / 1000.,
+              r_q99 / 1000.,
+              r_q999 / 1000.,
+              r_q9999 / 1000.,
+              r_max / 1000.)
+   print(s)
 
 
 def load(filename):
@@ -125,31 +128,38 @@ def load(filename):
 def analyze(res):
    duration_ms = float(res.durationWallclock) / 1000000.
 
-   print
-   print "Aggregate results (WebSocket Opening+Closing Handshake)"
-   print
-   #print "          Duration: %9d ms" % (float(res.duration) / 1000.)
-   print "          Duration: %9.1f ms" % round(duration_ms, 1)
-   print "             Total: %9d" % res.total
-   print "           Success: %9d" % res.success
-   print "              Fail: %9d" % res.fail
-   print "            Fail %%: %9.2f" % (100. * float(res.fail) / float(res.total))
-   print "    Handshakes/sec: %9d" % int(round((float(res.success) / (duration_ms / 1000.))))
-   print
+   s = """
+   Aggregate results (WebSocket Opening+Closing Handshake)
+   
+         Duration: {} ms
+            Total: {}
+          Success: {}
+            Fails: {}
+           Fail %: {} 
+   Handshakes/sec: {} 
+   
+   """.format(#float(res.duration) / 1000.),
+              round(duration_ms, 1),
+              res.total,
+              res.success,
+              res.fail,
+              (100. * float(res.fail) / float(res.total)) if res.total else None,
+              int(round((float(res.success) / (duration_ms / 1000.)))) if duration_ms else None)
+
+   print(s)
    printStats(res.openTimestamps)
-   print
 
 
 def printResults(files):
    results = []
    for fn in files:
-      print "Loading wsperf result file %s .." % fn
+      print("Loading wsperf result file {} ..".format(fn))
       res = load(fn)
       results.append(res)
 
    res = joinResults(results)
    analyze(res)
-   print "Analyze done."
+   print("Analyze done.")
 
 
 if __name__ == '__main__':
