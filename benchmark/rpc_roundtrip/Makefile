@@ -1,3 +1,8 @@
+test:
+	-rm -rf ./results
+	crossbarfx edge start --cbdir=./.crossbar --shutdownafter 120 --config=config_uds_rawsocket_cbor.json
+	python analyze.py
+
 # test Crossbar.io/PyPy on Docker/armhf, using UDS-RawSocket-CBOR transport
 test_pypy_fastest_rpc:
 	sudo docker run --rm -it --user root -v `pwd`:/node crossbario/crossbar-armhf:community-pypy "--config=config_uds_rawsocket_cbor.json"

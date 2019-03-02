@@ -1,6 +1,11 @@
 {
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
     "version": 2,
-    "workers": [
+    "controller": {
+       "fabric": {
+       }
+    },
+     "workers": [
         {
             "type": "router",
             "realms": [
@@ -65,7 +70,34 @@
                     },
                     "extra": {
                         "prefix": "com.example.rawsocket-cbor",
-                        "logname": "WAMP-UDS-RawSocket-CBOR"
+                        "logname": "callee.1"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "callee.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "serializer": "cbor"
+                    },
+                    "extra": {
+                        "prefix": "com.example.rawsocket-cbor",
+                        "logname": "callee.2"
                     }
                 }
             ]
@@ -92,10 +124,92 @@
                     },
                     "extra": {
                         "prefix": "com.example.rawsocket-cbor",
-                        "logname": "WAMP-UDS-RawSocket-CBOR"
+                        "logname": "caller.1"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "caller.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "serializer": "cbor"
+                    },
+                    "extra": {
+                        "prefix": "com.example.rawsocket-cbor",
+                        "logname": "caller.2"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "caller.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "serializer": "cbor"
+                    },
+                    "extra": {
+                        "prefix": "com.example.rawsocket-cbor",
+                        "logname": "caller.3"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "caller.AppSession",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "serializer": "cbor"
+                    },
+                    "extra": {
+                        "prefix": "com.example.rawsocket-cbor",
+                        "logname": "caller.4"
                     }
                 }
             ]
         }
+
     ]
 }
