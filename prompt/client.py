@@ -1,6 +1,10 @@
-from prompt_toolkit import prompt_async
-from prompt_toolkit.validation import Validator, ValidationError
 from prompt_toolkit import prompt
+from prompt_toolkit.patch_stdout import patch_stdout
+from prompt_toolkit.validation import Validator, ValidationError
+from prompt_toolkit.eventloop.defaults import use_asyncio_event_loop
+
+# Tell prompt_toolkit to use the asyncio event loop.
+use_asyncio_event_loop()
 
 import asyncio
 from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
@@ -50,10 +54,14 @@ class MyComponent(ApplicationSession):
         validator = NumberValidator()
         print(validator)
 
-        # we are waiting for user input now - but without blocking!
-        # that is, eg the above event handler will continue to receive events while
-        # the user is still not finished with input
-        x = await prompt_async('x: ', validator=validator, patch_stdout=False)
+        # The patch_stdout() context manager is optional, but it’s recommended,
+        # because other coroutines could print to stdout. This ensures that other
+        # output won’t destroy the prompt.
+        with patch_stdout():
+            # we are waiting for user input now - but without blocking!
+            # that is, eg the above event handler will continue to receive events while
+            # the user is still not finished with input
+            x = await prompt('x: ', validator=validator, async_=True)
 
         # user input is validated (in above, against a number validator) - but the value is
         # still returned as string, and hence needs to be converted
