@@ -46,7 +46,7 @@ class MyComponent(ApplicationSession):
         print('Connected!')
 
         self._ticks = 0
-        def onevent():
+        def onevent(tick_nb):
             self._ticks += 1
         await self.subscribe(onevent, u'com.example.tick')
 
