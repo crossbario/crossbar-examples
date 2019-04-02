@@ -264,6 +264,10 @@
                                 "type": "static",
                                 "directory": "../../spread"
                             },
+                            "widget": {
+                                "type": "static",
+                                "directory": "../../widget"
+                            },
                             "dispenser": {
                                 "type": "static",
                                 "directory": "../../../iotcookbook/app/dispenser/frontend"
