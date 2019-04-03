@@ -10,6 +10,8 @@ The examples are self-contained and ready to run. Each of the example directorie
 
 This overview may not be complete - so check the repository listing if you're looking for something not listed here.
 
+If you are completed new here, we recommend you to start with our [Getting started](https://crossbar.io/docs/Getting-Started/) page.
+
 To give you a better idea of a small working WAMP application there is 
 
 * [Hello](https://github.com/crossbario/crossbarexamples/tree/master/hello) with backends for the following languages/WAMP client libraries
