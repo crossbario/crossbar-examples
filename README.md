@@ -39,8 +39,8 @@ The following examples cover **specific features** of WAMP/Crossbar.io
 * [Longpoll](https://github.com/crossbario/crossbarexamples/tree/master/longpoll) - How to use the Longpoll fallback for older browsers without WebSocket support
 * [Metaapi](https://github.com/crossbario/crossbarexamples/tree/master/metaapi) - How to subscribe to meta-events and use meta-procedures (get information about sessions, subscriptions and registrations)
 * HTTP Push Service: How to create WAMP publishes via a HTTP/POST
-   + [HTTP](https://github.com/crossbario/crossbarexamples/tree/master/pusher)
-   + [HTTPS](https://github.com/crossbario/crossbarexamples/tree/master/pushertls)
+   + [HTTP](https://github.com/crossbario/crossbar-examples/tree/master/rest/publisher)
+   + [HTTPS](https://github.com/crossbario/crossbar-examples/tree/master/rest/publisher_tls)
 * [Secure WebSockets (WSS)](https://github.com/crossbario/crossbarexamples/tree/master/wss/python)
 
 And finally, there are examples using specific devices or technologies:
