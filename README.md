@@ -23,10 +23,12 @@ To give you a better idea of a small working WAMP application there is
 
 For a slightly more complex (and realistic) application:
 
-* [Votes](https://github.com/crossbario/crossbarexamples/tree/master/votes) - basic WAMP application using both PubSub and RPC, with a Web frontend. Comes with backends for 
-   + [Python](https://github.com/crossbario/crossbarexamples/tree/master/demos/votes/python)
-   + [Node.js](https://github.com/crossbario/crossbarexamples/tree/master/demos/votes/nodejs) 
-   + [the browser](https://github.com/crossbario/crossbarexamples/tree/master/demos/votes/browser)
+* [Votes](https://github.com/crossbario/crossbar-examples/tree/master/demos/votes) - basic WAMP application using both PubSub and RPC, with a Web frontend. Comes with backends for 
+   + [Python](https://github.com/crossbario/crossbar-examples/tree/master/demos/votes/python)
+   + [Node.js](https://github.com/crossbario/crossbar-examples/tree/master/demos/votes/nodejs) 
+   + [the browser](https://github.com/crossbario/crossbar-examples/tree/master/demos/votes/browser)
+   + [Kivy framework](https://github.com/crossbario/crossbar-examples/tree/master/demos/votes/kivy)
+
 
 The following examples cover **specific features** of WAMP/Crossbar.io
 
