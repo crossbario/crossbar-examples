@@ -32,7 +32,8 @@ For a slightly more complex (and realistic) application:
 
 The following examples cover **specific features** of WAMP/Crossbar.io
 
-* [Authentication](https://github.com/crossbario/crossbar-examples/tree/master/authentication)
+* [Authentication](https://github.com/crossbario/crossbar-examples/tree/master/authentication) and its [Documentation](https://crossbar.io/docs/Authentication/)
+
    + Ticket, both [static](https://github.com/crossbario/crossbar-examples/tree/master/authentication/ticket/static) and [dynamic](https://github.com/crossbario/crossbar-examples/tree/master/authentication/ticket/dynamic)
    + WAMP CRA, both [static](https://github.com/crossbario/crossbar-examples/tree/master/authentication/wampcra/static) and [dynamic](https://github.com/crossbario/crossbar-examples/tree/master/authentication/wampcra/dynamic)
    + TLS, both [static](https://github.com/crossbario/crossbar-examples/tree/master/authentication/tls/static) and [dynamic](https://github.com/crossbario/crossbar-examples/tree/master/authentication/tls/dynamic)
@@ -40,7 +41,12 @@ The following examples cover **specific features** of WAMP/Crossbar.io
    + Anonymous, both [static](https://github.com/crossbario/crossbar-examples/tree/master/authentication/anonymous/static) and [dynamic](https://github.com/crossbario/crossbar-examples/tree/master/authentication/anonymous/dynamic)
    + [Cookie](https://github.com/crossbario/crossbar-examples/tree/master/authentication/cookie)
    + [Advanced](https://github.com/crossbario/crossbar-examples/tree/master/authentication/advanced)
-   
+
+
+* [Authorization](https://github.com/codelectron/crossbar-examples/tree/master/authorization) and its [Documentation](https://crossbar.io/docs/Authorization/)
+   + Dynamic, both [container](https://github.com/crossbario/crossbar-examples/tree/master/authorization/dynamic/container) and [embedded](https://github.com/crossbario/crossbar-examples/tree/master/authorization/dynamic/embedded)
+   + [Static](https://crossbar.io/docs/Authorization/#static-authorization)
+
 * [Flash Fallback](https://github.com/crossbario/crossbarexamples/tree/master/flash) - How to use Flash fallback for older browsers without WebSocket support (mainly there for IE<10)
 * [Longpoll](https://github.com/crossbario/crossbarexamples/tree/master/longpoll) - How to use the Longpoll fallback for older browsers without WebSocket support
 * [Metaapi](https://github.com/crossbario/crossbarexamples/tree/master/metaapi) - How to subscribe to meta-events and use meta-procedures (get information about sessions, subscriptions and registrations)
