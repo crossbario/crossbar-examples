@@ -1,16 +1,13 @@
 # Crossbar.io Examples
 
-This repository contains example code and applications for Crossbar.io.
+This repository contains example code and applications for Crossbar.io.The examples are self-contained and ready to run. Each of the example directories contains an Crossbar.io configuration. In order to run the example, just got to its directory and do `crossbar start`.
 
-## Using the examples
-
-The examples are self-contained and ready to run. Each of the example directories contains an Crossbar.io configuration. In order to run the example, just got to its directory and do `crossbar start`.
+## Getting started
+If you are new here, we recommend you to start with our [Getting started](https://crossbar.io/docs/Getting-Started/) page.
 
 ## Overview of Examples
-
 This overview may not be complete - so check the repository listing if you're looking for something not listed here.
 
-If you are new here, we recommend you to start with our [Getting started](https://crossbar.io/docs/Getting-Started/) page.
 
 To give you a better idea of a small working WAMP application there is 
 
