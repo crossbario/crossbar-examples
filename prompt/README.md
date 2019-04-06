@@ -6,7 +6,7 @@ The [Python Prompt Toolkit](https://github.com/jonathanslenders/python-prompt-to
 
 To install:
 
-    pip install prompt_toolkit
+    pip install "prompt_toolkit>=2"
 
 Then, start Crossbar.io in terminal 1 (`crossbar start` from this folder).
 
