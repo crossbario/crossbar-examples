@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <link rel="shortcut icon" href="favicon.ico">
+      <title>Vue.js Widget</title>
+      <link rel="stylesheet" href="css/widget.css">
+      <link rel="stylesheet" href="app.css">
+   </head>
+
+   <body>
+      <header>
+         <div id="header_inner">
+            <div id="demo_title">
+               <span>Vue.js Widget</span>
+            </div>
+            <a class="navbar-brand" href="/">
+               <img src="crossbar_icon_inverted.svg" alt="crossbar logo inverted" width="60" height="60">
+               <img src="crossbar_demos_text_paths.svg" alt="crossbar logo inverted" width="248" height="60">
+            </a>
+         </div>
+      </header>
+      <div id="demo_body">
+        <p>
+          This demonstrates the use of Vue.js Widgets with Autobahn and Crossbar. Click on the Radial menu
+          in the bottom right, then the binoculars, to activate the demo. It should try a connection to a 
+          public Crossbar server and show you the connections in a Bulma style reactive table.
+        </p>
+        <small style="padding:2px;padding-left:8px;padding-right:8px;background-color:cadetblue;color:white;border-radius:5px">Screenshot: sessions table</small>
+        <img src="widget.png"/>
+        <p>Click on the Coffee Mug for the About / Spashscreen</p>
+        <p>
+          The Widget is produced in such a way that it's deployed via one .CSS file, one .JS file, then instantiated
+          via a custom HTML tag. Try viewing the source to this page for details.
+        </p>
+        <p>
+          For a full write-up / details please see <a href="https://gareth.bult.co.uk/2019/04/02/when-is-a-widget-not-a-widget/">the Blog Entry</a>
+        </p>
+        <p>
+          Source code is currently available from <a href="https://gitlab.com/oddjobz/demowidget">Oddjobz Gitlab repo</a>
+        </p>
+        <small style="padding:2px;padding-left:8px;padding-right:8px;background-color:cadetblue;color:white;border-radius:5px">Screenshot: splash screen</small>
+        <div style="height:8px"></div>
+        <img src="splash.png"/>
+    </div>
+
+    <script src=app.js></script>
+    <vue-widget
+      url='wss://madpenguin.uk/ws'
+      user='guest'
+      pass='guest'
+      realm='crossbar'>
+    </vue-widget>
+  </body>
+</html>
