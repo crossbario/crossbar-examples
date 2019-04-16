@@ -56,7 +56,7 @@ The following examples cover **specific features** of WAMP/Crossbar.io
    + [TLS](https://github.com/crossbario/crossbar-examples/tree/master/encryption/tls)
    
 * [Event history](https://github.com/crossbario/crossbar-examples/tree/master/event-history) 
-  Event history is a feature of the WAMP Advanced Profile and allows subscribers to catch up on missed events when reconnecting or to generally retrieve event history on subscriptions.
+   - Event history is a feature of the WAMP Advanced Profile and allows subscribers to catch up on missed events when reconnecting or to generally retrieve event history on subscriptions.
 
    
    
