@@ -56,18 +56,29 @@ The following examples cover **specific features** of WAMP/Crossbar.io
    + [TLS](https://github.com/crossbario/crossbar-examples/tree/master/encryption/tls)
    
 * [Event history](https://github.com/crossbario/crossbar-examples/tree/master/event-history)   Event history is a feature of the WAMP Advanced Profile and allows subscribers to catch up on missed events when reconnecting or to generally retrieve event history on subscriptions.
-
 * [Exclude Subscribers](https://github.com/crossbario/crossbar-examples/tree/master/exclude_subscribers)   This example shows several ways to exclude subscribers from getting a subscription.
-
-* [Expressjs integration](https://github.com/crossbario/crossbar-examples/tree/master/expressjs)
-
-* [File upload with Crossbar](https://github.com/crossbario/crossbar-examples/tree/master/fileupload)
-   
+* [File upload with Crossbar](https://github.com/crossbario/crossbar-examples/tree/master/fileupload)  This example shows how to use Crossbar.io web server with file upload. 
 * [Flash Fallback](https://github.com/crossbario/crossbarexamples/tree/master/flash) - How to use Flash fallback for older browsers without WebSocket support (mainly there for IE<10)
-
 * [Longpoll](https://github.com/crossbario/crossbarexamples/tree/master/longpoll) - How to use the Longpoll fallback for older browsers without WebSocket support
 * [Metaapi](https://github.com/crossbario/crossbarexamples/tree/master/metaapi) - How to subscribe to meta-events and use meta-procedures (get information about sessions, subscriptions and registrations)
 * [Secure WebSockets (WSS)](https://github.com/crossbario/crossbarexamples/tree/master/wss/python)
+* [MQTT](https://github.com/crossbario/crossbar-examples/tree/master/mqtt) 
+* [Pattern-based Registrations](https://github.com/crossbario/crossbar-examples/tree/master/patternregs) - This example illustrates pattern-based registrations.
+* [Pattern-based Registrations](https://github.com/crossbario/crossbar-examples/tree/master/patternsubs) - This example illustrates pattern-based subscriptions.
+* [Payloadcodec](https://github.com/crossbario/crossbar-examples/tree/master/payloadcodec) - Setting up serialization of custom types in Crossbar.io
+* [Prompt](https://github.com/crossbario/crossbar-examples/tree/master/prompt) - Getting user input asynchronously
+* [REST](https://github.com/crossbario/crossbar-examples/tree/master/rest)
+   + [Publisher](https://github.com/crossbario/crossbar-examples/tree/master/rest/publisher)
+   + [Publisher TLS](https://github.com/crossbario/crossbar-examples/tree/master/rest/publisher_tls)
+   + [Subscriber](https://github.com/crossbario/crossbar-examples/tree/master/rest/subscriber)
+   + [Webhooks](https://github.com/crossbario/crossbar-examples/tree/master/rest/webhooks)
+   + [Caller](https://github.com/crossbario/crossbar-examples/tree/master/rest/caller)
+   + [Callee](https://github.com/crossbario/crossbar-examples/tree/master/rest/callee)
+* [Scaling-Microservices](https://github.com/crossbario/crossbar-examples/tree/master/scaling-microservices) - Transparent scaling of microservices
+* [Serializers](https://github.com/crossbario/crossbar-examples/tree/master/serializers) - Configuring serializers in Crossbar.io
+* [Shared Registeration](https://github.com/crossbario/crossbar-examples/tree/master/sharedregs) - With shared registrations, multiple components can register the same procedure. 
+* [Universal Transport](https://github.com/crossbario/crossbar-examples/tree/master/unitransport) - The universal transport allows to service multiple protocols on one listening endpoint, such as the default TLS listening port: WAMP-over-RawSocket,WAMP-over-WebSocket,Web Resources
+
 
 And finally, there are examples using specific devices or technologies:
 
@@ -75,7 +86,7 @@ And finally, there are examples using specific devices or technologies:
 * [Tessel microcontroller](https://github.com/codelectron/crossbar-examples/tree/master/iotcookbook/device/tessel)
 * [Django framework](https://github.com/codelectron/crossbar-examples/tree/master/django/realtimemonitor)
 * [ExpressJS](https://github.com/codelectron/crossbar-examples/tree/master/expressjs)
-
+* [ReactJS](https://github.com/crossbario/crossbar-examples/tree/master/reactjs)
 
 ## Adapting for other languages
 
@@ -96,3 +107,4 @@ As you'll probably notice sooner or later, Crossbar.io is a work in progress. Co
 For historic reasons, the [Autobahn|Python repository](https://github.com/crossbario/autobahn-python) also contains some examples for using WAMP. The most relevant to the general Crossbar.io user can be found in [this directory](https://github.com/tavendo/AutobahnPython/tree/master/examples/twisted/wamp). These are almost always for both Python and JavaScript (using Autobahn|JS).
 
 Some of the instructions here still assume a basic router in Autobahn|Python which has since been removed, but in principle they should run with Crossbar.io. The chance of running across an outdated example here are higher, however. Should you find such an example, please file an issue (or fix it and send us a pull request). 
+ 
