@@ -39,7 +39,7 @@ function sign (key, challenge) {
 exports.sign = sign;
 exports.derive_key = derive_key;
 
-},{"crypto-js":40}],2:[function(require,module,exports){
+},{"crypto-js":38}],2:[function(require,module,exports){
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  AutobahnJS - http://autobahn.ws, http://wamp.ws
@@ -199,7 +199,7 @@ function create_connection (config) {
 
 exports.create_connection = create_connection;
 
-},{"../connection.js":6,"../log.js":7,"../util.js":21,"tweetnacl":90}],3:[function(require,module,exports){
+},{"../connection.js":6,"../log.js":7,"../util.js":20,"tweetnacl":87}],3:[function(require,module,exports){
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  AutobahnJS - http://autobahn.ws, http://wamp.ws
@@ -253,7 +253,7 @@ function auth(session, user, extra) {
 
 exports.auth = auth;
 
-},{"when":118,"when/function":94}],4:[function(require,module,exports){
+},{"when":115,"when/function":91}],4:[function(require,module,exports){
 (function (global){
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -329,7 +329,7 @@ exports.util = util;
 exports.log = log;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../package.json":119,"./auth/cra.js":1,"./auth/cryptosign.js":2,"./auth/persona.js":3,"./configure.js":5,"./connection.js":6,"./log.js":7,"./polyfill.js":8,"./serializer.js":16,"./session.js":17,"./util.js":21,"cbor":28,"msgpack5":71,"tweetnacl":90,"when":118,"when/monitor/console":116}],5:[function(require,module,exports){
+},{"../package.json":116,"./auth/cra.js":1,"./auth/cryptosign.js":2,"./auth/persona.js":3,"./configure.js":5,"./connection.js":6,"./log.js":7,"./polyfill.js":8,"./serializer.js":16,"./session.js":17,"./util.js":20,"cbor":27,"msgpack5":69,"tweetnacl":87,"when":115,"when/monitor/console":113}],5:[function(require,module,exports){
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  AutobahnJS - http://autobahn.ws, http://wamp.ws
@@ -392,7 +392,7 @@ _transports.register("rawsocket", rawsocket.Factory);
 
 exports.transports = _transports;
 
-},{"./transport/longpoll.js":18,"./transport/rawsocket.js":19,"./transport/websocket.js":20}],6:[function(require,module,exports){
+},{"./transport/longpoll.js":18,"./transport/rawsocket.js":27,"./transport/websocket.js":19}],6:[function(require,module,exports){
 (function (global){
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -896,7 +896,7 @@ Object.defineProperty(Connection.prototype, "isRetrying", {
 exports.Connection = Connection;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./autobahn.js":4,"./log.js":7,"./session.js":17,"./util.js":21,"when":118}],7:[function(require,module,exports){
+},{"./autobahn.js":4,"./log.js":7,"./session.js":17,"./util.js":20,"when":115}],7:[function(require,module,exports){
 (function (global){
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -3014,7 +3014,7 @@ try {
    log.warn('cbor serializer not available', e);
 }
 
-},{"./log.js":7,"cbor":28,"msgpack5":71}],17:[function(require,module,exports){
+},{"./log.js":7,"cbor":27,"msgpack5":69}],17:[function(require,module,exports){
 (function (global){
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -4581,7 +4581,7 @@ exports.Registration = Registration;
 exports.Publication = Publication;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./log.js":7,"./util.js":21,"when":118,"when/function":94}],18:[function(require,module,exports){
+},{"./log.js":7,"./util.js":20,"when":115,"when/function":91}],18:[function(require,module,exports){
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  AutobahnJS - http://autobahn.ws, http://wamp.ws
@@ -4788,707 +4788,7 @@ Factory.prototype.create = function () {
 
 exports.Factory = Factory;
 
-},{"../log.js":7,"../serializer.js":16,"../util.js":21,"when":118}],19:[function(require,module,exports){
-(function (global,Buffer){
-///////////////////////////////////////////////////////////////////////////////
-//
-//  AutobahnJS - http://autobahn.ws, http://wamp.ws
-//
-//  A JavaScript library for WAMP ("The Web Application Messaging Protocol").
-//
-//  Copyright (c) Crossbar.io Technologies GmbH and contributors
-//
-//  Licensed under the MIT License.
-//  http://www.opensource.org/licenses/mit-license.php
-//
-///////////////////////////////////////////////////////////////////////////////
-
-
-var util = require('../util.js');
-var log = require('../log.js');
-var serializer = require('../serializer.js');
-
-var EventEmitter = require('events').EventEmitter;
-
-
-function Factory (options) {
-   var self = this;
-
-   if (!options.protocols) {
-      options.protocols = ['wamp.2.json'];
-   } else {
-      util.assert(Array.isArray(options.protocols), "options.protocols must be an array");
-   }
-
-   options.rawsocket_max_len_exp = options.rawsocket_max_len_exp || 24;
-
-   self._options = options;
-}
-
-
-Factory.prototype.type = "rawsocket";
-
-
-Factory.prototype.create = function () {
-
-   var self = this;
-
-   // the WAMP transport we create
-   var transport = {};
-
-   // these will get defined further below
-   transport.protocol = undefined;
-   transport.serializer = new serializer.JSONSerializer();
-   transport.send = undefined;
-   transport.close = undefined;
-
-   // these will get overridden by the WAMP session using this transport
-   transport.onmessage = function () {};
-   transport.onopen = function () {};
-   transport.onclose = function () {};
-
-   transport.info = {
-      type: 'rawsocket',
-      url: null,
-      protocol: 'wamp.2.json'
-   };
-
-
-   // Test below used to be via the 'window' object in the browser.
-   // This fails when running in a Web worker.
-   //
-   // running in Node.js
-   //
-   if (global.process && global.process.versions.node) {
-
-      (function () {
-         var net = require('net');
-         var socket, protocol;
-
-         // Create the options object to initiate the connection
-         if (self._options.path) {
-            connectionOptions = {
-               path: self._options.path,
-               allowHalfOpen: true
-            };
-         } else if (self._options.port) {
-            connectionOptions = {
-               port: self._options.port || 8000,
-               host: self._options.host || 'localhost',
-               allowHalfOpen: true
-            };
-         } else {
-            throw "You must specify a host/port combination or a unix socket path to connect to";
-         }
-
-         // Open a TCP socket and setup the protocol
-         socket = net.connect(connectionOptions);
-         protocol = new Protocol(socket, {
-            serializer: 'json',
-            max_len_exp: self._options.rawsocket_max_len_exp
-         });
-
-         // Relay connect event to the onopen transport handler
-         protocol.on('connect', function (msg) {
-            log.debug('RawSocket transport negociated');
-            transport.onopen(msg);
-         });
-
-         // Relay data event to the onmessage transport handler
-         protocol.on('data', function (msg) {
-            log.debug('RawSocket transport received', msg);
-            transport.onmessage(msg);
-         });
-
-         // Relay the close event to the onclose transport handler
-         protocol.on('close', function (had_error) {
-            log.debug('RawSocket transport closed');
-            transport.onclose({
-               code: 999,
-               reason: '',
-               wasClean: !had_error
-            });
-         });
-
-         // Log errors
-         protocol.on('error', function (error) {
-            log.debug('RawSocket transport error', error);
-         });
-
-         // Relay close call
-         transport.close = function (code, reason) {
-            log.debug('RawSocket transport closing', code, reason);
-            protocol.close();
-         };
-
-         // Relay send call
-         transport.send = function (msg) {
-            log.debug('RawSocket transport sending', msg);
-            protocol.write(msg);
-         };
-
-      })();
-   //
-   // running in the browser
-   //
-   } else {
-      throw "No RawSocket support in browser";
-   }
-
-   return transport;
-};
-
-/**
- *  Protocol constructor
- *
- * @param {Stream} stream    Source stream object
- * @param {Object} [options] Protocol options
- *
- * @param {String} [options.serializer] The serializer to use (default: json)
- * @param {Integer} [options.max_len_exp] The maximum allowed frame length as
- *        2^x(default: 24)
- * @param {Integer|False} [options.ping_timeout] Maximum duration in ms to wait
- *        for an answer to a PING packet (default: 2000)
- * @param {Integer|False} [options.autoping] If an integer, send a PING packet*
- *        every `x`ms (default: false)
- * @param {Boolean} [options.fail_on_ping_timeout] Whether to close the
- *        underlying connection when the peer fails to answer to a PING within
- *        the `ping_timeout` window (default: true)
- * @param {Integer|False} [options.packet_timeout] The maximum amount of time to
- *        wait for a packet !!NOT IMPLEMENTED!! (default: 2000)
- *
- * @see https://github.com/wamp-proto/wamp-proto
- */
-function Protocol (stream, options) {
-   this._options = {
-      _peer_serializer: null, // Will hold the serializer declared by the peer
-      _peer_max_len_exp: 0    // Will hold the maximum frame length declared by
-                              // the peer
-   };
-
-   this._options = util.defaults(this._options, options, this.DEFAULT_OPTIONS);
-
-   // Check valid options
-   util.assert(this._options.serializer in this.SERIALIZERS,
-      'Unsupported serializer: ' + this._options.serializer);
-
-   util.assert(this._options.max_len_exp >= 9 &&
-      this._options.max_len_exp <= 36,
-      'Message length out of bounds [9, 36]: '+ this._options.max_len_exp);
-
-   util.assert(!this._options.autoping ||
-      (Number.isInteger(this._options.autoping) && this._options.autoping >= 0),
-      'Autoping interval must be positive');
-
-   util.assert(!this._options.ping_timeout ||
-      (Number.isInteger(this._options.ping_timeout) &&
-         this._options.ping_timeout >= 0),
-      'Ping timeout duration must be positive');
-
-   util.assert(!this._options.packet_timeout ||
-      (Number.isInteger(this._options.packet_timeout) &&
-         this._options.packet_timeout >= 0),
-      'Packet timeout duration must be positive');
-
-   util.assert((!this._options.autoping || !this._options.ping_timeout) ||
-      this._options.autoping > this._options.ping_timeout,
-      'Autoping interval (' + this._options.autoping + ') must be lower ' +
-      'than ping timeout (' + this._options.ping_timeout + ')');
-
-   // Will store a reference to the timeout function associated with the last
-   // PING packet
-   this._ping_timeout = null;
-
-   // Will store the payload of the last PING packet
-   this._ping_payload = null;
-
-   // Will store the autoping setInterval reference
-   this._ping_interval = null;
-
-   // Protocol status (see Protocol.prototype.STATUS)
-   this._status = this.STATUS.UNINITIATED;
-
-   this._stream = stream;
-   this._emitter = new EventEmitter();
-
-   // Frame buffer
-   this._buffer = new Buffer(4);
-   this._bufferLen = 0;
-   this._msgLen = 0;
-
-   // Hook events
-   var self = this;
-   this._stream.on('data', function (data) {
-      self._read(data);
-   });
-
-   this._stream.on('connect', function () {
-      self._handshake();
-   });
-
-   // Proxy these events from the stream as we don't need to handle them
-   var proxyEvents = [
-      'close',
-      'drain',
-      'end',
-      'error',
-      'timeout'
-   ];
-   proxyEvents.forEach(function (evt) {
-      self._stream.on(evt, function (data) {
-         self._emitter.emit(evt, data);
-      });
-   });
-}
-
-/* Protocol magic byte */
-Protocol.prototype._MAGIC_BYTE = 0x7f;
-
-/* Supported serializers */
-Protocol.prototype.SERIALIZERS = {
-   json: 1
-};
-
-/* Protocol states */
-Protocol.prototype.STATUS = {
-   CLOSED:     -1,
-   UNINITIATED: 0,
-   NEGOCIATING: 1,
-   NEGOCIATED:  2,
-   RXHEAD:      3,
-   RXDATA:      4,
-   RXPING:      5,
-   RXPONG:      6
-};
-
-/* RawSocket error codes */
-Protocol.prototype.ERRORS = {
-   0: "illegal (must not be used)",
-   1: "serializer unsupported",
-   2: "maximum message length unacceptable",
-   3: "use of reserved bits (unsupported feature)",
-   4: "maximum connection count reached"
-};
-
-/* RawSocket message types */
-Protocol.prototype.MSGTYPES = {
-   WAMP: 0x0,
-   PING: 0x1,
-   PONG: 0x2
-};
-
-/* Default protocol options */
-Protocol.prototype.DEFAULT_OPTIONS = {
-   fail_on_ping_timeout: true,
-   strict_pong: true,
-   ping_timeout: 2000,
-   autoping: 0,
-   max_len_exp: 24,
-   serializer: 'json',
-   packet_timeout: 2000
-};
-
-/**
- * Close transport
- *
- * @returns {Integer} Closed state code
- */
-Protocol.prototype.close = function () {
-   this._status = this.STATUS.CLOSED;
-   this._stream.end();
-
-   return this.STATUS.CLOSED;
-};
-
-/**
- * Write a frame to the transport
- *
- * @param   {Oject}    msg      The frame to send
- * @param   {Integer}  type     The frame type
- * @param   {Function} callback Callback function called when frame is sent
- */
-Protocol.prototype.write = function (msg, type, callback) {
-   type = type === undefined ? 0 : type;
-
-   // If WAMP frame, serialize the object passed
-   // Otherwise send as-is
-   if (type === this.MSGTYPES.WAMP) {
-      msg = JSON.stringify(msg);
-   }
-
-   // Get the frame size
-   var msgLen = Buffer.byteLength(msg, 'utf8');
-
-   // Check frame size against negociated max size
-   if (msgLen > Math.pow(2, this._options._peer_max_len_exp)) {
-      this._emitter.emit('error', new ProtocolError('Frame too big'));
-      return;
-   }
-
-   // Create the frame
-   var frame = new Buffer(msgLen + 4);
-
-   // Message type
-   frame.writeUInt8(type, 0);
-   // Prefix by frame size as a 24 bit integer
-   frame.writeUIntBE(msgLen, 1, 3);
-   frame.write(msg, 4);
-
-   this._stream.write(frame, callback);
-};
-
-Protocol.prototype.ping = function (payload) {
-   payload = payload || 255;
-
-   // Generate a random payload if none provided
-   if (Number.isInteger(payload)) {
-      var base = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'+
-                 '0123456789&~"#\'{([-|`_\\^@)]=},?;.:/!*$<>';
-      var len = Math.max(1, payload);
-
-      for (var i = 0; i < len; i++)
-         payload += base.charAt((Math.random() * base.length) | 0);
-   }
-
-   // Store the payload for checking against PONG packet
-   this._ping_payload = payload;
-
-   // Send the packet and register the ping timeout once done
-   return this.write(payload, this.MSGTYPES.PING, this._setupPingTimeout.bind(this));
-};
-
-Protocol.prototype._setupPingTimeout = function () {
-   if (this._options.ping_timeout) {
-      this._ping_timeout = setTimeout(this._onPingTimeout.bind(this), this._options.ping_timeout);
-   }
-};
-
-Protocol.prototype._clearPingTimeout = function () {
-   if (this._ping_timeout) {
-      clearTimeout(this._ping_timeout);
-      this._ping_timeout = null;
-   }
-};
-
-Protocol.prototype._setupAutoPing = function () {
-   this._clearAutoPing();
-
-   if (this._options.autoping) {
-      this._autoping_interval = setInterval(this.ping.bind(this), this._options.autoping);
-   }
-};
-
-Protocol.prototype._clearAutoPing = function () {
-   if (this._autoping_interval) {
-      clearInterval(this._autoping_interval);
-      this._autoping_interval = null;
-   }
-};
-
-Protocol.prototype._onPingTimeout = function () {
-   this._emitter.emit('error', new ProtocolError('PING timeout'));
-
-   if (this._options.fail_on_ping_timeout) {
-      this.close();
-   }
-};
-
-/**
- * Handle incoming data
- *
- * @param {Buffer} data Incoming data
- */
-Protocol.prototype._read = function (data) {
-   var handler, frame;
-
-   switch (this._status) {
-      case this.STATUS.CLOSED:
-      case this.STATUS.UNINITIATED:
-         this._emitter.emit('error', ProtocolError('Unexpected packet'));
-         break;
-
-      case this.STATUS.NEGOCIATING:
-         handler = this._handleHandshake;
-         frame = 4;
-         break;
-
-      case this.STATUS.NEGOCIATED:
-      case this.STATUS.RXHEAD:
-         this._status = this.STATUS.RXHEAD;
-
-         handler = this._handleHeaderPacket;
-         frame = 4;
-         break;
-
-      case this.STATUS.RXDATA:
-         handler = this._handleDataPacket;
-         frame = this._msgLen;
-         break;
-
-      case this.STATUS.RXPING:
-         handler = this._handlePingPacket;
-         frame = this._msgLen;
-         break;
-
-      case this.STATUS.RXPONG:
-         handler = this._handlePongPacket;
-         frame = this._msgLen;
-         break;
-   }
-
-   // Get a frame of the expected size
-   var chunks = this._splitBytes(data, frame);
-
-   // Protocol#_splitBytes returns null if there isn't enough data to fill the
-   // requested frame yet. Wait for more
-   if (!chunks) return;
-
-   // Call the packet handler with the frame
-   this._status = handler.call(this, chunks[0]);
-
-   // If there is more data, handle it
-   if (chunks[1].length > 0) {
-      this._read(chunks[1]);
-   }
-};
-
-/**
- * Send the handshake packet to the peer
- */
-Protocol.prototype._handshake = function () {
-   if (this._status !== this.STATUS.UNINITIATED) {
-      throw 'Handshake packet already sent';
-   }
-
-   // Compose handshake message
-   var gday = new Buffer(4);
-
-   // Protocol magic byte
-   gday.writeUInt8(this._MAGIC_BYTE, 0);
-   // Announce message max length and serializer
-   gday.writeUInt8((this._options.max_len_exp - 9) << 4 | this.SERIALIZERS[this._options.serializer], 1);
-   // Reserved bytes
-   gday.writeUInt8(0x00, 2);
-   gday.writeUInt8(0x00, 3);
-
-   this._stream.write(gday);
-
-   this._status = this.STATUS.NEGOCIATING;
-};
-
-/**
- * Make a frame of the requested length using the data already buffered and the
- * passed incoming data
- *
- * @param   {Buffer}  data Incoming data
- * @param   {Integer} len  Frame size
- *
- * @returns {null|Array(2)} Returns null if there is'nt enough data to fill the
- *                          frame yet, or an array containing the frame at
- *                          index 0 and the leftover bytes at index 1 otherwise.
- */
-Protocol.prototype._splitBytes = function (data, len) {
-   // If the buffer we have already isn't the right size, throw the data away
-   // and make a new one
-   if (len !== this._buffer.length) {
-      this._buffer = new Buffer(len);
-      this._bufferLen = 0;
-   }
-
-   // Push the data to the buffer
-   data.copy(this._buffer, this._bufferLen);
-
-   // If there still isn't enough data, increment the counter and return null
-   if (this._bufferLen + data.length < len) {
-      this._bufferLen += data.length;
-      return null;
-   // Otherwise, return the requested frame and the leftover data
-   } else {
-      var bytes = this._buffer.slice();
-      var extra = data.slice(len - this._bufferLen);
-
-      this._bufferLen = 0;
-
-      return [ bytes, extra ];
-   }
-};
-
-/**
- * Handle the handshake response packet
- *
- * @param   {Buffer} int32 A 4 byte buffer containing the handshake packet
- *
- * @returns {Integer} The new protocol state
- */
-Protocol.prototype._handleHandshake = function (int32) {
-   // Check magic byte
-   if (int32[0] !== this._MAGIC_BYTE) {
-      this._emitter.emit('error',  new ProtocolError(
-         'Invalid magic byte. Expected 0x' +
-         this._MAGIC_BYTE.toString(16) + ', got 0x' +
-         int32[0].toString(16))
-      );
-      return this.close();
-   }
-
-   // Check for error
-   if ((int32[1] & 0x0f) === 0) {
-      var errcode = int32[1] >> 4;
-      this._emitter.emit('error',  new ProtocolError('Peer failed handshake: ' +
-         (this.ERRORS[errcode] || '0x' + errcode.toString(16))));
-      return this.close();
-   }
-
-   // Extract max message length and serializer
-   this._options._peer_max_len_exp = (int32[1] >> 4) + 9;
-   this._options._peer_serializer = int32[1] & 0x0f;
-
-   // We only support JSON so far
-   // TODO: Support more serializers
-   if (this._options._peer_serializer !== this.SERIALIZERS.json) {
-      this._emitter.emit('error', new ProtocolError(
-         'Unsupported serializer: 0x' +
-         this._options._peer_serializer.toString(16))
-      );
-      return this.close();
-   }
-
-   // Protocol negociation complete, we're connected to the peer and ready to
-   // talk
-   this._emitter.emit('connect');
-
-   // Setup the autoping
-   this._setupAutoPing();
-
-   return this.STATUS.NEGOCIATED;
-};
-
-/**
- * Handle a frame header
- *
- * @param   {Buffer} int32 A 4 byte buffer representing the packet length
- *
- * @returns {Integer} The new protocol state
- */
-Protocol.prototype._handleHeaderPacket = function (int32) {
-   var type = int32[0] & 0x0f;
-
-   // Decode integer and store it
-   this._msgLen = int32.readUIntBE(1, 3);
-
-   switch (type) {
-      case this.MSGTYPES.WAMP: // WAMP frame
-         return this.STATUS.RXDATA;
-
-      case this.MSGTYPES.PING: // PING frame
-         return this.STATUS.RXPING;
-
-      case this.MSGTYPES.PONG: // PONG frame
-         return this.STATUS.RXPONG;
-
-      default:
-         this._emitter.emit('error', new ProtocolError(
-            'Invalid frame type: 0x' + type.toString(16))
-         );
-         return this.close();
-   }
-};
-
-/**
- * Handle a data packet
- *
- * @param   {Buffer} buffer The received data
- *
- * @returns {Integer} The new protocol state
- */
-Protocol.prototype._handleDataPacket = function (buffer) {
-   var msg;
-   // Attempt to deserialize the frame
-   // TODO: Support other serializers
-   try {
-      msg = JSON.parse(buffer.toString('utf8'));
-   } catch (e) {
-      this._emitter.emit('error',
-         new ProtocolError('Invalid JSON frame')
-      );
-      return this.STATUS.RXHEAD;
-   }
-
-   // Emit a data event for consumers
-   this._emitter.emit('data', msg);
-
-   return this.STATUS.RXHEAD;
-};
-
-/**
- * Handle a ping packet - Reply with a  PONG and the same payload
- *
- * @param   {Buffer} buffer The received data
- *
- * @returns {Integer} The new protocol state
- */
-Protocol.prototype._handlePingPacket = function (buffer) {
-   this.write(buffer.toString('utf8'), this.MSGTYPES.PONG);
-   return this.STATUS.RXHEAD;
-};
-
-/**
- * Handle a pong packet
- *
- * @param   {Buffer} buffer The received data
- *
- * @returns {Integer} The new protocol state
- */
-Protocol.prototype._handlePongPacket = function (buffer) {
-   // Clear the ping timeout (if any)
-   this._clearPingTimeout();
-
-   // If strict PONG checking is activated and the payloads don't match, throw
-   // an error and close the connection
-   if (this._options.strict_pong
-      && this._ping_payload !== buffer.toString('utf8')) {
-      this._emitter.emit('error', new ProtocolError(
-         'PONG response payload doesn\'t match PING.'
-      ));
-
-      return this.close();
-   }
-
-   return this.STATUS.RXHEAD;
-};
-
-Protocol.prototype.on = function (evt, handler) {
-   return this._emitter.on(evt, handler);
-};
-
-Protocol.prototype.once = function (evt, handler) {
-   return this._emitter.once(evt, handler);
-};
-
-Protocol.prototype.removeListener = function (evt, handler) {
-   return this._emitter.removeListener(evt, handler);
-};
-
-
-/**
- * ProtocolError type
- */
-var ProtocolError = exports.ProtocolError = function (msg) {
-   Error.apply(this, Array.prototype.splice.call(arguments));
-
-   Error.captureStackTrace(this, this.constructor);
-
-   this.message = msg;
-   this.name = 'ProtocolError';
-};
-ProtocolError.prototype = Object.create(Error.prototype);
-
-
-exports.Factory = Factory;
-exports.Protocol = Protocol;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
-},{"../log.js":7,"../serializer.js":16,"../util.js":21,"buffer":30,"events":66,"net":29}],20:[function(require,module,exports){
+},{"../log.js":7,"../serializer.js":16,"../util.js":20,"when":115}],19:[function(require,module,exports){
 (function (global){
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -5592,7 +4892,7 @@ Factory.prototype.create = function () {
    // running in Node.js
    //
    if (global.process && global.process.versions.node
-       && !global.process.versions.hasOwnProperty('electron')) {
+       && !global.process.versions.hasOwnProperty('electron') && !global.process.__nwjs) {
 
       (function () {
 
@@ -5600,11 +4900,11 @@ Factory.prototype.create = function () {
          var randomBytes = require('randombytes');
          var websocket;
 
-         var options = { 
+         var options = {
             agent : self._options.agent,
             headers : self._options.headers
          };
-         
+
          var protocols;
          if (self._options.protocols) {
             protocols = self._options.protocols;
@@ -5614,16 +4914,31 @@ Factory.prototype.create = function () {
             options.protocol = protocols;
          }
 
-         if (self._options.url.startsWith('wss://')) {
-            // Using TLS
-            // Only using the known working flags in the options.
-            // https://nodejs.org/api/https.html#https_https_request_options_callback
-            options.ca = self._options.tlsConfiguration.ca;
-            options.cert = self._options.tlsConfiguration.cert;
-            options.key = self._options.tlsConfiguration.key;
-            options.rejectUnauthorized = false;
+         if (self._options.url.startsWith('wss://') &&
+             self._options.tlsConfiguration) {
+
+            if (self._options.tlsConfiguration.ca &&
+                self._options.tlsConfiguration.cert &&
+                self._options.tlsConfiguration.key) {
+
+               // Using TLS
+               // Only using the known working flags in the options.
+               // https://nodejs.org/api/https.html#https_https_request_options_callback
+
+               log.debug('Using TLS Client Authentication.');
+
+               options.ca = self._options.tlsConfiguration.ca;
+               options.cert = self._options.tlsConfiguration.cert;
+               options.key = self._options.tlsConfiguration.key;
+               options.rejectUnauthorized = false;
+            } else {
+               log.debug("Not using TLS Client Authentication. tlsConfiguration should include " +
+                   "'ca' 'cert' and 'key' parameters.");
+            }
+         } else {
+             log.debug('Not using TLS Client Authentication.');
          }
-         
+
          websocket = new WebSocket(self._options.url, protocols, options);
 
          transport.send = function (msg) {
@@ -5799,7 +5114,7 @@ Factory.prototype.create = function () {
 exports.Factory = Factory;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"../log.js":7,"../serializer.js":16,"../util.js":21,"randombytes":77,"ws":28}],21:[function(require,module,exports){
+},{"../log.js":7,"../serializer.js":16,"../util.js":20,"randombytes":27,"ws":27}],20:[function(require,module,exports){
 (function (global){
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -6100,7 +5415,7 @@ exports.defaults = defaults;
 exports.new_global_id = new_global_id;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./log.js":7,"when":118}],22:[function(require,module,exports){
+},{"./log.js":7,"when":115}],21:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -6594,7 +5909,7 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":25}],23:[function(require,module,exports){
+},{"util/":24}],22:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -6619,14 +5934,14 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],24:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],25:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7216,7 +6531,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":24,"_process":76,"inherits":23}],26:[function(require,module,exports){
+},{"./support/isBuffer":23,"_process":74,"inherits":22}],25:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -7369,7 +6684,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],27:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict'
 var DuplexStream = require('readable-stream').Duplex
   , util         = require('util')
@@ -7575,13 +6890,16 @@ BufferList.prototype.copy = function copy (dst, dstStart, srcStart, srcEnd) {
 
 BufferList.prototype.shallowSlice = function shallowSlice (start, end) {
   start = start || 0
-  end = end || this.length
+  end = typeof end !== 'number' ? this.length : end
 
   if (start < 0)
     start += this.length
   if (end < 0)
     end += this.length
 
+  if (start === end) {
+    return new BufferList()
+  }
   var startOffset = this._offset(start)
     , endOffset = this._offset(end)
     , buffers = this._bufs.slice(startOffset[0], endOffset[0] + 1)
@@ -7751,11 +7069,10 @@ BufferList.prototype._match = function(offset, search) {
 
 module.exports = BufferList
 
-},{"readable-stream":86,"safe-buffer":87,"util":93}],28:[function(require,module,exports){
+},{"readable-stream":84,"safe-buffer":85,"util":90}],27:[function(require,module,exports){
 
-},{}],29:[function(require,module,exports){
-arguments[4][28][0].apply(exports,arguments)
-},{"dup":28}],30:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
+(function (Buffer){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -9534,7 +8851,8 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":26,"ieee754":67}],31:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"base64-js":25,"buffer":28,"ieee754":65}],29:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -9645,7 +8963,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":69}],32:[function(require,module,exports){
+},{"../../is-buffer/index.js":67}],30:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -9878,7 +9196,7 @@ function objectToString(o) {
 	return CryptoJS.AES;
 
 }));
-},{"./cipher-core":33,"./core":34,"./enc-base64":35,"./evpkdf":37,"./md5":42}],33:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32,"./enc-base64":33,"./evpkdf":35,"./md5":40}],31:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -10754,7 +10072,7 @@ function objectToString(o) {
 
 
 }));
-},{"./core":34}],34:[function(require,module,exports){
+},{"./core":32}],32:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11515,7 +10833,7 @@ function objectToString(o) {
 	return CryptoJS;
 
 }));
-},{}],35:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11651,7 +10969,7 @@ function objectToString(o) {
 	return CryptoJS.enc.Base64;
 
 }));
-},{"./core":34}],36:[function(require,module,exports){
+},{"./core":32}],34:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11801,7 +11119,7 @@ function objectToString(o) {
 	return CryptoJS.enc.Utf16;
 
 }));
-},{"./core":34}],37:[function(require,module,exports){
+},{"./core":32}],35:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -11934,7 +11252,7 @@ function objectToString(o) {
 	return CryptoJS.EvpKDF;
 
 }));
-},{"./core":34,"./hmac":39,"./sha1":58}],38:[function(require,module,exports){
+},{"./core":32,"./hmac":37,"./sha1":56}],36:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12001,7 +11319,7 @@ function objectToString(o) {
 	return CryptoJS.format.Hex;
 
 }));
-},{"./cipher-core":33,"./core":34}],39:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],37:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12145,7 +11463,7 @@ function objectToString(o) {
 
 
 }));
-},{"./core":34}],40:[function(require,module,exports){
+},{"./core":32}],38:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12164,7 +11482,7 @@ function objectToString(o) {
 	return CryptoJS;
 
 }));
-},{"./aes":32,"./cipher-core":33,"./core":34,"./enc-base64":35,"./enc-utf16":36,"./evpkdf":37,"./format-hex":38,"./hmac":39,"./lib-typedarrays":41,"./md5":42,"./mode-cfb":43,"./mode-ctr":45,"./mode-ctr-gladman":44,"./mode-ecb":46,"./mode-ofb":47,"./pad-ansix923":48,"./pad-iso10126":49,"./pad-iso97971":50,"./pad-nopadding":51,"./pad-zeropadding":52,"./pbkdf2":53,"./rabbit":55,"./rabbit-legacy":54,"./rc4":56,"./ripemd160":57,"./sha1":58,"./sha224":59,"./sha256":60,"./sha3":61,"./sha384":62,"./sha512":63,"./tripledes":64,"./x64-core":65}],41:[function(require,module,exports){
+},{"./aes":30,"./cipher-core":31,"./core":32,"./enc-base64":33,"./enc-utf16":34,"./evpkdf":35,"./format-hex":36,"./hmac":37,"./lib-typedarrays":39,"./md5":40,"./mode-cfb":41,"./mode-ctr":43,"./mode-ctr-gladman":42,"./mode-ecb":44,"./mode-ofb":45,"./pad-ansix923":46,"./pad-iso10126":47,"./pad-iso97971":48,"./pad-nopadding":49,"./pad-zeropadding":50,"./pbkdf2":51,"./rabbit":53,"./rabbit-legacy":52,"./rc4":54,"./ripemd160":55,"./sha1":56,"./sha224":57,"./sha256":58,"./sha3":59,"./sha384":60,"./sha512":61,"./tripledes":62,"./x64-core":63}],39:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12241,7 +11559,7 @@ function objectToString(o) {
 	return CryptoJS.lib.WordArray;
 
 }));
-},{"./core":34}],42:[function(require,module,exports){
+},{"./core":32}],40:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12510,7 +11828,7 @@ function objectToString(o) {
 	return CryptoJS.MD5;
 
 }));
-},{"./core":34}],43:[function(require,module,exports){
+},{"./core":32}],41:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12589,7 +11907,7 @@ function objectToString(o) {
 	return CryptoJS.mode.CFB;
 
 }));
-},{"./cipher-core":33,"./core":34}],44:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],42:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12706,7 +12024,7 @@ function objectToString(o) {
 	return CryptoJS.mode.CTRGladman;
 
 }));
-},{"./cipher-core":33,"./core":34}],45:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],43:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12765,7 +12083,7 @@ function objectToString(o) {
 	return CryptoJS.mode.CTR;
 
 }));
-},{"./cipher-core":33,"./core":34}],46:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],44:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12806,7 +12124,7 @@ function objectToString(o) {
 	return CryptoJS.mode.ECB;
 
 }));
-},{"./cipher-core":33,"./core":34}],47:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],45:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12861,7 +12179,7 @@ function objectToString(o) {
 	return CryptoJS.mode.OFB;
 
 }));
-},{"./cipher-core":33,"./core":34}],48:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],46:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12911,7 +12229,7 @@ function objectToString(o) {
 	return CryptoJS.pad.Ansix923;
 
 }));
-},{"./cipher-core":33,"./core":34}],49:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],47:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12956,7 +12274,7 @@ function objectToString(o) {
 	return CryptoJS.pad.Iso10126;
 
 }));
-},{"./cipher-core":33,"./core":34}],50:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],48:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -12997,7 +12315,7 @@ function objectToString(o) {
 	return CryptoJS.pad.Iso97971;
 
 }));
-},{"./cipher-core":33,"./core":34}],51:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],49:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13028,7 +12346,7 @@ function objectToString(o) {
 	return CryptoJS.pad.NoPadding;
 
 }));
-},{"./cipher-core":33,"./core":34}],52:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],50:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13074,7 +12392,7 @@ function objectToString(o) {
 	return CryptoJS.pad.ZeroPadding;
 
 }));
-},{"./cipher-core":33,"./core":34}],53:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32}],51:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13220,7 +12538,7 @@ function objectToString(o) {
 	return CryptoJS.PBKDF2;
 
 }));
-},{"./core":34,"./hmac":39,"./sha1":58}],54:[function(require,module,exports){
+},{"./core":32,"./hmac":37,"./sha1":56}],52:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13411,7 +12729,7 @@ function objectToString(o) {
 	return CryptoJS.RabbitLegacy;
 
 }));
-},{"./cipher-core":33,"./core":34,"./enc-base64":35,"./evpkdf":37,"./md5":42}],55:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32,"./enc-base64":33,"./evpkdf":35,"./md5":40}],53:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13604,7 +12922,7 @@ function objectToString(o) {
 	return CryptoJS.Rabbit;
 
 }));
-},{"./cipher-core":33,"./core":34,"./enc-base64":35,"./evpkdf":37,"./md5":42}],56:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32,"./enc-base64":33,"./evpkdf":35,"./md5":40}],54:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -13744,7 +13062,7 @@ function objectToString(o) {
 	return CryptoJS.RC4;
 
 }));
-},{"./cipher-core":33,"./core":34,"./enc-base64":35,"./evpkdf":37,"./md5":42}],57:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32,"./enc-base64":33,"./evpkdf":35,"./md5":40}],55:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14012,7 +13330,7 @@ function objectToString(o) {
 	return CryptoJS.RIPEMD160;
 
 }));
-},{"./core":34}],58:[function(require,module,exports){
+},{"./core":32}],56:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14163,7 +13481,7 @@ function objectToString(o) {
 	return CryptoJS.SHA1;
 
 }));
-},{"./core":34}],59:[function(require,module,exports){
+},{"./core":32}],57:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14244,7 +13562,7 @@ function objectToString(o) {
 	return CryptoJS.SHA224;
 
 }));
-},{"./core":34,"./sha256":60}],60:[function(require,module,exports){
+},{"./core":32,"./sha256":58}],58:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14444,7 +13762,7 @@ function objectToString(o) {
 	return CryptoJS.SHA256;
 
 }));
-},{"./core":34}],61:[function(require,module,exports){
+},{"./core":32}],59:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14768,7 +14086,7 @@ function objectToString(o) {
 	return CryptoJS.SHA3;
 
 }));
-},{"./core":34,"./x64-core":65}],62:[function(require,module,exports){
+},{"./core":32,"./x64-core":63}],60:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -14852,7 +14170,7 @@ function objectToString(o) {
 	return CryptoJS.SHA384;
 
 }));
-},{"./core":34,"./sha512":63,"./x64-core":65}],63:[function(require,module,exports){
+},{"./core":32,"./sha512":61,"./x64-core":63}],61:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -15176,7 +14494,7 @@ function objectToString(o) {
 	return CryptoJS.SHA512;
 
 }));
-},{"./core":34,"./x64-core":65}],64:[function(require,module,exports){
+},{"./core":32,"./x64-core":63}],62:[function(require,module,exports){
 ;(function (root, factory, undef) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -15947,7 +15265,7 @@ function objectToString(o) {
 	return CryptoJS.TripleDES;
 
 }));
-},{"./cipher-core":33,"./core":34,"./enc-base64":35,"./evpkdf":37,"./md5":42}],65:[function(require,module,exports){
+},{"./cipher-core":31,"./core":32,"./enc-base64":33,"./evpkdf":35,"./md5":40}],63:[function(require,module,exports){
 ;(function (root, factory) {
 	if (typeof exports === "object") {
 		// CommonJS
@@ -16252,7 +15570,7 @@ function objectToString(o) {
 	return CryptoJS;
 
 }));
-},{"./core":34}],66:[function(require,module,exports){
+},{"./core":32}],64:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -16777,7 +16095,7 @@ function functionBindPolyfill(context) {
   };
 }
 
-},{}],67:[function(require,module,exports){
+},{}],65:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -16863,9 +16181,9 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],68:[function(require,module,exports){
-arguments[4][23][0].apply(exports,arguments)
-},{"dup":23}],69:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
+arguments[4][22][0].apply(exports,arguments)
+},{"dup":22}],67:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -16888,14 +16206,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],70:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],71:[function(require,module,exports){
+},{}],69:[function(require,module,exports){
 'use strict'
 
 var Buffer = require('safe-buffer').Buffer
@@ -16982,7 +16300,7 @@ function msgpack (options) {
 
 module.exports = msgpack
 
-},{"./lib/decoder":72,"./lib/encoder":73,"./lib/streams":74,"assert":22,"bl":27,"safe-buffer":87}],72:[function(require,module,exports){
+},{"./lib/decoder":70,"./lib/encoder":71,"./lib/streams":72,"assert":21,"bl":26,"safe-buffer":85}],70:[function(require,module,exports){
 'use strict'
 
 var bl = require('bl')
@@ -17420,7 +16738,7 @@ module.exports = function buildDecode (decodingTypes) {
 
 module.exports.IncompleteBufferError = IncompleteBufferError
 
-},{"bl":27,"util":93}],73:[function(require,module,exports){
+},{"bl":26,"util":90}],71:[function(require,module,exports){
 'use strict'
 
 var Buffer = require('safe-buffer').Buffer
@@ -17765,7 +17083,7 @@ function encodeFloat (obj, forceFloat64) {
   return buf
 }
 
-},{"bl":27,"safe-buffer":87}],74:[function(require,module,exports){
+},{"bl":26,"safe-buffer":85}],72:[function(require,module,exports){
 'use strict'
 
 var Transform = require('readable-stream').Transform
@@ -17857,7 +17175,7 @@ Decoder.prototype._transform = function (buf, enc, done) {
 module.exports.decoder = Decoder
 module.exports.encoder = Encoder
 
-},{"bl":27,"inherits":68,"readable-stream":86}],75:[function(require,module,exports){
+},{"bl":26,"inherits":66,"readable-stream":84}],73:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -17905,7 +17223,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 
 
 }).call(this,require('_process'))
-},{"_process":76}],76:[function(require,module,exports){
+},{"_process":74}],74:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -18091,49 +17409,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],77:[function(require,module,exports){
-(function (process,global){
-'use strict'
-
-function oldBrowser () {
-  throw new Error('Secure random number generation is not supported by this browser.\nUse Chrome, Firefox or Internet Explorer 11')
-}
-
-var Buffer = require('safe-buffer').Buffer
-var crypto = global.crypto || global.msCrypto
-
-if (crypto && crypto.getRandomValues) {
-  module.exports = randomBytes
-} else {
-  module.exports = oldBrowser
-}
-
-function randomBytes (size, cb) {
-  // phantomjs needs to throw
-  if (size > 65536) throw new Error('requested too many random bytes')
-  // in case browserify  isn't using the Uint8Array version
-  var rawBytes = new global.Uint8Array(size)
-
-  // This will not work in older browsers.
-  // See https://developer.mozilla.org/en-US/docs/Web/API/window.crypto.getRandomValues
-  if (size > 0) {  // getRandomValues fails on IE if size == 0
-    crypto.getRandomValues(rawBytes)
-  }
-
-  // XXX: phantomjs doesn't like a buffer being passed here
-  var bytes = Buffer.from(rawBytes.buffer)
-
-  if (typeof cb === 'function') {
-    return process.nextTick(function () {
-      cb(null, bytes)
-    })
-  }
-
-  return bytes
-}
-
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":76,"safe-buffer":87}],78:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -18265,7 +17541,7 @@ Duplex.prototype._destroy = function (err, cb) {
 
   pna.nextTick(cb, err);
 };
-},{"./_stream_readable":80,"./_stream_writable":82,"core-util-is":31,"inherits":68,"process-nextick-args":75}],79:[function(require,module,exports){
+},{"./_stream_readable":77,"./_stream_writable":79,"core-util-is":29,"inherits":66,"process-nextick-args":73}],76:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -18313,7 +17589,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":81,"core-util-is":31,"inherits":68}],80:[function(require,module,exports){
+},{"./_stream_transform":78,"core-util-is":29,"inherits":66}],77:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -19335,7 +18611,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":78,"./internal/streams/BufferList":83,"./internal/streams/destroy":84,"./internal/streams/stream":85,"_process":76,"core-util-is":31,"events":66,"inherits":68,"isarray":70,"process-nextick-args":75,"safe-buffer":87,"string_decoder/":88,"util":28}],81:[function(require,module,exports){
+},{"./_stream_duplex":75,"./internal/streams/BufferList":80,"./internal/streams/destroy":81,"./internal/streams/stream":82,"_process":74,"core-util-is":29,"events":64,"inherits":66,"isarray":68,"process-nextick-args":73,"safe-buffer":85,"string_decoder/":83,"util":27}],78:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -19550,7 +18826,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":78,"core-util-is":31,"inherits":68}],82:[function(require,module,exports){
+},{"./_stream_duplex":75,"core-util-is":29,"inherits":66}],79:[function(require,module,exports){
 (function (process,global,setImmediate){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -20240,7 +19516,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("timers").setImmediate)
-},{"./_stream_duplex":78,"./internal/streams/destroy":84,"./internal/streams/stream":85,"_process":76,"core-util-is":31,"inherits":68,"process-nextick-args":75,"safe-buffer":87,"timers":89,"util-deprecate":91}],83:[function(require,module,exports){
+},{"./_stream_duplex":75,"./internal/streams/destroy":81,"./internal/streams/stream":82,"_process":74,"core-util-is":29,"inherits":66,"process-nextick-args":73,"safe-buffer":85,"timers":86,"util-deprecate":88}],80:[function(require,module,exports){
 'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20320,7 +19596,7 @@ if (util && util.inspect && util.inspect.custom) {
     return this.constructor.name + ' ' + obj;
   };
 }
-},{"safe-buffer":87,"util":28}],84:[function(require,module,exports){
+},{"safe-buffer":85,"util":27}],81:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -20395,83 +19671,10 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":75}],85:[function(require,module,exports){
+},{"process-nextick-args":73}],82:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":66}],86:[function(require,module,exports){
-exports = module.exports = require('./lib/_stream_readable.js');
-exports.Stream = exports;
-exports.Readable = exports;
-exports.Writable = require('./lib/_stream_writable.js');
-exports.Duplex = require('./lib/_stream_duplex.js');
-exports.Transform = require('./lib/_stream_transform.js');
-exports.PassThrough = require('./lib/_stream_passthrough.js');
-
-},{"./lib/_stream_duplex.js":78,"./lib/_stream_passthrough.js":79,"./lib/_stream_readable.js":80,"./lib/_stream_transform.js":81,"./lib/_stream_writable.js":82}],87:[function(require,module,exports){
-/* eslint-disable node/no-deprecated-api */
-var buffer = require('buffer')
-var Buffer = buffer.Buffer
-
-// alternative to using Object.keys for old browsers
-function copyProps (src, dst) {
-  for (var key in src) {
-    dst[key] = src[key]
-  }
-}
-if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
-  module.exports = buffer
-} else {
-  // Copy properties from require('buffer')
-  copyProps(buffer, exports)
-  exports.Buffer = SafeBuffer
-}
-
-function SafeBuffer (arg, encodingOrOffset, length) {
-  return Buffer(arg, encodingOrOffset, length)
-}
-
-// Copy static methods from Buffer
-copyProps(Buffer, SafeBuffer)
-
-SafeBuffer.from = function (arg, encodingOrOffset, length) {
-  if (typeof arg === 'number') {
-    throw new TypeError('Argument must not be a number')
-  }
-  return Buffer(arg, encodingOrOffset, length)
-}
-
-SafeBuffer.alloc = function (size, fill, encoding) {
-  if (typeof size !== 'number') {
-    throw new TypeError('Argument must be a number')
-  }
-  var buf = Buffer(size)
-  if (fill !== undefined) {
-    if (typeof encoding === 'string') {
-      buf.fill(fill, encoding)
-    } else {
-      buf.fill(fill)
-    }
-  } else {
-    buf.fill(0)
-  }
-  return buf
-}
-
-SafeBuffer.allocUnsafe = function (size) {
-  if (typeof size !== 'number') {
-    throw new TypeError('Argument must be a number')
-  }
-  return Buffer(size)
-}
-
-SafeBuffer.allocUnsafeSlow = function (size) {
-  if (typeof size !== 'number') {
-    throw new TypeError('Argument must be a number')
-  }
-  return buffer.SlowBuffer(size)
-}
-
-},{"buffer":30}],88:[function(require,module,exports){
+},{"events":64}],83:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -20768,7 +19971,80 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":87}],89:[function(require,module,exports){
+},{"safe-buffer":85}],84:[function(require,module,exports){
+exports = module.exports = require('./lib/_stream_readable.js');
+exports.Stream = exports;
+exports.Readable = exports;
+exports.Writable = require('./lib/_stream_writable.js');
+exports.Duplex = require('./lib/_stream_duplex.js');
+exports.Transform = require('./lib/_stream_transform.js');
+exports.PassThrough = require('./lib/_stream_passthrough.js');
+
+},{"./lib/_stream_duplex.js":75,"./lib/_stream_passthrough.js":76,"./lib/_stream_readable.js":77,"./lib/_stream_transform.js":78,"./lib/_stream_writable.js":79}],85:[function(require,module,exports){
+/* eslint-disable node/no-deprecated-api */
+var buffer = require('buffer')
+var Buffer = buffer.Buffer
+
+// alternative to using Object.keys for old browsers
+function copyProps (src, dst) {
+  for (var key in src) {
+    dst[key] = src[key]
+  }
+}
+if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow) {
+  module.exports = buffer
+} else {
+  // Copy properties from require('buffer')
+  copyProps(buffer, exports)
+  exports.Buffer = SafeBuffer
+}
+
+function SafeBuffer (arg, encodingOrOffset, length) {
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+// Copy static methods from Buffer
+copyProps(Buffer, SafeBuffer)
+
+SafeBuffer.from = function (arg, encodingOrOffset, length) {
+  if (typeof arg === 'number') {
+    throw new TypeError('Argument must not be a number')
+  }
+  return Buffer(arg, encodingOrOffset, length)
+}
+
+SafeBuffer.alloc = function (size, fill, encoding) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  var buf = Buffer(size)
+  if (fill !== undefined) {
+    if (typeof encoding === 'string') {
+      buf.fill(fill, encoding)
+    } else {
+      buf.fill(fill)
+    }
+  } else {
+    buf.fill(0)
+  }
+  return buf
+}
+
+SafeBuffer.allocUnsafe = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return Buffer(size)
+}
+
+SafeBuffer.allocUnsafeSlow = function (size) {
+  if (typeof size !== 'number') {
+    throw new TypeError('Argument must be a number')
+  }
+  return buffer.SlowBuffer(size)
+}
+
+},{"buffer":28}],86:[function(require,module,exports){
 (function (setImmediate,clearImmediate){
 var nextTick = require('process/browser.js').nextTick;
 var apply = Function.prototype.apply;
@@ -20847,7 +20123,7 @@ exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate :
   delete immediateIds[id];
 };
 }).call(this,require("timers").setImmediate,require("timers").clearImmediate)
-},{"process/browser.js":76,"timers":89}],90:[function(require,module,exports){
+},{"process/browser.js":74,"timers":86}],87:[function(require,module,exports){
 (function(nacl) {
 'use strict';
 
@@ -23226,7 +22502,7 @@ nacl.setPRNG = function(fn) {
 
 })(typeof module !== 'undefined' && module.exports ? module.exports : (self.nacl = self.nacl || {}));
 
-},{"crypto":28}],91:[function(require,module,exports){
+},{"crypto":27}],88:[function(require,module,exports){
 (function (global){
 
 /**
@@ -23297,11 +22573,11 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],92:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"dup":23}],90:[function(require,module,exports){
 arguments[4][24][0].apply(exports,arguments)
-},{"dup":24}],93:[function(require,module,exports){
-arguments[4][25][0].apply(exports,arguments)
-},{"./support/isBuffer":92,"_process":76,"dup":25,"inherits":68}],94:[function(require,module,exports){
+},{"./support/isBuffer":89,"_process":74,"dup":24,"inherits":66}],91:[function(require,module,exports){
 /** @license MIT License (c) copyright 2013-2014 original author or authors */
 
 /**
@@ -23407,7 +22683,7 @@ define(function(require) {
 
 
 
-},{"./lib/apply":98,"./lib/liftAll":110,"./when":118}],95:[function(require,module,exports){
+},{"./lib/apply":95,"./lib/liftAll":107,"./when":115}],92:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -23426,7 +22702,7 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./Scheduler":96,"./env":108,"./makePromise":111}],96:[function(require,module,exports){
+},{"./Scheduler":93,"./env":105,"./makePromise":108}],93:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -23508,7 +22784,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],97:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -23536,7 +22812,7 @@ define(function() {
 	return TimeoutError;
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
-},{}],98:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -23593,7 +22869,7 @@ define(function() {
 
 
 
-},{}],99:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -23894,7 +23170,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../apply":98,"../state":112}],100:[function(require,module,exports){
+},{"../apply":95,"../state":109}],97:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24056,7 +23332,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],101:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24085,7 +23361,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],102:[function(require,module,exports){
+},{}],99:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24107,7 +23383,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../state":112}],103:[function(require,module,exports){
+},{"../state":109}],100:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24174,7 +23450,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],104:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24200,7 +23476,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],105:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24280,7 +23556,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../TimeoutError":97,"../env":108}],106:[function(require,module,exports){
+},{"../TimeoutError":94,"../env":105}],103:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24368,7 +23644,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../env":108,"../format":109}],107:[function(require,module,exports){
+},{"../env":105,"../format":106}],104:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24408,7 +23684,7 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 
-},{}],108:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
@@ -24485,7 +23761,7 @@ define(function(require) {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
 }).call(this,require('_process'))
-},{"_process":76}],109:[function(require,module,exports){
+},{"_process":74}],106:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24543,7 +23819,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],110:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -24573,7 +23849,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],111:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 (function (process){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
@@ -25532,7 +24808,7 @@ define(function() {
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
 }).call(this,require('_process'))
-},{"_process":76}],112:[function(require,module,exports){
+},{"_process":74}],109:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25569,7 +24845,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],113:[function(require,module,exports){
+},{}],110:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25588,7 +24864,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"./monitor/ConsoleReporter":114,"./monitor/PromiseMonitor":115}],114:[function(require,module,exports){
+},{"./monitor/ConsoleReporter":111,"./monitor/PromiseMonitor":112}],111:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25696,7 +24972,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"./error":117}],115:[function(require,module,exports){
+},{"./error":114}],112:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25895,7 +25171,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../lib/env":108,"./error":117}],116:[function(require,module,exports){
+},{"../lib/env":105,"./error":114}],113:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25911,7 +25187,7 @@ define(function(require) {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(require); }));
 
-},{"../monitor":113,"../when":118}],117:[function(require,module,exports){
+},{"../monitor":110,"../when":115}],114:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 /** @author Brian Cavalier */
 /** @author John Hann */
@@ -25999,7 +25275,7 @@ define(function() {
 });
 }(typeof define === 'function' && define.amd ? define : function(factory) { module.exports = factory(); }));
 
-},{}],118:[function(require,module,exports){
+},{}],115:[function(require,module,exports){
 /** @license MIT License (c) copyright 2010-2014 original author or authors */
 
 /**
@@ -26229,10 +25505,10 @@ define(function (require) {
 });
 })(typeof define === 'function' && define.amd ? define : function (factory) { module.exports = factory(require); });
 
-},{"./lib/Promise":95,"./lib/TimeoutError":97,"./lib/apply":98,"./lib/decorators/array":99,"./lib/decorators/flow":100,"./lib/decorators/fold":101,"./lib/decorators/inspect":102,"./lib/decorators/iterate":103,"./lib/decorators/progress":104,"./lib/decorators/timed":105,"./lib/decorators/unhandledRejection":106,"./lib/decorators/with":107}],119:[function(require,module,exports){
+},{"./lib/Promise":92,"./lib/TimeoutError":94,"./lib/apply":95,"./lib/decorators/array":96,"./lib/decorators/flow":97,"./lib/decorators/fold":98,"./lib/decorators/inspect":99,"./lib/decorators/iterate":100,"./lib/decorators/progress":101,"./lib/decorators/timed":102,"./lib/decorators/unhandledRejection":103,"./lib/decorators/with":104}],116:[function(require,module,exports){
 module.exports={
   "name": "autobahn",
-  "version": "18.10.1",
+  "version": "19.4.1",
   "description": "An implementation of The Web Application Messaging Protocol (WAMP).",
   "main": "index.js",
   "scripts": {
@@ -26244,9 +25520,8 @@ module.exports={
   "dependencies": {
     "cbor": ">= 3.0.0",
     "crypto-js": ">=3.1.8",
-    "md5": "^2.2.1",
     "msgpack5": ">= 3.6.0",
-    "s3": "^4.4.0",
+    "randombytes": ">=2.0.6",
     "tweetnacl": ">= 0.14.3",
     "when": ">= 3.7.7",
     "ws": ">= 1.1.4"
@@ -26258,13 +25533,14 @@ module.exports={
   "devDependencies": {
     "browserify": ">= 13.1.1",
     "deep-equal": ">= 1.0.1",
-    "google-closure-compiler": "^20170218.0.0",
-    "nodeunit": ">= 0.10.2"
+    "google-closure-compiler": ">= 20170218.0.0",
+    "nodeunit": ">= 0.11.3"
   },
   "browser": {
     "ws": false,
-    "lib/transport/rawsocket.js": false,
-    "cbor": false
+    "./lib/transport/rawsocket.js": false,
+    "cbor": false,
+    "randombytes": false
   },
   "repository": {
     "type": "git",
