@@ -47,6 +47,10 @@ The following examples cover **specific features** of WAMP/Crossbar.io
    + Dynamic, both [container](https://github.com/crossbario/crossbar-examples/tree/master/authorization/dynamic/container) and [embedded](https://github.com/crossbario/crossbar-examples/tree/master/authorization/dynamic/embedded)
    + [Static](https://crossbar.io/docs/Authorization/#static-authorization)
 
+* [Database](https://github.com/crossbario/crossbar-examples/tree/master/database) 
+   + [Postgresql](https://github.com/crossbario/crossbar-examples/tree/master/database/postgresql) 
+   + [Oracle](https://github.com/crossbario/crossbar-examples/tree/master/database/oracle/publisher) 
+   
 * [Flash Fallback](https://github.com/crossbario/crossbarexamples/tree/master/flash) - How to use Flash fallback for older browsers without WebSocket support (mainly there for IE<10)
 * [Longpoll](https://github.com/crossbario/crossbarexamples/tree/master/longpoll) - How to use the Longpoll fallback for older browsers without WebSocket support
 * [Metaapi](https://github.com/crossbario/crossbarexamples/tree/master/metaapi) - How to subscribe to meta-events and use meta-procedures (get information about sessions, subscriptions and registrations)
