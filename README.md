@@ -57,9 +57,14 @@ The following examples cover **specific features** of WAMP/Crossbar.io
    
 * [Event history](https://github.com/crossbario/crossbar-examples/tree/master/event-history)   Event history is a feature of the WAMP Advanced Profile and allows subscribers to catch up on missed events when reconnecting or to generally retrieve event history on subscriptions.
 
-   
+* [Exclude Subscribers](https://github.com/crossbario/crossbar-examples/tree/master/exclude_subscribers)   This example shows several ways to exclude subscribers from getting a subscription.
+
+* [Expressjs integration](https://github.com/crossbario/crossbar-examples/tree/master/expressjs)
+
+* [File upload with Crossbar](https://github.com/crossbario/crossbar-examples/tree/master/fileupload)
    
 * [Flash Fallback](https://github.com/crossbario/crossbarexamples/tree/master/flash) - How to use Flash fallback for older browsers without WebSocket support (mainly there for IE<10)
+
 * [Longpoll](https://github.com/crossbario/crossbarexamples/tree/master/longpoll) - How to use the Longpoll fallback for older browsers without WebSocket support
 * [Metaapi](https://github.com/crossbario/crossbarexamples/tree/master/metaapi) - How to subscribe to meta-events and use meta-procedures (get information about sessions, subscriptions and registrations)
 * [Secure WebSockets (WSS)](https://github.com/crossbario/crossbarexamples/tree/master/wss/python)
