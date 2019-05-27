@@ -24,26 +24,25 @@ if __name__ == '__main__':
         print(cnt)
 
         res = {}
-        for rec_id, rec in schema.wamp_stats.select(txn):
-            if True or rec_id.endswith('#caller.1.0'):
-                ts, client = rec_id.split('#')
-                ts = iso8601.parse_date(ts)
-                client_type, instance, loop = client.split('.')
-                instance = int(instance)
-                loop = int(loop)
-                if instance not in res:
-                    res[instance] = {}
-                if loop not in res[instance]:
-                    res[instance][loop] = []
-                res[instance][loop].append(rec.calls_per_sec)
+        for (batch_id, ts), rec in schema.wamp_stats.select(txn):
+            if rec.worker not in res:
+                res[rec.worker] = {}
+            if rec.loop not in res[rec.worker]:
+                res[rec.worker][rec.loop] = []
+            res[rec.worker][rec.loop].append(rec.calls_per_sec)
 
-        final = {}
-        for instance in res:
-            final[instance] = {}
-            for loop in res[instance]:
-                l = res[instance][loop]
-                final[instance][loop] = int(round(sum(l) / len(l), 0))
+    final_avg = {}
+    for instance in res:
+        final_avg[instance] = {}
+        for loop in res[instance]:
+            l = res[instance][loop]
+            final_avg[instance][loop] = int(round(sum(l) / len(l), 0))
 
-                #print(ts, client_type, instance, loop, rec.marshal())
+    pprint(final_avg)
 
-    pprint(final)
+    final_total = 0
+    for instance in final_avg:
+        for loop in final_avg[instance]:
+            final_total += final_avg[instance][loop]
+
+    print(final_total)

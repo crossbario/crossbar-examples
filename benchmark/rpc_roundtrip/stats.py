@@ -1,9 +1,10 @@
-from zlmdb import MapStringCbor, table
+from zlmdb import MapUuidTimestampCbor, table
 
 
 class WampStatsRecord(object):
     def __init__(self):
-        self.key = None
+        self.worker = None
+        self.loop = None
         self.calls_per_sec = None
         self.count = None
         self.avg_rtt = None
@@ -14,7 +15,11 @@ class WampStatsRecord(object):
 
     def marshal(self):
         obj = {
-            'key': self.key,
+            # ID: worker => crossbar worker index, loop => async work loop index within worker
+            'worker': self.worker,
+            'loop': self.loop,
+
+            # measured data
             'calls_per_sec': self.calls_per_sec,
             'count': self.count,
             'avg_rtt': self.avg_rtt,
@@ -31,9 +36,13 @@ class WampStatsRecord(object):
 
         obj = WampStatsRecord()
 
-        if 'key' in data:
-            assert type(data['key']) == str
-            obj.key = data['key']
+        if 'worker' in data:
+            assert type(data['worker']) == int
+            obj.worker = data['worker']
+
+        if 'loop' in data:
+            assert type(data['loop']) == int
+            obj.loop = data['loop']
 
         if 'calls_per_sec' in data:
             assert type(data['calls_per_sec']) == int
@@ -67,21 +76,25 @@ class WampStatsRecord(object):
 
 
 @table('2e640ff3-aa58-4c1b-a2b4-e656517b692f', marshal=WampStatsRecord.marshal, parse=WampStatsRecord.unmarshal)
-class WampStats(MapStringCbor):
+class WampStats(MapUuidTimestampCbor):
     pass
 
 
 class ProcStatsRecord(object):
     def __init__(self):
-        self.key = None
-        self.cpu = None
+        self.worker = None
+        self.user = None
+        self.system = None
         self.mem = None
         self.ctx = None
 
     def marshal(self):
         obj = {
-            'key': self.key,
-            'cpu': self.cpu,
+            # ID: worker => crossbar worker index
+            'worker': self.worker,
+
+            'user': self.user,
+            'system': self.system,
             'mem': self.mem,
             'ctx': self.ctx,
         }
@@ -93,13 +106,17 @@ class ProcStatsRecord(object):
 
         obj = WampStatsRecord()
 
-        if 'key' in data:
-            assert type(data['key']) == str
-            obj.key = data['key']
+        if 'worker' in data:
+            assert type(data['worker']) == str
+            obj.key = data['worker']
 
-        if 'cpu' in data:
-            assert type(data['cpu']) == float
-            obj.cpu = data['cpu']
+        if 'user' in data:
+            assert type(data['user']) == int
+            obj.user = data['user']
+
+        if 'system' in data:
+            assert type(data['system']) == int
+            obj.system = data['system']
 
         if 'mem' in data:
             assert type(data['mem']) == float
@@ -113,7 +130,7 @@ class ProcStatsRecord(object):
 
 
 @table('cd5bddf3-1fd3-4a70-9a74-205fc748c8a8', marshal=ProcStatsRecord.marshal, parse=ProcStatsRecord.unmarshal)
-class ProcStats(MapStringCbor):
+class ProcStats(MapUuidTimestampCbor):
     pass
 
 

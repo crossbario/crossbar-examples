@@ -5,7 +5,7 @@
        "fabric": {
        }
     },
-     "workers": [
+    "workers": [
         {
             "type": "router",
             "realms": [
@@ -42,9 +42,7 @@
                         "type": "unix",
                         "path": "crossbar.sock"
                     },
-                    "serializers": [
-                        "cbor"
-                    ]
+                    "serializers": ["cbor"]
                 }
             ]
         },

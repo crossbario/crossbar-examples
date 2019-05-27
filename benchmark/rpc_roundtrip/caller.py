@@ -1,3 +1,5 @@
+import numpy as np
+
 from time import time
 import argparse
 import six
@@ -5,10 +7,13 @@ import six
 from zlmdb import time_ns, Database
 from crossbar.common.processinfo import ProcessInfo
 from twisted.internet.defer import inlineCallbacks, gatherResults
+from twisted.internet.task import LoopingCall
+
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.twisted.wamp import ApplicationRunner
-from autobahn.util import utcnow
 from autobahn.wamp.exception import TransportLost
+import uuid
+from crossbar._util import hl
 
 from stats import Schema, ProcStatsRecord, WampStatsRecord
 
@@ -22,14 +27,19 @@ class AppSession(ApplicationSession):
 
         self._pinfo = ProcessInfo()
         self._logname = self.config.extra['logname']
-        self._period = self.config.extra.get('period', 5.)
+        self._period = self.config.extra.get('period', 10.)
         self._running = True
+
+        batch_id = uuid.uuid4()
+
+        self._last_stats = None
+        self._stats_loop = LoopingCall(self._stats, batch_id)
+        self._stats_loop.start(self._period)
 
         dl = []
         for i in range(8):
-            d = self._loop(i)
+            d = self._loop(batch_id, i)
             dl.append(d)
-
         d = gatherResults(dl)
 
         try:
@@ -39,19 +49,37 @@ class AppSession(ApplicationSession):
 
     def onLeave(self, details):
         self._running = False
+        self._stats_loop.stop()
+
+    def _stats(self, batch_id):
+        stats = self._pinfo.get_stats()
+
+        if self._last_stats:
+            batch_duration = (stats['time'] - self._last_stats['time']) / 10 ** 9
+            ctx = round((stats['voluntary'] - self._last_stats['voluntary']) / batch_duration, 0)
+            self.log.info('{logprefix}: {user} user, {system} system, {mem_percent} mem_percent, {ctx} ctx',
+                          logprefix=hl('LOAD {}.*'.format(self._logname), color='magenta', bold=True),
+                          logname=self._logname,
+                          user=stats['user'],
+                          system=stats['system'],
+                          mem_percent=round(stats['mem_percent'], 1),
+                          ctx=ctx)
+
+        self._last_stats = stats
 
     @inlineCallbacks
-    def _loop(self, index):
+    def _loop(self, batch_id, index):
         prefix = self.config.extra['prefix']
-        last = None
 
         while self._running:
             rtts = []
 
-            batch_started_str = utcnow()
-            batch_started = time()
+            self.log.debug('{logprefix} is starting new period ..',
+                           logprefix=hl('     {}.{}'.format(self._logname, index), color='magenta', bold=True),)
 
-            while (time() - batch_started) < self._period:
+            batch_started = time_ns()
+
+            while float(time_ns() - batch_started) / 10**9 < self._period:
                 ts_req = time_ns()
                 res = yield self.call('{}.echo'.format(prefix), ts_req)
                 ts_res = time_ns()
@@ -59,44 +87,40 @@ class AppSession(ApplicationSession):
                 rtt = ts_res - ts_req
                 rtts.append(rtt)
 
-            stats = self._pinfo.get_stats()
+            batch_duration = float(time_ns() - batch_started) / 10**9
 
-            if last:
-                batch_duration = (stats['time'] - last['time']) / 10 ** 9
-                ctx = round((stats['voluntary'] - last['voluntary']) / batch_duration, 0)
+            rtts = sorted(rtts)
 
-                self.log.info('{logname}: {cpu} cpu, {mem} mem, {ctx} ctx',
-                              logname=self._logname,
-                              cpu=round(stats['cpu_percent'], 1),
-                              mem=round(stats['mem_percent'], 1),
-                              ctx=ctx)
+            sr = WampStatsRecord()
+            sr.worker = int(self._logname.split('.')[1])
+            sr.loop = index
+            sr.count = len(rtts)
+            sr.calls_per_sec = int(round(sr.count / batch_duration, 0))
 
-                rtts = sorted(rtts)
+            # all times here are in microseconds:
+            sr.avg_rtt = int(round(1000000. * batch_duration / float(sr.count), 0))
+            sr.max_rtt = int(round(rtts[-1] / 1000, 0))
+            sr.q50_rtt = int(round(rtts[int(sr.count / 2.)] / 1000, 0))
+            sr.q99_rtt = int(round(rtts[int(-(sr.count / 100.))] / 1000, 0))
+            sr.q995_rtt = int(round(rtts[int(-(sr.count / 995.))] / 1000, 0))
 
-                sr = WampStatsRecord()
-                sr.key = '{}#{}.{}'.format(batch_started_str, self._logname, index)
-                sr.count = len(rtts)
-                sr.calls_per_sec = int(round(sr.count / batch_duration, 0))
-
-                # all times here are in microseconds:
-                sr.avg_rtt = round(1000000. * batch_duration / float(sr.count), 1)
-                sr.max_rtt = round(rtts[-1] / 1000, 1)
-                sr.q50_rtt = round(rtts[int(sr.count / 2.)] / 1000, 1)
-                sr.q99_rtt = round(rtts[int(-(sr.count / 100.))] / 1000, 1)
-                sr.q995_rtt = round(rtts[int(-(sr.count / 995.))] / 1000, 1)
-
+            try:
                 with self._db.begin(write=True) as txn:
-                    self._schema.wamp_stats[txn, sr.key] = sr
+                    self._schema.wamp_stats[txn, (batch_id, np.datetime64(batch_started, 'ns'))] = sr
+            except:
+                self.log.failure()
+                return self.leave()
 
-                print("{}: {} calls, {} calls/sec, RTT (us): q50 {}, avg {}, q99 {}, q995 {}, max {}".format(sr.key,
-                                                                                                             sr.count,
-                                                                                                             sr.calls_per_sec,
-                                                                                                             sr.q50_rtt,
-                                                                                                             sr.avg_rtt,
-                                                                                                             sr.q99_rtt,
-                                                                                                             sr.q995_rtt,
-                                                                                                             sr.max_rtt))
-            last = stats
+            self.log.info("{logprefix}: {count} calls, {calls_per_sec}, round-trip time (microseconds): q50 {q50_rtt}, avg {avg_rtt}, {q99_rtt}, q995 {q995_rtt}, max {max_rtt}".format(
+                logprefix=hl('WAMP {}.{}'.format(self._logname, index), color='magenta', bold=True),
+                count=sr.count,
+                calls_per_sec=hl('{} calls/second'.format(sr.calls_per_sec), bold=True),
+                q50_rtt=sr.q50_rtt,
+                avg_rtt=sr.avg_rtt,
+                q99_rtt=hl('q99 {}'.format(sr.q99_rtt), bold=True),
+                q995_rtt=sr.q995_rtt,
+                max_rtt=sr.max_rtt))
+
 
 if __name__ == '__main__':
 
