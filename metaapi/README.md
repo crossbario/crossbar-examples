@@ -21,3 +21,11 @@ and open
 in your browser.
 
 Open the JavaScript console to get logging output.
+
+### Killing sessions
+
+![Killing sessions](screenshots/kill_by_session_id.png "Kill by session ID")
+
+![Killing sessions](screenshots/kill_by_authid.png "Kill by authid")
+
+![Killing sessions](screenshots/kill_by_authrole.png "Kill by authrole")

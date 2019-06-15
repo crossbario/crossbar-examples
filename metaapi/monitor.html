@@ -44,6 +44,27 @@
          </div>
       </p>
 
+      <h3>Kill Sessions by authid</h3>
+      <p>
+         Actively end all sessions with given authid.
+         <div>
+            authid: <input type="text" id="kill_session2_session_authid" name="kill_session2_session_authid" value=""><br>
+            Reason: <input type="text" id="kill_session2_reason" name="kill_session2_reason" value="com.example.user_group_changed"><br>
+            Message: <input type="text" id="kill_session2_message" name="kill_session2_message" value="Your session was killed (by authid) since your user group changed."><br>
+            <button onclick="kill_session_authid()">Kill Session(s)</button>
+         </div>
+      </p>
+
+      <h3>Kill Sessions by authrole</h3>
+      <p>
+         Actively end all sessions with given authid.
+         <div>
+            authrole: <input type="text" id="kill_session3_session_authrole" name="kill_session3_session_authrole" value=""><br>
+            Reason: <input type="text" id="kill_session3_reason" name="kill_session3_reason" value="com.example.user_group_changed"><br>
+            Message: <input type="text" id="kill_session3_message" name="kill_session3_message" value="Your session was killed (by authrole) since your user group changed."><br>
+            <button onclick="kill_session_authrole()">Kill Session(s)</button>
+         </div>
+      </p>
 
       <h2>Publish and Subscribe</h2>
 
@@ -172,6 +193,46 @@
                   },
                   function (err) {
                      console.log("could not kill session " + session_id, err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.session.kill_by_authid
+         function kill_session_authid () {
+            if (session) {
+               var authid = document.getElementById('kill_session2_session_authid').value;
+               var reason = document.getElementById('kill_session2_reason').value;
+               var message = document.getElementById('kill_session2_message').value;
+
+               session.call("wamp.session.kill_by_authid", [authid, reason, message]).then(
+                  function (res) {
+                     console.log("sessions killed: " + res);
+                  },
+                  function (err) {
+                     console.log("could not kill sessions (authid='" + authid + "')", err);
+                  }
+               );
+            } else {
+               console.log("not connected");
+            }
+         }
+
+         // wamp.session.kill_by_authrole
+         function kill_session_authrole () {
+            if (session) {
+               var authrole = document.getElementById('kill_session3_session_authrole').value;
+               var reason = document.getElementById('kill_session3_reason').value;
+               var message = document.getElementById('kill_session3_message').value;
+
+               session.call("wamp.session.kill_by_authrole", [authrole, reason, message]).then(
+                  function (res) {
+                     console.log("sessions killed: " + res);
+                  },
+                  function (err) {
+                     console.log("could not kill sessions (authrole='" + authrole + "')", err);
                   }
                );
             } else {
