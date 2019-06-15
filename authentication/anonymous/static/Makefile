@@ -1,8 +1,8 @@
 crossbar:
-	PYTHONPATH=../../../../crossbar python -m crossbar.controller.cli start
+	crossbar start
 
-crossbar_debug:
-	PYTHONPATH=../../../../crossbar python -m crossbar.controller.cli start --loglevel=debug
+crossbar_static_authid:
+	crossbar start --config="config-static-authid.json"
 
 client:
-	PYTHONPATH=../../../../autobahn python client.py
+	python client.py
