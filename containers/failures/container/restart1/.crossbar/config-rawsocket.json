@@ -68,13 +68,14 @@
                     "classname": "myapp.MySession",
                     "realm": "realm1",
                     "transport": {
-                        "type": "websocket",
+                        "type": "rawsocket",
                         "endpoint": {
                             "type": "tcp",
                             "host": "127.0.0.1",
-                            "port": 8080
+                            "port": 8081
                         },
-                        "url": "ws://127.0.0.1:8080/ws",
+                        "serializer": "cbor",
+                        "url": "rs://127.0.0.1:8081",
                         "options": {
                             "max_message_size": 16384
                         }
