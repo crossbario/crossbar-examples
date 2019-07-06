@@ -9,6 +9,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.util import sleep
 from autobahn.wamp.types import CallDetails, RegisterOptions
+from autobahn.websocket.types import TransportDetails
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 from autobahn import wamp
@@ -21,6 +22,9 @@ class MySession(ApplicationSession):
     def __init__(self, config):
         self.log.info('MySession.__init__(config={config})', config=str(config))
         ApplicationSession.__init__(self, config)
+
+    # FIXME:
+    # def onConnecting(self, transport_details):
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -41,6 +45,14 @@ class MySession(ApplicationSession):
                 self.log.info('call succeeded with result data length {}'.format(n))
                 n = n * 2
                 yield sleep(1)
+
+        self.log.info('Encountered error at n={n}', n=n)
+
+        yield sleep(1)
+
+        yield self.call('com.example.echo', os.urandom(16))
+
+        self.log.info('Ok, session still working - leaving now ..')
 
         yield self.leave()
 
