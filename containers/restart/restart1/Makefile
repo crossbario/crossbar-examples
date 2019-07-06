@@ -23,7 +23,12 @@ websocket:
 	# OK! : Encountered error at n=4096 - autobahn.exception.PayloadExceededError
 	-crossbar start --config config-websocket-2.json
 
-	# FIXME: Encountered error at n=4096 - ApplicationError(error=<wamp.close.transport_lost>)
+	# WebSocket does not have max_message_length negotiation (as does RawSocket)!!!
+	# Because of that, the max_message_length for client and router must be
+	# configured _identical_ - otherwise (eg if one is smaller than the other), the peer
+	# with the smaller max_msg_size will be sent a "too large" message (as it is not caught
+	# in Autobahn _before_ sending on the wire)
+	# OK!: Encountered error at n=4096 - ApplicationError(error=<wamp.close.transport_lost>)
 	-crossbar start --config config-websocket-3.json
 
 router_rawsocket:
