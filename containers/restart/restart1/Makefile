@@ -1,10 +1,7 @@
 default:
-	@echo "targets: websocket rawsocket"
+	@echo "targets: all websocket rawsocket"
 
-websocket:
-	-crossbar start --config config-websocket-1.json
-	-crossbar start --config config-websocket-2.json
-	-crossbar start --config config-websocket-3.json
+all: websocket rawsocket
 
 # 2019-07-06T15:23:00+0200 [Container   18646] Encountered error at n=4096
 # 2019-07-06T15:23:01+0200 [Container   18646] MySession.echo(): echo return 32 bytes
@@ -13,3 +10,17 @@ rawsocket:
 	-crossbar start --config config-rawsocket-1.json
 	-crossbar start --config config-rawsocket-2.json
 	-crossbar start --config config-rawsocket-3.json
+
+websocket:
+	-crossbar start --config config-websocket-1.json
+	-crossbar start --config config-websocket-2.json
+
+	# FIXME:
+	-crossbar start --config config-websocket-3.json
+
+router_rawsocket:
+	crossbar start --config config-router.json
+	crossbar start --config config-router-rawsocket-1.json
+	crossbar start --config config-router-rawsocket-2.json
+	crossbar start --config config-router-websocket-1.json
+	crossbar start --config config-router-websocket-2.json

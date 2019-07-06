@@ -34,7 +34,7 @@ class MySession(ApplicationSession):
 
         n = 2
         running = True
-        while running:
+        while running and n <= 2**25:
             data = os.urandom(n + 1)
             try:
                 res = yield self.call('com.example.echo', data)
@@ -42,7 +42,7 @@ class MySession(ApplicationSession):
                 self.log.failure()
                 running = False
             else:
-                self.log.info('call succeeded with result data length {}'.format(n))
+                self.log.info('call succeeded for n={} with result data length {}'.format(n, len(res)))
                 n = n * 2
                 yield sleep(1)
 
