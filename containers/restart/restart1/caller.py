@@ -36,9 +36,9 @@ class MyCaller(ApplicationSession):
         running = True
         last_error = None
         while running and n <= 2**25:
-            data = os.urandom(n + 1)
+            data = os.urandom(n)
             try:
-                res = yield self.call('com.example.echo', data)
+                res = yield self.call('com.example.echo', data, shorten_by=0)
             except Exception as e:
                 self.log.failure()
                 running = False

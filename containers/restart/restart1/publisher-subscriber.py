@@ -36,7 +36,7 @@ class MyPublisherSubscriber(ApplicationSession):
         running = True
         last_error = None
         while running and n <= 2**25:
-            data = os.urandom(n + 1)
+            data = os.urandom(n)
             try:
                 res = yield self.publish('com.example.topic1', data,
                                          options=PublishOptions(acknowledge=True, exclude_me=False))

@@ -35,9 +35,9 @@ class MyCallerCallee(ApplicationSession):
         n = 2
         running = True
         while running and n <= 2**25:
-            data = os.urandom(n + 1)
+            data = os.urandom(n)
             try:
-                res = yield self.call('com.example.echo', data)
+                res = yield self.call('com.example.echo', data, shorten_by=0)
             except:
                 self.log.failure()
                 running = False
@@ -60,7 +60,7 @@ class MyCallerCallee(ApplicationSession):
     @wamp.register('com.example.echo')
     def echo(self, data, shorten_by=None, details=None):
         assert type(data) == bytes, '"data" must be bytes, but was {}'.format(type(data))
-        assert shorten_by is None or type(shorten_by) == bool, '"shorten_by" must be bool, but was {}'.format(type(shorten_by))
+        assert shorten_by is None or type(shorten_by) == int, '"shorten_by" must be int, but was {}'.format(type(shorten_by))
         assert details is None or isinstance(details, CallDetails), '"details" must be CallDetails, but was {}'.format(type(details))
 
         res = (data + data)

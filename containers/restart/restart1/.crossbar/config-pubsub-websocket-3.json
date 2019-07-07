@@ -38,7 +38,7 @@
                         "port": 8080
                     },
                     "options": {
-                        "max_message_size": 8192
+                        "max_message_size": 16384
                     }
                 },
                 {
@@ -48,7 +48,7 @@
                         "port": 8081
                     },
                     "options": {
-                        "max_message_size": 8192
+                        "max_message_size": 16384
                     }
                 }
             ]
