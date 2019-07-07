@@ -7,13 +7,13 @@ from txaio import make_logger
 
 from twisted.internet.defer import inlineCallbacks
 
+from autobahn.twisted.util import sleep
 from autobahn.wamp.types import CallDetails, RegisterOptions
 from autobahn.twisted.wamp import ApplicationSession
-from autobahn.wamp.exception import ApplicationError
 from autobahn import wamp
 
 
-class MyCallee(ApplicationSession):
+class MyCallerCallee(ApplicationSession):
 
     log = make_logger()
 
@@ -32,6 +32,31 @@ class MyCallee(ApplicationSession):
 
         yield self.register(self, options=RegisterOptions(invoke='roundrobin'))
 
+        n = 2
+        running = True
+        while running and n <= 2**25:
+            data = os.urandom(n + 1)
+            try:
+                res = yield self.call('com.example.echo', data)
+            except:
+                self.log.failure()
+                running = False
+            else:
+                self.log.info('{klass}[{ident}].call(): succeeded for n={n} with result data length {reslen}',
+                              klass=self.__class__.__name__, ident=self.ident, n=n, reslen=len(res))
+                n = n * 2
+                yield sleep(1)
+
+        self.log.info('Encountered error at n={n}', n=n)
+
+        yield sleep(1)
+
+        yield self.call('com.example.echo', os.urandom(16))
+
+        self.log.info('Ok, session still working - leaving now ..')
+
+        yield self.leave()
+
     @wamp.register('com.example.echo')
     def echo(self, data, shorten_by=None, details=None):
         assert type(data) == bytes, '"data" must be bytes, but was {}'.format(type(data))
@@ -39,7 +64,6 @@ class MyCallee(ApplicationSession):
         assert details is None or isinstance(details, CallDetails), '"details" must be CallDetails, but was {}'.format(type(details))
 
         res = (data + data)
-
         if shorten_by:
             res = res[:-shorten_by]
 

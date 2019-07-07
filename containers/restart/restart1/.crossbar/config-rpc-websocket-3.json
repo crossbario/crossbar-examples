@@ -65,7 +65,7 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "myapp.MySession",
+                    "classname": "caller-callee.MyCallerCallee",
                     "realm": "realm1",
                     "transport": {
                         "type": "websocket",

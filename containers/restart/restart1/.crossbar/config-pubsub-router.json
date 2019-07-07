@@ -1,0 +1,52 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "subscriber.MySubscriber",
+                    "realm": "realm1"
+                },
+                {
+                    "type": "class",
+                    "classname": "publisher.MyPublisher",
+                    "realm": "realm1"
+                }
+            ]
+        }
+    ]
+}

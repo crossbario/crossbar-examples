@@ -7,13 +7,12 @@ from txaio import make_logger
 
 from twisted.internet.defer import inlineCallbacks
 
-from autobahn.wamp.types import CallDetails, RegisterOptions
+from autobahn.wamp.types import EventDetails, SubscribeOptions
 from autobahn.twisted.wamp import ApplicationSession
-from autobahn.wamp.exception import ApplicationError
 from autobahn import wamp
 
 
-class MyCallee(ApplicationSession):
+class MySubscriber(ApplicationSession):
 
     log = make_logger()
 
@@ -30,25 +29,15 @@ class MyCallee(ApplicationSession):
         self.log.info('{klass}[{ident}].onJoin(details={details})',
                       klass=self.__class__.__name__, ident=self.ident, details=details)
 
-        yield self.register(self, options=RegisterOptions(invoke='roundrobin'))
+        yield self.subscribe(self, options=SubscribeOptions(details=True))
 
-    @wamp.register('com.example.echo')
-    def echo(self, data, shorten_by=None, details=None):
+    @wamp.subscribe('com.example.topic1')
+    def on_topic1(self, data, details=None):
         assert type(data) == bytes, '"data" must be bytes, but was {}'.format(type(data))
-        assert shorten_by is None or type(shorten_by) == bool, '"shorten_by" must be bool, but was {}'.format(type(shorten_by))
-        assert details is None or isinstance(details, CallDetails), '"details" must be CallDetails, but was {}'.format(type(details))
+        assert details is None or isinstance(details, EventDetails), '"details" must be EventDetails, but was {}'.format(type(details))
 
-        res = (data + data)
-
-        if shorten_by:
-            res = res[:-shorten_by]
-
-        self.log.info('{klass}[{ident}].echo(data={dlen}, shorten_by={shorten_by}, details={details}): echo return {reslen} bytes',
+        self.log.info('{klass}[{ident}].on_topic1(data={dlen}, details={details})',
                       klass=self.__class__.__name__,
                       ident=self.ident,
-                      shorten_by=shorten_by,
                       details=details,
-                      dlen=len(data),
-                      reslen=len(res))
-
-        return res
+                      dlen=len(data))

@@ -38,7 +38,7 @@
                         "port": 8080
                     },
                     "options": {
-                        "max_message_size": 8192
+                        "max_message_size": 16384
                     }
                 },
                 {
@@ -48,7 +48,7 @@
                         "port": 8081
                     },
                     "options": {
-                        "max_message_size": 8192
+                        "max_message_size": 16384
                     }
                 }
             ]
@@ -65,17 +65,16 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "myapp.MySession",
+                    "classname": "caller-callee.MyCallerCallee",
                     "realm": "realm1",
                     "transport": {
-                        "type": "rawsocket",
+                        "type": "websocket",
                         "endpoint": {
                             "type": "tcp",
                             "host": "127.0.0.1",
-                            "port": 8081
+                            "port": 8080
                         },
-                        "serializer": "cbor",
-                        "url": "rs://127.0.0.1:8081",
+                        "url": "ws://127.0.0.1:8080/ws",
                         "options": {
                             "max_message_size": 16384
                         }
