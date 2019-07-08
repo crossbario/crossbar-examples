@@ -35,10 +35,10 @@ class MyCallerCallee(ApplicationSession):
         n = 2
         running = True
         last_error = None
-        while running and n <= 2**25:
+        while running and n < 2**20:
             data = os.urandom(n)
             try:
-                res = yield self.call('com.example.echo', data, shorten_by=0)
+                res = yield self.call('com.example.echo', data)
             except Exception as e:
                 self.log.failure()
                 last_error = e
@@ -63,21 +63,14 @@ class MyCallerCallee(ApplicationSession):
         yield self.leave()
 
     @wamp.register('com.example.echo')
-    def echo(self, data, shorten_by=None, details=None):
+    def echo(self, data, details=None):
         assert type(data) == bytes, '"data" must be bytes, but was {}'.format(type(data))
-        assert shorten_by is None or type(shorten_by) == int, '"shorten_by" must be int, but was {}'.format(type(shorten_by))
         assert details is None or isinstance(details, CallDetails), '"details" must be CallDetails, but was {}'.format(type(details))
 
-        res = (data + data)
-        if shorten_by:
-            res = res[:-shorten_by]
-
-        self.log.info('{klass}[{ident}].echo(data={dlen}, shorten_by={shorten_by}, details={details}): echo return {reslen} bytes',
+        self.log.info('{klass}[{ident}].echo(data={dlen}, details={details}): echo return {dlen} bytes',
                       klass=self.__class__.__name__,
                       ident=self.ident,
-                      shorten_by=shorten_by,
                       details=details,
-                      dlen=len(data),
-                      reslen=len(res))
+                      dlen=len(data))
 
-        return res
+        return data
