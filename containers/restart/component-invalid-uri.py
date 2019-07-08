@@ -15,7 +15,7 @@ from autobahn.wamp.exception import InvalidUriError
 INVALID_URI = "crossbarfabriccenter.node.{'oid': '4752c752-a128-4ae4-a041-84208eabe49d'}.get_docker_images"
 
 
-class MyCallerCallee(ApplicationSession):
+class MyComponent(ApplicationSession):
 
     log = make_logger()
 

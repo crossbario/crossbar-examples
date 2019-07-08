@@ -65,7 +65,7 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "component-invalid-uri.MyCallerCallee",
+                    "classname": "component-invalid-uri.MyComponent",
                     "realm": "realm1",
                     "transport": {
                         "type": "rawsocket",

@@ -8,12 +8,12 @@ from txaio import make_logger
 from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.util import sleep
-from autobahn.wamp.types import CallDetails, RegisterOptions
+from autobahn.wamp.types import CallDetails, RegisterOptions, EventDetails, SubscribeOptions, PublishOptions
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn import wamp
 
 
-class MyCallerCallee(ApplicationSession):
+class MyComponent(ApplicationSession):
 
     log = make_logger()
 
@@ -31,6 +31,7 @@ class MyCallerCallee(ApplicationSession):
                       klass=self.__class__.__name__, ident=self.ident, details=details)
 
         yield self.register(self, options=RegisterOptions(invoke='roundrobin'))
+        yield self.subscribe(self, options=SubscribeOptions(details=True))
 
         n = 2
         running = True
@@ -46,8 +47,20 @@ class MyCallerCallee(ApplicationSession):
             else:
                 self.log.info('{klass}[{ident}].call(): succeeded for n={n} with result data length {reslen}',
                               klass=self.__class__.__name__, ident=self.ident, n=n, reslen=len(res))
-                n = n * 2
-                yield sleep(1)
+
+            try:
+                res = yield self.publish('com.example.topic1', data,
+                                         options=PublishOptions(acknowledge=True, exclude_me=False))
+            except Exception as e:
+                self.log.failure()
+                running = False
+                last_error = e
+            else:
+                self.log.info('{klass}[{ident}].publish(): succeeded for n={n}, res={res}',
+                              klass=self.__class__.__name__, ident=self.ident, n=n, res=res)
+
+            n = n * 2
+            yield sleep(1)
 
         if last_error:
             self.log.info('Encountered error at n={n}', n=n)
@@ -74,3 +87,14 @@ class MyCallerCallee(ApplicationSession):
                       dlen=len(data))
 
         return data
+
+    @wamp.subscribe('com.example.topic1')
+    def on_topic1(self, data, details=None):
+        assert type(data) == bytes, '"data" must be bytes, but was {}'.format(type(data))
+        assert details is None or isinstance(details, EventDetails), '"details" must be EventDetails, but was {}'.format(type(details))
+
+        self.log.info('{klass}[{ident}].on_topic1(data={dlen}, details={details})',
+                      klass=self.__class__.__name__,
+                      ident=self.ident,
+                      details=details,
+                      dlen=len(data))
