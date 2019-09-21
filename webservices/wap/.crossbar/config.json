@@ -1,0 +1,107 @@
+{
+    "version": 2,
+    "controller": {
+    },
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket"
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "reports": {
+                            "type": "wap",
+                            "templates": "../templates",
+                            "sandbox": true,
+                            "routes": [
+                                {
+                                    "path": "/greeting/<name>",
+                                    "method": "GET",
+                                    "call": "com.example.greeting",
+                                    "render": "greeting.html"
+                                },
+                                {
+                                    "path": "/product/<int:product_id>/<report>/<int:year>/<int:month>",
+                                    "method": "GET",
+                                    "call": "com.example.get_product_report",
+                                    "render": "product_report.html"
+                                }
+                            ],
+                            "wamp": {
+                                "realm": "realm1"
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "reports.ReportsBackend",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "127.0.0.1",
+                            "port": 8080
+                        },
+                        "url": "ws://localhost:8080/ws"
+                    }
+                }
+            ]
+        }
+    ]
+}
