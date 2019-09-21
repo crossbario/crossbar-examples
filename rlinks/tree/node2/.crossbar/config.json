@@ -1,0 +1,79 @@
+{
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
+    "version": 2,
+    "controller": {
+        "id": "node002",
+        "fabric": {
+            "transport": null
+        }
+    },
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "rlinks": [
+                        {
+                            "id": "rlink_2_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "websocket",
+                                "endpoint": {
+                                    "type": "tcp",
+                                    "host": "localhost",
+                                    "port": 8001
+                                },
+                                "url": "ws://localhost:8001/ws"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8002
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web"
+                        },
+                        "shared": {
+                            "type": "static",
+                            "directory": "../../../../_shared_web"
+                        },
+                        "ws": {
+                            "type": "websocket"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

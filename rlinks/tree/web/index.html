@@ -1,0 +1,132 @@
+<html>
+    <meta charset="UTF-8">
+    <body>
+        <script>AUTOBAHN_DEBUG = false;</script>
+
+        <script src="/shared/autobahn/autobahn.min.js"></script>
+
+        <script>
+            console.log('running AutobahnJS ' + autobahn.version);
+
+            var verbose = true;
+
+            var wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:") + "//" + document.location.host + "/ws";
+
+            var connection = new autobahn.Connection({
+                url: wsuri,
+                realm: "realm1"
+            });
+
+            var counter = 0;
+            var session = null;
+            var session_details = null;
+            var ident = null;
+            var publisher = null;
+
+            var words = ['rock', 'paper', 'scissors', 'apple', 'orange', 'banana', 'red', 'green', 'blue'];
+            function gen_word () {    
+                var word = words[Math.floor(Math.random() * words.length)];
+                return word;
+            }
+
+            function publish_one () {
+                if (session) {
+                    var word = gen_word();
+                    session.publish('com.example.oncounter', [wsuri, session_details.authid, counter, word], null, {exclude_me: false});
+                    console.log(ident + ': PUBLISH "com.example.oncounter"', wsuri, ident, ''.padEnd(8, ' '), counter, word);
+                    counter += 1;
+                }
+            }
+
+            function enable_publish_loop (enable, interval) {
+                if (enable && !publisher) {
+                    // start publisher ..
+                    if (!session) {
+                        console.log('WARN: no session, cannot enable publisher loop');
+                        return;
+                    }
+                    publisher = setInterval(publish_one, interval);
+
+                } else if (!enable && publisher) {
+                    // stop publisher ..
+                    clearTimeout(publisher);
+                    publisher = null;
+                    console.log('publisher loop stopped');
+
+                } else {
+                    // nothing to do!
+                    console.log('publisher loop already in requested state', enable);
+                }
+            }
+
+            function oncounter (args, kwargs, details) {
+                var sender_wsuri = args[0];
+                var sender_authid = args[1];
+                var counter = args[2] ;
+                var word = args[3];
+
+                var ok = false;
+                var cnt_forwarders = 0;
+
+                if (details.forward_for) {
+                    ok = details.forward_for[0]['authid'] === sender_authid;
+                    cnt_forwarders = details.forward_for.length;
+                } else {
+                    ok = details.publisher_authid === sender_authid;
+                }
+                
+                if (!ok) {
+                    console.log('mismatching publisher authid:');
+                    console.log('expected ' + sender_authid.substring(0, 9) + ', got ' + details.publisher_authid);
+                    console.log('technical publisher has session ' + details.publisher + ' and authrole ' + details.publisher_authrole)
+                    console.log(details);
+                }
+
+                var publisher_authid = '?'
+                if (details.publisher_authid) {
+                    publisher_authid = details.publisher_authid.substring(0, 9) + '..';
+                }
+                console.log(ident + ': RECEIVE "com.example.oncounter"',
+                            sender_wsuri,
+                            sender_authid.substring(0,9),
+                            'ff=' + cnt_forwarders,
+                            counter,
+                            word);
+            };
+
+            connection.onopen = function (new_session, details) {
+                console.log('Connected: realm=' + details.realm + ', session=' + new_session._id + ', authid=' + details.authid + ', authrole=' + details.authrole);
+                session = new_session;
+                session_details = details;
+                ident = details.authid.substring(0, 9);
+
+                session.subscribe('com.example.oncounter', oncounter, {'match': 'exact'}).then(
+                    function (sub) {
+                        console.log(ident + ": subscribed with subscription ID " + sub.id);
+                    },
+                    function (err) {
+                        console.log(ident + ": could not subscribe", err);
+                    }
+                );
+            };
+
+            connection.onclose = function (reason, details) {
+                console.log("connection lost: " + reason, details);
+
+                if (publisher) {
+                    clearTimeout(publisher);
+                    publisher = null;
+                }
+
+                session_details = null;
+                session = null;
+            }
+
+            connection.open();
+        </script>
+
+        <h1>CrossbarFX</h1>
+        <p>Open JavaScript console to watch output.</p>
+        <button onclick="publish_one();">Publish</button>
+    </body>
+</html>
