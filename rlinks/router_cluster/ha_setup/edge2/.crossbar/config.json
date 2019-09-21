@@ -1,0 +1,213 @@
+{
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
+    "version": 2,
+    "controller": {
+        "fabric": {
+        },
+        "options": {
+            "shutdown": [
+                "shutdown_on_shutdown_requested",
+                "shutdown_on_worker_exit_with_error",
+                "shutdown_on_worker_exit",
+                "shutdown_on_last_worker_exit"
+            ]
+        }
+    },
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "rlinks": [
+                        {
+                            "id": "rlink_2_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "tcp",
+                                    "host": "localhost",
+                                    "port": 5081
+                                },
+                                "url": "rs://localhost:5081",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true,
+                            "forward_local_invocations": false,
+                            "forward_remote_invocations": true
+                        },
+                        {
+                            "id": "rlink_2_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "tcp",
+                                    "host": "localhost",
+                                    "port": 5083
+                                },
+                                "url": "rs://localhost:5083",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true,
+                            "forward_local_invocations": false,
+                            "forward_remote_invocations": true
+                        },
+                        {
+                            "id": "rlink_2_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "tcp",
+                                    "host": "localhost",
+                                    "port": 5084
+                                },
+                                "url": "rs://localhost:5084",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true,
+                            "forward_local_invocations": false,
+                            "forward_remote_invocations": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 5082
+                    },
+                    "options": {
+                        "max_message_size": 1048576
+                    },
+                    "serializers": ["cbor"],
+                    "auth": {
+                         "cryptosign": {
+                             "type": "static",
+                             "principals": {
+                                 "edge1": {
+                                     "realm": "realm1",
+                                     "role": "router2router",
+                                     "authorized_keys": [
+                                         "3a88bcd446482d38dd492b9a4b285a560659abffed3ec73920b277767e802f6c"
+                                     ]
+                                 },
+                                 "edge2": {
+                                     "realm": "realm1",
+                                     "role": "router2router",
+                                     "authorized_keys": [
+                                         "b45d9693346a5327f2b7f59b9fc04f2822b18c2be970938ea53564003aa2083d"
+                                     ]
+                                 },
+                                 "edge3": {
+                                     "realm": "realm1",
+                                     "role": "router2router",
+                                     "authorized_keys": [
+                                         "d7bbb7cd07b027f18674bcec8489a6618b5ace07e861c929cff0a7659f816f5f"
+                                     ]
+                                 },
+                                 "edge4": {
+                                     "realm": "realm1",
+                                     "role": "router2router",
+                                     "authorized_keys": [
+                                         "252b6adc61db6d4744b65060a81f667f5062dbf94a3fac362956cac78b878620"
+                                     ]
+                                 }
+                             }
+                         }
+                    }
+                },
+                {
+                    "type": "websocket",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8082
+                    },
+                    "serializers": ["cbor", "msgpack", "json"],
+                    "options": {
+                        "max_message_size": 1048576
+                    }
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    "../../.."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "backend.Backend",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "127.0.0.1",
+                            "port": 8082
+                        },
+                        "url": "ws://127.0.0.1:8082/ws",
+                        "options": {
+                            "max_message_size": 1048576
+                        }
+                    },
+                    "extra": {
+                        "logname": "edge2.container1"
+                    }
+                }
+            ]
+        }
+    ]
+}

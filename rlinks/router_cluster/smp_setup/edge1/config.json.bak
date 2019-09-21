@@ -1,0 +1,1906 @@
+{
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
+    "version": 2,
+    "controller": {
+        "fabric": {
+        },
+        "options": {
+            "shutdown": [
+                "shutdown_on_shutdown_requested",
+                "shutdown_on_worker_exit_with_error", 
+                "shutdown_on_worker_exit",
+                "shutdown_on_last_worker_exit"
+            ]    
+        }
+    },
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_1_2",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge2.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_1_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge3.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_1_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge4.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_1_5",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge5.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_1_6",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge6.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_1_7",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge7.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_1_8",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge8.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge1.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_2_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge1.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_2_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge3.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_2_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge4.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_2_5",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge5.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_2_6",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge6.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_2_7",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge7.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_2_8",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge8.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge2.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_3_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge1.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_3_2",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge2.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_3_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge4.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_3_5",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge5.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_3_6",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge6.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_3_7",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge7.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_3_8",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge8.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge3.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_4_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge1.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_4_2",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge2.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_4_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge3.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_4_5",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge5.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_4_6",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge6.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_4_7",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge7.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_4_8",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge8.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge4.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_5_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge1.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_5_2",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge2.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_5_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge3.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_5_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge4.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_5_6",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge6.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_5_7",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge7.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_5_8",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge8.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge5.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_6_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge1.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_6_2",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge2.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_6_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge3.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_6_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge4.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_6_5",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge5.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_6_7",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge7.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_6_8",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge8.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge6.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_7_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge1.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_7_2",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge2.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_7_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge3.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_7_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge4.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_7_5",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge5.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_7_6",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge6.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_7_8",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge8.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge7.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "router2router",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "uplinks": [
+                        {
+                            "id": "uplink_8_1",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge1.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_8_2",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge2.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_8_3",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge3.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_8_4",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge4.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_8_5",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge5.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_8_6",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge6.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        },
+                        {
+                            "id": "uplink_8_7",
+                            "realm": "realm1",
+                            "transport": {
+                                "type": "rawsocket",
+                                "endpoint": {
+                                    "type": "unix",
+                                    "path": "edge7.sock"
+                                },
+                                "url": "rs://localhost",
+                                "serializer": "cbor"
+                            },
+                            "forward_local_events": false,
+                            "forward_remote_events": true
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "edge8.sock",
+                        "backlog": 1024
+                    },
+                    "max_message_size": 1048576,
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "router2router"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024,
+                        "shared": true
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": false,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
