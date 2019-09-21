@@ -1,26 +1,28 @@
-requirements:
-	sudo apt update && sudo apt install -y haproxy haproxyctl hatop
+default:
+	@echo "Targets:"
 
+
+install_haproxy:
+	sudo apt update && sudo apt install -y haproxy haproxyctl
 
 run_haproxy:
 	haproxy -f haproxy.conf
 
+run_ha_node1:
+	crossbar start --cbdir ./ha_setup/node1/.crossbar
 
-run_ha_edge1:
-	crossbarfx edge start --cbdir ./ha_setup/edge1/.crossbar
+run_ha_node2:
+	crossbar start --cbdir ./ha_setup/node2/.crossbar
 
-run_ha_edge2:
-	crossbarfx edge start --cbdir ./ha_setup/edge2/.crossbar
+run_ha_node3:
+	crossbar start --cbdir ./ha_setup/node3/.crossbar
 
-run_ha_edge3:
-	crossbarfx edge start --cbdir ./ha_setup/edge3/.crossbar
-
-run_ha_edge4:
-	crossbarfx edge start --cbdir ./ha_setup/edge4/.crossbar
+run_ha_node4:
+	crossbar start --cbdir ./ha_setup/node4/.crossbar
 
 
-run_smp_edge1:
-	crossbarfx edge --debug-lifecycle start --vmprof --cbdir ./smp_setup/edge1/.crossbar
+run_smp_node1:
+	crossbar --debug-lifecycle start --vmprof --cbdir ./smp_setup/node1/.crossbar
 
 
 run_benchmark:
@@ -41,10 +43,10 @@ run_test:
 
 
 run_all:
-	crossbarfx edge --debug-lifecycle start --vmprof --cbdir ./smp_setup/edge1/.crossbar &
+	crossbar --debug-lifecycle start --vmprof --cbdir ./smp_setup/node1/.crossbar &
 	sleep 30
 	python main.py
-	crossbarfx edge stop --cbdir ./smp_setup/edge1/.crossbar
+	crossbar stop --cbdir ./smp_setup/node1/.crossbar
 
 
 clean:

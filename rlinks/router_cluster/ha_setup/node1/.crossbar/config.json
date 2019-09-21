@@ -2,8 +2,6 @@
     "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
     "version": 2,
     "controller": {
-        "fabric": {
-        },
         "options": {
             "shutdown": [
                 "shutdown_on_shutdown_requested",
@@ -134,28 +132,28 @@
                          "cryptosign": {
                              "type": "static",
                              "principals": {
-                                 "edge1": {
+                                 "node1": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
                                          "3a88bcd446482d38dd492b9a4b285a560659abffed3ec73920b277767e802f6c"
                                      ]
                                  },
-                                 "edge2": {
+                                 "node2": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
                                          "b45d9693346a5327f2b7f59b9fc04f2822b18c2be970938ea53564003aa2083d"
                                      ]
                                  },
-                                 "edge3": {
+                                 "node3": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
                                          "d7bbb7cd07b027f18674bcec8489a6618b5ace07e861c929cff0a7659f816f5f"
                                      ]
                                  },
-                                 "edge4": {
+                                 "node4": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
@@ -204,7 +202,7 @@
                         }
                     },
                     "extra": {
-                        "logname": "edge1.container1"
+                        "logname": "node1.container1"
                     }
                 }
             ]

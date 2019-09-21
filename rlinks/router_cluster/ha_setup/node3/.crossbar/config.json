@@ -2,8 +2,6 @@
     "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
     "version": 2,
     "controller": {
-        "fabric": {
-        },
         "options": {
             "shutdown": [
                 "shutdown_on_shutdown_requested",
@@ -63,7 +61,7 @@
                     ],
                     "rlinks": [
                         {
-                            "id": "rlink_4_1",
+                            "id": "rlink_3_1",
                             "realm": "realm1",
                             "transport": {
                                 "type": "rawsocket",
@@ -81,7 +79,7 @@
                             "forward_remote_invocations": true
                         },
                         {
-                            "id": "rlink_4_2",
+                            "id": "rlink_3_2",
                             "realm": "realm1",
                             "transport": {
                                 "type": "rawsocket",
@@ -99,16 +97,16 @@
                             "forward_remote_invocations": true
                         },
                         {
-                            "id": "rlink_4_3",
+                            "id": "rlink_3_4",
                             "realm": "realm1",
                             "transport": {
                                 "type": "rawsocket",
                                 "endpoint": {
                                     "type": "tcp",
                                     "host": "localhost",
-                                    "port": 5083
+                                    "port": 5084
                                 },
-                                "url": "rs://localhost:5083",
+                                "url": "rs://localhost:5084",
                                 "serializer": "cbor"
                             },
                             "forward_local_events": false,
@@ -124,7 +122,7 @@
                     "type": "rawsocket",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 5084
+                        "port": 5083
                     },
                     "options": {
                         "max_message_size": 1048576
@@ -134,28 +132,28 @@
                          "cryptosign": {
                              "type": "static",
                              "principals": {
-                                 "edge1": {
+                                 "node1": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
                                          "3a88bcd446482d38dd492b9a4b285a560659abffed3ec73920b277767e802f6c"
                                      ]
                                  },
-                                 "edge2": {
+                                 "node2": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
                                          "b45d9693346a5327f2b7f59b9fc04f2822b18c2be970938ea53564003aa2083d"
                                      ]
                                  },
-                                 "edge3": {
+                                 "node3": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
                                          "d7bbb7cd07b027f18674bcec8489a6618b5ace07e861c929cff0a7659f816f5f"
                                      ]
                                  },
-                                 "edge4": {
+                                 "node4": {
                                      "realm": "realm1",
                                      "role": "router2router",
                                      "authorized_keys": [
@@ -170,7 +168,7 @@
                     "type": "websocket",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 8084
+                        "port": 8083
                     },
                     "serializers": ["cbor", "msgpack", "json"],
                     "options": {
@@ -196,15 +194,15 @@
                         "endpoint": {
                             "type": "tcp",
                             "host": "127.0.0.1",
-                            "port": 8084
+                            "port": 8083
                         },
-                        "url": "ws://127.0.0.1:8084/ws",
+                        "url": "ws://127.0.0.1:8083/ws",
                         "options": {
                             "max_message_size": 1048576
                         }
                     },
                     "extra": {
-                        "logname": "edge4.container1"
+                        "logname": "node3.container1"
                     }
                 }
             ]

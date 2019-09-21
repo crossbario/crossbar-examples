@@ -1,5 +1,81 @@
 # CrossbarFX HA test
 
+> This requires Crossbar.io >= 19.10.1
+
+## High availability
+
+### Testing
+
+The folder [ha_setup](ha_setup) contains example configurations of 4 Crossbar.io nodes.
+
+> All nodes are started on localhost for easy testing - in production, the Crossbar.io nodes should run on 4 different machines obviously.
+
+To start the 4 nodes, open 4 terminals and run
+
+```
+make run_ha_node1
+```
+
+in each of them, using the 4 targets `make run_ha_node1`, `make run_ha_node2`, `make run_ha_node3` and `make run_ha_node4`.
+
+Now install [HAProxy](https://www.haproxy.org/)
+
+```
+make install_haproxy
+```
+
+and start the load balancer using
+
+```
+(cpy374_1) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/rlinks/router_cluster$ make run_haproxy
+haproxy -f haproxy.conf
+[WARNING] 263/160453 (6888) : Health check for server crossbar_nodes/node1 succeeded, reason: Layer4 check passed, check duration: 0ms, status: 3/3 UP.
+[WARNING] 263/160453 (6888) : Health check for server crossbar_nodes/node2 succeeded, reason: Layer4 check passed, check duration: 0ms, status: 3/3 UP.
+[WARNING] 263/160454 (6888) : Health check for server crossbar_nodes/node3 succeeded, reason: Layer4 check passed, check duration: 0ms, status: 3/3 UP.
+[WARNING] 263/160454 (6888) : Health check for server crossbar_nodes/node4 succeeded, reason: Layer4 check passed, check duration: 0ms, status: 3/3 UP.
+```
+
+Finally, open the HAproxy statistics page configured at [http://localhost:1936/](http://localhost:1936/).
+
+You should see a page similar to
+
+![HA cluster up 1](ha_setup/haproxy_stats1.png "HA cluster up 1")
+
+Now open [http://localhost:8080/](http://localhost:8080/) and reload (hit F5) quickly a couple of times
+
+![Crossbar.io Status Page](ha_setup/cb_node_status1.png "Crossbar.io Status Page")
+
+Notice that this line
+
+```
+Served for tcp4:127.0.0.1:62132 from Crossbar.io router worker with PID 1978.
+```
+
+changes as you reload, showing that HAProxy forwards the connection to different backend nodes.
+
+When you now reload the HAProxy statistics page, should see something similar to
+
+![HA cluster up 2](ha_setup/haproxy_stats2.png "HA cluster up 2")
+
+In particular, note the changed value of the **Max** connection count column in the **crossbar_nodes** table (jumped from previously 0 to now 1 for all 4 backend nodes).
+
+---
+
+
+
+# FIXME
+
+
+Nodes:
+
+* node1: 3a88bcd446482d38dd492b9a4b285a560659abffed3ec73920b277767e802f6c
+* node2: b45d9693346a5327f2b7f59b9fc04f2822b18c2be970938ea53564003aa2083d
+* node3: d7bbb7cd07b027f18674bcec8489a6618b5ace07e861c929cff0a7659f816f5f
+* node4: 252b6adc61db6d4744b65060a81f667f5062dbf94a3fac362956cac78b878620
+
+
+
+
 ![HA cluster up](ha_setup/ha_cluster_up.png "HA cluster up")
 ![HA cluster node failure](ha_setup/ha_cluster_node_failure.png "HA cluster node failure")
 
@@ -25,7 +101,7 @@ python main.py --silent --duration 300 --period 10 --clients 8 --connections 32 
 335544320
 >>>> 8*32*10*256*512/1024/1024
 320.0
->>>> 
+>>>>
 
 
 
@@ -125,7 +201,7 @@ session required pam_limits.so
 Reboot the system. You should get:
 
 ```
-oberstet@intel-nuci7:~$ cat /proc/sys/fs/file-max 
+oberstet@intel-nuci7:~$ cat /proc/sys/fs/file-max
 16777216
 oberstet@intel-nuci7:~$ ulimit -n
 1048576

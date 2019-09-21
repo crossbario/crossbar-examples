@@ -1,9 +1,28 @@
-##############################################################################
+###############################################################################
 #
-#                        Crossbar.io Fabric
-#     Copyright (C) Crossbar.io Technologies GmbH. All rights reserved.
+# The MIT License (MIT)
 #
-##############################################################################
+# Copyright (c) Crossbar.io Technologies GmbH
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+###############################################################################
 
 import sys
 import copy
@@ -121,16 +140,10 @@ class HATestClientSession(ApplicationSession):
         if self._silent:
             self._stats(self._batch_id, self.log.info)
 
-        #stats_period = self._period
         stats_period = 10.
         if stats_period:
             self._stats_loop = LoopingCall(self._stats, self._batch_id, self.log.info)
             self._stats_loop.start(stats_period)
-
-        if False:
-            yield self.register(self.proc1,
-                               HATestClientSession.TEST_PROC,
-                               options=RegisterOptions(match='exact', invoke='random', details_arg='details'))
 
         yield self.subscribe(self.on_event1,
                              HATestClientSession.TEST_TOPIC,
@@ -189,10 +202,7 @@ class HATestClientSession(ApplicationSession):
                         fp=hl(binascii.b2a_hex(fingerprint).decode(), color='green', bold=True))
 
                 if enable_call:
-                    uri = HATestClientSession.TEST_PROC
-                    uri = 'edge1.container1.proc1'
-                    uri = 'edge2.container1.proc1'
-                    for uri in ['edge{}.container1.proc1'.format(i + 1) for i in range(4)]:
+                    for uri in ['node{}.container1.proc1'.format(i + 1) for i in range(4)]:
                         d = self.call(uri,
                                       self._logname,
                                       self._url,
@@ -202,7 +212,7 @@ class HATestClientSession(ApplicationSession):
                                       options=CallOptions(details=True))
 
                         def check_result(result, uri):
-                            print('-'*100, result)
+                            print('-' * 100, result)
                             _fingerprint, _pid, _logname, _url = result.results[0]
                             self.log.info('{logprefix}: CALL RESULT for {uri} received from pid={pid}, logname={logname}, url={url}, callee={callee}, callee_authid={callee_authid}, callee_authrole={callee_authrole}, forward_for={forward_for}, fp={fp} => fp_equal={fp_equal}',
                                           logprefix=hl('WAMP {}:{}'.format(self._url, self._logname), color='green',
