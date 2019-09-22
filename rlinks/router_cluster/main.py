@@ -194,9 +194,6 @@ if __name__ == '__main__':
 
     print('Client with PID {} starting ..'.format(hl(os.getpid(), bold=True)))
 
-    url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
-    realm = os.environ.get('CBREALM', u'realm1')
-
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d',
@@ -230,13 +227,13 @@ if __name__ == '__main__':
     parser.add_argument('--url',
                         dest='url',
                         type=str,
-                        default=url,
-                        help='The router URL (default: "ws://localhost:8080/ws").')
+                        default=None,
+                        help='The proxied router URL or None for connecting directly to nodes.')
 
     parser.add_argument('--realm',
                         dest='realm',
                         type=str,
-                        default=realm,
+                        default="realm1",
                         help='The realm to join (default: "realm1").')
 
     parser.add_argument('--connections',

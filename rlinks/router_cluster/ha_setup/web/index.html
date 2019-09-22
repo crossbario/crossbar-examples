@@ -1,0 +1,93 @@
+<html>
+    <meta charset="UTF-8">
+    <header>
+        <style type="text/css">
+            body {
+                border: 0;
+                margin: 0;
+                width: 100%;
+                height: 100%;
+                font-family: sans;
+            }
+
+            #container {
+                border: 0;
+                width: 800px;
+                height: 100%;
+                margin: auto;
+                margin-top: 80px;
+            }
+        </style>
+    </header>
+    <body>
+        <div id="container">
+            <h1>Crossbar.io HA Demo</h1>
+
+            <h2>HAProxy</h2>
+            <ul>
+                <li>
+                    <a href="http://localhost:1936/">HAProxy statistics</a>
+                </li>
+            </ul>
+
+            <h2>Crossbar.io Node Info page</h2>
+            <ul>
+                <li>
+                    <a href="http://localhost:8080/info">Crossbar.io node info (<b>via proxy</b>)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8081/info">Crossbar.io node 1 info (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8082/info">Crossbar.io node 2 info (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8083/info">Crossbar.io node 3 info (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8084/info">Crossbar.io node 4 info (direct node connection)</a>
+                </li>
+            </ul>
+
+            <h2>Crossbar.io WebSocket endpoint</h2>
+            <ul>
+                <li>
+                    <a href="http://localhost:8080/ws">Crossbar.io WebSocket endpoint (<b>via proxy</b>)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8081/ws">Crossbar.io node 1 WebSocket endpoint (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8082/ws">Crossbar.io node 2 WebSocket endpoint (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8083/ws">Crossbar.io node 3 WebSocket endpoint (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8084/ws">Crossbar.io node 4 WebSocket endpoint (direct node connection)</a>
+                </li>
+            </ul>
+
+            <h2>AutobahnJS test client</h2>
+            <ul>
+                <li>
+                    <a href="http://localhost:8080/client.html">AutobahnJS test client (<b>via proxy</b>)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8081/client.html">AutobahnJS test client on node 1 (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8082/client.html">AutobahnJS test client on node 1 (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8083/client.html">AutobahnJS test client on node 1 (direct node connection)</a>
+                </li>
+                <li>
+                    <a href="http://localhost:8084/client.html">AutobahnJS test client on node 1 (direct node connection)</a>
+                </li>
+            </ul>
+
+        </div>
+    </body>
+</html>
+

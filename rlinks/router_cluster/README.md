@@ -2,6 +2,8 @@
 
 > This requires Crossbar.io >= 19.10.1
 
+[Enable "Show timestamps" in Chrome](https://stackoverflow.com/a/24260317/884770)
+
 ## High availability
 
 ### Testing
