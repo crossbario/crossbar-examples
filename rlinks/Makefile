@@ -66,3 +66,4 @@ run_all:
 
 clean:
 	find . -name ".vmprof-*.dat" -exec rm -f {} \;
+	find . -name "autobahn.zip" -exec rm -f {} \;

@@ -6,5 +6,18 @@
         <script src="client.js"></script>
         <h1>Crossbar.io HA Demo - AutobahnJS (proxied) Client</h1>
         <p>Open JavaScript console to watch output.</p>
+
+        <h2>RPC</h3>
+        <p>
+            Issue 1 call to each of 4 procedures registered in 4 different backend nodes:
+            <table>
+                <tr>
+                    <td>Payload size</td>
+                    <td><input type="number" id="rpc1_payload_size" name="rpc1_payload_size" size="12" maxlength="12" value="512"></td>
+                </tr>
+            </table>
+            <button onclick="rpc1_test();">Trigger calls</button>
+        </p>
+
     </body>
 </html>

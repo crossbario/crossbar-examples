@@ -88,5 +88,7 @@ class Backend(ApplicationSession):
         yield self.register(proc1, uri,
                             options=RegisterOptions(match='exact', invoke='random', details_arg='details'))
 
+        self.log.info('*' * 80)
         self.log.info('Backend procedure registered at {uri}', uri=hl(uri))
+        self.log.info('*' * 80)
 
