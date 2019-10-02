@@ -103,3 +103,38 @@ services:
             - buyer.py
             - --url=ws://edge1:8080/ws
             - --realm=realm1
+
+    seller2:
+        image: crossbario/autobahn-js:full-19.10.1
+        user: "1000:1000"
+        restart: always
+        depends_on:
+            - edge1
+        environment:
+            - XBR_DEBUG_TOKEN_ADDR
+            - XBR_DEBUG_NETWORK_ADDR
+            - CBURL=ws://edge1:8080/ws
+            - CBREALM=realm1
+        volumes:
+            - ${PWD}/javascript/:/app
+        entrypoint: /usr/local/bin/node
+        command:
+            - seller.js
+
+
+    buyer2:
+        image: crossbario/autobahn-js:full-19.10.1
+        user: "1000:1000"
+        restart: always
+        depends_on:
+            - edge1
+        environment:
+            - XBR_DEBUG_TOKEN_ADDR
+            - XBR_DEBUG_NETWORK_ADDR
+            - CBURL=ws://edge1:8080/ws
+            - CBREALM=realm1
+        volumes:
+            - ${PWD}/javascript/:/app
+        entrypoint: /usr/local/bin/node
+        command:
+            - buyer.js

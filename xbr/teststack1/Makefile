@@ -30,8 +30,14 @@ run_edge1:
 run_seller1:
 	docker-compose up seller1
 
+run_seller2:
+	docker-compose up seller2
+
 run_buyer1:
 	docker-compose up buyer1
+
+run_buyer2:
+	docker-compose up buyer2
 
 
 init: init_blockchain init_master init_edge1
