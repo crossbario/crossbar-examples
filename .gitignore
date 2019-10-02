@@ -9,3 +9,6 @@ key.priv
 key.pub
 
 autobahn.zip
+*.mdb
+*.data/*.mdb
+*.data*

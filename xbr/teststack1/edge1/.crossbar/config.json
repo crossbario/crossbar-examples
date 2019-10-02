@@ -1,0 +1,240 @@
+{
+    "$schema": "https://raw.githubusercontent.com/crossbario/crossbar/master/crossbar.json",
+    "version": 2,
+    "controller": {
+        "enable_docker": false,
+        "fabric": {
+            "transport": {
+                "type": "websocket",
+                "endpoint": {
+                    "type": "tcp",
+                    "host": "cfx_master",
+                    "port": 9000,
+                    "timeout": 5
+                },
+                "url": "ws://master:9000/ws"
+            }
+        }
+    },
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "io.crossbar.example",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "xbr",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "xbrmm",
+                            "permissions": [
+                                {
+                                    "uri": "xbr.marketmaker.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "xbr.provider.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": false,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "store": {
+                        "type": "cfxdb",
+                        "path": "../.testdb",
+                        "maxsize": 1073741824,
+                        "buffer-flush": 250,
+                        "event-history": [
+                            {
+                                "uri": "debug.",
+                                "match": "prefix"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "xbrmm.sock"
+                    },
+                    "options": {
+                        "max_message_size": 1048576
+                    },
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "xbrmm"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "backlog": 1024
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "download": true,
+                            "cache": true,
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": [
+                                        "*"
+                                ],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 4,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            },
+                            "auth": {
+                                "anonymous": {
+                                    "type": "static",
+                                    "role": "anonymous"
+                                }
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "id": "xbrmm1",
+            "type": "xbrmm",
+            "options": {
+                "env": {
+                    "inherit": true
+                }
+            },
+            "makers": [
+                {
+                    "id": "maker1",
+                    "key": "../.xbrmm.key",
+                    "store": {
+                        "type": "cfxdb",
+                        "path": "../.xbrdb-transactions",
+                        "maxsize": 1073741824
+                    },
+                    "blockchain": {
+                        "type": "ethereum",
+                        "gateway": {
+                            "type": "user",
+                            "http": "http://blockchain:1545"
+                        },
+                        "from_block": 1,
+                        "chain_id": 5777
+                    },
+                    "connection": {
+                        "realm": "realm1",
+                        "transport": {
+                            "type": "rawsocket",
+                            "endpoint": {
+                                "type": "unix",
+                                "path": "xbrmm.sock"
+                            },
+                            "serializer": "cbor"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
