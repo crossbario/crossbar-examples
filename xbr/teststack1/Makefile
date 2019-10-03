@@ -43,6 +43,7 @@ run_buyer2:
 init: init_blockchain init_master init_edge1
 
 init_master:
+	cp ${HOME}/.crossbarfx/default.pub master/
 	$(CROSSBARFX) shell create mrealm mrealm1
 	$(CROSSBARFX) shell pair node ./edge1/.crossbar/key.pub mrealm1 node1
 

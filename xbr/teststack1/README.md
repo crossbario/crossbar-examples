@@ -172,3 +172,18 @@ buyer1_1      | 2019-10-02T16:17:24+0000 session leaving 'wamp.close.normal'
 buyer1_1      | 2019-10-02T16:17:24+0000 Stopping factory <autobahn.twisted.websocket.WampWebSocketClientFactory object at 0x0000000006c1a5d0>
 buyer1_1      | 2019-10-02T16:17:24+0000 Main loop terminated.
 ```
+
+## Workbench
+
+```python
+import zlmdb
+import cfxdb
+
+db = zlmdb.Database('xbrdb-transactions', maxsize=2**30, readonly=False)
+xbr = cfxdb.xbr.Schema.attach(db)
+
+
+with db.begin() as txn:
+    cnt = xbr.offers.count(txn)
+    print('{} data encryption key offers so far so far'.format(cnt))
+```

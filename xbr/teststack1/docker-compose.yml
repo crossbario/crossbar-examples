@@ -2,7 +2,7 @@ version: '3'
 services:
     blockchain:
         image: trufflesuite/ganache-cli:v6.7.0
-        user: "1000:1000"
+        #user: "1000:1000"
         restart: always
         ports:
             - "1545:1545"
@@ -138,3 +138,28 @@ services:
         entrypoint: /usr/local/bin/node
         command:
             - buyer.js
+
+    workbench:
+        # image: crossbario/crossbarfx-workbench:cpy-19.10.1
+        image: crossbario/crossbarfx-workbench:pypy-19.10.1
+        user: "1000:1000"
+        # network_mode: host
+        ports:
+            - "8888:8888"
+        environment:
+            - "CBURL=ws://edge1:8080/ws"
+            - "CBREALM=realm1"
+            - "JUPYTERHUB_API_TOKEN=42"
+        volumes:
+            - "${PWD}/workbench/notebooks/:/home/jovyan/notebooks:rw"
+            - "${PWD}/workbench/.jupyter/:/home/jovyan/.jupyter:rw"
+
+            # we need to mount read-write, even though we only access read-only,
+            # because we need write access to the database lock file (even for readers)
+            - "${PWD}/edge1/.testdb:/home/jovyan/testdb:rw"
+            - "${PWD}/edge1/.xbrdb-transactions:/home/jovyan/xbrdb-transactions:rw"
+        command:
+            - jupyter
+            - notebook
+            - --ip=0.0.0.0
+            - --port=8888

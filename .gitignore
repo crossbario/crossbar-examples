@@ -12,3 +12,6 @@ autobahn.zip
 *.mdb
 *.data/*.mdb
 *.data*
+xbr/teststack1/master/default.pub
+*.mdb
+.ipynb_checkpoints
