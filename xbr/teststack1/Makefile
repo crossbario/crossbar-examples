@@ -27,6 +27,9 @@ run_master:
 run_edge1:
 	docker-compose up -d edge1
 
+run_workbench:
+	docker-compose up workbench
+
 run_seller1:
 	docker-compose up seller1
 
