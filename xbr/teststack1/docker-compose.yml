@@ -1,6 +1,6 @@
 version: '3'
 services:
-    blockchain:
+    blockchain_old:
         image: trufflesuite/ganache-cli:v6.7.0
         #user: "1000:1000"
         restart: always
@@ -25,6 +25,12 @@ services:
             - "5777"
             - "--db"
             - "/blockchain"
+
+    blockchain:
+        image: crossbario/crossbarfx-blockchain:latest
+        restart: always
+        ports:
+            - "1545:1545"
 
     master:
         image: crossbario/crossbarfx:pypy-amd64-19.10.1

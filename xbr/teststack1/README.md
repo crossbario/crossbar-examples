@@ -1,5 +1,39 @@
 # XBR Teststack
 
+## Metamask
+
+tldr:
+
+* Local development blockchain endpoint: `http://localhost:1545`
+* XBR token contract address: `export XBR_DEBUG_TOKEN_ADDR="0x78890bF748639B82D225FA804553FcDBe5819576"`
+* XBR network contract address: `export XBR_DEBUG_NETWORK_ADDR="0x96f2b95733066aD7982a7E8ce58FC91d12bfbB2c"`
+
+Detailed steps:
+
+Start the local XBR development blockchain:
+
+```
+make run_blockchain
+```
+
+Then:
+
+1. Download and install [Metamask](https://metamask.io/) browser extension
+2. Click "Get started" and "Import wallet" ..
+3. Enter "Wallet Seed": `myth like bonus scare over problem client lizard pioneer submit female collect`
+4. Configure a new blockchain network at `http://localhost:1545`
+5. Configure the XBR token address
+6. Create more accounts ..
+
+Here is how these steps look like:
+
+![Metamask with Testaccount](_screenshots/metamask1.png "Metamask with Testaccount")
+![Metamask with Testaccount](_screenshots/metamask2.png "Metamask with Testaccount")
+![Metamask with Testaccount](_screenshots/metamask3.png "Metamask with Testaccount")
+![Metamask with Testaccount](_screenshots/metamask4.png "Metamask with Testaccount")
+![Metamask with Testaccount](_screenshots/metamask5.png "Metamask with Testaccount")
+![Metamask with Testaccount](_screenshots/metamask6.png "Metamask with Testaccount")
+
 ## Setup the stack
 
 Stop the stack and scratch all data:
