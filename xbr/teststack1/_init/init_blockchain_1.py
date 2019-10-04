@@ -10,7 +10,7 @@ from init_data import ACCOUNTS, OWNER, MARKETS
 
 # getAllMarketChannels(bytes16 marketId)
 
-def main(accounts, owner):
+def main(accounts, owner, initial_transfer=False):
     print('Using XBR token contract address: {}'.format(xbr.xbrtoken.address))
     print('Using XBR network contract address: {}'.format(xbr.xbrnetwork.address))
 
@@ -29,41 +29,42 @@ def main(accounts, owner):
 
     # 2) transfer some tokens (every user gets 1m XBR)
     #
-    print('-' * 120)
-    # transfer 50,000 XBR
-    for ak, amount in [
-        ('marketop1', 50000),
-        ('marketop1-marketmaker1', 50000),
-        ('seller1', 50000),
-        ('seller3', 50000),
-        ('buyer1', 50000),
-        ('buyer3', 50000),
-        ('marketop2', 50000),
-        ('marketop2-marketmaker1', 50000),
-        ('seller2', 50000),
-        ('buyer2', 50000),
-    ]:
-        acct = accounts[ak]
-        balance_eth = w3.eth.getBalance(acct.address)
-        balance_xbr = xbr.xbrtoken.functions.balanceOf(acct.address).call()
-
-        # the XBR token has 18 decimal digits
-        balance_xbr = int(balance_xbr / 10 ** 18)
-
-        print('Balances of {}: {:>30} ETH, {:>30} XBR'.format(acct.address, balance_eth, balance_xbr))
-
-        if balance_xbr < amount:
-            transfer_amount = amount - balance_xbr
+    if initial_transfer:
+        print('-' * 120)
+        # transfer 50,000 XBR
+        for ak, amount in [
+            ('marketop1', 50000),
+            ('marketop1-marketmaker1', 50000),
+            ('seller1', 50000),
+            ('seller3', 50000),
+            ('buyer1', 50000),
+            ('buyer3', 50000),
+            ('marketop2', 50000),
+            ('marketop2-marketmaker1', 50000),
+            ('seller2', 50000),
+            ('buyer2', 50000),
+        ]:
+            acct = accounts[ak]
+            balance_eth = w3.eth.getBalance(acct.address)
+            balance_xbr = xbr.xbrtoken.functions.balanceOf(acct.address).call()
 
             # the XBR token has 18 decimal digits
-            raw_amount = transfer_amount * 10 ** 18
-            success = xbr.xbrtoken.functions.transfer(acct.address, raw_amount).transact({'from': owner.address, 'gas': 100000})
-            if success:
-                print('Transferred {} XBR to {}'.format(transfer_amount, acct.address))
+            balance_xbr = int(balance_xbr / 10 ** 18)
+
+            print('Balances of {}: {:>30} ETH, {:>30} XBR'.format(acct.address, balance_eth, balance_xbr))
+
+            if balance_xbr < amount:
+                transfer_amount = amount - balance_xbr
+
+                # the XBR token has 18 decimal digits
+                raw_amount = transfer_amount * 10 ** 18
+                success = xbr.xbrtoken.functions.transfer(acct.address, raw_amount).transact({'from': owner.address, 'gas': 100000})
+                if success:
+                    print('Transferred {} XBR to {}'.format(transfer_amount, acct.address))
+                else:
+                    print('Failed to transfer tokens!')
             else:
-                print('Failed to transfer tokens!')
-        else:
-            print('Address {} already has (at least) {} XBR (current balance {} XBR)'.format(acct.address, amount, balance_xbr))
+                print('Address {} already has (at least) {} XBR (current balance {} XBR)'.format(acct.address, amount, balance_xbr))
 
     # 3) register XBR network members
     #
