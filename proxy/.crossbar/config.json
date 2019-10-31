@@ -3,18 +3,12 @@
     "controller": {
         "id": "node1",
         "options": {
-            "cpu_affinity": [
-                0
-            ]
         }
     },
     "workers": [
         {
             "type": "router",
             "options": {
-                "cpu_affinity": [
-                    1
-                ]
             },
             "realms": [
                 {
@@ -89,18 +83,40 @@
                             }
                         }
                     }
+                },
+                {
+                    "type": "websocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "routerws.sock"
+                    },
+                    "serializers": ["json", "cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "public"
+                        },
+                        "ticket": {
+                            "type": "static",
+                            "principals": {
+                                "alice": {
+                                    "ticket": "65daf2766173af06cc30",
+                                    "role": "user"
+                                }
+                            }
+                        }
+                    }
                 }
             ]
         },
+
         {
             "type": "proxy",
             "options": {
-                "cpu_affinity": [
-                    2
-                ]
             },
             "backends": [
                 {
+                    "realm": "foo",
                     "transport": {
                         "type": "rawsocket",
                         "endpoint": {
@@ -110,6 +126,17 @@
                         "url": "rs://localhost",
                         "serializer": "cbor"
                     }
+                },
+                {
+                    "transport": {
+                        "type": "websocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "routerws.sock"
+                        },
+                        "url": "rs://localhost",
+                        "serializers": ["json"]
+                    }
                 }
             ],
             "transports": [
@@ -117,18 +144,9 @@
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 443,
+                        "port": 8443,
                         "shared": true,
-                        "backlog": 1024,
-                        "tls": {
-                            "certificate": "demo.crossbar.io.crt",
-                            "key": "demo.crossbar.io.key",
-                            "dhparam": "dhparam.pem",
-                            "chain_certificates": [
-                                "demo.crossbar.io.issuer.crt"
-                            ],
-                            "ciphers": "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256"
-                        }
+                        "backlog": 1024
                     },
                     "paths": {
                         "/": {
@@ -190,12 +208,10 @@
                 }
             ]
         },
+
         {
             "type": "proxy",
             "options": {
-                "cpu_affinity": [
-                    3
-                ]
             },
             "backends": [
                 {
@@ -206,7 +222,7 @@
                             "path": "router.sock"
                         },
                         "url": "rs://localhost",
-                        "serializer": "cbor"
+                        "serializer": "json"
                     }
                 }
             ],
@@ -215,18 +231,9 @@
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 443,
+                        "port": 8443,
                         "shared": true,
-                        "backlog": 1024,
-                        "tls": {
-                            "certificate": "demo.crossbar.io.crt",
-                            "key": "demo.crossbar.io.key",
-                            "dhparam": "dhparam.pem",
-                            "chain_certificates": [
-                                "demo.crossbar.io.issuer.crt"
-                            ],
-                            "ciphers": "ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256"
-                        }
+                        "backlog": 1024
                     },
                     "paths": {
                         "/": {
