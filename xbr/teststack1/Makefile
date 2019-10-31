@@ -60,10 +60,15 @@ init_blockchain:
 
 
 clean: clean_blockchain clean_master clean_edge1
+	-docker rm teststack1_buyer1_1
+	-docker rm teststack1_buyer2_1
+	-docker rm teststack1_seller1_1
+	-docker rm teststack1_seller2_1
+	-docker rm teststack1_workbench_1
 
 clean_master:
 	-docker-compose stop master
-	-docker rm teststack_master_1
+	-docker rm teststack1_master_1
 	-rm -rf ${PWD}/master/.crossbar/.db-controller
 	-rm -rf ${PWD}/master/.crossbar/.change-engine
 	-rm -rf ${PWD}/master/.crossbar/.db-mrealm-*
@@ -71,7 +76,7 @@ clean_master:
 
 clean_edge1:
 	-docker-compose stop edge1
-	-docker rm teststack_edge1_1
+	-docker rm teststack1_edge1_1
 	-rm -f ${PWD}/edge1/.crossbar/autobahn.zip
 	-rm -rf ${PWD}/edge1/.xbrdb-transactions
 	-rm -rf ${PWD}/edge1/.testdb
@@ -79,21 +84,23 @@ clean_edge1:
 
 clean_blockchain:
 	-docker-compose stop blockchain
-	-docker rm teststack_blockchain_1
+	-docker rm teststack1_blockchain_1
 	-rm -rf ./blockchain/.data
 	mkdir -p ./blockchain/.data
 
 
-stop: stop_edge1 stop_master stop_blockchain
+stop:
+	-docker-compose stop
+	-docker-compose ps
 
 stop_master:
 	-docker-compose stop master
-	-docker rm teststack_master_1
+	-docker rm teststack1_master_1
 
 stop_edge1:
 	-docker-compose stop edge1
-	-docker rm teststack_edge1_1
+	-docker rm teststack1_edge1_1
 
 stop_blockchain:
 	-docker-compose stop blockchain
-	-docker rm teststack_blockchain_1
+	-docker rm teststack1_blockchain_1

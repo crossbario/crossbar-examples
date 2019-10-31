@@ -12,7 +12,7 @@
                     "port": 9000,
                     "timeout": 5
                 },
-                "url": "ws://master:9000/ws"
+                "url": "ws://localhost:9000/ws"
             }
         }
     },
@@ -217,7 +217,7 @@
                         "type": "ethereum",
                         "gateway": {
                             "type": "user",
-                            "http": "http://blockchain:1545"
+                            "http": "http://localhost:1545"
                         },
                         "from_block": 1,
                         "chain_id": 5777

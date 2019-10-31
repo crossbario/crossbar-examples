@@ -56,13 +56,16 @@ services:
         user: "1000:1000"
         restart: always
         depends_on:
-            - blockchain
+            #- blockchain
             - master
         environment:
-            - XBR_DEBUG_TOKEN_ADDR
-            - XBR_DEBUG_NETWORK_ADDR
-        ports:
-            - "8080:8080"
+            #- XBR_DEBUG_TOKEN_ADDR
+            #- XBR_DEBUG_NETWORK_ADDR
+            - XBR_DEBUG_TOKEN_ADDR=0xcfeb869f69431e42cdb54a4f4f105c19c080a601
+            - XBR_DEBUG_NETWORK_ADDR=0x254dffcd3277c0b1660f6d42efbb754edababc2b
+        network_mode: host
+        #ports:
+        #    - "8080:8080"
         volumes:
             - "${PWD}/edge1:/node:rw"
         command:
