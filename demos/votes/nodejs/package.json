@@ -9,7 +9,7 @@
     "author": "Tavendo GmbH",
     "license": "Apache 2.0",
     "dependencies": {
-        "ws": "< 2.0.0",
+        "ws": "< 8.0.0",
         "autobahn": ">= 0.12.0"
     }
 }
