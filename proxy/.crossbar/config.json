@@ -134,7 +134,7 @@
                             "type": "unix",
                             "path": "routerws.sock"
                         },
-                        "url": "rs://localhost",
+                        "url": "ws://localhost",
                         "serializers": ["json"]
                     }
                 }
@@ -222,7 +222,7 @@
                             "path": "router.sock"
                         },
                         "url": "rs://localhost",
-                        "serializer": "json"
+                        "serializer": "cbor"
                     }
                 }
             ],
