@@ -173,14 +173,9 @@
                                 "cbor", "msgpack", "json"
                             ],
                             "options": {
-                                "allowed_origins": [
-                                    "https://demo.crossbar.io:*",
-                                    "https://cbdemo-eu-central-1.crossbar.io:*",
-                                    "https://cbdemo-us-west-1.crossbar.io:*",
-                                    "https://cbdemo-ap-southeast-1.crossbar.io:*"
-                                ],
-                                "allow_null_origin": false,
-                                "enable_webstatus": false,
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
                                 "max_frame_size": 1048576,
                                 "max_message_size": 1048576,
                                 "auto_fragment_size": 65536,
@@ -260,14 +255,9 @@
                                 "cbor", "msgpack", "json"
                             ],
                             "options": {
-                                "allowed_origins": [
-                                    "https://demo.crossbar.io:*",
-                                    "https://cbdemo-eu-central-1.crossbar.io:*",
-                                    "https://cbdemo-us-west-1.crossbar.io:*",
-                                    "https://cbdemo-ap-southeast-1.crossbar.io:*"
-                                ],
-                                "allow_null_origin": false,
-                                "enable_webstatus": false,
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
                                 "max_frame_size": 1048576,
                                 "max_message_size": 1048576,
                                 "auto_fragment_size": 65536,
