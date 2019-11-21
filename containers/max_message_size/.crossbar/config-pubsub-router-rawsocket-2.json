@@ -72,7 +72,7 @@
                     ".."
                 ],
                 "shutdown": "shutdown-on-last-component-stopped",
-                "restart": "restart-always"
+                "restart": "restart-on-failed"
             },
             "components": [
                 {
