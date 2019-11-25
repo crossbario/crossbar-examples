@@ -10,23 +10,31 @@ from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
 class ClientSession(ApplicationSession):
 
-   async def onJoin(self, details):
-      print('Client session joined: {}'.format(details))
+    async def onJoin(self, details):
+        print('MONITOR session joined: {}'.format(details))
 
-      def on_session_join(session_details):
-          self.log.info('>>>>>> MONITOR : session joined\n{session_details}\n', session_details=pformat(session_details))
+        xbr_config = self.config.extra['xbr']
 
-      await self.subscribe(on_session_join, 'wamp.session.on_join')
+        # {'market-url': '', 'market-realm': '', 'delegate-key': '../.xbr.key'}
+        print(xbr_config)
 
-      def on_session_stats(session_details, stats):
-          self.log.info('>>>>>> MONITOR : session stats\n{session_details}\n{stats}\n', session_details=pformat(session_details), stats=pformat(stats))
+        def on_session_join(session_details):
+            self.log.info('>>>>>> MONITOR : session joined\n{session_details}\n',
+                          session_details=pformat(session_details))
 
-      await self.subscribe(on_session_stats, 'wamp.session.on_stats')
+        await self.subscribe(on_session_join, 'wamp.session.on_join')
 
-      def on_session_leave(session_id):
-          self.log.info('>>>>>> MONITOR : session {session_id} left', session_id=session_id)
+        def on_session_stats(session_details, stats):
+            self.log.info('>>>>>> MONITOR : session stats\n{session_details}\n{stats}\n',
+                          session_details=pformat(session_details), stats=pformat(stats))
 
-      await self.subscribe(on_session_leave, 'wamp.session.on_leave')
+        await self.subscribe(on_session_stats, 'wamp.session.on_stats')
+
+        def on_session_leave(session_id):
+            self.log.info('>>>>>> MONITOR : session {session_id} left',
+                          session_id=session_id)
+
+        await self.subscribe(on_session_leave, 'wamp.session.on_leave')
 
 
 if __name__ == '__main__':
@@ -52,16 +60,10 @@ if __name__ == '__main__':
 
    args = parser.parse_args()
 
-   # start logging
    if args.debug:
       txaio.start_logging(level='debug')
    else:
       txaio.start_logging(level='info')
 
-   # any extra info we want to forward to our ClientSession (in self.config.extra)
-   extra = {
-   }
-
-   # now actually run a WAMP client using our session class ClientSession
-   runner = ApplicationRunner(url=args.url, realm=args.realm, extra=extra)
+   runner = ApplicationRunner(url=args.url, realm=args.realm)
    runner.run(ClientSession, auto_reconnect=True)

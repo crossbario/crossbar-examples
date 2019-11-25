@@ -34,11 +34,54 @@
                                     "cache": true
                                 }
                             ]
+                        },
+                        {
+                            "name": "backend",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
                         }
-                    ]
+                    ],
+                    "stats": {
+                        "rated_message_size": 256,
+                        "trigger_after_rated_messages": 10,
+                        "trigger_after_duration": 0,
+                        "trigger_on_join": true,
+                        "trigger_on_leave": true
+                    }
                 }
             ],
             "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": ".backend.sock"
+                    },
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "backend"
+                        }
+                    },
+                    "options": {
+                        "max_message_size": 65536
+                    }
+                },
                 {
                     "type": "rawsocket",
                     "endpoint": {
@@ -100,12 +143,41 @@
                         }
                     }
                 }
-            ],
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ],
+                "shutdown": "shutdown-on-last-component-stopped",
+                "restart": "restart-on-failed"
+            },
             "components": [
                 {
                     "type": "class",
                     "classname": "monitor.ClientSession",
-                    "realm": "realm1"
+                    "realm": "realm1",
+                    "extra": {
+                        "xbr": {
+                            "market-url": "",
+                            "market-realm": "",
+                            "delegate-key": "../.xbr.key"
+                        }
+                    },
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": ".backend.sock"
+                        },
+                        "serializer": "cbor",
+                        "url": "rs://localhost",
+                        "options": {
+                            "max_message_size": 65536
+                        }
+                    }
                 }
             ]
         }
