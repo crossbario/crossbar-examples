@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     ticket = options.ticket
     if not ticket:
-        ticket = six.moves.input('Enter current TOTP value for authid "{}" (e.g. "522955"): '.format(options.authid))
+        ticket = input('Enter current TOTP value for authid "{}" (e.g. "522955"): '.format(options.authid))
 
     extra = {
         'authid': options.authid,

@@ -36,8 +36,6 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 MYTICKET = os.environ.get('MYTICKET', None)
-if MYTICKET and six.PY2:
-   MYTICKET = MYTICKET.decode('utf8')
 
 # our principal "database"
 PRINCIPALS_DB = {

@@ -2,7 +2,7 @@ import os
 import time
 import random
 
-from six.moves import _thread
+import _thread
 
 import txaio
 txaio.use_twisted()
