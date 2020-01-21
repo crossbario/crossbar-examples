@@ -57,7 +57,7 @@ class WpadObjectStore(ApplicationSession):
 
     @wamp.register('io.crossbar.demo.wpad.objstore.save')
     def save(self, obj_type, obj_data):
-        assert(type(obj_type) in (str, unicode))
+        assert(type(obj_type) == str)
 
         next_id = "{}.{}".format("next_id", obj_type)
 
