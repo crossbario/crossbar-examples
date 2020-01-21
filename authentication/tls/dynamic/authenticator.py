@@ -49,7 +49,7 @@ class MyAuthenticator(ApplicationSession):
          # authid provided by the WAMP client becomes irrelevant).
 
          if 'client_cert' not in details['transport'] or not details['transport']['client_cert']:
-            raise ApplicationError(u"com.example.no_cert", u"no client certificate presented")
+            raise ApplicationError("com.example.no_cert", "no client certificate presented")
 
          client_cert = details['transport']['client_cert']
          sha1 = client_cert['sha1']
@@ -61,7 +61,7 @@ class MyAuthenticator(ApplicationSession):
 
          if sha1 not in self.ACCEPTED_CERTS:
             print("MyAuthenticator.authenticate: client denied.")
-            raise ApplicationError(u"com.example.invalid_cert", u"certificate with SHA1 {} denied".format(sha1))
+            raise ApplicationError("com.example.invalid_cert", "certificate with SHA1 {} denied".format(sha1))
          else:
             print("MyAuthenticator.authenticate: client accepted.")
             return {

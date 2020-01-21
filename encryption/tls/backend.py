@@ -12,7 +12,7 @@ class BackendSession(ApplicationSession):
     def onChallenge(self, msg):
         assert msg.method == 'wampcra'
         signature = auth.compute_wcs(
-            u"seekrit".encode('utf8'),
+            "seekrit".encode('utf8'),
             msg.extra['challenge'].encode('utf8'),
         )
         return signature.decode('ascii')

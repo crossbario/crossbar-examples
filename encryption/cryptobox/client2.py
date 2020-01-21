@@ -79,9 +79,9 @@ class Component2(ApplicationSession):
             # an error returned to the caller will be encrypted or not depending soley
             # on the error URI!
             if encrypted_error:
-                raise ApplicationError(u"com.myapp.encrypted.error1", custom1=23, custom2='Hello')
+                raise ApplicationError("com.myapp.encrypted.error1", custom1=23, custom2='Hello')
             else:
-                raise ApplicationError(u"com.myapp.error1", custom1=23, custom2='Hello')
+                raise ApplicationError("com.myapp.error1", custom1=23, custom2='Hello')
 
         reg3 = yield self.register(failme, 'com.myapp.failme', options=options)
         reg4 = yield self.register(failme, 'com.myapp.encrypted.failme', options=options)
@@ -107,5 +107,5 @@ class Component2(ApplicationSession):
 
 if __name__ == '__main__':
     txaio.start_logging(level='info')
-    runner = ApplicationRunner(u"ws://127.0.0.1:8080", u"realm1")
+    runner = ApplicationRunner("ws://127.0.0.1:8080", "realm1")
     runner.run(Component2)

@@ -43,27 +43,27 @@ PRINCIPALS = [
    {
       # when a session is authenticating use one of the authorized_keys,
       # then assign it all the data below
-      u"authid": u"client01@example.com",
-      u"realm": u"devices",
-      u"role": u"device",
-      u"extra": {
+      "authid": "client01@example.com",
+      "realm": "devices",
+      "role": "device",
+      "extra": {
          "foo": 23
       },
-      u"authorized_keys": [
-         u"545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122"
+      "authorized_keys": [
+         "545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122"
       ]
    },
    {
-      u"authid": u"client02@example.com",
-      u"realm": u"devices",
-      u"role": u"device",
-      u"extra": {
+      "authid": "client02@example.com",
+      "realm": "devices",
+      "role": "device",
+      "extra": {
          "foo": 42,
          "bar": "baz"
       },
-      u"authorized_keys": [
-         u"9c194391af3bf566fc11a619e8df200ba02efb35b91bdd98b424f20f4163875e",
-         u"585df51991780ee8dce4766324058a04ecae429dffd786ee80839c9467468c28"
+      "authorized_keys": [
+         "9c194391af3bf566fc11a619e8df200ba02efb35b91bdd98b424f20f4163875e",
+         "585df51991780ee8dce4766324058a04ecae429dffd786ee80839c9467468c28"
       ]
    }
 ]

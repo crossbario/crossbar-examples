@@ -63,21 +63,21 @@ class AuthenticatorSession(ApplicationSession):
             self.log.info("Realm {realm} NOT RUNNING .. starting", realm=realm)
 
             realm_config = {
-               u"name": realm,
-               u"roles": [
+               "name": realm,
+               "roles": [
                   {
-                     u"name": u"public",
-                     u"permissions": [
+                     "name": "public",
+                     "permissions": [
                         {
-                           u"uri": u"",
-                           u"match": u"prefix",
-                           u"allow": {
-                              u"call": True,
-                              u"register": True,
-                              u"publish": True,
-                              u"subscribe": True
+                           "uri": "",
+                           "match": "prefix",
+                           "allow": {
+                              "call": True,
+                              "register": True,
+                              "publish": True,
+                              "subscribe": True
                            },
-                           u"cache": True
+                           "cache": True
                         }
                      ]
                   }
@@ -95,18 +95,18 @@ class AuthenticatorSession(ApplicationSession):
 
             role_id = 'role-{}-{}'.format(realm, role)
             role_config = {
-               u"name": role,
-               u"permissions": [
+               "name": role,
+               "permissions": [
                   {
-                     u"uri": u"",
-                     u"match": u"prefix",
-                     u"allow": {
-                        u"call": True,
-                        u"register": True,
-                        u"publish": True,
-                        u"subscribe": True
+                     "uri": "",
+                     "match": "prefix",
+                     "allow": {
+                        "call": True,
+                        "register": True,
+                        "publish": True,
+                        "subscribe": True
                      },
-                     u"cache": True
+                     "cache": True
                   }
                ]
             }
@@ -123,7 +123,7 @@ class AuthenticatorSession(ApplicationSession):
 
             container_id = 'backend-{}'.format(realm)
             container_options = {
-               u"pythonpath": [u".."]
+               "pythonpath": [".."]
             }
 
             node_id = 'thinkpad-t430s'
@@ -137,17 +137,17 @@ class AuthenticatorSession(ApplicationSession):
 
             component_id = 'backend-{}'.format(realm)
             component_config = {
-               u"type": u"class",
-               u"classname": u"backend.Backend",
-               u"realm": realm,
-               u"transport": {
-                  u"type": u"websocket",
-                  u"endpoint": {
-                     u"type": u"tcp",
-                     u"host": u"localhost",
-                     u"port": 8080
+               "type": "class",
+               "classname": "backend.Backend",
+               "realm": realm,
+               "transport": {
+                  "type": "websocket",
+                  "endpoint": {
+                     "type": "tcp",
+                     "host": "localhost",
+                     "port": 8080
                   },
-                  u"url": u"ws://localhost:8080/ws"
+                  "url": "ws://localhost:8080/ws"
                }
             }
 

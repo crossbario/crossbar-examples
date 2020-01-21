@@ -54,7 +54,7 @@ class WpadSerial(LineReceiver):
     @inlineCallbacks
     def connectionMade(self):
         print('Serial port connected.')
-        yield self._session.register(self.get_last, u"io.crossbar.demo.wpad.{}.get_last".format(self._wpad_id))
+        yield self._session.register(self.get_last, "io.crossbar.demo.wpad.{}.get_last".format(self._wpad_id))
 
     def lineReceived(self, line):
         if self._debug:
@@ -87,7 +87,7 @@ class WpadSerial(LineReceiver):
                         'values': [1023 - data[p] for p in pins]
                     }
 
-                    self._session.publish(u"io.crossbar.demo.wpad.{}.on_change".format(self._wpad_id), payload)
+                    self._session.publish("io.crossbar.demo.wpad.{}.on_change".format(self._wpad_id), payload)
                     self._last_event = payload
                     self._last = data
                     self._id += 1

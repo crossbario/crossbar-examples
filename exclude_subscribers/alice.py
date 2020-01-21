@@ -51,7 +51,7 @@ class Component(ApplicationSession):
             )
             if counter % 2:
                 self.publish(
-                    topic, u"to everyone with 'alpha' role",
+                    topic, "to everyone with 'alpha' role",
                     options=PublishOptions(
                         eligible_authrole=['alpha'],
                         exclude_me=False,
@@ -90,8 +90,8 @@ class Component(ApplicationSession):
 
 if __name__ == '__main__':
     runner = ApplicationRunner(
-        environ.get("AUTOBAHN_DEMO_ROUTER", u"ws://127.0.0.1:8080/ws"),
-        u"crossbardemo",
+        environ.get("AUTOBAHN_DEMO_ROUTER", "ws://127.0.0.1:8080/ws"),
+        "crossbardemo",
     )
     print("Alice pubkey: {}".format(Component.key.public_key()))
     runner.run(Component)

@@ -148,5 +148,5 @@ class Component1(ApplicationSession):
 
 if __name__ == '__main__':
     txaio.start_logging(level='info')
-    runner = ApplicationRunner(u"ws://127.0.0.1:8080", u"realm1")
+    runner = ApplicationRunner("ws://127.0.0.1:8080", "realm1")
     runner.run(Component1)

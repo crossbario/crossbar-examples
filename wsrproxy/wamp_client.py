@@ -41,10 +41,10 @@ if __name__ == '__main__':
    parser.add_argument("--endpoint", default="tcp:127.0.0.1:8080",
                        help='WAMP client Twisted endpoint descriptor, e.g. "tcp:127.0.0.1:8080" or "unix:/tmp/mywebsocket".')
 
-   parser.add_argument("--url", default=u"ws://localhost:8080/ws",
+   parser.add_argument("--url", default="ws://localhost:8080/ws",
                        help='WAMP router URL (default: ws://localhost:8080/ws)')
 
-   parser.add_argument("--realm", default=u"realm1",
+   parser.add_argument("--realm", default="realm1",
                        help='WAMP realm (default: realm1)')
 
    args = parser.parse_args()

@@ -1,4 +1,4 @@
-WORKER = u"""
+WORKER = """
 {
     "type": "router",
     "options": {

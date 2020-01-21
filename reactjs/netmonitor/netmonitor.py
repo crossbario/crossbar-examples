@@ -45,7 +45,7 @@ class NetMonitor( object ):
         self._reactor = reactor
         self._ws = ws
 
-        self._runner = ApplicationRunner( self._ws, u"realm1",
+        self._runner = ApplicationRunner( self._ws, "realm1",
                     debug_wamp=False, # optional; log many WAMP details
                     debug=False,      # optional; log even more details
                     extra=dict(parent=self)

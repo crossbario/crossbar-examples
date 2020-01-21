@@ -11,7 +11,7 @@ BTN1_PIN = 14   # I0 (used as digital) on Arduino Tinkershield
 POT1_PIN = 1    # I1 (used as analog) on Arduino Tinkershield
 ROUTER = "ws://192.168.1.130:8080/ws"
 REALM = "realm1"
-BASE_URI = u"io.crossbar.demo.edison.tutorial3"
+BASE_URI = "io.crossbar.demo.edison.tutorial3"
 
 
 class MyEdisonBridgeSession(ApplicationSession):
@@ -46,7 +46,7 @@ class MyEdisonBridgeSession(ApplicationSession):
 
                 if changed:
                     print(values)
-                    self.publish(u"{}.on_sensors".format(BASE_URI), values)
+                    self.publish("{}.on_sensors".format(BASE_URI), values)
                     self._last = values
 
         self._loop = LoopingCall(loop)
@@ -62,17 +62,17 @@ class MyEdisonBridgeSession(ApplicationSession):
             self._loop.stop()
         self.disconnect()
 
-    @wamp.register(u"{}.get_sensors".format(BASE_URI))
+    @wamp.register("{}.get_sensors".format(BASE_URI))
     def get_sensor_vals(self):
         return self._last
 
-    @wamp.register(u"{}.set_led".format(BASE_URI))
+    @wamp.register("{}.set_led".format(BASE_URI))
     def set_led(self, value):
         if value:
             if not self._led:
                 self._led1.write(1)
                 self._led = True
-                self.publish(u"{}.on_led".format(BASE_URI), self._led)
+                self.publish("{}.on_led".format(BASE_URI), self._led)
                 return True
             else:
                 return False
@@ -80,12 +80,12 @@ class MyEdisonBridgeSession(ApplicationSession):
             if self._led:
                 self._led1.write(0)
                 self._led = False
-                self.publish(u"{}.on_led".format(BASE_URI), self._led)
+                self.publish("{}.on_led".format(BASE_URI), self._led)
                 return True
             else:
                 return False
 
-    @wamp.register(u"{}.get_led".format(BASE_URI))
+    @wamp.register("{}.get_led".format(BASE_URI))
     def get_led(self):
         return self._led
 

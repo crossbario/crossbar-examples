@@ -222,8 +222,8 @@ class Client:
          hm = hmac.new(self._secret.encode('utf8'), None, hashlib.sha256)
          hm.update(params['key'].encode('utf8'))
          hm.update(params['timestamp'].encode('utf8'))
-         hm.update(u"{0}".format(params['seq']).encode('utf8'))
-         hm.update(u"{0}".format(params['nonce']).encode('utf8'))
+         hm.update("{0}".format(params['seq']).encode('utf8'))
+         hm.update("{0}".format(params['nonce']).encode('utf8'))
          hm.update(body)
          signature = base64.urlsafe_b64encode(hm.digest())
 

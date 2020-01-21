@@ -36,10 +36,10 @@ class ClientSession(ApplicationSession):
         print("Client session connected.")
 
         # join the realm under the specified authid, and perform WAMP-ticket authentication
-        self.join(self.config.realm, [u"ticket"], self.config.extra['authid'])
+        self.join(self.config.realm, ["ticket"], self.config.extra['authid'])
 
     def onChallenge(self, challenge):
-        if challenge.method == u"ticket":
+        if challenge.method == "ticket":
             print("WAMP-Ticket challenge received: {}".format(challenge))
             return self.config.extra['ticket']
         else:

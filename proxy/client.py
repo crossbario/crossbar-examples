@@ -27,7 +27,7 @@ def _(session, details):
     def _foo(*args, **kw):
         print("foo: {} {}".format(args, kw))
 
-    topic_name = u"io.crossbar.demo.public.foo"
+    topic_name = "io.crossbar.demo.public.foo"
     session.subscribe(_foo, topic_name)
     print("subscribed")
     while True:

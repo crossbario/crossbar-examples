@@ -31,7 +31,7 @@ class MyComponent(ApplicationSession):
         ui.on_session(self)
 
         # subscribe to WAMP PubSub event and call the Kivy UI component when events are received
-        self.subscribe(ui.print_message, u"com.example.topic1")
+        self.subscribe(ui.print_message, "com.example.topic1")
 
 
 class CrossbarKivyApp(App):
@@ -49,7 +49,7 @@ class CrossbarKivyApp(App):
         self.session = None
 
         # run our WAMP application component
-        runner = ApplicationRunner(url = u"ws://localhost:8080/ws", realm = u"realm1", extra = dict(ui=self))
+        runner = ApplicationRunner(url = "ws://localhost:8080/ws", realm = "realm1", extra = dict(ui=self))
         runner.run(MyComponent, start_reactor=False)
 
         # setup the Kivy UI
@@ -81,7 +81,7 @@ class CrossbarKivyApp(App):
         """
         msg = self.textbox.text
         if msg and self.session:
-            self.session.publish(u"com.example.kivy", str(self.textbox.text))
+            self.session.publish("com.example.kivy", str(self.textbox.text))
             self.textbox.text = ""
 
     def print_message(self, msg):

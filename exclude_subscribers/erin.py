@@ -52,7 +52,7 @@ class Component(ApplicationSession):
                 self.publish(
                     topic, '{}: "beta" role'.format(counter),
                     options=PublishOptions(
-                        eligible_authrole=u"beta",
+                        eligible_authrole="beta",
                         exclude_me=False,
                     ),
                 )
@@ -89,8 +89,8 @@ class Component(ApplicationSession):
 
 if __name__ == '__main__':
     runner = ApplicationRunner(
-        environ.get("AUTOBAHN_DEMO_ROUTER", u"ws://127.0.0.1:8080/ws"),
-        u"crossbardemo",
+        environ.get("AUTOBAHN_DEMO_ROUTER", "ws://127.0.0.1:8080/ws"),
+        "crossbardemo",
     )
     print("Erin pubkey: {}".format(Component.key.public_key()))
     runner.run(Component)

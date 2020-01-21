@@ -43,16 +43,16 @@ class MyComponent(ApplicationSession):
         def handler1(msg, details = None):
             print("handler1: msg = '{0}', details = '{1}'".format(msg, details))
 
-        yield self.subscribe(handler1, u"com.example.topic1", options=SubscribeOptions(details_arg="details"))
+        yield self.subscribe(handler1, "com.example.topic1", options=SubscribeOptions(details_arg="details"))
 
         def handler2(msg, details = None):
             print("handler2: msg = '{0}', details = '{1}'".format(msg, details))
 
-        yield self.subscribe(handler2, u"com.example", options=SubscribeOptions(match=u"prefix", details_arg="details"))
+        yield self.subscribe(handler2, "com.example", options=SubscribeOptions(match="prefix", details_arg="details"))
 
         def handler3(msg, details = None):
             print("handler3: msg = '{0}', details = '{1}'".format(msg, details))
 
-        yield self.subscribe(handler3, u"com..topic1", options=SubscribeOptions(match=u"wildcard", details_arg="details"))
+        yield self.subscribe(handler3, "com..topic1", options=SubscribeOptions(match="wildcard", details_arg="details"))
 
         print("MyComponent: all event handlers subscribed!")

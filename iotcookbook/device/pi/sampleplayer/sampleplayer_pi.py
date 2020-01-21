@@ -117,10 +117,10 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug", action="store_true",
                         help="Enable debug output.")
 
-    parser.add_argument("--router", type=unicode, default=u"ws://192.168.1.134:8080/ws",
+    parser.add_argument("--router", type=unicode, default="ws://192.168.1.134:8080/ws",
                         help='URL of WAMP router to connect to.')
 
-    parser.add_argument("--realm", type=unicode, default=u"iot_cookbook",
+    parser.add_argument("--realm", type=unicode, default="iot_cookbook",
                         help='The WAMP realm to join on the router.')
 
     parser.add_argument("--id", type=unicode, default=None,

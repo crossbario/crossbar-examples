@@ -78,5 +78,5 @@ class MyComponent(ApplicationSession):
 
 
 if __name__ == '__main__':
-    runner = ApplicationRunner(u"ws://localhost:8080/ws", u"realm1")
+    runner = ApplicationRunner("ws://localhost:8080/ws", "realm1")
     runner.run(MyComponent)

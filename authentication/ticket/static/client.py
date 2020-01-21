@@ -51,10 +51,10 @@ class ClientSession(ApplicationSession):
 
    def onConnect(self):
       print("Client session connected. Starting WAMP-Ticket authentication on realm '{}' as principal '{}' ..".format(self.config.realm, PRINCIPAL))
-      self.join(self.config.realm, [u"ticket"], PRINCIPAL)
+      self.join(self.config.realm, ["ticket"], PRINCIPAL)
 
    def onChallenge(self, challenge):
-      if challenge.method == u"ticket":
+      if challenge.method == "ticket":
          print("WAMP-Ticket challenge received: {}".format(challenge))
          return PRINCIPAL_TICKET
       else:

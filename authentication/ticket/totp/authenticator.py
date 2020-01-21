@@ -37,13 +37,13 @@ from autobahn.wamp.auth import check_totp
 
 # our principal "database"
 PRINCIPALS_DB = {
-   u"tobias1": {
-      u"seed": u"CACKN3GRF3KQZMEK",
-      u"role": u"frontend"
+   "tobias1": {
+      "seed": "CACKN3GRF3KQZMEK",
+      "role": "frontend"
    },
-   u"user1": {
-      u"seed": u"BKIV3FXPRA67N4Q5",
-      u"role": u"frontend"
+   "user1": {
+      "seed": "BKIV3FXPRA67N4Q5",
+      "role": "frontend"
    }
 }
 

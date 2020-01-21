@@ -192,7 +192,7 @@ class GpioAdapter(ApplicationSession):
 
     def _check_digin_arg(self, digin):
         if digin not in range(0, len(self._digin_pins)):
-            raise ApplicationError(u"com.example.invalid_argument", "No digin with ID {}".format(digin))
+            raise ApplicationError("com.example.invalid_argument", "No digin with ID {}".format(digin))
 
     def get_digin(self, digin = None):
         """
@@ -229,8 +229,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument("--router", type=six.text_type, default=u"wss://demo.crossbar.io/ws", help='WAMP router URL.')
-    parser.add_argument("--realm", type=six.text_type, default=u"crossbardemo", help='WAMP router realm.')
+    parser.add_argument("--router", type=six.text_type, default="wss://demo.crossbar.io/ws", help='WAMP router URL.')
+    parser.add_argument("--realm", type=six.text_type, default="crossbardemo", help='WAMP router realm.')
 
     args = parser.parse_args()
 

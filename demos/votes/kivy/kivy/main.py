@@ -139,7 +139,7 @@ class VotesApp(App):
         self.session = None
         
         # adapt to fit the Crossbar.io instance yo're using
-        url, realm = u"ws://localhost:8080/ws", u"crossbardemo"
+        url, realm = "ws://localhost:8080/ws", "crossbardemo"
 
         # Create our WAMP application component
         runner = ApplicationRunner(url=url,

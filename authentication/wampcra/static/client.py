@@ -50,10 +50,10 @@ class ClientSession(ApplicationSession):
 
    def onConnect(self):
       print("Client session connected. Starting WAMP-CRA authentication on realm '{}' as user '{}' ..".format(self.config.realm, USER))
-      self.join(self.config.realm, [u"wampcra"], USER)
+      self.join(self.config.realm, ["wampcra"], USER)
 
    def onChallenge(self, challenge):
-      if challenge.method == u"wampcra":
+      if challenge.method == "wampcra":
          print("WAMP-CRA challenge received: {}".format(challenge))
 
          if 'salt' in challenge.extra:

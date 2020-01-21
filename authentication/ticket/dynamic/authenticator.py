@@ -42,17 +42,17 @@ if MYTICKET and six.PY2:
 
 # our principal "database"
 PRINCIPALS_DB = {
-   u"joe": {
-      u"ticket": u"secret!!!",
-      u"role": u"frontend"
+   "joe": {
+      "ticket": "secret!!!",
+      "role": "frontend"
    },
-   u"client1": {
-      u"ticket": u"123sekret",
-      u"role": u"frontend"
+   "client1": {
+      "ticket": "123sekret",
+      "role": "frontend"
    },
-   u"client2": {
-      u"ticket": MYTICKET,
-      u"role": u"frontend"
+   "client2": {
+      "ticket": MYTICKET,
+      "role": "frontend"
    }
 }
 

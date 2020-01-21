@@ -44,24 +44,24 @@ class MyComponent(ApplicationSession):
             print("endpoint1: msg = '{0}', details = '{1}'".format(msg, details))
             return 'endpoint1'
 
-        yield self.register(endpoint1, u"com.example.procedure1", options=RegisterOptions(details_arg="details"))
+        yield self.register(endpoint1, "com.example.procedure1", options=RegisterOptions(details_arg="details"))
 
         def endpoint2(msg, details = None):
             print("endpoint2: msg = '{0}', details = '{1}'".format(msg, details))
             return 'endpoint2'
 
-        yield self.register(endpoint2, u"com.example", options=RegisterOptions(match=u"prefix", details_arg="details"))
+        yield self.register(endpoint2, "com.example", options=RegisterOptions(match="prefix", details_arg="details"))
 
         def endpoint2b(msg, details = None):
             print("endpoint2b: msg = '{0}', details = '{1}'".format(msg, details))
             return 'endpoint2b'
 
-        yield self.register(endpoint2b, u"com.example.", options=RegisterOptions(match=u"prefix", details_arg="details"))
+        yield self.register(endpoint2b, "com.example.", options=RegisterOptions(match="prefix", details_arg="details"))
 
         def endpoint3(msg, details = None):
             print("endpoint3: msg = '{0}', details = '{1}'".format(msg, details))
             return 'endpoint3'
 
-        yield self.register(endpoint3, u"com..procedure1", options=RegisterOptions(match=u"wildcard", details_arg="details"))
+        yield self.register(endpoint3, "com..procedure1", options=RegisterOptions(match="wildcard", details_arg="details"))
 
         print("MyComponent: all procedure endpoints registered!")

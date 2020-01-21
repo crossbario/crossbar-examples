@@ -97,7 +97,7 @@ if __name__ == '__main__':
     parser.add_argument("--router", type=unicode, required=True,
                         help='URL of WAMP router to connect to.')
 
-    parser.add_argument("--realm", type=unicode, default=u"realm1",
+    parser.add_argument("--realm", type=unicode, default="realm1",
                         help='The WAMP realm to join on the router.')
 
     parser.add_argument("--id", type=unicode, default=None,
