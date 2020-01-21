@@ -29,11 +29,10 @@ from autobahn.twisted.util import sleep
 from twisted.internet.defer import inlineCallbacks
 import os
 import argparse
-import six
 
-url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
-realmv = os.environ.get('CBREALM', u'realm1')
-topic = os.environ.get('CBTOPIC', u'com.myapp.hello')
+url = os.environ.get('CBURL', 'ws://localhost:8080/ws')
+realmv = os.environ.get('CBREALM', 'realm1')
+topic = os.environ.get('CBTOPIC', 'com.myapp.hello')
 print(url, realmv)
 component = Component(transports=url, realm=realmv)
 

@@ -46,7 +46,7 @@ class ClientSession(ApplicationSession):
             return now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
         try:
-            yield self.register(utcnow, u'my.com.date')
+            yield self.register(utcnow, 'my.com.date')
         except Exception as e:
             print("failed to register procedure: {}".format(e))
         else:
@@ -54,13 +54,12 @@ class ClientSession(ApplicationSession):
 
 
 if __name__ == '__main__':
-    import six
-    url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
-    realm = os.environ.get('CBREALM', u'realm1')
+    url = os.environ.get('CBURL', 'ws://localhost:8080/ws')
+    realm = os.environ.get('CBREALM', 'realm1')
 
     # any extra info we want to forward to our ClientSession (in self.config.extra)
     extra = {
-        u'foobar': u'A custom value'
+        'foobar': 'A custom value'
     }
  
     runner = ApplicationRunner(url=url, realm=realm, extra=extra)

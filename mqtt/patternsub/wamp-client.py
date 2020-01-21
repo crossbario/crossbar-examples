@@ -21,19 +21,19 @@ from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
 if False:
     # topic we subscribe to. this will be subscribed to with prefix matching policy
-    SUBTOPIC = u'mqtt.test.mytopic.'
-    SUBMATCH = u'prefix'
+    SUBTOPIC = 'mqtt.test.mytopic.'
+    SUBMATCH = 'prefix'
 else:
     # topic we subscribe to. this contains empty path components (".."),
     # and will be subscribed to with wildcard matching policy
-    SUBTOPIC = u'mqtt..mytopic.'
-    SUBMATCH = u'wildcard'
+    SUBTOPIC = 'mqtt..mytopic.'
+    SUBMATCH = 'wildcard'
 
 # this is the topic prefix we are publishing to: we will append an integer (as str)
-PUBTOPIC1 = u'mqtt.test.mytopic.{}'
-PUBTOPIC2 = u'mqtt.foobar.mytopic.{}'
-PUBTOPIC3 = u'mqtt.{}.mytopic.something'
-PUBTOPIC4 = u'bar.test.mytopic.{}'
+PUBTOPIC1 = 'mqtt.test.mytopic.{}'
+PUBTOPIC2 = 'mqtt.foobar.mytopic.{}'
+PUBTOPIC3 = 'mqtt.{}.mytopic.something'
+PUBTOPIC4 = 'bar.test.mytopic.{}'
 
 
 class MySession(ApplicationSession):
@@ -73,6 +73,6 @@ class MySession(ApplicationSession):
 
 if __name__ == '__main__':
     txaio.start_logging(level='info')
-    runner = ApplicationRunner(u'rs://localhost:8080', u'realm1')
-#    runner = ApplicationRunner(u'ws://localhost:8080/ws', u'realm1')
+    runner = ApplicationRunner('rs://localhost:8080', 'realm1')
+#    runner = ApplicationRunner('ws://localhost:8080/ws', 'realm1')
     runner.run(MySession)

@@ -3,7 +3,6 @@ import time
 import argparse
 import random
 
-import six
 import txaio
 txaio.use_twisted()
 
@@ -28,7 +27,7 @@ def get_serial():
             line = line.strip()
             if line.startswith('Serial'):
                 _, serial = line.split(':')
-                return u'{}'.format(int(serial.strip(), 16))
+                return '{}'.format(int(serial.strip(), 16))
 
 
 class ColoramaDisplay(ApplicationSession):
@@ -37,7 +36,7 @@ class ColoramaDisplay(ApplicationSession):
     def onJoin(self, details):
 
         self._serial = get_serial()
-        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.colorstrip'.format(self._serial)
+        self._prefix = 'io.crossbar.demo.iotstarterkit.{}.colorstrip'.format(self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("ColoramaDisplay connected: {details}", details=details)
@@ -67,7 +66,7 @@ class ColoramaDisplay(ApplicationSession):
             (self.theater_chaserainbow, 'theater_chaserainbow'),
 
         ]:
-            yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
+            yield self.register(proc[0], '{}.{}'.format(self._prefix, proc[1]))
 
         yield self.color_wipe(255, 255, 255)
 
@@ -180,30 +179,30 @@ class ColoramaDisplay(ApplicationSession):
                 # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
                 self._leds.setPixelColorRGB(i, green, red, blue)
                 color_change = {
-                    u'led': i,
-                    u'r': red,
-                    u'g': green,
-                    u'b': blue
+                    'led': i,
+                    'r': red,
+                    'g': green,
+                    'b': blue
                 }
-                self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
+                self.publish('{}.on_color_set'.format(self._prefix), color_change)
         else:
                 # FIXME: not sure, but we need to swap this here. maybe it is the specific neopixels?
             self._leds.setPixelColorRGB(k, green, red, blue)
             color_change = {
-                u'led': k,
-                u'r': red,
-                u'g': green,
-                u'b': blue
+                'led': k,
+                'r': red,
+                'g': green,
+                'b': blue
             }
-            self.publish(u'{}.on_color_set'.format(self._prefix), color_change)
+            self.publish('{}.on_color_set'.format(self._prefix), color_change)
         self._leds.show()
 
     def get_color(self, k):
         c = self._leds.getPixelColor(k)
         color = {
-            u'g': c >> 16,
-            u'r': (c >> 8) & 0xff,
-            u'b': c & 0xff,
+            'g': c >> 16,
+            'r': (c >> 8) & 0xff,
+            'b': c & 0xff,
         }
         return color
 
@@ -225,14 +224,14 @@ class ColoramaDisplay(ApplicationSession):
 if __name__ == '__main__':
 
     # Crossbar.io connection configuration
-    url = os.environ.get('CBURL', u'wss://demo.crossbar.io/ws')
-    realm = os.environ.get('CBREALM', u'crossbardemo')
+    url = os.environ.get('CBURL', 'wss://demo.crossbar.io/ws')
+    realm = os.environ.get('CBREALM', 'crossbardemo')
 
     # parse command line parameters
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=realm, help='The realm to join (default: "realm1").')
+    parser.add_argument('--url', dest='url', type=str, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
+    parser.add_argument('--realm', dest='realm', type=str, default=realm, help='The realm to join (default: "realm1").')
 
     args = parser.parse_args()
 
@@ -243,12 +242,12 @@ if __name__ == '__main__':
         txaio.start_logging(level='info')
 
     extra = {
-        u'led_count': 8,            # Number of LED pixels.
-        u'led_pin': 12,             # GPIO pin connected to the pixels (must support PWM!).
-        u'led_freq_hz': 800000,     # LED signal frequency in hertz (usually 800khz)
-        u'led_dma': 5,              # DMA channel to use for generating signal (try 5)
-        u'led_brightness': 255,      # Set to 0 for darkest and 255 for brightest
-        u'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
+        'led_count': 8,            # Number of LED pixels.
+        'led_pin': 12,             # GPIO pin connected to the pixels (must support PWM!).
+        'led_freq_hz': 800000,     # LED signal frequency in hertz (usually 800khz)
+        'led_dma': 5,              # DMA channel to use for generating signal (try 5)
+        'led_brightness': 255,      # Set to 0 for darkest and 255 for brightest
+        'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
     }
 
     # create and start app runner for our app component ..

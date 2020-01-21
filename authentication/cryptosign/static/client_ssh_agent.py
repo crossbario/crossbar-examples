@@ -46,25 +46,25 @@ class ClientSession(ApplicationSession):
     def onConnect(self):
         print("onConnect()")
 
-        print('Using public key {}'.format(self.config.extra[u'pubkey']))
+        print('Using public key {}'.format(self.config.extra['pubkey']))
 
         # create a proxy signing key with the private key being held in SSH agent
-        self._key = yield SSHAgentSigningKey.new(self.config.extra[u'pubkey'])
+        self._key = yield SSHAgentSigningKey.new(self.config.extra['pubkey'])
 
         # authentication extra information for wamp-cryptosign
         extra = {
             # forward the client pubkey: this allows us to omit authid as
             # the router can identify us with the pubkey already
-            u'pubkey': self._key.public_key(),
+            'pubkey': self._key.public_key(),
 
             # request channel binding
-            u'channel_binding': u'tls-unique'
+            'channel_binding': 'tls-unique'
         }
 
         # join and authenticate using WAMP-cryptosign
         self.join(self.config.realm,
-                  authmethods=[u'cryptosign'],
-                  authid=self.config.extra[u'authid'],
+                  authmethods=['cryptosign'],
+                  authid=self.config.extra['authid'],
                   authextra=extra)
 
     def onChallenge(self, challenge):
@@ -91,18 +91,17 @@ class ClientSession(ApplicationSession):
 
 if __name__ == '__main__':
 
-    import six
     import argparse
     from autobahn.twisted.wamp import ApplicationRunner
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--pubkey', dest='pubkey', type=six.text_type, default=None, help='Filename of the client SSH Ed25519 public key.')
-    parser.add_argument('--trustroot', dest='trustroot', type=six.text_type, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
-    parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
+    parser.add_argument('--authid', dest='authid', type=str, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--realm', dest='realm', type=str, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
+    parser.add_argument('--pubkey', dest='pubkey', type=str, default=None, help='Filename of the client SSH Ed25519 public key.')
+    parser.add_argument('--trustroot', dest='trustroot', type=str, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
+    parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--agent', dest='agent', type=str, default=None, help='Path to Unix domain socket of SSH agent to use.')
     parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
     options = parser.parse_args()
 
@@ -114,7 +113,7 @@ if __name__ == '__main__':
     # load client public key
     with open(options.pubkey, 'r') as f:
         pubkey = f.read()
-        if type(pubkey) == six.binary_type:
+        if type(pubkey) == bytes:
             pubkey = pubkey.decode('ascii')
 
     # load router public key (optional, if avail., router will be authenticated too)
@@ -122,14 +121,14 @@ if __name__ == '__main__':
     if options.trustroot:
         with open(options.trustroot, 'r') as f:
             trustroot = f.read()
-            if type(trustroot) == six.binary_type:
+            if type(trustroot) == bytes:
                 trustroot = trustroot.decode('ascii')
 
     # forward stuff to our session
     extra = {
-        u'authid': options.authid,
-        u'pubkey': pubkey,
-        u'trustroot': trustroot
+        'authid': options.authid,
+        'pubkey': pubkey,
+        'trustroot': trustroot
     }
 
     runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)

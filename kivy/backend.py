@@ -1,11 +1,9 @@
-from __future__ import print_function
 
 import txaio
 txaio.use_twisted()
 
 import os
 import argparse
-import six
 import txaio
 import random
 import sys
@@ -45,16 +43,16 @@ class ClientSession(ApplicationSession):
     def onJoin(self, details):
         self.log.info('session joined: {}'.format(details))
 
-        yield self.register(add2, u'com.example.add2')
+        yield self.register(add2, 'com.example.add2')
 
         for i in range(10):
-            res = yield self.call(u'com.example.add2', 23, i * self._countdown)
+            res = yield self.call('com.example.add2', 23, i * self._countdown)
             self.log.info('result: {}'.format(res))
 
         i = 0
         while True:
             msg = 'Hello, world! [{}]'.format(i)
-            yield self.publish(u'com.example.topic1', msg, options=PublishOptions(acknowledge=True))
+            yield self.publish('com.example.topic1', msg, options=PublishOptions(acknowledge=True))
             self.log.info(msg)
             yield sleep(1)
             i += 1
@@ -78,15 +76,15 @@ class ClientSession(ApplicationSession):
 if __name__ == '__main__':
 
     # Crossbar.io connection configuration
-    url = u'ws://localhost:8080/ws'
-    realm = u'realm1'
+    url = 'ws://localhost:8080/ws'
+    realm = 'realm1'
 
     # parse command line parameters
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true', default=False, help='Enable debug output.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=realm, help='The realm to join (default: "realm1").')
-    parser.add_argument('--service', dest='service', type=six.text_type, default=u'unknown', help='The service name.')
+    parser.add_argument('--url', dest='url', type=str, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
+    parser.add_argument('--realm', dest='realm', type=str, default=realm, help='The realm to join (default: "realm1").')
+    parser.add_argument('--service', dest='service', type=str, default='unknown', help='The service name.')
 
     args = parser.parse_args()
 
@@ -98,8 +96,8 @@ if __name__ == '__main__':
 
     # any extra info we want to forward to our ClientSession (in self.config.extra)
     extra = {
-        u'authextra': {
-            u'service': args.service
+        'authextra': {
+            'service': args.service
         }
     }
 

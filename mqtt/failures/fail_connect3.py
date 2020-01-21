@@ -15,7 +15,7 @@ import paho.mqtt.client as paho
 FORMAT = '>Hl8s'
 
 # topic we publish and subscribe to
-TOPIC = u'mqtt/test/mytopic1'
+TOPIC = 'mqtt/test/mytopic1'
 
 pid = os.getpid()
 print('MQTT client starting with PID {}..'.format(pid))

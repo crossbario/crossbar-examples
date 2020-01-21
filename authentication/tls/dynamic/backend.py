@@ -37,7 +37,7 @@ class MyBackend(ApplicationSession):
     def onConnect(self):
         # with TLS client certificate based authentication,
         # providing a WAMP authid is optional
-        self.join(self.config.realm, [u'tls'])
+        self.join(self.config.realm, ['tls'])
 
     @inlineCallbacks
     def onJoin(self, details):

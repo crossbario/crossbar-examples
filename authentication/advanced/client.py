@@ -26,14 +26,13 @@
 ##
 ###############################################################################
 
-import six
 from twisted.internet import reactor
 from autobahn.twisted.wamp import ApplicationSession
 
 
 TICKETS = {
-   u'user1': u'123secret',
-   u'user2': u'456secret'
+   'user1': '123secret',
+   'user2': '456secret'
 }
 
 
@@ -41,15 +40,15 @@ class ClientSession(ApplicationSession):
 
    def onConnect(self):
       realm = self.config.realm
-      authid = self.config.extra[u'authid']
+      authid = self.config.extra['authid']
       print("ClientSession connected. Joining realm <{}> under authid <{}>".format(realm if realm else 'not provided', authid))
-      self.join(realm, [u'ticket'], authid)
+      self.join(realm, ['ticket'], authid)
 
    def onChallenge(self, challenge):
       print("ClientSession challenge received: {}".format(challenge))
-      if challenge.method == u'ticket':
-         authid = self.config.extra[u'authid']
-         return TICKETS.get(self.config.extra[u'authid'], None)
+      if challenge.method == 'ticket':
+         authid = self.config.extra['authid']
+         return TICKETS.get(self.config.extra['authid'], None)
       else:
          raise Exception("Invalid authmethod {}".format(challenge.method))
 
@@ -72,9 +71,9 @@ if __name__ == '__main__':
    import argparse
 
    parser = argparse.ArgumentParser()
-   parser.add_argument('--authid', dest='authid', type=six.text_type, default=u'user1', help='The authid to connect under (required)')
-   parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm (default).')
-   parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+   parser.add_argument('--authid', dest='authid', type=str, default='user1', help='The authid to connect under (required)')
+   parser.add_argument('--realm', dest='realm', type=str, default=None, help='The realm to join. If not provided, let the router auto-choose the realm (default).')
+   parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
    options = parser.parse_args()
 
    from autobahn.twisted.wamp import ApplicationRunner
@@ -84,7 +83,7 @@ if __name__ == '__main__':
       sys.exit(1)
 
    extra = {
-      u'authid': options.authid
+      'authid': options.authid
    }
    print("Connecting to {}: realm={}, authid={}".format(options.url, options.realm, options.authid))
 

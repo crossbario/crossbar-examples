@@ -42,21 +42,21 @@ if 'MYSECRET' in os.environ and len(sys.argv) > 1:
    USER_SECRET = os.environ['MYSECRET'].decode('utf8')
 else:
    # less good: user, including secret hard-coded
-   USER = u'peter'
-   USER_SECRET = u'secret1'
+   USER = 'peter'
+   USER_SECRET = 'secret1'
 
 
 class ClientSession(ApplicationSession):
 
    def onConnect(self):
       print("Client session connected. Starting WAMP-CRA authentication on realm '{}' as user '{}' ..".format(self.config.realm, USER))
-      self.join(self.config.realm, [u"wampcra"], USER)
+      self.join(self.config.realm, ["wampcra"], USER)
 
    def onChallenge(self, challenge):
-      if challenge.method == u"wampcra":
+      if challenge.method == "wampcra":
          print("WAMP-CRA challenge received: {}".format(challenge))
 
-         if u'salt' in challenge.extra:
+         if 'salt' in challenge.extra:
             # salted secret
             key = auth.derive_key(USER_SECRET,
                                   challenge.extra['salt'],
@@ -82,7 +82,7 @@ class ClientSession(ApplicationSession):
       ## call a procedure we are allowed to call (so this should succeed)
       ##
       try:
-         res = yield self.call(u'com.example.add2', 2, 3)
+         res = yield self.call('com.example.add2', 2, 3)
          print("call result: {}".format(res))
       except Exception as e:
          print("call error: {}".format(e))
@@ -90,15 +90,15 @@ class ClientSession(ApplicationSession):
       ## (try to) register a procedure where we are not allowed to (so this should fail)
       ##
       try:
-         reg = yield self.register(lambda x, y: x * y, u'com.example.mul2')
+         reg = yield self.register(lambda x, y: x * y, 'com.example.mul2')
       except Exception as e:
          print("registration failed - this is expected: {}".format(e))
 
       ## publish to a couple of topics we are allowed to publish to.
       ##
       for topic in [
-         u'com.example.topic1',
-         u'com.foobar.topic1']:
+         'com.example.topic1',
+         'com.foobar.topic1']:
          try:
             yield self.publish(topic, "hello", options = PublishOptions(acknowledge = True))
             print("ok, event published to topic {}".format(topic))
@@ -108,8 +108,8 @@ class ClientSession(ApplicationSession):
       ## (try to) publish to a couple of topics we are not allowed to publish to (so this should fail)
       ##
       for topic in [
-         u'com.example.topic2',
-         u'com.foobar.topic2']:
+         'com.example.topic2',
+         'com.foobar.topic2']:
          try:
             yield self.publish(topic, "hello", options = PublishOptions(acknowledge = True))
             print("ok, event published to topic {}".format(topic))
@@ -131,5 +131,5 @@ if __name__ == '__main__':
 
    from autobahn.twisted.wamp import ApplicationRunner
 
-   runner = ApplicationRunner(url=u'ws://localhost:8080/ws', realm=u'realm1')
+   runner = ApplicationRunner(url='ws://localhost:8080/ws', realm='realm1')
    runner.run(ClientSession)

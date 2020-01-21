@@ -11,7 +11,7 @@ import paho.mqtt.client as paho
 
 
 # topic we publish and subscribe to
-TOPIC = u'mqtt/test/mytopic1'
+TOPIC = 'mqtt/test/mytopic1'
 
 pid = os.getpid()
 print('MQTT client starting with PID {}..'.format(pid))
@@ -29,7 +29,7 @@ def on_connect(client, userdata, flags, rc):
 # called when a message has been received on a topic that the client subscribes to.
 def on_message(client, userdata, msg):
     obj = cbor.loads(msg.payload)
-    pid, seq, ran = obj[u'args']
+    pid, seq, ran = obj['args']
     print('event received on topic {}: pid={}, seq={}, ran={}'.format(msg.topic, pid, seq, binascii.b2a_hex(ran)))
 
 client.on_connect = on_connect
@@ -49,8 +49,8 @@ client.loop_start()
 seq = 1
 while True:
     obj = {
-        u'args': [pid, seq, os.urandom(8)],
-        u'eligible_authrole': [u'anonymous']
+        'args': [pid, seq, os.urandom(8)],
+        'eligible_authrole': ['anonymous']
     }
     payload = cbor.dumps(obj)
 

@@ -34,10 +34,9 @@ import hashlib
 import base64
 import random
 from datetime import datetime
+from urllib import parse
 
-import six
-from six.moves.urllib import parse
-from six.moves.http_client import HTTPConnection, HTTPSConnection
+from http.client import HTTPConnection, HTTPSConnection
 
 
 
@@ -115,18 +114,10 @@ class Client:
          ignored!). See: https://docs.python.org/2/library/ssl.html#ssl.SSLContext
       :type context: obj or None
       """
-      if six.PY2:
-         if type(url) == str:
-            url = six.u(url)
-         if type(key) == str:
-            key = six.u(key)
-         if type(secret) == str:
-            secret = six.u(secret)
-
-      assert(type(url) == six.text_type)
+      assert(type(url) == str)
       assert((key and secret) or (not key and not secret))
-      assert(key is None or type(key) == six.text_type)
-      assert(secret is None or type(secret) == six.text_type)
+      assert(key is None or type(key) == str)
+      assert(secret is None or type(secret) == str)
       assert(type(timeout) == int)
       if _HAS_SSL and _HAS_SSL_CLIENT_CONTEXT:
          assert(context is None or isinstance(context, ssl.SSLContext))
@@ -179,9 +170,7 @@ class Client:
 
       :returns int -- The event publication ID assigned by the broker.
       """
-      if six.PY2 and type(topic) == str:
-         topic = six.u(topic)
-      assert(type(topic) == six.text_type)
+      assert(type(topic) == str)
 
       ## this will get filled and later serialized into HTTP/POST body
       ##
@@ -201,8 +190,7 @@ class Client:
 
       try:
          body = json.dumps(event, separators = (',',':'))
-         if six.PY3:
-            body = body.encode('utf8')
+         body = body.encode('utf8')
 
       except Exception as e:
          raise Exception("invalid event payload - not JSON serializable: {0}".format(e))
@@ -222,8 +210,8 @@ class Client:
          hm = hmac.new(self._secret.encode('utf8'), None, hashlib.sha256)
          hm.update(params['key'].encode('utf8'))
          hm.update(params['timestamp'].encode('utf8'))
-         hm.update(u"{0}".format(params['seq']).encode('utf8'))
-         hm.update(u"{0}".format(params['nonce']).encode('utf8'))
+         hm.update("{0}".format(params['seq']).encode('utf8'))
+         hm.update("{0}".format(params['nonce']).encode('utf8'))
          hm.update(body)
          signature = base64.urlsafe_b64encode(hm.digest())
 

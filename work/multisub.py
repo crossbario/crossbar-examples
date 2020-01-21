@@ -15,7 +15,7 @@ class MyComponent(ApplicationSession):
 
         self.received = []
 
-        topic1 = u"com.example.topic1"
+        topic1 = "com.example.topic1"
         sub_options = SubscribeOptions(details_arg="details")
         pub_options = PublishOptions(acknowledge=True, exclude_me=False)
         delay = 0.1
@@ -95,6 +95,6 @@ class MyComponent(ApplicationSession):
 
 
 if __name__ == '__main__':
-    runner = ApplicationRunner(url=u"ws://localhost:8080/ws", realm=u"realm1",
+    runner = ApplicationRunner(url="ws://localhost:8080/ws", realm="realm1",
         debug=False, debug_wamp=False)
     runner.run(MyComponent)

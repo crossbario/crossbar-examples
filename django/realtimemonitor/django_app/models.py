@@ -25,7 +25,7 @@ class Client(models.Model):
     # Data refresh frequency
     frequency = models.IntegerField(default=1)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.ip
 
 

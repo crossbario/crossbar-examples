@@ -17,10 +17,10 @@ from autobahn.wamp.types import PublishOptions, EncodedPayload
 from twisted.internet.defer import inlineCallbacks
 
 # topic we publish and subscribe to
-TOPIC = u'test.mytopic1'
+TOPIC = 'test.mytopic1'
 
 # the chosen encoding algorithm (totally arbitrary beyond the mandatory "x_" prefix)
-ENC_ALGO = u'x_cbor2_custom'
+ENC_ALGO = 'x_cbor2_custom'
 
 # arbitrarily chosen CBOR tag number
 CBOR_TAGNUM = 9000
@@ -97,7 +97,7 @@ class CBORCodec(object):
         # Autobahn has received a custom payload.
         # convert it into a tuple: (uri, args, kwargs)
         if encoded_payload.enc_algo != ENC_ALGO:
-            raise SerializationError(u'Unrecognized payload encoding algorithm: %s' % encoded_payload.enc_algo)
+            raise SerializationError('Unrecognized payload encoding algorithm: %s' % encoded_payload.enc_algo)
 
         args, kwargs = cbor2.loads(encoded_payload.payload, tag_hook=tag_decoder)
         return uri, args, kwargs
@@ -127,9 +127,9 @@ class MySession(ApplicationSession):
 
         self.log.info('subscribed to topic {topic}: registration={reg}', topic=TOPIC, reg=reg)
 
-        company = Company(u'Crossbar.io GmbH')
-        company.add_employee(u'Tobias Oberstein', u'CEO')
-        company.add_employee(u'Alexander Goedde', u'CFO')
+        company = Company('Crossbar.io GmbH')
+        company.add_employee('Tobias Oberstein', 'CEO')
+        company.add_employee('Alexander Goedde', 'CFO')
         pub = yield self.publish(
             TOPIC, company,
             options=PublishOptions(acknowledge=True, exclude_me=False),
@@ -141,5 +141,5 @@ if __name__ == '__main__':
     txaio.use_twisted()
     txaio.start_logging(level='info')
     msgpack = MsgPackSerializer()  # required to send binary on Python 2
-    runner = ApplicationRunner(u'ws://localhost:8080/ws', u'realm1', serializers=[msgpack])
+    runner = ApplicationRunner('ws://localhost:8080/ws', 'realm1', serializers=[msgpack])
     runner.run(MySession)

@@ -45,8 +45,8 @@ class VotesWampComponent(ApplicationSession):
 
         # subscribe to WAMP PubSub events and call the Kivy UI component's
         # function when such an event is received
-        self.subscribe(ui.on_vote_message, u'io.crossbar.demo.vote.onvote')
-        self.subscribe(ui.on_reset_message, u'io.crossbar.demo.vote.onreset')
+        self.subscribe(ui.on_vote_message, 'io.crossbar.demo.vote.onvote')
+        self.subscribe(ui.on_reset_message, 'io.crossbar.demo.vote.onreset')
 
 
 class VotesRoot(BoxLayout):
@@ -81,9 +81,9 @@ class VotesRoot(BoxLayout):
 
         # obtain a list of dictionaries with number of votes for each
         # subject (i.e. flavour)
-        votes_results = yield self.session.call(u'io.crossbar.demo.vote.get')
+        votes_results = yield self.session.call('io.crossbar.demo.vote.get')
         for vote in votes_results:
-            self.votes[vote[u'subject']].amount = vote[u'votes']
+            self.votes[vote['subject']].amount = vote['votes']
 
     def send_vote(self, name):
         """
@@ -93,20 +93,20 @@ class VotesRoot(BoxLayout):
         will update its number of votes and publish the updated number.
         """
         if self.session:
-            self.session.call(u'io.crossbar.demo.vote.vote', name)
+            self.session.call('io.crossbar.demo.vote.vote', name)
 
     def send_reset(self):
         """
         Called from VotesRoot bottom button.
         """
         if self.session:
-            self.session.call(u'io.crossbar.demo.vote.reset')
+            self.session.call('io.crossbar.demo.vote.reset')
 
     def on_vote_message(self, vote_result):
         """
         Called from VotesWampComponent when Crossbar router published vote event.
         """
-        self.votes[vote_result[u'subject']].amount = vote_result[u'votes']
+        self.votes[vote_result['subject']].amount = vote_result['votes']
 
     def on_reset_message(self):
         """
@@ -122,7 +122,7 @@ class VotesApp(App):
 
         self.root = VotesRoot()
 
-        flavours = [u'Banana', u'Chocolate', u'Lemon']  # If you adapt this
+        flavours = ['Banana', 'Chocolate', 'Lemon']  # If you adapt this
                                                         # list, also adapt it
                                                         # in the back end
         for flavour in flavours:
@@ -138,8 +138,8 @@ class VotesApp(App):
         """
         self.session = None
         
-        # adapt to fit the Crossbar.io instance you're using
-        url, realm = u"ws://localhost:8080/ws", u"crossbardemo"
+        # adapt to fit the Crossbar.io instance yo're using
+        url, realm = "ws://localhost:8080/ws", "crossbardemo"
 
         # Create our WAMP application component
         runner = ApplicationRunner(url=url,

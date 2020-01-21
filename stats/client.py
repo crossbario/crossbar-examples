@@ -1,4 +1,3 @@
-import six
 import argparse
 
 import txaio
@@ -50,19 +49,19 @@ if __name__ == '__main__':
 
    parser.add_argument('--url',
                        dest='url',
-                       type=six.text_type,
+                       type=str,
                        default="ws://localhost:8080/ws",
                        help='The router URL, eg "ws://localhost:8080/ws" or "rs://localhost:8081" (default: "ws://localhost:8080/ws").')
 
    parser.add_argument('--realm',
                        dest='realm',
-                       type=six.text_type,
+                       type=str,
                        default="realm1",
                        help='The realm to join (default: "realm1").')
 
    parser.add_argument('--serializer',
                        dest='serializer',
-                       type=six.text_type,
+                       type=str,
                        default="json",
                        help='Serializer to use, one of "json", "cbor", "msgpack", "all" or "unspecified" (default: "unspecified")')
 

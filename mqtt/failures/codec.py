@@ -15,7 +15,7 @@ class MyCodec(ApplicationSession):
     def onJoin(self, details):
 
         def decode(mapped_topic, topic, payload):
-            if mapped_topic.startswith(u'mqtt'):
+            if mapped_topic.startswith('mqtt'):
                 pid, seq, ran = struct.unpack(FORMAT, payload)
                 options = {
                     'args': [pid, seq, ran]
@@ -28,17 +28,17 @@ class MyCodec(ApplicationSession):
             return options
 
         def encode(mapped_topic, topic, args, kwargs):
-            if topic.startswith(u'mqtt'):
+            if topic.startswith('mqtt'):
                 pid, seq, ran = args
                 payload = struct.pack(FORMAT, pid, seq, ran)
             else:
                 payload = args[0].encode('utf8')
-            self.log.info('MyCodec.encode "{topic}": from_wamp={from_wamp} -> to_mqtt={to_mqtt}', topic=topic, from_wamp={u'args': args}, to_mqtt=payload)
+            self.log.info('MyCodec.encode "{topic}": from_wamp={from_wamp} -> to_mqtt={to_mqtt}', topic=topic, from_wamp={'args': args}, to_mqtt=payload)
             return payload
 
-        prefix = u'com.example.mqtt'
+        prefix = 'com.example.mqtt'
 
-        yield self.register(decode, u'{}.decode'.format(prefix))
-        yield self.register(encode, u'{}.encode'.format(prefix))
+        yield self.register(decode, '{}.decode'.format(prefix))
+        yield self.register(encode, '{}.encode'.format(prefix))
 
         self.log.info("MyCodec ready!")

@@ -58,7 +58,7 @@ class Component2(ApplicationSession):
             # and responders need the responder private key. however, we don't act as "callers"
             # or "publishers", and hence can get away with the public key for the originator only!
             key = Key(originator_pub=ORIGINATOR_PUB, responder_priv=RESPONDER_PRIV)
-            keyring.set_key(u'com.myapp.encrypted.', key)
+            keyring.set_key('com.myapp.encrypted.', key)
 
         self.set_payload_codec(keyring)
 
@@ -71,27 +71,27 @@ class Component2(ApplicationSession):
             return a + b
 
         options = RegisterOptions(details_arg='details')
-        reg1 = yield self.register(add2, u'com.myapp.add2', options=options)
-        reg2 = yield self.register(add2, u'com.myapp.encrypted.add2', options=options)
+        reg1 = yield self.register(add2, 'com.myapp.add2', options=options)
+        reg2 = yield self.register(add2, 'com.myapp.encrypted.add2', options=options)
 
         def failme(encrypted_error, details=None):
             # IMPORTANT: independent of whether the "failme" procedure args were encrypted or not,
             # an error returned to the caller will be encrypted or not depending soley
             # on the error URI!
             if encrypted_error:
-                raise ApplicationError(u"com.myapp.encrypted.error1", custom1=23, custom2=u'Hello')
+                raise ApplicationError("com.myapp.encrypted.error1", custom1=23, custom2='Hello')
             else:
-                raise ApplicationError(u"com.myapp.error1", custom1=23, custom2=u'Hello')
+                raise ApplicationError("com.myapp.error1", custom1=23, custom2='Hello')
 
-        reg3 = yield self.register(failme, u'com.myapp.failme', options=options)
-        reg4 = yield self.register(failme, u'com.myapp.encrypted.failme', options=options)
+        reg3 = yield self.register(failme, 'com.myapp.failme', options=options)
+        reg4 = yield self.register(failme, 'com.myapp.encrypted.failme', options=options)
 
         def on_hello(msg, details=None):
             self.log.info('event received: msg="{msg}", details={details}', msg=msg, details=details)
 
         options = SubscribeOptions(details=True)
-        sub1 = yield self.subscribe(on_hello, u'com.myapp.hello', options=options)
-        sub2 = yield self.subscribe(on_hello, u'com.myapp.encrypted.hello', options=options)
+        sub1 = yield self.subscribe(on_hello, 'com.myapp.hello', options=options)
+        sub2 = yield self.subscribe(on_hello, 'com.myapp.encrypted.hello', options=options)
 
         self.log.info('session ready!')
 
@@ -107,5 +107,5 @@ class Component2(ApplicationSession):
 
 if __name__ == '__main__':
     txaio.start_logging(level='info')
-    runner = ApplicationRunner(u"ws://127.0.0.1:8080", u"realm1")
+    runner = ApplicationRunner("ws://127.0.0.1:8080", "realm1")
     runner.run(Component2)

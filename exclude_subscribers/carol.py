@@ -1,4 +1,3 @@
-from __future__ import print_function
 
 import random
 from os import environ, urandom
@@ -21,7 +20,7 @@ if not exists('carol.priv'):
 class Component(ApplicationSession):
     """
     """
-    key = cryptosign.SigningKey.from_raw_key(u'carol.priv')
+    key = cryptosign.SigningKey.from_raw_key('carol.priv')
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -35,11 +34,11 @@ class Component(ApplicationSession):
         for name in ['alice', 'bob', 'carol', 'dave', 'erin']:
             yield self.subscribe(
                 partial(got_heartbeat, name),
-                u'public.heartbeat.{}'.format(name),
+                'public.heartbeat.{}'.format(name),
            )
 
         counter = 0
-        topic = u'public.heartbeat.carol'
+        topic = 'public.heartbeat.carol'
         while True:
             print("publish '{}'".format(topic))
             self.publish(topic, counter)
@@ -48,14 +47,14 @@ class Component(ApplicationSession):
 
     def onConnect(self):
         extra = {
-            u'pubkey': self.key.public_key(),
-            u'channel_binding': u'tls-unique'
+            'pubkey': self.key.public_key(),
+            'channel_binding': 'tls-unique'
         }
 
         # now request to join ..
         self.join(self.config.realm,
-                  authmethods=[u'cryptosign'],
-                  authid=u'carol',
+                  authmethods=['cryptosign'],
+                  authid='carol',
                   authextra=extra)
 
     def onChallenge(self, challenge):
@@ -76,8 +75,8 @@ class Component(ApplicationSession):
 
 if __name__ == '__main__':
     runner = ApplicationRunner(
-        environ.get("AUTOBAHN_DEMO_ROUTER", u"ws://127.0.0.1:8080/ws"),
-        u"crossbardemo",
+        environ.get("AUTOBAHN_DEMO_ROUTER", "ws://127.0.0.1:8080/ws"),
+        "crossbardemo",
     )
     print("Carol pubkey: {}".format(Component.key.public_key()))
     runner.run(Component)

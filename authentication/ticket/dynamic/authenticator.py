@@ -29,7 +29,6 @@
 import os
 from pprint import pprint
 
-import six
 
 from twisted.internet.defer import inlineCallbacks
 
@@ -37,22 +36,20 @@ from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
 MYTICKET = os.environ.get('MYTICKET', None)
-if MYTICKET and six.PY2:
-   MYTICKET = MYTICKET.decode('utf8')
 
 # our principal "database"
 PRINCIPALS_DB = {
-   u"joe": {
-      u"ticket": u"secret!!!",
-      u"role": u"frontend"
+   "joe": {
+      "ticket": "secret!!!",
+      "role": "frontend"
    },
-   u"client1": {
-      u"ticket": u"123sekret",
-      u"role": u"frontend"
+   "client1": {
+      "ticket": "123sekret",
+      "role": "frontend"
    },
-   u"client2": {
-      u"ticket": MYTICKET,
-      u"role": u"frontend"
+   "client2": {
+      "ticket": MYTICKET,
+      "role": "frontend"
    }
 }
 

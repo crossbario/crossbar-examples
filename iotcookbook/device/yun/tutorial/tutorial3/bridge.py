@@ -47,19 +47,19 @@ class MySerialBridge(LineReceiver):
         else:
             print(data)
             self._last = data
-            self._session.publish(u"io.crossbar.demo.yun.tutorial3.on_sensors", data)
+            self._session.publish("io.crossbar.demo.yun.tutorial3.on_sensors", data)
 
-    @wamp.register(u"io.crossbar.demo.yun.tutorial3.get_sensors")
+    @wamp.register("io.crossbar.demo.yun.tutorial3.get_sensors")
     def get_sensor_vals(self):
         return self._last
 
-    @wamp.register(u"io.crossbar.demo.yun.tutorial3.set_led")
+    @wamp.register("io.crossbar.demo.yun.tutorial3.set_led")
     def set_led(self, value):
         if value:
             if not self._led:
                 self.transport.write("1\n")
                 self._led = True
-                self._session.publish(u"io.crossbar.demo.yun.tutorial3.on_led", self._led)
+                self._session.publish("io.crossbar.demo.yun.tutorial3.on_led", self._led)
                 return True
             else:
                 return False
@@ -67,12 +67,12 @@ class MySerialBridge(LineReceiver):
             if self._led:
                 self.transport.write("0\n")
                 self._led = False
-                self._session.publish(u"io.crossbar.demo.yun.tutorial3.on_led", self._led)
+                self._session.publish("io.crossbar.demo.yun.tutorial3.on_led", self._led)
                 return True
             else:
                 return False
 
-    @wamp.register(u"io.crossbar.demo.yun.tutorial3.get_led")
+    @wamp.register("io.crossbar.demo.yun.tutorial3.get_led")
     def get_led(self):
         return self._led
 

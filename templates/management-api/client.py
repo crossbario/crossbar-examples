@@ -39,7 +39,7 @@ class ClientSession(ApplicationSession):
 
    def onConnect(self):
       print('Client session connected.')
-      self.join(self.config.realm, [u'anonymous'])
+      self.join(self.config.realm, ['anonymous'])
 
    def onJoin(self, details):
       print('Client session joined: {}'.format(details))
@@ -58,18 +58,17 @@ if __name__ == '__main__':
 
    import sys
    import argparse
-   import six
 
    parser = argparse.ArgumentParser()
-   parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under (required)')
-   parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm (default).')
-   parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+   parser.add_argument('--authid', dest='authid', type=str, default=None, help='The authid to connect under (required)')
+   parser.add_argument('--realm', dest='realm', type=str, default=None, help='The realm to join. If not provided, let the router auto-choose the realm (default).')
+   parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
    options = parser.parse_args()
 
    from autobahn.twisted.wamp import ApplicationRunner
 
    extra = {
-      u'authid': options.authid
+      'authid': options.authid
    }
    print("Connecting to {}: realm={}, authid={}".format(options.url, options.realm, options.authid))
 

@@ -92,12 +92,12 @@ class XboxControllerAdapter(ApplicationSession):
 
         # register methods on this object for remote calling via WAMP
         for proc in [self.get_data]:
-            uri = u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.{}'.format(self._id, proc.__name__)
+            uri = 'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("XboxControllerAdapter registered procedure {}".format(uri))
 
         # signal we are done with initializing our component
-        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_ready'.format(self._id))
+        self.publish('io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_ready'.format(self._id))
         log.msg("XboxControllerAdapter ready.")
 
     def get_data(self):
@@ -110,7 +110,7 @@ class XboxControllerAdapter(ApplicationSession):
         """
         Hook that fires when controller state has changed.
         """
-        uri = u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_data'.format(self._id)
+        uri = 'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_data'.format(self._id)
         self.publish(uri, data)
         log.msg("XboxControllerAdapter event published to {}: {}".format(uri, data))
 
@@ -138,13 +138,13 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug", action="store_true",
                         help="Enable debug output.")
 
-    parser.add_argument("--router", type=unicode, required=True,
+    parser.add_argument("--router", type=str, required=True,
                         help='URL of WAMP router to connect to.')
 
-    parser.add_argument("--realm", type=unicode, default=u"iot_cookbook",
+    parser.add_argument("--realm", type=str, default="iot_cookbook",
                         help='The WAMP realm to join on the router.')
 
-    parser.add_argument("--id", type=unicode, default=None,
+    parser.add_argument("--id", type=str, default=None,
                         help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()

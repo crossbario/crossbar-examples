@@ -2,7 +2,7 @@ import os
 import time
 import random
 
-from six.moves import _thread
+import _thread
 
 import txaio
 txaio.use_twisted()
@@ -29,11 +29,11 @@ def do_compute(call_no, delay):
     ended = utcnow()
 
     result = {
-        u'call_no': call_no,
-        u'started': started,
-        u'ended': ended,
-        u'process': process_id,
-        u'thread': thread_id
+        'call_no': call_no,
+        'started': started,
+        'ended': ended,
+        'process': process_id,
+        'thread': thread_id
     }
     return result
 
@@ -42,7 +42,7 @@ class ComputeKernel(ApplicationSession):
 
     @inlineCallbacks
     def onJoin(self, details):
-        self._max_concurrency = self.config.extra[u'concurrency']
+        self._max_concurrency = self.config.extra['concurrency']
         self._current_concurrency = 0
         self._invocations_served = 0
 
@@ -50,8 +50,8 @@ class ComputeKernel(ApplicationSession):
         reactor.suggestThreadPoolSize(self._max_concurrency)
 
         yield self.register(self.compute,
-                            u'com.example.compute',
-                            options=RegisterOptions(invoke=u'roundrobin',
+                            'com.example.compute',
+                            options=RegisterOptions(invoke='roundrobin',
                                                     concurrency=self._max_concurrency))
 
         self.log.info('ComputeKernel ready with concurrency {}!'.format(self._max_concurrency))

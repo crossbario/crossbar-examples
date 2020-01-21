@@ -29,11 +29,10 @@ from autobahn.twisted.util import sleep
 from twisted.internet.defer import inlineCallbacks
 import os
 import argparse
-import six
 import datetime
 
-url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
-realmv = os.environ.get('CBREALM', u'realm1')
+url = os.environ.get('CBURL', 'ws://localhost:8080/ws')
+realmv = os.environ.get('CBREALM', 'realm1')
 print(url, realmv)
 component = Component(transports=url, realm=realmv)
 
@@ -53,7 +52,7 @@ def joined(session, details):
         return now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
     try:
-        yield session.register(utcnow, u'my.com.date')
+        yield session.register(utcnow, 'my.com.date')
         print("procedure registered")
     except Exception as e:
         print("could not register procedure: {0}".format(e))

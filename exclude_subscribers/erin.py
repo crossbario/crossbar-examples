@@ -1,4 +1,3 @@
-from __future__ import print_function
 
 import random
 from os import environ, urandom
@@ -21,7 +20,7 @@ if not exists('erin.priv'):
 class Component(ApplicationSession):
     """
     """
-    key = cryptosign.SigningKey.from_raw_key(u'erin.priv')
+    key = cryptosign.SigningKey.from_raw_key('erin.priv')
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -35,24 +34,24 @@ class Component(ApplicationSession):
         for name in ['erin', 'bob', 'carol', 'dave', 'erin']:
             yield self.subscribe(
                 partial(got_heartbeat, name),
-                u'public.heartbeat.{}'.format(name),
+                'public.heartbeat.{}'.format(name),
             )
 
         counter = 0
-        topic = u'public.heartbeat.erin'
+        topic = 'public.heartbeat.erin'
         while True:
             print("publish '{}'".format(topic))
             self.publish(
                 topic, '{}: to alice, bob, dave'.format(counter),
                 options=PublishOptions(
-                    eligible_authid=[u'alice', u'bob', u'dave'],
+                    eligible_authid=['alice', 'bob', 'dave'],
                 ),
             )
             if counter % 2:
                 self.publish(
                     topic, '{}: "beta" role'.format(counter),
                     options=PublishOptions(
-                        eligible_authrole=u"beta",
+                        eligible_authrole="beta",
                         exclude_me=False,
                     ),
                 )
@@ -61,14 +60,14 @@ class Component(ApplicationSession):
 
     def onConnect(self):
         extra = {
-            u'pubkey': self.key.public_key(),
-            u'channel_binding': u'tls-unique'
+            'pubkey': self.key.public_key(),
+            'channel_binding': 'tls-unique'
         }
 
         # now request to join ..
         self.join(self.config.realm,
-                  authmethods=[u'cryptosign'],
-                  authid=u'erin',
+                  authmethods=['cryptosign'],
+                  authid='erin',
                   authextra=extra)
 
     def onChallenge(self, challenge):
@@ -89,8 +88,8 @@ class Component(ApplicationSession):
 
 if __name__ == '__main__':
     runner = ApplicationRunner(
-        environ.get("AUTOBAHN_DEMO_ROUTER", u"ws://127.0.0.1:8080/ws"),
-        u"crossbardemo",
+        environ.get("AUTOBAHN_DEMO_ROUTER", "ws://127.0.0.1:8080/ws"),
+        "crossbardemo",
     )
     print("Erin pubkey: {}".format(Component.key.public_key()))
     runner.run(Component)

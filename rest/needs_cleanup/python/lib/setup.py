@@ -50,7 +50,7 @@ setup(
    author_email = 'autobahnws@googlegroups.com',
    url = 'http://crossbar.io',
    platforms = ('Any'),
-   install_requires = ['setuptools', 'six'],
+   install_requires = ['setuptools'],
    packages = ['crossbarconnect'],
    include_package_data = True,
    data_files = [('.', ['LICENSE'])],

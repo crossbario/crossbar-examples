@@ -17,17 +17,17 @@ FORMAT = '>Hl8s'
 if False:
     # topic we subscribe to. this is ending with a single '#', and hence we are
     # doing a prefix-pattern subscribe!
-    SUBTOPIC = u'mqtt/test/mytopic/#'
+    SUBTOPIC = 'mqtt/test/mytopic/#'
 else:
     # topic we subscribe to. this contains '+' characters, and hence we are
     # doing a wildcard-pattern subscribe!
-    SUBTOPIC = u'mqtt/+/mytopic/+'
+    SUBTOPIC = 'mqtt/+/mytopic/+'
 
 # this is the topic prefix we are publishing to: we will append an integer (as str)
-PUBTOPIC1 = u'mqtt/test/mytopic/{}'
-PUBTOPIC2 = u'mqtt/foobar/mytopic/{}'
-PUBTOPIC3 = u'mqtt/{}/mytopic/something'
-PUBTOPIC4 = u'bar/test/mytopic/{}'
+PUBTOPIC1 = 'mqtt/test/mytopic/{}'
+PUBTOPIC2 = 'mqtt/foobar/mytopic/{}'
+PUBTOPIC3 = 'mqtt/{}/mytopic/something'
+PUBTOPIC4 = 'bar/test/mytopic/{}'
 
 
 pid = os.getpid()

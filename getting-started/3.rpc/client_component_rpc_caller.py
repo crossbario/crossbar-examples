@@ -29,11 +29,10 @@ from autobahn.twisted.util import sleep
 from twisted.internet.defer import inlineCallbacks
 import os
 import argparse
-import six
 import datetime
 
-url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
-realmv = os.environ.get('CBREALM', u'realm1')
+url = os.environ.get('CBURL', 'ws://localhost:8080/ws')
+realmv = os.environ.get('CBREALM', 'realm1')
 print(url, realmv)
 component = Component(transports=url, realm=realmv)
 
@@ -43,7 +42,7 @@ component = Component(transports=url, realm=realmv)
 def joined(session, details):
     print("session ready")
     try:
-        res = yield session.call(u'my.com.date')
+        res = yield session.call('my.com.date')
         print("\ncall result: {}\n".format(res))
     except Exception as e:
         print("call error: {0}".format(e))

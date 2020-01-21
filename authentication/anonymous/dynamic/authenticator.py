@@ -29,7 +29,6 @@
 import os
 from pprint import pprint
 
-import six
 
 from twisted.internet.defer import inlineCallbacks
 
@@ -46,10 +45,10 @@ class AuthenticatorSession(ApplicationSession):
          print("WAMP-Anonymous dynamic authenticator invoked: realm='{}', authid='{}'".format(realm, authid))
          pprint(details)
          principal = {
-            u'role': u'public',
-            u'extra': {
-               u'eins': u'zwo',
-               u'drei': [4, 5, 6]
+            'role': 'public',
+            'extra': {
+               'eins': 'zwo',
+               'drei': [4, 5, 6]
             }
          }
          return principal

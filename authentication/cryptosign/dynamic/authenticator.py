@@ -29,7 +29,6 @@
 import os
 from pprint import pprint
 
-import six
 
 from twisted.internet.defer import inlineCallbacks
 
@@ -43,27 +42,27 @@ PRINCIPALS = [
    {
       # when a session is authenticating use one of the authorized_keys,
       # then assign it all the data below
-      u"authid": u"client01@example.com",
-      u"realm": u"devices",
-      u"role": u"device",
-      u"extra": {
+      "authid": "client01@example.com",
+      "realm": "devices",
+      "role": "device",
+      "extra": {
          "foo": 23
       },
-      u"authorized_keys": [
-         u"545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122"
+      "authorized_keys": [
+         "545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122"
       ]
    },
    {
-      u"authid": u"client02@example.com",
-      u"realm": u"devices",
-      u"role": u"device",
-      u"extra": {
+      "authid": "client02@example.com",
+      "realm": "devices",
+      "role": "device",
+      "extra": {
          "foo": 42,
          "bar": "baz"
       },
-      u"authorized_keys": [
-         u"9c194391af3bf566fc11a619e8df200ba02efb35b91bdd98b424f20f4163875e",
-         u"585df51991780ee8dce4766324058a04ecae429dffd786ee80839c9467468c28"
+      "authorized_keys": [
+         "9c194391af3bf566fc11a619e8df200ba02efb35b91bdd98b424f20f4163875e",
+         "585df51991780ee8dce4766324058a04ecae429dffd786ee80839c9467468c28"
       ]
    }
 ]
@@ -77,7 +76,7 @@ class AuthenticatorSession(ApplicationSession):
       # build a map from pubkeys to principals
       pubkey_to_principals = {}
       for p in PRINCIPALS:
-         for k in p[u'authorized_keys']:
+         for k in p['authorized_keys']:
             if k in pubkey_to_principals:
                raise Exception("ambiguous key {}".format(k))
             else:
@@ -88,25 +87,25 @@ class AuthenticatorSession(ApplicationSession):
       def authenticate(realm, authid, details):
          self.log.debug("authenticate({realm}, {authid}, {details})", realm=realm, authid=authid, details=details)
 
-         assert(u'authmethod' in details)
-         assert(details[u'authmethod'] == u'cryptosign')
-         assert(u'authextra' in details)
-         assert(u'pubkey' in details[u'authextra'])
+         assert('authmethod' in details)
+         assert(details['authmethod'] == 'cryptosign')
+         assert('authextra' in details)
+         assert('pubkey' in details['authextra'])
 
-         pubkey = details[u'authextra'][u'pubkey']
+         pubkey = details['authextra']['pubkey']
          self.log.info("authenticating session with public key = {pubkey}", pubkey=pubkey)
 
          if pubkey in pubkey_to_principals:
             principal = pubkey_to_principals[pubkey]
             auth = {
-               u'pubkey': pubkey,
-               u'realm': principal[u'realm'],
-               u'authid': principal[u'authid'],
-               u'role': principal[u'role'],
-               u'extra': principal[u'extra'],
-               u'cache': True
+               'pubkey': pubkey,
+               'realm': principal['realm'],
+               'authid': principal['authid'],
+               'role': principal['role'],
+               'extra': principal['extra'],
+               'cache': True
             }
-            self.log.info("found valid principal {authid} matching public key", authid=auth[u'authid'])
+            self.log.info("found valid principal {authid} matching public key", authid=auth['authid'])
             return auth
          else:
             self.log.error("no principal found matching public key")

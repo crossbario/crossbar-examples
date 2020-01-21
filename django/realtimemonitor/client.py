@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import division
 
 import socket
 
@@ -133,7 +132,7 @@ def called_on_joined():
 
 
 # We subscribe to the "clientconfig" WAMP event.
-@app.subscribe(u'clientconfig.{}'.format(app._params['ip']))
+@app.subscribe('clientconfig.{}'.format(app._params['ip']))
 def update_configuration(args):
     """ Update the client configuration when Django asks for it. """
     app._params.update(args)
@@ -141,4 +140,4 @@ def update_configuration(args):
 
 # We start our client.
 if __name__ == '__main__':
-    app.run(url=u'ws://{}:8080/ws'.format(SERVER))
+    app.run(url='ws://{}:8080/ws'.format(SERVER))

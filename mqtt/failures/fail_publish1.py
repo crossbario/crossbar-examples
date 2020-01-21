@@ -11,7 +11,7 @@ import binascii
 import paho.mqtt.client as paho
 
 # topic we publish and subscribe to
-TOPIC = u'not-allowed-topic'
+TOPIC = 'not-allowed-topic'
 
 pid = os.getpid()
 print('MQTT client starting with PID {}..'.format(pid))

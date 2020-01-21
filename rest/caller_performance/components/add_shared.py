@@ -47,4 +47,4 @@ class AppSession(ApplicationSession):
                     print("add2 - {} calls served".format(self._count))
             return x + y
 
-        yield self.register(add2, u'com.example.add2', options=RegisterOptions(invoke=u'roundrobin'))
+        yield self.register(add2, 'com.example.add2', options=RegisterOptions(invoke='roundrobin'))

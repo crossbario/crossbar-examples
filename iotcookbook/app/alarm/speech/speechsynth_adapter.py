@@ -37,12 +37,12 @@ class SpeechSynthAdapter(ApplicationSession):
 
         # register methods on this object for remote calling via WAMP
         for proc in [self.say, self.is_busy]:
-            uri = u'io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.{}'.format(self._id, proc.__name__)
+            uri = 'io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("SpeechSynthAdapter registered procedure {}".format(uri))
 
         # signal we are done with initializing our component
-        self.publish(u'io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.on_ready'.format(self._id))
+        self.publish('io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.on_ready'.format(self._id))
         log.msg("SpeechSynthAdapter ready.")
 
     @inlineCallbacks
@@ -55,14 +55,14 @@ class SpeechSynthAdapter(ApplicationSession):
         else:
             # mark TTS engine as busy and publish event
             self._is_busy = True
-            self.publish(u'io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.on_speech_start'.format(self._id), text)
+            self.publish('io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.on_speech_start'.format(self._id), text)
 
             # start TTS
             yield getProcessOutput(self._flite, ['-voice', self._voice, '-t', text])
 
             # mark TTS engine as free and publish event
             self._is_busy = False
-            self.publish(u'io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.on_speech_end'.format(self._id))
+            self.publish('io.crossbar.examples.iotcookbook.alarmapp.{}.speechsynth.on_speech_end'.format(self._id))
 
     def is_busy(self):
         """
@@ -94,13 +94,13 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug", action="store_true",
                         help="Enable debug output.")
 
-    parser.add_argument("--router", type=unicode, required=True,
+    parser.add_argument("--router", type=str, required=True,
                         help='URL of WAMP router to connect to.')
 
-    parser.add_argument("--realm", type=unicode, default=u"realm1",
+    parser.add_argument("--realm", type=str, default="realm1",
                         help='The WAMP realm to join on the router.')
 
-    parser.add_argument("--id", type=unicode, default=None,
+    parser.add_argument("--id", type=str, default=None,
                         help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()

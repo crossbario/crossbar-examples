@@ -3,7 +3,6 @@ import argparse
 
 import RPi.GPIO as GPIO
 
-import six
 import txaio
 txaio.use_twisted()
 
@@ -28,7 +27,7 @@ def get_serial():
             line = line.strip()
             if line.startswith('Serial'):
                 _, serial = line.split(':')
-                return u'{}'.format(int(serial.strip(), 16))
+                return '{}'.format(int(serial.strip(), 16))
 
 
 class DispenserAdapter(ApplicationSession):
@@ -44,7 +43,7 @@ class DispenserAdapter(ApplicationSession):
     def onJoin(self, details):
 
         self._serial = get_serial()
-        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.dispenser'.format(self._serial)
+        self._prefix = 'io.crossbar.demo.iotstarterkit.{}.dispenser'.format(self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("DispenserAdapter connected: {details}", details=details)
@@ -83,7 +82,7 @@ class DispenserAdapter(ApplicationSession):
                      self.trigger_digout,
                      self.toggle_digout,
                      self.get_digin]:
-            uri = u'{}.{}'.format(self._prefix, proc.__name__)
+            uri = '{}.{}'.format(self._prefix, proc.__name__)
             yield self.register(proc, uri)
             self.log.info("DispenserAdapter registered procedure {}".format(uri))
 
@@ -92,7 +91,7 @@ class DispenserAdapter(ApplicationSession):
         self._digin_scanner.start(1./float(self._scan_rate))
 
         # signal we are done with initializing our component
-        self.publish(u'{}.on_ready'.format(self._prefix))
+        self.publish('{}.on_ready'.format(self._prefix))
 
         # install a heartbeat logger
         self._tick_no = 0
@@ -150,7 +149,7 @@ class DispenserAdapter(ApplicationSession):
             GPIO.output(self._digout_pins[digout], GPIO.HIGH if state else GPIO.LOW)
 
             # publish WAMP event
-            self.publish(u'{}.on_digout_changed'.format(self._prefix), digout=digout, state=state)
+            self.publish('{}.on_digout_changed'.format(self._prefix), digout=digout, state=state)
 
             if state:
                 self.log.info("digout {} asserted".format(digout))
@@ -192,7 +191,7 @@ class DispenserAdapter(ApplicationSession):
 
     def _check_digin_arg(self, digin):
         if digin not in range(0, len(self._digin_pins)):
-            raise ApplicationError(u"com.example.invalid_argument", "No digin with ID {}".format(digin))
+            raise ApplicationError("com.example.invalid_argument", "No digin with ID {}".format(digin))
 
     def get_digin(self, digin = None):
         """
@@ -215,7 +214,7 @@ class DispenserAdapter(ApplicationSession):
                 self._digin_state[digin] = state
 
                 # publish WAMP event
-                self.publish(u'{}.on_digin_changed'.format(self._prefix), digin=digin, state=state)
+                self.publish('{}.on_digin_changed'.format(self._prefix), digin=digin, state=state)
 
                 if state:
                     self.log.info("digin {} state asserted".format(digin))
@@ -229,8 +228,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument("--router", type=six.text_type, default=u"wss://demo.crossbar.io/ws", help='WAMP router URL.')
-    parser.add_argument("--realm", type=six.text_type, default=u"crossbardemo", help='WAMP router realm.')
+    parser.add_argument("--router", type=str, default="wss://demo.crossbar.io/ws", help='WAMP router URL.')
+    parser.add_argument("--realm", type=str, default="crossbardemo", help='WAMP router realm.')
 
     args = parser.parse_args()
 

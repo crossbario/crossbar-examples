@@ -3,7 +3,6 @@ import time
 import argparse
 import random
 
-import six
 import txaio
 txaio.use_twisted()
 
@@ -39,7 +38,7 @@ class HexDisplayComponent(ApplicationSession):
     def onJoin(self, details):
 
         self._serial = get_serial()
-        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.hexdisplay'.format(self._serial)
+        self._prefix = 'io.crossbar.demo.iotstarterkit.{}.hexdisplay'.format(self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("HexDisplayComponent connected: {details}", details=details)
@@ -51,7 +50,7 @@ class HexDisplayComponent(ApplicationSession):
         self._display = HexDisplay(address=cfg['i2c_address'])
         self._display.begin()
         self._display.set_clear()
-        self._display.set_brightness(int(round(cfg[u'brightness'] * 15)))
+        self._display.set_brightness(int(round(cfg['brightness'] * 15)))
 
         self.log.info("HexDisplayComponent ready!")
 
@@ -63,24 +62,24 @@ class HexDisplayComponent(ApplicationSession):
         msgs = []
 
         # Pi serial number
-        msg = u'serial {:0>6d}'.format(self._serial)
+        msg = 'serial {:0>6d}'.format(self._serial)
         self.log.info(msg)
         msgs.append(msg)
 
         # interface IP addresses
         for ifc in netifaces.interfaces():
             if ifc.startswith('wlan') or ifc.startswith('eth'):
-                ip4 = u'0.0.0.0'
+                ip4 = '0.0.0.0'
                 if netifaces.AF_INET in netifaces.ifaddresses(ifc):
                     ip4_ifcs = netifaces.ifaddresses(ifc)[netifaces.AF_INET]
                     if ip4_ifcs:
                         ip4 = ip4_ifcs[0]['addr']
-                msg = u'interface {} {}'.format(ifc, ip4)
+                msg = 'interface {} {}'.format(ifc, ip4)
                 msgs.append(msg)
                 self.log.info(msg)
 
         # scroll informational message
-        msg = u'     '.join(msgs)
+        msg = '     '.join(msgs)
         yield self._display.scroll_message(msg)
 
         # write the ZOLLHOF logo
@@ -110,14 +109,14 @@ class HexDisplayComponent(ApplicationSession):
 if __name__ == '__main__':
 
     # Crossbar.io connection configuration
-    url = os.environ.get('CBURL', u'wss://demo.crossbar.io/ws')
-    realm = os.environ.get('CBREALM', u'crossbardemo')
+    url = os.environ.get('CBURL', 'wss://demo.crossbar.io/ws')
+    realm = os.environ.get('CBREALM', 'crossbardemo')
 
     # parse command line parameters
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=realm, help='The realm to join (default: "realm1").')
+    parser.add_argument('--url', dest='url', type=str, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
+    parser.add_argument('--realm', dest='realm', type=str, default=realm, help='The realm to join (default: "realm1").')
 
     args = parser.parse_args()
 
@@ -129,10 +128,10 @@ if __name__ == '__main__':
 
     extra = {
         # I2C address of display (check with "sudo i2cdetect -y 1")
-        u'i2c_address': 0x77,
+        'i2c_address': 0x77,
 
         # brightness of display (0-1)
-        u'brightness': 0.6,
+        'brightness': 0.6,
     }
 
     # create and start app runner for our app component ..

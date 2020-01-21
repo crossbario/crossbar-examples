@@ -34,17 +34,17 @@ class PiMonitor(ApplicationSession):
             self._cpu_temp_celsius = float(open("/sys/class/thermal/thermal_zone0/temp").read()) / 1000.
             
             if self.publish_temperature:
-                self.publish(u'io.crossbar.examples.pi.{}.tempmon.on_temperature'.format(self._id), self._tick, self._cpu_temp_celsius)
+                self.publish('io.crossbar.examples.pi.{}.tempmon.on_temperature'.format(self._id), self._tick, self._cpu_temp_celsius)
                 self._tick += 1
 
             if self.threshold > 0 and self._cpu_temp_celsius > self.threshold:
-                self.publish(u'io.crossbar.examples.pi.{}.tempmon.on_threshold_exceeded'.format(self._id), self._tick, self._cpu_temp_celsius)
+                self.publish('io.crossbar.examples.pi.{}.tempmon.on_threshold_exceeded'.format(self._id), self._tick, self._cpu_temp_celsius)
           
         scan = LoopingCall(scanTemperature)
         scan.start(1)
 
         for proc in [self.get_temperature, self.impose_stress, self.toggle_publish, self.set_threshold]:
-            uri = u'io.crossbar.examples.pi.{}.tempmon.{}'.format(self._id, proc.__name__)
+            uri = 'io.crossbar.examples.pi.{}.tempmon.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("Registered {}".format(uri))
 
@@ -94,13 +94,13 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug", action="store_true",
                         help="Enable debug output.")
 
-    parser.add_argument("--router", type=unicode, default=u"ws://192.168.1.134:8080/ws",
+    parser.add_argument("--router", type=str, default="ws://192.168.1.134:8080/ws",
                         help='URL of WAMP router to connect to.')
 
-    parser.add_argument("--realm", type=unicode, default=u"iot_cookbook",
+    parser.add_argument("--realm", type=str, default="iot_cookbook",
                         help='The WAMP realm to join on the router.')
 
-    parser.add_argument("--id", type=unicode, default=None,
+    parser.add_argument("--id", type=str, default=None,
                         help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()

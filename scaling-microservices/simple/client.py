@@ -1,7 +1,6 @@
 import argparse
 import time
 
-import six
 
 import txaio
 txaio.use_twisted()
@@ -29,7 +28,7 @@ class ComputeClient(ApplicationSession):
         stop = [False]
 
         def on_error(err):
-            if isinstance(err.value, ApplicationError) and err.value.error == u'crossbar.error.max_concurrency_reached':
+            if isinstance(err.value, ApplicationError) and err.value.error == 'crossbar.error.max_concurrency_reached':
                 if not stop[0]:
                     stop[0] = True
                     self.log.info('stopping to issue calls - maximum concurrency reached: {}'.format(err.value.args[0]))
@@ -39,8 +38,8 @@ class ComputeClient(ApplicationSession):
 
         while not stop[0]:
             self.log.info('issueing call {i} ..', i=i)
-            # d = self.call(u'com.example.compute', i, mode='sleep', runtime=5)
-            d = self.call(u'com.example.compute', i, mode='fib', n=30)
+            # d = self.call('com.example.compute', i, mode='sleep', runtime=5)
+            d = self.call('com.example.compute', i, mode='fib', n=30)
             d.addErrback(on_error)
             i += 1
             calls.append(d)
@@ -75,8 +74,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument('--router', type=six.text_type, default=u'ws://127.0.0.1:8080/ws', help='WAMP router URL.')
-    parser.add_argument('--realm', type=six.text_type, default=u'realm1', help='WAMP router realm.')
+    parser.add_argument('--router', type=str, default='ws://127.0.0.1:8080/ws', help='WAMP router URL.')
+    parser.add_argument('--realm', type=str, default='realm1', help='WAMP router realm.')
 
     args = parser.parse_args()
 
