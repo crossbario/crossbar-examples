@@ -72,10 +72,10 @@ class AuthenticatorSession(ApplicationSession):
             # return a dictionary with authentication information ...
             return USERDB[authid]
          else:
-            raise ApplicationError(u'com.example.no_such_user', 'could not authenticate session - no such user {}'.format(authid))
+            raise ApplicationError('com.example.no_such_user', 'could not authenticate session - no such user {}'.format(authid))
 
       try:
-         yield self.register(authenticate, u'com.example.authenticate')
+         yield self.register(authenticate, 'com.example.authenticate')
          print("WAMP-CRA dynamic authenticator registered!")
       except Exception as e:
          print("Failed to register dynamic authenticator: {0}".format(e))

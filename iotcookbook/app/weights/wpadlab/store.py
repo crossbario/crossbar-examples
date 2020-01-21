@@ -55,7 +55,7 @@ class WpadObjectStore(ApplicationSession):
         self._store.close()
         self.disconnect()
 
-    @wamp.register(u'io.crossbar.demo.wpad.objstore.save')
+    @wamp.register('io.crossbar.demo.wpad.objstore.save')
     def save(self, obj_type, obj_data):
         assert(type(obj_type) in (str, unicode))
 
@@ -71,11 +71,11 @@ class WpadObjectStore(ApplicationSession):
 
         self._store["{}.{}".format(obj_type, obj_id)] = obj_data
 
-        self.publish(u'io.crossbar.demo.wpad.objstore.on_save', obj_type, obj_id)
+        self.publish('io.crossbar.demo.wpad.objstore.on_save', obj_type, obj_id)
 
         return obj_id
 
-    @wamp.register(u'io.crossbar.demo.wpad.objstore.get')
+    @wamp.register('io.crossbar.demo.wpad.objstore.get')
     def get(self, obj_type, obj_id):
         if type(obj_id) == float:
             obj_id = int(obj_id)
@@ -86,7 +86,7 @@ class WpadObjectStore(ApplicationSession):
         else:
             return None
 
-    @wamp.register(u'io.crossbar.demo.wpad.objstore.count')
+    @wamp.register('io.crossbar.demo.wpad.objstore.count')
     def count(self, obj_type=None):
         return len(self._store)
 

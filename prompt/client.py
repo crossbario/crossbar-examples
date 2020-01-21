@@ -35,7 +35,7 @@ class AsyncNumberValidator(Validator):
 
     async def validate(self, document):
         print('AsyncNumberValidator.validate')
-        res = await self._session.call(u'com.example.validate_int', document.text)
+        res = await self._session.call('com.example.validate_int', document.text)
         print(res)
         return res
 
@@ -48,7 +48,7 @@ class MyComponent(ApplicationSession):
         self._ticks = 0
         def onevent(tick_nb):
             self._ticks += 1
-        await self.subscribe(onevent, u'com.example.tick')
+        await self.subscribe(onevent, 'com.example.tick')
 
         #validator = AsyncNumberValidator(self)
         validator = NumberValidator()
@@ -67,7 +67,7 @@ class MyComponent(ApplicationSession):
         # still returned as string, and hence needs to be converted
         x = int(x)
         y = self._ticks
-        res = await self.call(u'com.example.add2', x, y)
+        res = await self.call('com.example.add2', x, y)
 
         print("RPC succeded: {} + {} = {}".format(x, y, res))
         self.leave()

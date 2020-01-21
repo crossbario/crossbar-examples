@@ -27,7 +27,7 @@ class ComputeClient(ApplicationSession):
 
         for i in range(20):
             self.log.info('issueing call {i} ..', i=i)
-            d = self.call(u'com.example.compute', i, 2)
+            d = self.call('com.example.compute', i, 2)
             calls.append(d)
 
         results = yield txaio.gather(calls)
@@ -59,8 +59,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument('--router', type=six.text_type, default=u'ws://127.0.0.1:8080/ws', help='WAMP router URL.')
-    parser.add_argument('--realm', type=six.text_type, default=u'realm1', help='WAMP router realm.')
+    parser.add_argument('--router', type=six.text_type, default='ws://127.0.0.1:8080/ws', help='WAMP router URL.')
+    parser.add_argument('--realm', type=six.text_type, default='realm1', help='WAMP router realm.')
 
     args = parser.parse_args()
 

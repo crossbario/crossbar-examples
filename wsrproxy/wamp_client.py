@@ -16,7 +16,7 @@ class ClientSession(ApplicationSession):
 
    def onConnect(self):
       print('Client session connected.')
-      self.join(self.config.realm, [u'anonymous'])
+      self.join(self.config.realm, ['anonymous'])
 
    def onJoin(self, details):
       print('Client session joined: {}'.format(details))

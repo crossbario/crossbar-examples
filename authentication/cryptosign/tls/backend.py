@@ -7,10 +7,10 @@ from autobahn.wamp import auth
 class BackendSession(ApplicationSession):
 
     def onConnect(self):
-        self.join(self.config.realm, authmethods=[u'wampcra'], authid=u'admin')
+        self.join(self.config.realm, authmethods=['wampcra'], authid='admin')
 
     def onChallenge(self, msg):
-        assert msg.method == u'wampcra'
+        assert msg.method == 'wampcra'
         signature = auth.compute_wcs(
             u"seekrit".encode('utf8'),
             msg.extra['challenge'].encode('utf8'),

@@ -51,7 +51,7 @@ class ClientSession(ApplicationSession):
          pprint(session_details)
          #self.log.info("a WAMP session has joined: {session_details}", session_details=session_details)
 
-      yield self.subscribe(on_session_join, u'wamp.session.on_join')
+      yield self.subscribe(on_session_join, 'wamp.session.on_join')
 
    def onLeave(self, details):
       print('Client session left: {}'.format(details))
@@ -66,5 +66,5 @@ if __name__ == '__main__':
 
    from autobahn.twisted.wamp import ApplicationRunner
 
-   runner = ApplicationRunner(url=u'ws://localhost:8090', realm=u'realm1')
+   runner = ApplicationRunner(url='ws://localhost:8090', realm='realm1')
    runner.run(ClientSession)

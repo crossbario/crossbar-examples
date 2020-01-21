@@ -34,17 +34,17 @@ class PiMonitor(ApplicationSession):
             self._cpu_temp_celsius = float(open("/sys/class/thermal/thermal_zone0/temp").read()) / 1000.
             
             if self.publish_temperature:
-                self.publish(u'io.crossbar.examples.pi.{}.tempmon.on_temperature'.format(self._id), self._tick, self._cpu_temp_celsius)
+                self.publish('io.crossbar.examples.pi.{}.tempmon.on_temperature'.format(self._id), self._tick, self._cpu_temp_celsius)
                 self._tick += 1
 
             if self.threshold > 0 and self._cpu_temp_celsius > self.threshold:
-                self.publish(u'io.crossbar.examples.pi.{}.tempmon.on_threshold_exceeded'.format(self._id), self._tick, self._cpu_temp_celsius)
+                self.publish('io.crossbar.examples.pi.{}.tempmon.on_threshold_exceeded'.format(self._id), self._tick, self._cpu_temp_celsius)
           
         scan = LoopingCall(scanTemperature)
         scan.start(1)
 
         for proc in [self.get_temperature, self.impose_stress, self.toggle_publish, self.set_threshold]:
-            uri = u'io.crossbar.examples.pi.{}.tempmon.{}'.format(self._id, proc.__name__)
+            uri = 'io.crossbar.examples.pi.{}.tempmon.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("Registered {}".format(uri))
 

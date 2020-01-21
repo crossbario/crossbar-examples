@@ -43,7 +43,7 @@ class MyComponent(ApplicationSession):
     @inlineCallbacks
     def onJoin(self, details):
         self._ident = "MyComponent (PID {}, Session {})".format(os.getpid(), details.session)
-        yield self.register(self.add2, u'com.example.add2', options=RegisterOptions(invoke=u'roundrobin'))
+        yield self.register(self.add2, 'com.example.add2', options=RegisterOptions(invoke='roundrobin'))
         print("MyComponent: add2() registered!")
 
     def add2(self, a, b):

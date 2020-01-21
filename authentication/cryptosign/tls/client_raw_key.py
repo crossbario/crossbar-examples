@@ -18,7 +18,7 @@ class ClientSession(ApplicationSession):
 
         # load the client private key (raw format)
         try:
-            self._key = cryptosign.SigningKey.from_raw_key(config.extra[u'key'])
+            self._key = cryptosign.SigningKey.from_raw_key(config.extra['key'])
         except Exception as e:
             self.log.error("could not load client private key: {log_failure}", log_failure=e)
             self.leave()
@@ -33,26 +33,26 @@ class ClientSession(ApplicationSession):
         extra = {
             # forward the client pubkey: this allows us to omit authid as
             # the router can identify us with the pubkey already
-            u'pubkey': self._key.public_key(),
+            'pubkey': self._key.public_key(),
 
             # not yet implemented. a public key the router should provide
             # a trustchain for it's public key. the trustroot can eg be
             # hard-coded in the client, or come from a command line option.
-            u'trustroot': None,
+            'trustroot': None,
 
             # not yet implemented. for authenticating the router, this
             # challenge will need to be signed by the router and send back
             # in AUTHENTICATE for client to verify. A string with a hex
             # encoded 32 bytes random value.
-            u'challenge': None,
+            'challenge': None,
 
-            u'channel_binding': u'tls-unique'
+            'channel_binding': 'tls-unique'
         }
 
         # now request to join ..
         self.join(self.config.realm,
-                  authmethods=[u'cryptosign'],
-                  authid=self.config.extra[u'authid'],
+                  authmethods=['cryptosign'],
+                  authid=self.config.extra['authid'],
                   authextra=extra)
 
     def onChallenge(self, challenge):
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--key', dest='key', type=six.text_type, required=True, help='The private client key to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')
     parser.add_argument('--routerkey', dest='routerkey', type=six.text_type, default=None, help='The public router key to verify the remote router against. A 32 bytes file containing the raw Ed25519 public key.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
     options = parser.parse_args()
 
@@ -117,8 +117,8 @@ if __name__ == '__main__':
 
     # forward requested authid and key filename to ClientSession
     extra = {
-        u'authid': options.authid,
-        u'key': options.key
+        'authid': options.authid,
+        'key': options.key
     }
     print("Connecting to {}: realm={}, authid={}".format(options.url, options.realm, options.authid))
 
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     if False:
         cert_options = optionsForClientTLS(
-            u'localhost',
+            'localhost',
             trustRoot=trustRootFromCertificates(
                 [
                     Certificate.loadPEM(open(cert_fname).read()),
@@ -161,7 +161,7 @@ if __name__ == '__main__':
 
         ca_certs = OpenSSLCertificateAuthorities([cert, inter_cert])
 
-        cert_options = ssl.optionsForClientTLS(u'localhost', trustRoot=ca_certs)
+        cert_options = ssl.optionsForClientTLS('localhost', trustRoot=ca_certs)
 
     if False:
         cert = crypto.load_certificate(crypto.FILETYPE_PEM, open('.crossbar/server.crt', 'rb').read())
@@ -175,7 +175,7 @@ if __name__ == '__main__':
 
     if False:
         authority = ssl.Certificate.loadPEM(open('.crossbar/server.crt', 'rb').read())
-        options = ssl.optionsForClientTLS(u'localhost', authority)
+        options = ssl.optionsForClientTLS('localhost', authority)
 
 
     print(cert_options)

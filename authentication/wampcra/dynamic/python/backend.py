@@ -43,9 +43,9 @@ class BackendSession(ApplicationSession):
       ## SUBSCRIBE to a few topics we are allowed to subscribe to.
       ##
       for topic in [
-         u'com.example.topic1',
-         u'com.foobar.topic1',
-         u'com.foobar.topic2']:
+         'com.example.topic1',
+         'com.foobar.topic1',
+         'com.foobar.topic2']:
 
          try:
             sub = yield self.subscribe(onhello, topic)
@@ -56,7 +56,7 @@ class BackendSession(ApplicationSession):
       ## (try to) SUBSCRIBE to a topic we are not allowed to subscribe to (so this should fail).
       ##
       try:
-         sub = yield self.subscribe(onhello, u'com.example.topic2')
+         sub = yield self.subscribe(onhello, 'com.example.topic2')
       except Exception as e:
          print("subscription failed (this is expected!) {}".format(e))
 
@@ -67,7 +67,7 @@ class BackendSession(ApplicationSession):
          return x + y
 
       try:
-         reg = yield self.register(add2, u'com.example.add2')
+         reg = yield self.register(add2, 'com.example.add2')
          print("procedure add2() registered")
       except Exception as e:
          print("could not register procedure: {}".format(e))

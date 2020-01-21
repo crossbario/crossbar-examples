@@ -53,12 +53,12 @@ class AudioOutputAdapter(ApplicationSession):
 
         # register methods on this object for remote calling via WAMP
         for proc in [self.trigger_sample, self.stop_sample, self.add_sample]:
-            uri = u'io.crossbar.examples.iot.devices.pi.{}.audioout.{}'.format(self._id, proc.__name__)
+            uri = 'io.crossbar.examples.iot.devices.pi.{}.audioout.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("AudioOutputAdapter registered procedure {}".format(uri))
 
         # signal we are done with initializing our component
-        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.audioout.on_ready'.format(self._id))
+        self.publish('io.crossbar.examples.iot.devices.pi.{}.audioout.on_ready'.format(self._id))
         log.msg("AudioOutputAdapter ready.")
 
     def trigger_sample(self, sample_name):

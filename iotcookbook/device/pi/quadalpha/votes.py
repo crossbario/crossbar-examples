@@ -43,12 +43,12 @@ class VotesListener(ApplicationSession):
         joined_at = time.strftime("%H:%M")
 
         # the voting subject we will display and vote for
-        subject = self.config.extra[u'subject']
+        subject = self.config.extra['subject']
 
         # our quad, alphanumeric display: https://www.adafruit.com/products/2157
-        self._disp = QuadAlphanum(self.config.extra[u'i2c_address'])
+        self._disp = QuadAlphanum(self.config.extra['i2c_address'])
         self._disp.clear()
-        self._disp.setBrightness(int(round(self.config.extra[u'brightness'] * 15)))
+        self._disp.setBrightness(int(round(self.config.extra['brightness'] * 15)))
 
         # display votes for subject on display
         def setVotes(votes):
@@ -60,10 +60,10 @@ class VotesListener(ApplicationSession):
 
         # get notified of new votes
         def onVote(vote):
-            if vote[u'subject'] == subject:
-                setVotes(vote[u'votes'])
+            if vote['subject'] == subject:
+                setVotes(vote['votes'])
 
-        yield self.subscribe(onVote, u'io.crossbar.demo.vote.onvote')
+        yield self.subscribe(onVote, 'io.crossbar.demo.vote.onvote')
 
         # get notified of votes being reset
         @inlineCallbacks
@@ -72,17 +72,17 @@ class VotesListener(ApplicationSession):
             yield sleep(.1)
             setVotes(0)
 
-        yield self.subscribe(onReset, u'io.crossbar.demo.vote.onreset')
+        yield self.subscribe(onReset, 'io.crossbar.demo.vote.onreset')
 
         @inlineCallbacks
         def displayNotice():
             yield scrollText(self._disp, "ip={} joined={} subject={} ...".format(my_ip, joined_at, subject).upper())
 
             # get the current votes
-            votes = yield self.call(u'io.crossbar.demo.vote.get')
+            votes = yield self.call('io.crossbar.demo.vote.get')
             for vote in votes:
-                if vote[u'subject'] == subject:
-                    setVotes(vote[u'votes'])
+                if vote['subject'] == subject:
+                    setVotes(vote['votes'])
 
         # every couple of secs, display a notice
         LoopingCall(displayNotice).start(60)
@@ -92,17 +92,17 @@ class VotesListener(ApplicationSession):
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.cleanup()
-        GPIO.setup(self.config.extra[u'button_pin'], GPIO.IN)
+        GPIO.setup(self.config.extra['button_pin'], GPIO.IN)
 
         self._button_state = False
 
         @inlineCallbacks
         def scan_buttons():
-            new_state = GPIO.input(self.config.extra[u'button_pin']) == 1
+            new_state = GPIO.input(self.config.extra['button_pin']) == 1
             if new_state != self._button_state:
                 self.log.info("Button state change: {new_state}", new_state=new_state)
                 if new_state:
-                    yield self.call(u'io.crossbar.demo.vote.vote', subject)
+                    yield self.call('io.crossbar.demo.vote.vote', subject)
                 self._button_state = new_state
 
         # periodically scan buttons
@@ -146,15 +146,15 @@ if __name__ == '__main__':
     extra = {
         # the voting subject the display will show, and the button
         # will trigger voting for
-        u'subject': u'Banana',
+        'subject': 'Banana',
 
         # the button configuration (a BCM digital pin number is required,
         # see here https://pinout.xyz/)
-        u'button_pin': 26,
+        'button_pin': 26,
 
         # the quad-alpha display hardware configuration
-        u'i2c_address': 0x77,
-        u'brightness': 1.,
+        'i2c_address': 0x77,
+        'brightness': 1.,
     }
 
     # create and start app runner for our app component ..

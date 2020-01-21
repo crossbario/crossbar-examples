@@ -20,7 +20,7 @@ from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
 # topic we publish and subscribe to
-TOPIC = u'mqtt.test.mytopic1'
+TOPIC = 'mqtt.test.mytopic1'
 
 
 class MySession(ApplicationSession):
@@ -52,6 +52,6 @@ class MySession(ApplicationSession):
 
 if __name__ == '__main__':
     txaio.start_logging(level='info')
-    runner = ApplicationRunner(u'rs://localhost:8080', u'realm1')
-#    runner = ApplicationRunner(u'ws://localhost:8080/ws', u'realm1')
+    runner = ApplicationRunner('rs://localhost:8080', 'realm1')
+#    runner = ApplicationRunner('ws://localhost:8080/ws', 'realm1')
     runner.run(MySession)

@@ -92,12 +92,12 @@ class XboxControllerAdapter(ApplicationSession):
 
         # register methods on this object for remote calling via WAMP
         for proc in [self.get_data]:
-            uri = u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.{}'.format(self._id, proc.__name__)
+            uri = 'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("XboxControllerAdapter registered procedure {}".format(uri))
 
         # signal we are done with initializing our component
-        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_ready'.format(self._id))
+        self.publish('io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_ready'.format(self._id))
         log.msg("XboxControllerAdapter ready.")
 
     def get_data(self):
@@ -110,7 +110,7 @@ class XboxControllerAdapter(ApplicationSession):
         """
         Hook that fires when controller state has changed.
         """
-        uri = u'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_data'.format(self._id)
+        uri = 'io.crossbar.examples.iot.devices.pi.{}.xboxcontroller.on_data'.format(self._id)
         self.publish(uri, data)
         log.msg("XboxControllerAdapter event published to {}: {}".format(uri, data))
 

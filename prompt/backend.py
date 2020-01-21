@@ -15,39 +15,39 @@ def validate_int(num):
         return False
 
 NODES = {
-    u'node1': {
-        u'workers': {
-            u'worker1': {
-                u'type': u'router'
+    'node1': {
+        'workers': {
+            'worker1': {
+                'type': 'router'
             },
-            u'worker2': {
-                u'type': u'guest'
+            'worker2': {
+                'type': 'guest'
             }
         }
     },
-    u'mynode': {
-        u'workers': {
-            u'myrouter': {
-                u'type': u'router'
+    'mynode': {
+        'workers': {
+            'myrouter': {
+                'type': 'router'
             },
-            u'guest01': {
-                u'type': u'guest'
+            'guest01': {
+                'type': 'guest'
             },
-            u'guest02': {
-                u'type': u'guest'
+            'guest02': {
+                'type': 'guest'
             },
-            u'guest03': {
-                u'type': u'guest'
+            'guest03': {
+                'type': 'guest'
             }
         }
     },
-    u'foo23': {
-        u'workers': {
-            u'w23-1': {
-                u'type': u'router'
+    'foo23': {
+        'workers': {
+            'w23-1': {
+                'type': 'router'
             },
-            u'w23-2': {
-                u'type': u'guest'
+            'w23-2': {
+                'type': 'guest'
             }
         }
     }
@@ -65,47 +65,47 @@ class Backend(ApplicationSession):
         self._tick = 1
 
         def tick():
-            self.publish(u'com.example.tick', self._tick)
+            self.publish('com.example.tick', self._tick)
             self._tick += 1
 
         c = LoopingCall(tick)
         c.start(1)
 
-        yield self.register(add2, u'com.example.add2')
-        yield self.register(validate_int, u'com.example.validate_int')
+        yield self.register(add2, 'com.example.add2')
+        yield self.register(validate_int, 'com.example.validate_int')
 
         yield self.register(self)
 
         self.log.info('backend ready!')
 
-    @register(u'com.example.list_nodes')
+    @register('com.example.list_nodes')
     def list_nodes(self, verbose=False):
         return sorted(NODES.keys())
 
-    @register(u'com.example.list_workers')
+    @register('com.example.list_workers')
     def list_workers(self, node, verbose=False):
         if node in NODES:
-            return sorted(NODES[node][u'workers'].keys())
+            return sorted(NODES[node]['workers'].keys())
         else:
             return None
 
-    @register(u'com.example.show_fabric')
+    @register('com.example.show_fabric')
     def show_fabric(self, verbose=False):
         res = {
-            u'version': u'17.01.23',
-            u'now': utcnow(),
-            u'started': self._started,
-            u'tick': self._tick
+            'version': '17.01.23',
+            'now': utcnow(),
+            'started': self._started,
+            'tick': self._tick
         }
         return res
 
-    @register(u'com.example.show_node')
+    @register('com.example.show_node')
     def show_node(self, node, verbose=False):
         return NODES.get(node, None)
 
-    @register(u'com.example.show_worker')
+    @register('com.example.show_worker')
     def show_worker(self, node, worker, verbose=False):
         if node in NODES:
-            workers = NODES[node][u'workers']
+            workers = NODES[node]['workers']
             if worker in workers:
                 return workers[worker]

@@ -21,7 +21,7 @@ if not exists('bob.priv'):
 class Component(ApplicationSession):
     """
     """
-    key = cryptosign.SigningKey.from_raw_key(u'bob.priv')
+    key = cryptosign.SigningKey.from_raw_key('bob.priv')
 
     @inlineCallbacks
     def onJoin(self, details):
@@ -35,17 +35,17 @@ class Component(ApplicationSession):
         for name in ['alice', 'bob', 'carol', 'dave', 'erin']:
             yield self.subscribe(
                 partial(got_heartbeat, name),
-                u'public.heartbeat.{}'.format(name),
+                'public.heartbeat.{}'.format(name),
            )
 
         counter = 0
-        topic = u'public.heartbeat.bob'
+        topic = 'public.heartbeat.bob'
         while True:
             print("publish '{}'".format(topic))
             self.publish(
                 topic, counter,
                 options=PublishOptions(
-                    exclude_authrole=[u'beta'],
+                    exclude_authrole=['beta'],
                 ),
             )
             counter += 1
@@ -53,14 +53,14 @@ class Component(ApplicationSession):
 
     def onConnect(self):
         extra = {
-            u'pubkey': self.key.public_key(),
-            u'channel_binding': u'tls-unique'
+            'pubkey': self.key.public_key(),
+            'channel_binding': 'tls-unique'
         }
 
         # now request to join ..
         self.join(self.config.realm,
-                  authmethods=[u'cryptosign'],
-                  authid=u'bob',
+                  authmethods=['cryptosign'],
+                  authid='bob',
                   authextra=extra)
 
     def onChallenge(self, challenge):

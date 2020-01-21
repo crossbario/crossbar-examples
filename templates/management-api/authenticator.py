@@ -48,14 +48,14 @@ class AuthenticatorSession(ApplicationSession):
       def authenticate(realm, authid, details):
          print("WAMP-Anonymous dynamic authenticator invoked: realm='{}', authid='{}'".format(realm, authid))
 
-         realm = realm or u'default'
+         realm = realm or 'default'
          controller = self.config.controller
-         worker = details[u'worker']
-         realm_id = u'realm-{}'.format(realm)
-         role = u'public'
+         worker = details['worker']
+         realm_id = 'realm-{}'.format(realm)
+         role = 'public'
 
          # crossbar.node.corei7ub1310.worker.worker-001.is_router_realm_running
-         is_running = yield controller.call(u'{}.is_router_realm_running'.format(worker), realm_id)
+         is_running = yield controller.call('{}.is_router_realm_running'.format(worker), realm_id)
 
          if is_running:
             self.log.info("Realm {realm} ALREADY RUNNING", realm=realm)
@@ -86,14 +86,14 @@ class AuthenticatorSession(ApplicationSession):
 
             # crossbar.node.corei7ub1310.worker.worker-001.start_router_realm
             try:
-               yield self.config.controller.call(u'{}.start_router_realm'.format(worker), realm_id, realm_config)
+               yield self.config.controller.call('{}.start_router_realm'.format(worker), realm_id, realm_config)
             except Exception as e:
                self.log.error("REALM CREATION FAILED")
                self.log.error(e)
             else:
                self.log.info("REALM CREATED")
 
-            role_id = u'role-{}-{}'.format(realm, role)
+            role_id = 'role-{}-{}'.format(realm, role)
             role_config = {
                u"name": role,
                u"permissions": [
@@ -113,7 +113,7 @@ class AuthenticatorSession(ApplicationSession):
 
             # crossbar.node.corei7ub1310.worker.worker-001.start_router_realm_role
             try:
-               yield self.config.controller.call(u'{}.start_router_realm_role'.format(worker), realm_id, role_id, role_config)
+               yield self.config.controller.call('{}.start_router_realm_role'.format(worker), realm_id, role_id, role_config)
             except Exception as e:
                self.log.error("ROLE CREATION FAILED")
                self.log.error(e)
@@ -121,21 +121,21 @@ class AuthenticatorSession(ApplicationSession):
                self.log.info("ROLE CREATED")
 
 
-            container_id = u'backend-{}'.format(realm)
+            container_id = 'backend-{}'.format(realm)
             container_options = {
                u"pythonpath": [u".."]
             }
 
-            node_id = u'thinkpad-t430s'
+            node_id = 'thinkpad-t430s'
             try:
-               yield self.config.controller.call(u'crossbar.node.{}.start_container'.format(node_id), container_id, container_options)
+               yield self.config.controller.call('crossbar.node.{}.start_container'.format(node_id), container_id, container_options)
             except Exception as e:
                self.log.error("CONTAINER CREATION FAILED")
                self.log.error(e)
             else:
                self.log.info("CONTAINER CREATED")
 
-            component_id = u'backend-{}'.format(realm)
+            component_id = 'backend-{}'.format(realm)
             component_config = {
                u"type": u"class",
                u"classname": u"backend.Backend",
@@ -153,7 +153,7 @@ class AuthenticatorSession(ApplicationSession):
 
             # crossbar.node.corei7ub1310.worker.backend-realm1.start_container_component
             try:
-               yield self.config.controller.call(u'crossbar.node.{}.worker.{}.start_container_component'.format(node_id, container_id), component_id, component_config)
+               yield self.config.controller.call('crossbar.node.{}.worker.{}.start_container_component'.format(node_id, container_id), component_id, component_config)
             except Exception as e:
                self.log.error("COMPONENT CREATION FAILED")
                self.log.error(e)
@@ -162,11 +162,11 @@ class AuthenticatorSession(ApplicationSession):
 
 
          principal = {
-            u'realm': realm,
-            u'role': role,
-            u'extra': {
-               u'eins': u'zwo',
-               u'drei': [4, 5, 6]
+            'realm': realm,
+            'role': role,
+            'extra': {
+               'eins': 'zwo',
+               'drei': [4, 5, 6]
             }
          }
 

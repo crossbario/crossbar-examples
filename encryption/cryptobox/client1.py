@@ -69,7 +69,7 @@ class Component1(ApplicationSession):
 
             # we now associate URIs starting with "com.myapp.encrypted." with the
             # encryption keys ..
-            keyring.set_key(u'com.myapp.encrypted.', key)
+            keyring.set_key('com.myapp.encrypted.', key)
 
         # .. and finally set the keyring on the session. from now on, all calls (and event)
         # on URIs that start with "com.myapp.encrypted." will be encrypted. Calls (and events)
@@ -91,8 +91,8 @@ class Component1(ApplicationSession):
 
         counter = 1
         while counter <= self.NUM:
-            for proc in [u'com.myapp.add2',
-                         u'com.myapp.encrypted.add2']:
+            for proc in ['com.myapp.add2',
+                         'com.myapp.encrypted.add2']:
                 try:
                     res = yield self.call(proc, 23, counter, options=options)
                     self.log.info('{proc} call result: {res}', proc=proc, res=res)
@@ -107,10 +107,10 @@ class Component1(ApplicationSession):
     def _test_rpc_errors(self):
         options = CallOptions()
 
-        for proc, encrypted_error in [(u'com.myapp.failme', False),
-                                      (u'com.myapp.failme', True),
-                                      (u'com.myapp.encrypted.failme', False),
-                                      (u'com.myapp.encrypted.failme', True)]:
+        for proc, encrypted_error in [('com.myapp.failme', False),
+                                      ('com.myapp.failme', True),
+                                      ('com.myapp.encrypted.failme', False),
+                                      ('com.myapp.encrypted.failme', True)]:
             try:
                 res = yield self.call(proc, encrypted_error, options=options)
                 self.log.info('{proc} called with encrypted_error={encrypted_error} - result: {res}', proc=proc, encrypted_error=encrypted_error, res=res)
@@ -122,13 +122,13 @@ class Component1(ApplicationSession):
         options = PublishOptions(acknowledge=True, exclude_me=False)
         counter = 1
         while counter <= self.NUM:
-            msg = u'Counter is at {}'.format(counter)
+            msg = 'Counter is at {}'.format(counter)
 
-            topic = u'com.myapp.hello'
+            topic = 'com.myapp.hello'
             pub = yield self.publish(topic, msg, options=options)
             self.log.info('event published: {pub}', pub=pub)
 
-            topic = u'com.myapp.encrypted.hello'
+            topic = 'com.myapp.encrypted.hello'
             pub = yield self.publish(topic, msg, options=options)
             self.log.info('event published: {pub}', pub=pub)
 

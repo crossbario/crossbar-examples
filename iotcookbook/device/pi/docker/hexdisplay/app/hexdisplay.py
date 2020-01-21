@@ -13,55 +13,55 @@ from Adafruit_LED_Backpack.HT16K33 import HT16K33
 REPLACEMENT = 0x00
 
 DIGIT_VALUES = {
-    u' ': 0x00,
-    u'!': 0x82,
-    u'"': 0x21,
-    u'\'': 0x02,
-    u'{': 0x39,
-    u'}': 0x0f,
-    u'-': 0x40,
-    u'.': 0x80,
-    u'0': 0x3f,
-    u'1': 0x06,
-    u'2': 0x5b,
-    u'3': 0x4f,
-    u'4': 0x66,
-    u'5': 0x6d,
-    u'6': 0x7d,
-    u'7': 0x07,
-    u'8': 0x7f,
-    u'9': 0x6f,
-    u'=': 0x48,
-    u'?': 0x53,
-    u'A': 0x77,
-    u'B': 0x7c,
-    u'C': 0x39,
-    u'D': 0x5e,
-    u'E': 0x79,
-    u'F': 0x71,
-    u'G': 0x6f,
-    u'H': 0x76,
-    u'I': 0x06,
-    u'J': 0x1e,
-    u'K': 0x76, # REPLACEMENT,
-    u'L': 0x38,
-    u'M': 0x54, # REPLACEMENT,
-    u'N': 0x54,
-    u'O': 0x3f,
-    u'P': 0x73,
-    u'Q': 0x67,
-    u'R': 0x50,
-    u'S': 0x6d,
-    u'T': 0x78,
-    u'U': 0x1c,
-    u'V': 0x3e, # REPLACEMENT,
-    u'W': 0x3e, # REPLACEMENT,
-    u'X': 0x76, # REPLACEMENT,
-    u'Y': 0x6e,
-    u'Z': 0x5b, # REPLACEMENT,
-    u'[': 0x39,
-    u']': 0x0f,
-    u'°': 0x63,
+    ' ': 0x00,
+    '!': 0x82,
+    '"': 0x21,
+    '\'': 0x02,
+    '{': 0x39,
+    '}': 0x0f,
+    '-': 0x40,
+    '.': 0x80,
+    '0': 0x3f,
+    '1': 0x06,
+    '2': 0x5b,
+    '3': 0x4f,
+    '4': 0x66,
+    '5': 0x6d,
+    '6': 0x7d,
+    '7': 0x07,
+    '8': 0x7f,
+    '9': 0x6f,
+    '=': 0x48,
+    '?': 0x53,
+    'A': 0x77,
+    'B': 0x7c,
+    'C': 0x39,
+    'D': 0x5e,
+    'E': 0x79,
+    'F': 0x71,
+    'G': 0x6f,
+    'H': 0x76,
+    'I': 0x06,
+    'J': 0x1e,
+    'K': 0x76, # REPLACEMENT,
+    'L': 0x38,
+    'M': 0x54, # REPLACEMENT,
+    'N': 0x54,
+    'O': 0x3f,
+    'P': 0x73,
+    'Q': 0x67,
+    'R': 0x50,
+    'S': 0x6d,
+    'T': 0x78,
+    'U': 0x1c,
+    'V': 0x3e, # REPLACEMENT,
+    'W': 0x3e, # REPLACEMENT,
+    'X': 0x76, # REPLACEMENT,
+    'Y': 0x6e,
+    'Z': 0x5b, # REPLACEMENT,
+    '[': 0x39,
+    ']': 0x0f,
+    '°': 0x63,
 }
 
 
@@ -142,7 +142,7 @@ class HexDisplay(HT16K33):
     @inlineCallbacks
     def scroll_message(self, message, delay=150):
         assert(type(message) == six.text_type)
-        _message = message + u' ' * self.TOTAL_DIGITS
+        _message = message + ' ' * self.TOTAL_DIGITS
         for i in range(len(message) + 1):
             self.set_message(_message[i:])
             yield sleep(delay / 1000.)
@@ -162,17 +162,17 @@ if __name__ == '__main__':
         for pos in range(6):
             display.buffer[pos * 2] = i & 0xFF
         display.write_display()
-        print(u'0x{:x}'.format(i))
+        print('0x{:x}'.format(i))
         sleep(2)
 
-    for msg in [u'012345', u'6789AB', u'CDEF-_']:
+    for msg in ['012345', '6789AB', 'CDEF-_']:
         display.set_message(msg)
         sleep(1)
 
     for k in range(5):
         for i in range(6):
             display.clear()
-            display.set_digit(i, u'{}'.format(i))
+            display.set_digit(i, '{}'.format(i))
             display.write_display()
             sleep(.1)
 

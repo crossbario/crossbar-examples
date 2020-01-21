@@ -17,13 +17,13 @@ from autobahn.wamp.types import SubscribeOptions, RegisterOptions
 class ClientSession(ApplicationSession):
     log = txaio.make_logger()
 
-    _this_service = u'service1'
-    _other_services = [u'service0', u'service2', u'service3']
+    _this_service = 'service1'
+    _other_services = ['service0', 'service2', 'service3']
 
 
     def onConnect(self):
         self.log.info("Client connected")
-        self.join(self.config.realm, [u'anonymous'])
+        self.join(self.config.realm, ['anonymous'])
 
     def onChallenge(self, challenge):
         self.log.info("Challenge for method {authmethod} received", authmethod=challenge.method)
@@ -39,13 +39,13 @@ class ClientSession(ApplicationSession):
             self.log.info("AutobahnPython/SUBSCRIBE: event for 'on_counter' received: {msg}, {details}", msg=msg, details=details)
 
         for svc in self._other_services:
-            topic = u'com.example.{}.on_counter'.format(svc)
+            topic = 'com.example.{}.on_counter'.format(svc)
             sub = yield self.subscribe(on_counter, topic, options=SubscribeOptions(details_arg='details'))
             self.log.info("AutobahnPython/SUBSCRIBE: subscribed to {topic}", topic=topic)
 
         # REGISTER a procedure for remote calling
         #
-        proc = u'com.example.{}.add2'.format(self._this_service)
+        proc = 'com.example.{}.add2'.format(self._this_service)
 
         def add2(x, y):
             self.log.info("AutobahnPython/REGISTER: {proc} called with {x} and {y}", proc=proc, x=x, y=y)
@@ -61,14 +61,14 @@ class ClientSession(ApplicationSession):
             for svc in self._other_services:
 
                 # PUBLISH an event
-                topic = u'com.example.{}.on_counter'.format(svc)
+                topic = 'com.example.{}.on_counter'.format(svc)
                 yield self.publish(topic, counter)
                 self.log.info("AutobahnPython/PUBLISH: published to {topic} with counter {counter}",
                               topic=topic, counter=counter)
                 counter += 1
 
                 # CALL a remote procedure
-                proc = u'com.example.{}.add2'.format(svc)
+                proc = 'com.example.{}.add2'.format(svc)
                 try:
                     res = yield self.call(proc, counter, 3)
                     self.log.info("AutobahnPython/CALL: {proc} called with result: {result}",
@@ -96,8 +96,8 @@ class ClientSession(ApplicationSession):
 if __name__ == '__main__':
 
     # Crossbar.io connection configuration
-    url = os.environ.get('CBURL', u'ws://localhost:8080/ws')
-    realm = os.environ.get('CBREALM', u'realm1')
+    url = os.environ.get('CBURL', 'ws://localhost:8080/ws')
+    realm = os.environ.get('CBREALM', 'realm1')
 
     # parse command line parameters
     parser = argparse.ArgumentParser()
@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
     # any extra info we want to forward to our ClientSession (in self.config.extra)
     extra = {
-        u'foobar': u'A custom value'
+        'foobar': 'A custom value'
     }
 
     # now actually run a WAMP client using our session class ClientSession

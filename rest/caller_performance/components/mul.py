@@ -46,4 +46,4 @@ class AppSession(ApplicationSession):
                     print("mul2 - {} calls served".format(self._count))
             return x * y
 
-        yield self.register(mul2, u'com.example.mul2')
+        yield self.register(mul2, 'com.example.mul2')

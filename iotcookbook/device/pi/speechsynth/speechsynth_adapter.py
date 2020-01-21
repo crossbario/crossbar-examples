@@ -37,12 +37,12 @@ class SpeechSynthAdapter(ApplicationSession):
 
         # register methods on this object for remote calling via WAMP
         for proc in [self.say, self.is_busy]:
-            uri = u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.{}'.format(self._id, proc.__name__)
+            uri = 'io.crossbar.examples.iot.devices.pi.{}.speechsynth.{}'.format(self._id, proc.__name__)
             yield self.register(proc, uri)
             log.msg("SpeechSynthAdapter registered procedure {}".format(uri))
 
         # signal we are done with initializing our component
-        self.publish(u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_ready'.format(self._id))
+        self.publish('io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_ready'.format(self._id))
         log.msg("SpeechSynthAdapter ready.")
 
     @inlineCallbacks
@@ -55,14 +55,14 @@ class SpeechSynthAdapter(ApplicationSession):
         else:
             # mark TTS engine as busy and publish event
             self._is_busy = True
-            self.publish(u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_speech_start'.format(self._id), text)
+            self.publish('io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_speech_start'.format(self._id), text)
 
             # start TTS
             yield getProcessOutput(self._flite, ['-voice', self._voice, '-t', text])
 
             # mark TTS engine as free and publish event
             self._is_busy = False
-            self.publish(u'io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_speech_end'.format(self._id))
+            self.publish('io.crossbar.examples.iot.devices.pi.{}.speechsynth.on_speech_end'.format(self._id))
 
     def is_busy(self):
         """

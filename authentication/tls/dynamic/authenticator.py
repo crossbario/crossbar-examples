@@ -35,7 +35,7 @@ from autobahn.wamp.exception import ApplicationError
 class MyAuthenticator(ApplicationSession):
 
    # our "database" of accepted client certificate fingerprints
-   ACCEPTED_CERTS = set([u'B6:E5:E6:F2:2A:86:DB:3C:DC:9F:51:42:58:39:9B:14:92:5D:A1:EB'])
+   ACCEPTED_CERTS = set(['B6:E5:E6:F2:2A:86:DB:3C:DC:9F:51:42:58:39:9B:14:92:5D:A1:EB'])
 
    @inlineCallbacks
    def onJoin(self, details):
@@ -68,12 +68,12 @@ class MyAuthenticator(ApplicationSession):
                # here, we are returning the client certificate subject CN, but
                # we could also use the certificate fingerprint as authid or remap
                # the fingerprint to yet some other authid
-               u'authid': subject_cn,
+               'authid': subject_cn,
 
                # here, we set the authrole to a fixed value "backend". we could also
                # do a database lookup here, or parse the client cert CN is both an
                # authid and authrole (eg consider CN="node301#backend")
-               u'role': u'backend'
+               'role': 'backend'
             }
 
       # register our dynamic authenticator so Crossbar.io is aware of and can call it

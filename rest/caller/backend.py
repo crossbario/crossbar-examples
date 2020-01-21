@@ -47,7 +47,7 @@ class AppSession(ApplicationSession):
             print("add2() called with {} and {}".format(x, y))
             return x + y
 
-        yield self.register(add2, u'com.example.add2')
+        yield self.register(add2, 'com.example.add2')
 
         # a procedure returning a positional result
         #
@@ -56,7 +56,7 @@ class AppSession(ApplicationSession):
             parts = fullname.split()
             return CallResult(*parts)
 
-        yield self.register(split_name, u'com.example.split_name')
+        yield self.register(split_name, 'com.example.split_name')
 
         # a procedure returning a keyword-base result
         #
@@ -64,7 +64,7 @@ class AppSession(ApplicationSession):
             print("add_complex() called with {}".format((a, ai, b, bi)))
             return CallResult(c=a + b, ci=ai + bi)
 
-        yield self.register(add_complex, u'com.example.add_complex')
+        yield self.register(add_complex, 'com.example.add_complex')
 
         # raising standard exceptions
         #
@@ -75,22 +75,22 @@ class AppSession(ApplicationSession):
                 # this also will raise, if x < 0
                 return math.sqrt(x)
 
-        yield self.register(sqrt, u'com.example.sqrt')
+        yield self.register(sqrt, 'com.example.sqrt')
 
         # raising WAMP application exceptions
         #
         def checkname(name):
             if name in ['foo', 'bar']:
-                raise ApplicationError(u'com.example.error.reserved')
+                raise ApplicationError('com.example.error.reserved')
 
             if name.lower() != name and name.upper() != name:
                 # forward positional arguments in exceptions
-                raise ApplicationError(u'com.example.error.mixed_case', name.lower(), name, name.upper())
+                raise ApplicationError('com.example.error.mixed_case', name.lower(), name, name.upper())
 
             if len(name) < 3 or len(name) > 10:
                 # forward keyword arguments in exceptions
-                raise ApplicationError(u'com.example.error.invalid_length', min=3, max=10)
+                raise ApplicationError('com.example.error.invalid_length', min=3, max=10)
 
-        yield self.register(checkname, u'com.example.checkname')
+        yield self.register(checkname, 'com.example.checkname')
 
         print("all procedures registered")

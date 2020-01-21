@@ -36,12 +36,12 @@ class ClientSession(ApplicationSession):
         print("Client session connected.")
 
         # join the realm under the specified authid, and perform WAMP-ticket authentication
-        self.join(self.config.realm, [u"ticket"], self.config.extra[u'authid'])
+        self.join(self.config.realm, [u"ticket"], self.config.extra['authid'])
 
     def onChallenge(self, challenge):
         if challenge.method == u"ticket":
             print("WAMP-Ticket challenge received: {}".format(challenge))
-            return self.config.extra[u'ticket']
+            return self.config.extra['ticket']
         else:
             raise Exception("Invalid authmethod {}".format(challenge.method))
 
@@ -66,9 +66,9 @@ if __name__ == '__main__':
     from autobahn.twisted.wamp import ApplicationRunner
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=u'realm1', help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--authid', dest='authid', type=six.text_type, default=u'tobias1', help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--realm', dest='realm', type=six.text_type, default='realm1', help='The realm to join. If not provided, let the router auto-choose the realm.')
+    parser.add_argument('--authid', dest='authid', type=six.text_type, default='tobias1', help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
     parser.add_argument('--ticket', dest='ticket', type=six.text_type, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
     options = parser.parse_args()
 
@@ -77,8 +77,8 @@ if __name__ == '__main__':
         ticket = six.moves.input('Enter current TOTP value for authid "{}" (e.g. "522955"): '.format(options.authid))
 
     extra = {
-        u'authid': options.authid,
-        u'ticket': ticket
+        'authid': options.authid,
+        'ticket': ticket
     }
 
     runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)

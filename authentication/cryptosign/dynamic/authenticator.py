@@ -77,7 +77,7 @@ class AuthenticatorSession(ApplicationSession):
       # build a map from pubkeys to principals
       pubkey_to_principals = {}
       for p in PRINCIPALS:
-         for k in p[u'authorized_keys']:
+         for k in p['authorized_keys']:
             if k in pubkey_to_principals:
                raise Exception("ambiguous key {}".format(k))
             else:
@@ -88,25 +88,25 @@ class AuthenticatorSession(ApplicationSession):
       def authenticate(realm, authid, details):
          self.log.debug("authenticate({realm}, {authid}, {details})", realm=realm, authid=authid, details=details)
 
-         assert(u'authmethod' in details)
-         assert(details[u'authmethod'] == u'cryptosign')
-         assert(u'authextra' in details)
-         assert(u'pubkey' in details[u'authextra'])
+         assert('authmethod' in details)
+         assert(details['authmethod'] == 'cryptosign')
+         assert('authextra' in details)
+         assert('pubkey' in details['authextra'])
 
-         pubkey = details[u'authextra'][u'pubkey']
+         pubkey = details['authextra']['pubkey']
          self.log.info("authenticating session with public key = {pubkey}", pubkey=pubkey)
 
          if pubkey in pubkey_to_principals:
             principal = pubkey_to_principals[pubkey]
             auth = {
-               u'pubkey': pubkey,
-               u'realm': principal[u'realm'],
-               u'authid': principal[u'authid'],
-               u'role': principal[u'role'],
-               u'extra': principal[u'extra'],
-               u'cache': True
+               'pubkey': pubkey,
+               'realm': principal['realm'],
+               'authid': principal['authid'],
+               'role': principal['role'],
+               'extra': principal['extra'],
+               'cache': True
             }
-            self.log.info("found valid principal {authid} matching public key", authid=auth[u'authid'])
+            self.log.info("found valid principal {authid} matching public key", authid=auth['authid'])
             return auth
          else:
             self.log.error("no principal found matching public key")

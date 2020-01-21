@@ -11,7 +11,7 @@ class Client(ApplicationSession):
       self.log.info("\n\n*** Transport is using '{serializer}' serializer ***\n", serializer=self._transport._serializer.SERIALIZER_ID)
 
       try:
-         res = yield self.call(u'com.example.add2', 2, 3)
+         res = yield self.call('com.example.add2', 2, 3)
          self.log.info("Procedure called with result: {res}", res=res)
       except:
          self.log.failure("Procedure call failed: {log_failure.value}")
@@ -33,8 +33,8 @@ if __name__ == '__main__':
    import argparse
 
    parser = argparse.ArgumentParser()
-   parser.add_argument('--realm', dest='realm', type=six.text_type, default=u'realm1', help='The realm to join. If not provided, let the router auto-choose the realm (default).')
-   parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+   parser.add_argument('--realm', dest='realm', type=six.text_type, default='realm1', help='The realm to join. If not provided, let the router auto-choose the realm (default).')
+   parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
    options = parser.parse_args()
 
    from autobahn.twisted.wamp import ApplicationRunner

@@ -35,7 +35,7 @@ class BuzzerComponent(ApplicationSession):
     def onJoin(self, details):
 
         self._serial = get_serial()
-        self._prefix = u'io.crossbar.demo.iotstarterkit.{}.buzzer'.format(self._serial)
+        self._prefix = 'io.crossbar.demo.iotstarterkit.{}.buzzer'.format(self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("BuzzerComponent connected: {details}", details=details)
@@ -54,7 +54,7 @@ class BuzzerComponent(ApplicationSession):
             (self.beep, 'beep'),
             (self.welcome, 'welcome'),
         ]:
-            yield self.register(proc[0], u'{}.{}'.format(self._prefix, proc[1]))
+            yield self.register(proc[0], '{}.{}'.format(self._prefix, proc[1]))
 
         self.log.info("BuzzerComponent ready!")
 
@@ -109,8 +109,8 @@ class BuzzerComponent(ApplicationSession):
 if __name__ == '__main__':
 
     # Crossbar.io connection configuration
-    url = os.environ.get('CBURL', u'wss://demo.crossbar.io/ws')
-    realm = os.environ.get('CBREALM', u'crossbardemo')
+    url = os.environ.get('CBURL', 'wss://demo.crossbar.io/ws')
+    realm = os.environ.get('CBREALM', 'crossbardemo')
 
     # parse command line parameters
     parser = argparse.ArgumentParser()
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
     extra = {
         # GPI pin of buzzer
-        u'buzzer_pin': 16,
+        'buzzer_pin': 16,
     }
 
     # create and start app runner for our app component ..

@@ -6,10 +6,10 @@ from authenticator import PRINCIPALS_DB
 
 # generate SVGs for the QR codes of the principals
 for principal in PRINCIPALS_DB:
-    seed = PRINCIPALS_DB[principal][u'seed']
-    issuer = u'Crossbar.io'
+    seed = PRINCIPALS_DB[principal]['seed']
+    issuer = 'Crossbar.io'
     qrcode_data = qrcode_from_totp(seed, principal, issuer)
-    filename = u'{}.svg'.format(principal)
+    filename = '{}.svg'.format(principal)
     with open(filename, 'wb') as f:
         f.write(qrcode_data)
         print('QR Code for principal {} written to {}'.format(principal, filename))
@@ -18,6 +18,6 @@ for principal in PRINCIPALS_DB:
 while True:
     print("\n{}".format(utcnow()))
     for principal in PRINCIPALS_DB:
-        seed = PRINCIPALS_DB[principal][u'seed']
+        seed = PRINCIPALS_DB[principal]['seed']
         print("{}: {}".format(principal, compute_totp(seed)))
     sleep(10)

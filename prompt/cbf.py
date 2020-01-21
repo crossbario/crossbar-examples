@@ -8,7 +8,7 @@ class CmdGlobal(object):
         self.current_resource = None
 
     def __str__(self):
-        return u'CmdGlobal(current_resource_type={}, current_resource={})'.format(self.current_resource_type, self.current_resource)
+        return 'CmdGlobal(current_resource_type={}, current_resource={})'.format(self.current_resource_type, self.current_resource)
 
 
 class CmdConfig(object):
@@ -19,7 +19,7 @@ class CmdConfig(object):
         self.resource = None
 
     def __str__(self):
-        return u'CmdConfig(verbose={}, resource_type={}, resource={})'.format(self.verbose, self.resource_type, self.resource)
+        return 'CmdConfig(verbose={}, resource_type={}, resource={})'.format(self.verbose, self.resource_type, self.resource)
 
 
 global_cfg = CmdGlobal()
@@ -42,7 +42,7 @@ def cli(ctx, verbose):
 @cli.command(name='say')
 @click.option(
     '--message',
-    default=u'Hello, world!',
+    default='Hello, world!',
     help='Set the message to say hello',
 )
 @click.pass_obj
@@ -65,7 +65,7 @@ def cmd_cd_node(cfg, resource):
     """
     Change current resource
     """
-    global_cfg.current_resource_type = u'node'
+    global_cfg.current_resource_type = 'node'
     global_cfg.current_resource = resource
     click.echo(cfg)
     click.echo(global_cfg)
@@ -74,7 +74,7 @@ def cmd_cd_node(cfg, resource):
 @click.argument('resource')
 @click.pass_obj
 def cmd_cd_worker(cfg, resource):
-    global_cfg.current_resource_type = u'worker'
+    global_cfg.current_resource_type = 'worker'
     global_cfg.current_resource = resource
     click.echo(cfg)
     click.echo(global_cfg)
@@ -83,7 +83,7 @@ def cmd_cd_worker(cfg, resource):
 @click.argument('resource')
 @click.pass_obj
 def cmd_cd_transport(cfg, resource):
-    global_cfg.current_resource_type = u'transport'
+    global_cfg.current_resource_type = 'transport'
     global_cfg.current_resource = resource
     click.echo(cfg)
     click.echo(global_cfg)
@@ -99,13 +99,13 @@ def cmd_stop(cfg):
 @click.argument('resource')
 @click.option(
     '--mode',
-    help=u'graceful: wait for all clients to disconnect before stopping\n\nimmediate: stop transport forcefully disconnecting all clients',
-    type=click.Choice([u'graceful', u'immediate']),
-    default=u'graceful'
+    help='graceful: wait for all clients to disconnect before stopping\n\nimmediate: stop transport forcefully disconnecting all clients',
+    type=click.Choice(['graceful', 'immediate']),
+    default='graceful'
 )
 @click.pass_obj
 def cmd_stop_transport(cfg, resource, mode):
-    cfg.resource_type = u'transport'
+    cfg.resource_type = 'transport'
     cfg.resource = resource
     click.echo(cfg)
     click.echo(global_cfg)

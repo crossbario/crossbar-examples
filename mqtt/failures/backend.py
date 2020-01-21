@@ -15,15 +15,15 @@ class Backend(ApplicationSession):
             self.log.info('received event on {topic}: {msg}', topic=details.topic, msg=msg)
             self.log.info('details: {details}', details=details)
 
-        sub = yield self.subscribe(on_event, u'', SubscribeOptions(match=u'prefix', details=True))
+        sub = yield self.subscribe(on_event, '', SubscribeOptions(match='prefix', details=True))
 
         self.log.info('backend subscribed: {sub}', sub=sub)
 
         counter = 0
 
         while True:
-            msg = u'counter is at {}'.format(counter)
-            pub = yield self.publish(u'topic1', msg, options=PublishOptions(exclude_me=False, acknowledge=True))
+            msg = 'counter is at {}'.format(counter)
+            pub = yield self.publish('topic1', msg, options=PublishOptions(exclude_me=False, acknowledge=True))
             self.log.info('event published: {pub}', pub=pub)
             counter += 1
             yield sleep(1)

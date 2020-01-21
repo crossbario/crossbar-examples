@@ -28,16 +28,16 @@ class ClientSession(ApplicationSession):
          service_name = "???"
          peer = "???"
          if session_details:
-            if u'authextra' in session_details and session_details[u'authextra']:
-               service_name = session_details[u'authextra'].get(u'service_name', "???")
-            if u'transport' in session_details and session_details[u'transport']:
-               peer = session_details[u'transport'].get(u'peer', "???")
+            if 'authextra' in session_details and session_details['authextra']:
+               service_name = session_details['authextra'].get('service_name', "???")
+            if 'transport' in session_details and session_details['transport']:
+               peer = session_details['transport'].get('peer', "???")
          print('service_name={} peer={}'.format(service_name.ljust(40), peer.ljust(20)))
 
-      sessions = yield self.call(u'wamp.session.list')
+      sessions = yield self.call('wamp.session.list')
       for session_id in sessions:
          try:
-            session_info = yield self.call(u'wamp.session.get', session_id)
+            session_info = yield self.call('wamp.session.get', session_id)
             print_session(session_info)
          except:
             pass
@@ -47,20 +47,20 @@ class ClientSession(ApplicationSession):
          if session_details:
             print_session(session_details)
 
-      yield self.subscribe(on_session_join, u'wamp.session.on_join')
+      yield self.subscribe(on_session_join, 'wamp.session.on_join')
 
       def on_session_leave(session_id):
          print("WAMP session has left: {}".format(session_id))
 
-      yield self.subscribe(on_session_leave, u'wamp.session.on_leave')
+      yield self.subscribe(on_session_leave, 'wamp.session.on_leave')
 
 
 if __name__ == '__main__':
 
    parser = argparse.ArgumentParser()
    parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-   parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://192.168.40.121:8080/ws', help='The router URL (default: "ws://localhost:8080/ws").')
-   parser.add_argument('--realm', dest='realm', type=six.text_type, default=u'realm1', help='The realm to join (default: "realm1").')
+   parser.add_argument('--url', dest='url', type=six.text_type, default='ws://192.168.40.121:8080/ws', help='The router URL (default: "ws://localhost:8080/ws").')
+   parser.add_argument('--realm', dest='realm', type=six.text_type, default='realm1', help='The realm to join (default: "realm1").')
 
    args = parser.parse_args()
 

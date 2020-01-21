@@ -46,25 +46,25 @@ class ClientSession(ApplicationSession):
     def onConnect(self):
         print("onConnect()")
 
-        print('Using public key {}'.format(self.config.extra[u'pubkey']))
+        print('Using public key {}'.format(self.config.extra['pubkey']))
 
         # create a proxy signing key with the private key being held in SSH agent
-        self._key = yield SSHAgentSigningKey.new(self.config.extra[u'pubkey'])
+        self._key = yield SSHAgentSigningKey.new(self.config.extra['pubkey'])
 
         # authentication extra information for wamp-cryptosign
         extra = {
             # forward the client pubkey: this allows us to omit authid as
             # the router can identify us with the pubkey already
-            u'pubkey': self._key.public_key(),
+            'pubkey': self._key.public_key(),
 
             # request channel binding
-            u'channel_binding': u'tls-unique'
+            'channel_binding': 'tls-unique'
         }
 
         # join and authenticate using WAMP-cryptosign
         self.join(self.config.realm,
-                  authmethods=[u'cryptosign'],
-                  authid=self.config.extra[u'authid'],
+                  authmethods=['cryptosign'],
+                  authid=self.config.extra['authid'],
                   authextra=extra)
 
     def onChallenge(self, challenge):
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--pubkey', dest='pubkey', type=six.text_type, default=None, help='Filename of the client SSH Ed25519 public key.')
     parser.add_argument('--trustroot', dest='trustroot', type=six.text_type, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=u'ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
     parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
     parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
     options = parser.parse_args()
@@ -127,9 +127,9 @@ if __name__ == '__main__':
 
     # forward stuff to our session
     extra = {
-        u'authid': options.authid,
-        u'pubkey': pubkey,
-        u'trustroot': trustroot
+        'authid': options.authid,
+        'pubkey': pubkey,
+        'trustroot': trustroot
     }
 
     runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)

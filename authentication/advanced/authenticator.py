@@ -37,15 +37,15 @@ from autobahn.wamp.exception import ApplicationError
 
 # our principal "database"
 PRINCIPALS_DB = {
-   u'user1': {
-      u'realm': u'realm-user1',
-      u'role': u'user',
-      u'ticket': u'123secret'
+   'user1': {
+      'realm': 'realm-user1',
+      'role': 'user',
+      'ticket': '123secret'
    },
-   u'user2': {
-      u'realm': u'realm-user2',
-      u'role': u'user',
-      u'ticket': u'456secret'
+   'user2': {
+      'realm': 'realm-user2',
+      'role': 'user',
+      'ticket': '456secret'
    }
 }
 
@@ -66,16 +66,16 @@ class AuthenticatorSession(ApplicationSession):
             principal = PRINCIPALS_DB[authid]
 
             if ticket != principal['ticket']:
-               raise ApplicationError(u'com.example.invalid_ticket', "could not authenticate session - invalid ticket '{}' for principal {}".format(ticket, authid))
+               raise ApplicationError('com.example.invalid_ticket', "could not authenticate session - invalid ticket '{}' for principal {}".format(ticket, authid))
 
-            if realm and realm != principal[u'realm']:
-               raise ApplicationError(u'com.example_invalid_realm', "user {} should join {}, not {}".format(authid, principal[u'realm'], realm))
+            if realm and realm != principal['realm']:
+               raise ApplicationError('com.example_invalid_realm', "user {} should join {}, not {}".format(authid, principal['realm'], realm))
 
             res = {
-               u'realm': principal[u'realm'],
-               u'role': principal[u'role'],
-               u'extra': {
-                  u'my-custom-welcome-data': [1, 2, 3]
+               'realm': principal['realm'],
+               'role': principal['role'],
+               'extra': {
+                  'my-custom-welcome-data': [1, 2, 3]
                }
             }
             print("WAMP-Ticket authentication success: {}".format(res))

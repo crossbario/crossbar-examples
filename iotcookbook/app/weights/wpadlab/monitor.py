@@ -82,9 +82,9 @@ class WpadSerial(LineReceiver):
 
                 if changed:
                     payload = {
-                        u'id': self._id,
-                        u'timestamp': utcnow(),
-                        u'values': [1023 - data[p] for p in pins]
+                        'id': self._id,
+                        'timestamp': utcnow(),
+                        'values': [1023 - data[p] for p in pins]
                     }
 
                     self._session.publish(u"io.crossbar.demo.wpad.{}.on_change".format(self._wpad_id), payload)

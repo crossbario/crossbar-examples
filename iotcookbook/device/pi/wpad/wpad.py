@@ -52,7 +52,7 @@ def get_serial():
             line = line.strip()
             if line.startswith('Serial'):
                 _, serial = line.split(':')
-                return u'{}'.format(int(serial.strip(), 16))
+                return '{}'.format(int(serial.strip(), 16))
 
 
 def get_ip_address():
@@ -102,7 +102,7 @@ class WPad(ApplicationSession):
         now = time.time()
         self._tick_sent[self._tick_no] = now
         try:
-            pub = yield self.publish(u'{}.on_alive'.format(self._prefix), self._tick_no, options=PublishOptions(acknowledge=True, exclude_me=False))
+            pub = yield self.publish('{}.on_alive'.format(self._prefix), self._tick_no, options=PublishOptions(acknowledge=True, exclude_me=False))
         except:
             self.log.failure()
         else:
@@ -146,8 +146,8 @@ class WPad(ApplicationSession):
         self._my_ip = get_ip_address()
         self._joined_at = time.strftime("%H:%M")
 
-        self._app_prefix = u'io.crossbar.demo.wpad'
-        self._prefix = u'{}.wpad.{}'.format(self._app_prefix, self._serial)
+        self._app_prefix = 'io.crossbar.demo.wpad'
+        self._prefix = '{}.wpad.{}'.format(self._app_prefix, self._serial)
 
         self.log.info("Crossbar.io IoT Starterkit Serial No.: {serial}", serial=self._serial)
         self.log.info("WPad connected: {details}", details=details)
@@ -198,9 +198,9 @@ class WPad(ApplicationSession):
             self._ledstrip.show()
 
             # publish WAMP event
-            self.publish(u'{}.on_wpad'.format(self._prefix), nvalues)
+            self.publish('{}.on_wpad'.format(self._prefix), nvalues)
 
-        scan_rate = float(extra.get(u'scan_rate', 50))
+        scan_rate = float(extra.get('scan_rate', 50))
         self.log.info('Scanning sensors with {} Hz ..'.format(scan_rate))
         LoopingCall(log_adc).start(1. / scan_rate)
 
@@ -210,9 +210,9 @@ class WPad(ApplicationSession):
 
 
         # our quad, alphanumeric display: https://www.adafruit.com/products/2157
-        self._disp = QuadAlphanum(extra[u'i2c_address'])
+        self._disp = QuadAlphanum(extra['i2c_address'])
         self._disp.clear()
-        self._disp.setBrightness(int(round(extra[u'brightness'] * 15)))
+        self._disp.setBrightness(int(round(extra['brightness'] * 15)))
 
         @inlineCallbacks
         def displayNotice():
@@ -230,7 +230,7 @@ class WPad(ApplicationSession):
             self.log.info('TICK received [tick {}, rtt {}]'.format(tick_no, rtt))
             self.flash(r=0, g=255, b=0, repeat=1)
 
-        yield self.subscribe(on_tick, u'{}.on_alive'.format(self._prefix))
+        yield self.subscribe(on_tick, '{}.on_alive'.format(self._prefix))
 
         self._tick_no = 0
         self._tick_loop = LoopingCall(self._tick)
@@ -239,7 +239,7 @@ class WPad(ApplicationSession):
         LoopingCall(self.show_load).start(1)
 
         # signal we are done with initializing our component
-        self.publish(u'{}.on_ready'.format(self._prefix))
+        self.publish('{}.on_ready'.format(self._prefix))
         self.log.info("WPad ready.")
 
         self.flash()
@@ -278,24 +278,24 @@ if __name__ == '__main__':
     # custom configuration data
     extra = {
         # sensor scan rate in Hz
-        u'scan_rate': args.scanrate,
+        'scan_rate': args.scanrate,
 
         # PIN numbering mode (use "bcm" or "board")
-        u'pin_mode': 'bcm',
+        'pin_mode': 'bcm',
 
         # these pins are digouts wired to the sensor matrix rows (active GND!)
-        u'row_pins': [26, 19, 13, 6],
+        'row_pins': [26, 19, 13, 6],
 
-        u'led_count': 8,            # Number of LED pixels.
-        u'led_pin': 12,             # GPIO pin connected to the pixels (must support PWM!).
-        u'led_freq_hz': 800000,     # LED signal frequency in hertz (usually 800khz)
-        u'led_dma': 5,              # DMA channel to use for generating signal (try 5)
-        u'led_brightness': 96,      # Set to 0 for darkest and 255 for brightest
-        u'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
+        'led_count': 8,            # Number of LED pixels.
+        'led_pin': 12,             # GPIO pin connected to the pixels (must support PWM!).
+        'led_freq_hz': 800000,     # LED signal frequency in hertz (usually 800khz)
+        'led_dma': 5,              # DMA channel to use for generating signal (try 5)
+        'led_brightness': 96,      # Set to 0 for darkest and 255 for brightest
+        'led_invert': False,       # True to invert the signal (when using NPN transistor level shift)
 
         # the quad-alpha display hardware configuration
-        u'i2c_address': 0x77,
-        u'brightness': 1.,
+        'i2c_address': 0x77,
+        'brightness': 1.,
     }
 
     # create and start app runner for our app component ..

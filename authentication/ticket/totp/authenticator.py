@@ -59,16 +59,16 @@ class AuthenticatorSession(ApplicationSession):
          pprint(details)
 
          if authid in PRINCIPALS_DB:
-            secret = PRINCIPALS_DB[authid][u'seed']
+            secret = PRINCIPALS_DB[authid]['seed']
             if check_totp(secret, ticket):
-               return PRINCIPALS_DB[authid][u'role']
+               return PRINCIPALS_DB[authid]['role']
             else:
-               raise ApplicationError(u'com.example.invalid_ticket', u'could not authenticate session - invalid ticket "{}" for principal {}'.format(ticket, authid))
+               raise ApplicationError('com.example.invalid_ticket', 'could not authenticate session - invalid ticket "{}" for principal {}'.format(ticket, authid))
          else:
-            raise ApplicationError(u'com.example.no_such_user', u'could not authenticate session - no such principal {}'.format(authid))
+            raise ApplicationError('com.example.no_such_user', 'could not authenticate session - no such principal {}'.format(authid))
 
       try:
-         yield self.register(authenticate, u'com.example.authenticate')
+         yield self.register(authenticate, 'com.example.authenticate')
          print("WAMP-Ticket dynamic authenticator registered!")
       except Exception as e:
          print("Failed to register dynamic authenticator: {0}".format(e))
