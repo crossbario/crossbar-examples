@@ -28,7 +28,7 @@ class Backend(ApplicationSession):
         yield self.register(rand, 'com.example.rand')
 
         def blen(binary):
-            if type(binary) != six.binary_type:
+            if type(binary) != bytes:
                 raise ApplicationError('com.example.error.invalid_type', 'expected binary, got {}'.format(type(binary)))
             return len(binary)
 

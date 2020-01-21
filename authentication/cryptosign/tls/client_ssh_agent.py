@@ -114,7 +114,7 @@ if __name__ == '__main__':
     # load client public key
     with open(options.pubkey, 'r') as f:
         pubkey = f.read()
-        if type(pubkey) == six.binary_type:
+        if type(pubkey) == bytes:
             pubkey = pubkey.decode('ascii')
 
     # load router public key (optional, if avail., router will be authenticated too)
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     if options.trustroot:
         with open(options.trustroot, 'r') as f:
             trustroot = f.read()
-            if type(trustroot) == six.binary_type:
+            if type(trustroot) == bytes:
                 trustroot = trustroot.decode('ascii')
 
     # forward stuff to our session
