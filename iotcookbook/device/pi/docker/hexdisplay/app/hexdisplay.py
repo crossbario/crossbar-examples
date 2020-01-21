@@ -102,7 +102,7 @@ class HexDisplay(HT16K33):
         :type char: str
         """
         assert(pos in range(self.TOTAL_DIGITS))
-        assert(type(char) == six.text_type)
+        assert(type(char) == str)
 
         char = char.strip().upper()
         bitmask = DIGIT_VALUES.get(char, 0x00)
@@ -132,7 +132,7 @@ class HexDisplay(HT16K33):
         """
         Set a message text on the display and refresh the display.
         """
-        assert(type(message) == six.text_type)
+        assert(type(message) == str)
         i = 0
         for c in message[:self.TOTAL_DIGITS]:
             self.set_digit(i, c)
@@ -141,7 +141,7 @@ class HexDisplay(HT16K33):
 
     @inlineCallbacks
     def scroll_message(self, message, delay=150):
-        assert(type(message) == six.text_type)
+        assert(type(message) == str)
         _message = message + ' ' * self.TOTAL_DIGITS
         for i in range(len(message) + 1):
             self.set_message(_message[i:])

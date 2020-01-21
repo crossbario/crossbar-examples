@@ -48,13 +48,13 @@ if __name__ == '__main__':
 
    parser.add_argument('--url',
                        dest='url',
-                       type=six.text_type,
+                       type=str,
                        default="ws://localhost:8080/ws",
                        help='The router URL (default: "ws://localhost:8080/ws").')
 
    parser.add_argument('--realm',
                        dest='realm',
-                       type=six.text_type,
+                       type=str,
                        default="realm1",
                        help='The realm to join (default: "realm1").')
 

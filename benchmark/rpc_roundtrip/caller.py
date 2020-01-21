@@ -126,8 +126,8 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--router", type=six.text_type, default="ws://10.1.1.11:9000", help='WAMP router URL.')
-    parser.add_argument("--realm", type=six.text_type, default="realm1", help='WAMP router realm.')
+    parser.add_argument("--router", type=str, default="ws://10.1.1.11:9000", help='WAMP router URL.')
+    parser.add_argument("--realm", type=str, default="realm1", help='WAMP router realm.')
 
     args = parser.parse_args()
 

@@ -33,8 +33,8 @@ if __name__ == '__main__':
    import argparse
 
    parser = argparse.ArgumentParser()
-   parser.add_argument('--realm', dest='realm', type=six.text_type, default='realm1', help='The realm to join. If not provided, let the router auto-choose the realm (default).')
-   parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+   parser.add_argument('--realm', dest='realm', type=str, default='realm1', help='The realm to join. If not provided, let the router auto-choose the realm (default).')
+   parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
    options = parser.parse_args()
 
    from autobahn.twisted.wamp import ApplicationRunner

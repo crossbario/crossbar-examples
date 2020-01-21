@@ -94,12 +94,12 @@ if __name__ == '__main__':
     # parse command line arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', dest='debug', action='store_true', default=False, help='Enable logging at level "debug".')
-    parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid.')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--key', dest='key', type=six.text_type, required=True, help='The private client key to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')
-    parser.add_argument('--routerkey', dest='routerkey', type=six.text_type, default=None, help='The public router key to verify the remote router against. A 32 bytes file containing the raw Ed25519 public key.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
-    parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
+    parser.add_argument('--authid', dest='authid', type=str, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid.')
+    parser.add_argument('--realm', dest='realm', type=str, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
+    parser.add_argument('--key', dest='key', type=str, required=True, help='The private client key to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')
+    parser.add_argument('--routerkey', dest='routerkey', type=str, default=None, help='The public router key to verify the remote router against. A 32 bytes file containing the raw Ed25519 public key.')
+    parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--agent', dest='agent', type=str, default=None, help='Path to Unix domain socket of SSH agent to use.')
     options = parser.parse_args()
 
     if options.debug:

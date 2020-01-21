@@ -66,10 +66,10 @@ if __name__ == '__main__':
     from autobahn.twisted.wamp import ApplicationRunner
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default='realm1', help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--authid', dest='authid', type=six.text_type, default='tobias1', help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
-    parser.add_argument('--ticket', dest='ticket', type=six.text_type, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--realm', dest='realm', type=str, default='realm1', help='The realm to join. If not provided, let the router auto-choose the realm.')
+    parser.add_argument('--authid', dest='authid', type=str, default='tobias1', help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--ticket', dest='ticket', type=str, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
     options = parser.parse_args()
 
     ticket = options.ticket

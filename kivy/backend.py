@@ -83,9 +83,9 @@ if __name__ == '__main__':
     # parse command line parameters
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--debug', action='store_true', default=False, help='Enable debug output.')
-    parser.add_argument('--url', dest='url', type=six.text_type, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=realm, help='The realm to join (default: "realm1").')
-    parser.add_argument('--service', dest='service', type=six.text_type, default='unknown', help='The service name.')
+    parser.add_argument('--url', dest='url', type=str, default=url, help='The router URL (default: "ws://localhost:8080/ws").')
+    parser.add_argument('--realm', dest='realm', type=str, default=realm, help='The realm to join (default: "realm1").')
+    parser.add_argument('--service', dest='service', type=str, default='unknown', help='The service name.')
 
     args = parser.parse_args()
 

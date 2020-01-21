@@ -97,12 +97,12 @@ if __name__ == '__main__':
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--authid', dest='authid', type=six.text_type, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
-    parser.add_argument('--realm', dest='realm', type=six.text_type, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--pubkey', dest='pubkey', type=six.text_type, default=None, help='Filename of the client SSH Ed25519 public key.')
-    parser.add_argument('--trustroot', dest='trustroot', type=six.text_type, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
-    parser.add_argument('--url', dest='url', type=six.text_type, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
-    parser.add_argument('--agent', dest='agent', type=six.text_type, default=None, help='Path to Unix domain socket of SSH agent to use.')
+    parser.add_argument('--authid', dest='authid', type=str, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--realm', dest='realm', type=str, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
+    parser.add_argument('--pubkey', dest='pubkey', type=str, default=None, help='Filename of the client SSH Ed25519 public key.')
+    parser.add_argument('--trustroot', dest='trustroot', type=str, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
+    parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--agent', dest='agent', type=str, default=None, help='Path to Unix domain socket of SSH agent to use.')
     parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
     options = parser.parse_args()
 
