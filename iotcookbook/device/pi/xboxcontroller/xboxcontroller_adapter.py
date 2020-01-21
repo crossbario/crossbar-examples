@@ -138,13 +138,13 @@ if __name__ == '__main__':
     parser.add_argument("-d", "--debug", action="store_true",
                         help="Enable debug output.")
 
-    parser.add_argument("--router", type=unicode, required=True,
+    parser.add_argument("--router", type=str, required=True,
                         help='URL of WAMP router to connect to.')
 
-    parser.add_argument("--realm", type=unicode, default="iot_cookbook",
+    parser.add_argument("--realm", type=str, default="iot_cookbook",
                         help='The WAMP realm to join on the router.')
 
-    parser.add_argument("--id", type=unicode, default=None,
+    parser.add_argument("--id", type=str, default=None,
                         help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()

@@ -57,8 +57,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
-    parser.add_argument('--router', type=unicode, default='ws://127.0.0.1:8080/ws', help='WAMP router URL.')
-    parser.add_argument('--realm', type=unicode, default='crossbardemo', help='WAMP router realm.')
+    parser.add_argument('--router', type=str, default='ws://127.0.0.1:8080/ws', help='WAMP router URL.')
+    parser.add_argument('--realm', type=str, default='crossbardemo', help='WAMP router realm.')
 
     args = parser.parse_args()
 

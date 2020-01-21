@@ -132,7 +132,7 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--debug', action='store_true', help='Enable debug output.')
     parser.add_argument("--router", type=str, default="wss://demo.crossbar.io/ws", help='WAMP router URL.')
     parser.add_argument("--realm", type=str, default="crossbardemo", help='WAMP router realm.')
-    parser.add_argument("--id", type=unicode, default=None, help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
+    parser.add_argument("--id", type=str, default=None, help='The Device ID to use. Default is to use the RaspberryPi Serial Number')
 
     args = parser.parse_args()
 
