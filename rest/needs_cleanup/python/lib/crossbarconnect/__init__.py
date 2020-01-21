@@ -16,7 +16,6 @@
 ##
 ###############################################################################
 
-from __future__ import absolute_import
 
 __doc__ = """
 Crossbar.io Connector for Python.
