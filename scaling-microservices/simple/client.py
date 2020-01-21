@@ -1,7 +1,6 @@
 import argparse
 import time
 
-import six
 
 import txaio
 txaio.use_twisted()

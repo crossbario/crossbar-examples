@@ -29,7 +29,6 @@
 import os
 from pprint import pprint
 
-import six
 
 from twisted.internet.defer import inlineCallbacks, returnValue
 

@@ -1,5 +1,4 @@
 import argparse
-import six
 from pprint import pprint
 
 from zlmdb import Database

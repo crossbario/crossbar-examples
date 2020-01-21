@@ -94,7 +94,6 @@ from twisted.internet.ssl import optionsForClientTLS, trustRootFromCertificates,
 
 if __name__ == '__main__':
 
-    import six
     import sys
     import argparse
     from autobahn.twisted.wamp import ApplicationRunner

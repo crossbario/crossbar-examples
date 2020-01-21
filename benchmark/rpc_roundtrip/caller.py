@@ -2,7 +2,6 @@ import numpy as np
 
 from time import time
 import argparse
-import six
 
 from zlmdb import time_ns, Database
 from crossbar.common.processinfo import ProcessInfo

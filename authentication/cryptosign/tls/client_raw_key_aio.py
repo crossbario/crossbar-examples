@@ -86,7 +86,6 @@ class ClientSession(ApplicationSession):
 
 if __name__ == '__main__':
 
-    import six
     import sys
     import argparse
 

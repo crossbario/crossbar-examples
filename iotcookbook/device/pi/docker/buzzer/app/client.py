@@ -1,7 +1,6 @@
 import os
 import argparse
 
-import six
 
 import txaio
 txaio.use_twisted()

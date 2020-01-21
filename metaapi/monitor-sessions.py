@@ -2,7 +2,6 @@ import os
 import sys
 from pprint import pprint
 
-import six
 import txaio
 
 import argparse

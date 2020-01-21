@@ -1,4 +1,3 @@
-import six
 import argparse
 from pprint import pformat
 

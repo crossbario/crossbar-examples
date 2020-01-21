@@ -3,7 +3,6 @@ import time
 import argparse
 import random
 
-import six
 import txaio
 txaio.use_twisted()
 

@@ -1,5 +1,4 @@
 import argparse
-import six
 import txaio
 
 from twisted.internet import reactor

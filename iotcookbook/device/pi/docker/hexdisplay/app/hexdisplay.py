@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-import six
 
 from twisted.internet.defer import inlineCallbacks
 from autobahn.twisted.util import sleep
@@ -87,7 +86,7 @@ class HexDisplay(HT16K33):
         Set a digit to a raw value.
         """
         assert(pos in range(self.TOTAL_DIGITS))
-        assert(type(value) in six.integer_types)
+        assert(type(value) == int)
 
         self.buffer[pos * 2] = value & 0xFF
 

@@ -58,7 +58,6 @@ if __name__ == '__main__':
 
    import sys
    import argparse
-   import six
 
    parser = argparse.ArgumentParser()
    parser.add_argument('--authid', dest='authid', type=str, default=None, help='The authid to connect under (required)')

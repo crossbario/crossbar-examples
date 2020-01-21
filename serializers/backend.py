@@ -1,5 +1,4 @@
 import os
-import six
 
 from twisted.internet.defer import inlineCallbacks
 

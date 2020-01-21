@@ -1,4 +1,3 @@
-import six
 from twisted.internet.defer import inlineCallbacks
 from twisted.internet import reactor
 from autobahn.twisted.wamp import ApplicationSession

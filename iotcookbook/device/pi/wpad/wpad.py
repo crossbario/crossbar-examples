@@ -17,7 +17,6 @@ import psutil
 import RPi.GPIO as GPIO
 import Adafruit_ADS1x15
 
-import six
 import txaio
 txaio.use_twisted()
 

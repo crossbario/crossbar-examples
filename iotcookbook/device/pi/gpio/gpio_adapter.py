@@ -3,7 +3,6 @@ import argparse
 
 import RPi.GPIO as GPIO
 
-import six
 import txaio
 txaio.use_twisted()
 

@@ -26,7 +26,6 @@
 ##
 ###############################################################################
 
-import six
 from twisted.internet import reactor
 from autobahn.twisted.wamp import ApplicationSession
 

@@ -35,7 +35,6 @@ import base64
 import random
 from datetime import datetime
 
-import six
 from six.moves.urllib import parse
 from six.moves.http_client import HTTPConnection, HTTPSConnection
 

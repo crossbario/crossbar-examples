@@ -4,7 +4,6 @@ txaio.use_twisted()
 
 import os
 import argparse
-import six
 import txaio
 import random
 import sys
