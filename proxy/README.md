@@ -52,9 +52,14 @@ and listen on WebSocket connections for clients. There is a single
 backend for realm `realm1` which listens on two different (local)
 Unix-domain sockets: one at `router.sock` (via RawSocket) and one at
 `routerws.sock` (via WebSocket). This would likely be just a single
-rawsocket in a moer "production" configuration; the two exist for
+rawsocket in a more "production" configuration; the two exist for
 demonstration purposes.
 
-The `client.py` will start a client pointing at the proxy workers, yet
-ultimately contact the backend and publish some messages. You could
-start multiple `client.py` instances.
+To run the example, start at least three shells:
+
+ - in one, run "crossbar start" in this directory
+ - in a second, run "python client-publish.py"
+ - in a third, run "python client-listen.py"
+
+You may run more instances of the listen or publish scripts if you
+wish. Try shutting down various parts and starting them again.

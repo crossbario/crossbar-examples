@@ -16,26 +16,23 @@ comp = Component(
             },
             "serializers": ["json", "cbor"],
         },
-    ]
+    ],
+    realm="realm1",
 )
 
 @comp.on_join
 @inlineCallbacks
 def _(session, details):
     print("joined: {}".format(session))
+    topic_name = u"io.crossbar.demo.public.foo"
 
     def _foo(*args, **kw):
-        print("foo: {} {}".format(args, kw))
+        print("{}: {} {}".format(topic_name, args, kw))
 
-    topic_name = "io.crossbar.demo.public.foo"
     session.subscribe(_foo, topic_name)
     print("subscribed")
-    while True:
-        print("publish to '{}'".format(topic_name))
-        session.publish(
-            topic_name, 1, 2, foo="bar",
-            options=PublishOptions(exclude_me=False),
-        )
+    while session.is_connected():
+        print(".")
         yield sleep(1)
 
 if __name__ == "__main__":

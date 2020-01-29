@@ -114,31 +114,6 @@
             "type": "proxy",
             "options": {
             },
-            "backends": [
-                {
-                    "realm": "foo",
-                    "transport": {
-                        "type": "rawsocket",
-                        "endpoint": {
-                            "type": "unix",
-                            "path": "router.sock"
-                        },
-                        "url": "rs://localhost",
-                        "serializer": "cbor"
-                    }
-                },
-                {
-                    "transport": {
-                        "type": "websocket",
-                        "endpoint": {
-                            "type": "unix",
-                            "path": "routerws.sock"
-                        },
-                        "url": "ws://localhost",
-                        "serializers": ["json"]
-                    }
-                }
-            ],
             "transports": [
                 {
                     "type": "web",
@@ -168,14 +143,30 @@
                             }
                         },
                         "ws": {
-                            "type": "websocket",
+                            "type": "websocket-proxy",
                             "serializers": [
                                 "cbor", "msgpack", "json"
                             ],
+                            "backends": [
+                                {
+                                    "type": "websocket",
+                                    "endpoint": {
+                                        "type": "unix",
+                                        "path": "routerws.sock"
+                                    },
+                                    "url": "ws://localhost",
+                                    "serializers": ["json"]
+                                }
+                            ],
                             "options": {
-                                "allowed_origins": ["*"],
-                                "allow_null_origin": true,
-                                "enable_webstatus": true,
+                                "allowed_origins": [
+                                    "https://demo.crossbar.io:*",
+                                    "https://cbdemo-eu-central-1.crossbar.io:*",
+                                    "https://cbdemo-us-west-1.crossbar.io:*",
+                                    "https://cbdemo-ap-southeast-1.crossbar.io:*"
+                                ],
+                                "allow_null_origin": false,
+                                "enable_webstatus": false,
                                 "max_frame_size": 1048576,
                                 "max_message_size": 1048576,
                                 "auto_fragment_size": 65536,
@@ -208,19 +199,6 @@
             "type": "proxy",
             "options": {
             },
-            "backends": [
-                {
-                    "transport": {
-                        "type": "rawsocket",
-                        "endpoint": {
-                            "type": "unix",
-                            "path": "router.sock"
-                        },
-                        "url": "rs://localhost",
-                        "serializer": "cbor"
-                    }
-                }
-            ],
             "transports": [
                 {
                     "type": "web",
@@ -250,9 +228,20 @@
                             }
                         },
                         "ws": {
-                            "type": "websocket",
+                            "type": "websocket-proxy",
                             "serializers": [
                                 "cbor", "msgpack", "json"
+                            ],
+                            "backends": [
+                                {
+                                    "type": "websocket",
+                                    "endpoint": {
+                                        "type": "unix",
+                                        "path": "routerws.sock"
+                                    },
+                                    "url": "ws://localhost",
+                                    "serializers": ["json"]
+                                }
                             ],
                             "options": {
                                 "allowed_origins": ["*"],
