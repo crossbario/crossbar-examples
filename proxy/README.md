@@ -63,3 +63,15 @@ To run the example, start at least three shells:
 
 You may run more instances of the listen or publish scripts if you
 wish. Try shutting down various parts and starting them again.
+
+### Web Resources
+
+The example node configuration will start proxy workers, not only listening for incoming
+WebSocket connections (and proxying those to backend router workers), but _also_ serves
+various other web services:
+
+1. [http://localhost:8443](http://localhost:8443): **path "/", type "static"** - static web files
+1. [http://localhost:8443/info](http://localhost:8443/info): **path "info", type "info"** - node info page
+1. [http://localhost:8443/ws](http://localhost:8443/ws): **path "ws", type "websocket-proxy"** - websocket endpoint (of listening proxy)
+1. [http://localhost:8443/autobahn/autobahn/autobahn.js](http://localhost:8443/autobahn/autobahn/autobahn.js): **path "autobahn", type "archive"** - ZIP archive resource
+1. [http://127.0.0.1:8443/autobahn/autobahn-xbr/autobahn-xbr.js](http://127.0.0.1:8443/autobahn/autobahn-xbr/autobahn-xbr.js): **path "autobahn", type "archive"** - ZIP archive resource (same archive file, but different contained file referenced)
