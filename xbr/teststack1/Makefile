@@ -69,25 +69,25 @@ clean: clean_blockchain clean_master clean_edge1
 clean_master:
 	-docker-compose stop master
 	-docker rm teststack1_master_1
-	-rm -rf ${PWD}/master/.crossbar/.db-controller
-	-rm -rf ${PWD}/master/.crossbar/.change-engine
-	-rm -rf ${PWD}/master/.crossbar/.db-mrealm-*
+	-sudo rm -rf ${PWD}/master/.crossbar/.db-controller
+	-sudo rm -rf ${PWD}/master/.crossbar/.change-engine
+	-sudo rm -rf ${PWD}/master/.crossbar/.db-mrealm-*
 	-ls -la ${PWD}/master/.crossbar/
 
 clean_edge1:
 	-docker-compose stop edge1
 	-docker rm teststack1_edge1_1
-	-rm -f ${PWD}/edge1/.crossbar/autobahn.zip
-	-rm -rf ${PWD}/edge1/.xbrdb-transactions
-	-rm -rf ${PWD}/edge1/.testdb
+	-sudo rm -f ${PWD}/edge1/.crossbar/autobahn.zip
+	-sudo rm -rf ${PWD}/edge1/.xbrdb-transactions
+	-sudo rm -rf ${PWD}/edge1/.testdb
 	-ls -la ${PWD}/edge1/.crossbar/
 
 clean_blockchain:
 	-docker-compose stop blockchain
 	-docker rm teststack1_blockchain_1
+	-docker rm teststack1_blockchain_old_1
 	-rm -rf ./blockchain/.data
 	mkdir -p ./blockchain/.data
-
 
 stop:
 	-docker-compose stop

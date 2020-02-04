@@ -33,15 +33,17 @@ services:
             - "1545:1545"
 
     master:
-        image: crossbario/crossbarfx:pypy-amd64-19.10.1
-        user: "1000:1000"
+        image: crossbario/crossbarfx:pypy-slim-amd64-20.1.1
+        # user: "1000:1000"
         restart: always
         environment:
             - CROSSBAR_FABRIC_SUPERUSER=../default.pub
-            - CROSSBARFX_DISABLE_CE=1
             - CROSSBARFX_METERING_URL=https://metering.crossbario.com/submit
-        ports:
-            - "9000:9000"
+            - CE_DISABLE=1
+            - CROSSBARFX_DISABLE_CE=1
+        network_mode: host
+        #ports:
+        #    - "9000:9000"
         volumes:
             - "${PWD}/master:/node:rw"
         command:
@@ -52,8 +54,8 @@ services:
             - --loglevel=info
 
     edge1:
-        image: crossbario/crossbarfx:pypy-amd64-19.10.1
-        user: "1000:1000"
+        image: crossbario/crossbarfx:pypy-slim-amd64-20.1.1
+        # user: "1000:1000"
         restart: always
         depends_on:
             #- blockchain
@@ -63,6 +65,8 @@ services:
             #- XBR_DEBUG_NETWORK_ADDR
             - XBR_DEBUG_TOKEN_ADDR=0xcfeb869f69431e42cdb54a4f4f105c19c080a601
             - XBR_DEBUG_NETWORK_ADDR=0x254dffcd3277c0b1660f6d42efbb754edababc2b
+            - CE_DISABLE=1
+            - CROSSBARFX_DISABLE_CE=1
         network_mode: host
         #ports:
         #    - "8080:8080"
@@ -83,8 +87,8 @@ services:
         depends_on:
             - edge1
         environment:
-            - XBR_DEBUG_TOKEN_ADDR
-            - XBR_DEBUG_NETWORK_ADDR
+            - XBR_DEBUG_TOKEN_ADDR=0xcfeb869f69431e42cdb54a4f4f105c19c080a601
+            - XBR_DEBUG_NETWORK_ADDR=0x254dffcd3277c0b1660f6d42efbb754edababc2b
         volumes:
             - ${PWD}/python/:/app
         entrypoint: /usr/local/bin/python
@@ -102,8 +106,8 @@ services:
         depends_on:
             - edge1
         environment:
-            - XBR_DEBUG_TOKEN_ADDR
-            - XBR_DEBUG_NETWORK_ADDR
+            - XBR_DEBUG_TOKEN_ADDR=0xcfeb869f69431e42cdb54a4f4f105c19c080a601
+            - XBR_DEBUG_NETWORK_ADDR=0x254dffcd3277c0b1660f6d42efbb754edababc2b
         volumes:
             - ${PWD}/python/:/app
         entrypoint: /usr/local/bin/python
@@ -120,8 +124,8 @@ services:
         depends_on:
             - edge1
         environment:
-            - XBR_DEBUG_TOKEN_ADDR
-            - XBR_DEBUG_NETWORK_ADDR
+            - XBR_DEBUG_TOKEN_ADDR=0xcfeb869f69431e42cdb54a4f4f105c19c080a601
+            - XBR_DEBUG_NETWORK_ADDR=0x254dffcd3277c0b1660f6d42efbb754edababc2b
             - CBURL=ws://edge1:8080/ws
             - CBREALM=realm1
         volumes:
@@ -138,8 +142,8 @@ services:
         depends_on:
             - edge1
         environment:
-            - XBR_DEBUG_TOKEN_ADDR
-            - XBR_DEBUG_NETWORK_ADDR
+            - XBR_DEBUG_TOKEN_ADDR=0xcfeb869f69431e42cdb54a4f4f105c19c080a601
+            - XBR_DEBUG_NETWORK_ADDR=0x254dffcd3277c0b1660f6d42efbb754edababc2b
             - CBURL=ws://edge1:8080/ws
             - CBREALM=realm1
         volumes:
@@ -159,6 +163,8 @@ services:
             - "CBURL=ws://edge1:8080/ws"
             - "CBREALM=realm1"
             - "JUPYTERHUB_API_TOKEN=42"
+            - XBR_DEBUG_TOKEN_ADDR=0xcfeb869f69431e42cdb54a4f4f105c19c080a601
+            - XBR_DEBUG_NETWORK_ADDR=0x254dffcd3277c0b1660f6d42efbb754edababc2b
         volumes:
             - "${PWD}/workbench/notebooks/:/home/jovyan/notebooks:rw"
             - "${PWD}/workbench/.jupyter/:/home/jovyan/.jupyter:rw"
