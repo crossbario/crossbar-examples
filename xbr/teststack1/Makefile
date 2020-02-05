@@ -19,13 +19,19 @@ run:
 	docker-compose up -d blockchain master edge1
 
 run_blockchain:
-	docker-compose up -d blockchain
+	docker-compose up blockchain
 
 run_master:
-	docker-compose up -d master
+	cp ${HOME}/.crossbarfx/default.pub master/
+	docker-compose up master
 
 run_edge1:
-	docker-compose up -d edge1
+	docker-compose up edge1
+
+run_edge1_host:
+	CROSSBARFX_DISABLE_CE=1 \
+	CE_DISABLE=1 \
+	crossbarfx edge start --cbdir ./edge1/.crossbar --config=config.json --loglevel=info
 
 run_workbench:
 	docker-compose up workbench
@@ -33,20 +39,38 @@ run_workbench:
 run_seller1:
 	docker-compose up seller1
 
+run_seller1_host:
+	XBR_INSTANCE=ws://localhost:8080/ws XBR_REALM=realm1 python ./python/seller.py
+
 run_seller2:
 	docker-compose up seller2
+
+run_seller2_host:
+	XBR_INSTANCE=ws://localhost:8080/ws XBR_REALM=realm1 node ./javascript/seller.js
 
 run_buyer1:
 	docker-compose up buyer1
 
+run_buyer1_host:
+	XBR_INSTANCE=ws://localhost:8080/ws XBR_REALM=realm1 python ./python/buyer.py
+
 run_buyer2:
 	docker-compose up buyer2
+
+run_buyer2_host:
+	XBR_INSTANCE=ws://localhost:8080/ws XBR_REALM=realm1 node ./javascript/buyer.js
+
+
+status_master:
+	$(CROSSBARFX) shell auth
+	$(CROSSBARFX) shell show status
+	$(CROSSBARFX) shell list mrealms
 
 
 init: init_blockchain init_master init_edge1
 
 init_master:
-	cp ${HOME}/.crossbarfx/default.pub master/
+	$(CROSSBARFX) shell auth
 	$(CROSSBARFX) shell create mrealm mrealm1
 	$(CROSSBARFX) shell pair node ./edge1/.crossbar/key.pub mrealm1 node1
 
@@ -73,6 +97,7 @@ clean_master:
 	-sudo rm -rf ${PWD}/master/.crossbar/.change-engine
 	-sudo rm -rf ${PWD}/master/.crossbar/.db-mrealm-*
 	-ls -la ${PWD}/master/.crossbar/
+	-ls -la ${PWD}/master/
 
 clean_edge1:
 	-docker-compose stop edge1

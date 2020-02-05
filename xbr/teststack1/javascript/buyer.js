@@ -4,8 +4,8 @@ var xbr = require('autobahn-xbr');
 console.log('Running on Autobahn ' + autobahn.version);
 console.log('Running Autobahn-XBR ' + xbr.version);
 
-const url = process.env.CBURL;
-const realm = process.env.CBREALM;
+const url = process.env.XBR_INSTANCE;
+const realm = process.env.XBR_REALM;
 
 console.log("Buyer connecting to " + url + " (realm " + realm + ") ..");
 
