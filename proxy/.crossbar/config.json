@@ -133,10 +133,15 @@
                         },
                         "autobahn": {
                             "type": "archive",
-                            "archive": "autobahn.zip",
-                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "archive": "autobahn-v20.1.1.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.1.1.zip",
+                            "object_prefix": "autobahn-js-browser-20.1.1",
+                            "default_object": "autobahn.min.js",
                             "download": true,
                             "cache": true,
+                            "hashes": [
+                                "a7e898a6a506c8bffe9a09d7e29b86a8adb90a15859024835df99cc7be82274a"
+                            ],
                             "mime_types": {
                                 ".min.js": "text/javascript",
                                 ".jgz": "text/javascript"
