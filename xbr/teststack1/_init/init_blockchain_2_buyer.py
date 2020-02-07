@@ -29,7 +29,7 @@ def main(accounts, owner):
     for market in MARKETS:
         _created, _marketSeq, _owner, _terms, _terms, _maker, _providerSecurity, _consumerSecurity, _marketFee = xbr.xbrnetwork.functions.markets(market['id']).call()
 
-        assert _owner != '0x0000000000000000000000000000000000000000' and _owner == market['owner']
+        # assert _owner != '0x0000000000000000000000000000000000000000' and _owner == market['owner']
 
         print('Market actors:')
         for actor in market['actors']:

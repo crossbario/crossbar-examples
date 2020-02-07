@@ -1,3 +1,4 @@
+import os
 from eth_account import Account
 from autobahn import xbr
 
@@ -13,7 +14,7 @@ _XBR_HDWALLET_SEED = os.environ['XBR_HDWALLET_SEED']
 
 _ACCOUNT_KEYS = {}
 for i in range(20):
-    acct = account_from_seedphrase(_XBR_HDWALLET_SEED)
+    acct = account_from_seedphrase(_XBR_HDWALLET_SEED, i)
     addr = acct.address
     pkey = acct.privateKey.hex()
     _ACCOUNT_KEYS[i] = (addr, pkey)
