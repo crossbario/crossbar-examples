@@ -82,6 +82,11 @@ init_blockchain:
 	python -u ./_init/init_blockchain_2_buyer.py --gateway http://localhost:1545
 	python -u ./_init/init_blockchain_2_seller.py --gateway http://localhost:1545
 
+connect_blockchain:
+	python -u ./_init/connect_blockchain.py --gateway http://localhost:1545
+
+check_blockchain:
+	python -u ./_init/check_blockchain.py --gateway http://localhost:1545
 
 clean: clean_blockchain clean_master clean_edge1
 	-docker rm teststack1_buyer1_1
