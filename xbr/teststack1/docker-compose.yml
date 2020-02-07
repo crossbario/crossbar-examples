@@ -14,6 +14,7 @@ services:
             - "--defaultBalanceEther"
             - "10000"
             - "--mnemonic"
+            # XBR_HDWALLET_SEED:
             - "myth like bonus scare over problem client lizard pioneer submit female collect"
             - "--gasLimit"
             - "0xfffffffffff"
