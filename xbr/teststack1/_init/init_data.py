@@ -49,11 +49,16 @@ for idx, name, notes in _INITDATA:
 
 OWNER = ACCOUNTS['crossbar']
 
+_ACCOUNT_KEYS[6][1]
+
 MARKETS = [
     {
         'id': '0xa1b8d6741ae8492017fafd8d4f8b67a2',
         'owner': ACCOUNTS['marketop1'].address,
-        'maker': ACCOUNTS['marketop1-marketmaker1'].address,
+        # 'maker': ACCOUNTS['marketop1-marketmaker1'].address,
+        # marketop1-marketmaker1
+        'maker': _ACCOUNT_KEYS[6][0],
+        'maker_pkey': _ACCOUNT_KEYS[6][1],
         'terms': '',
         'meta': '',
         'providerSecurity': 0,
