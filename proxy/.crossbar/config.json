@@ -164,14 +164,9 @@
                                 }
                             ],
                             "options": {
-                                "allowed_origins": [
-                                    "https://demo.crossbar.io:*",
-                                    "https://cbdemo-eu-central-1.crossbar.io:*",
-                                    "https://cbdemo-us-west-1.crossbar.io:*",
-                                    "https://cbdemo-ap-southeast-1.crossbar.io:*"
-                                ],
-                                "allow_null_origin": false,
-                                "enable_webstatus": false,
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
                                 "max_frame_size": 1048576,
                                 "max_message_size": 1048576,
                                 "auto_fragment_size": 65536,
@@ -223,10 +218,15 @@
                         },
                         "autobahn": {
                             "type": "archive",
-                            "archive": "autobahn.zip",
-                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/master.zip",
+                            "archive": "autobahn-v20.1.1.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.1.1.zip",
+                            "object_prefix": "autobahn-js-browser-20.1.1",
+                            "default_object": "autobahn.min.js",
                             "download": true,
                             "cache": true,
+                            "hashes": [
+                                "a7e898a6a506c8bffe9a09d7e29b86a8adb90a15859024835df99cc7be82274a"
+                            ],
                             "mime_types": {
                                 ".min.js": "text/javascript",
                                 ".jgz": "text/javascript"
