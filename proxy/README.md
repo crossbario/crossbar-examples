@@ -74,4 +74,4 @@ various other web services:
 1. [http://localhost:8443/info](http://localhost:8443/info): **path "info", type "info"** - node info page
 1. [http://localhost:8443/ws](http://localhost:8443/ws): **path "ws", type "websocket-proxy"** - websocket endpoint (of listening proxy)
 1. [http://localhost:8443/autobahn/autobahn/autobahn.js](http://localhost:8443/autobahn/autobahn/autobahn.js): **path "autobahn", type "archive"** - ZIP archive resource
-1. [http://127.0.0.1:8443/autobahn/autobahn-xbr/autobahn-xbr.js](http://127.0.0.1:8443/autobahn/autobahn-xbr/autobahn-xbr.js): **path "autobahn", type "archive"** - ZIP archive resource (same archive file, but different contained file referenced)
+1. [http://localhost:8443/autobahn/autobahn-xbr/autobahn-xbr.js](http://127.0.0.1:8443/autobahn/autobahn-xbr/autobahn-xbr.js): **path "autobahn", type "archive"** - ZIP archive resource (same archive file, but different contained file referenced)
