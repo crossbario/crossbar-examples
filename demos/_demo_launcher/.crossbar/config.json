@@ -143,18 +143,18 @@
                             ],
                             "options": {
                                 "allowed_origins": [
-                                        "https://demo.crossbar.io:*",
-                                        "https://cbdemo-eu-central-1.crossbar.io:*",
-                                        "https://cbdemo-us-west-1.crossbar.io:*",
-                                        "https://cbdemo-ap-southeast-1.crossbar.io:*",
+                                    "https://demo.crossbar.io:*",
+                                    "https://cbdemo-eu-central-1.crossbar.io:*",
+                                    "https://cbdemo-us-west-1.crossbar.io:*",
+                                    "https://cbdemo-ap-southeast-1.crossbar.io:*",
 
-                                        "https://crossbario.com:*",
-                                        "https://crossbar.io:*",
+                                    "https://crossbario.com:*",
+                                    "https://crossbar.io:*",
 
-                                        "http://localhost:*",
-                                        "https://localhost:*",
-                                        "file://",
-                                        "http://192.168.*.*:*"
+                                    "http://localhost:*",
+                                    "https://localhost:*",
+                                    "file://",
+                                    "http://192.168.*.*:*"
                                 ],
                                 "allow_null_origin": true,
                                 "enable_webstatus": true,
