@@ -15,7 +15,7 @@
                     "name": "realm1",
                     "roles": [
                         {
-                            "name": "public",
+                            "name": "anonymous",
                             "permissions": [
                                 {
                                     "uri": "io.crossbar.demo.public.",
@@ -69,41 +69,8 @@
                     },
                     "serializers": ["cbor"],
                     "auth": {
-                        "anonymous": {
-                            "type": "static",
-                            "role": "public"
-                        },
-                        "ticket": {
-                            "type": "static",
-                            "principals": {
-                                "alice": {
-                                    "ticket": "65daf2766173af06cc30",
-                                    "role": "user"
-                                }
-                            }
-                        }
-                    }
-                },
-                {
-                    "type": "websocket",
-                    "endpoint": {
-                        "type": "unix",
-                        "path": "routerws.sock"
-                    },
-                    "serializers": ["json", "cbor"],
-                    "auth": {
-                        "anonymous": {
-                            "type": "static",
-                            "role": "public"
-                        },
-                        "ticket": {
-                            "type": "static",
-                            "principals": {
-                                "alice": {
-                                    "ticket": "65daf2766173af06cc30",
-                                    "role": "user"
-                                }
-                            }
+                        "anonymous-proxy": {
+                            "type": "static"
                         }
                     }
                 }
@@ -113,6 +80,24 @@
         {
             "type": "proxy",
             "options": {
+            },
+            "connections": {
+                "conn1": {
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "router.sock"
+                        },
+                        "url": "ws://localhost",
+                        "serializer": "cbor"
+                    }
+                }
+            },
+            "routes": {
+                "realm1": {
+                    "anonymous": "conn1"
+                }
             },
             "transports": [
                 {
@@ -148,20 +133,9 @@
                             }
                         },
                         "ws": {
-                            "type": "websocket-proxy",
+                            "type": "websocket",
                             "serializers": [
                                 "cbor", "msgpack", "json"
-                            ],
-                            "backends": [
-                                {
-                                    "type": "websocket",
-                                    "endpoint": {
-                                        "type": "unix",
-                                        "path": "routerws.sock"
-                                    },
-                                    "url": "ws://localhost",
-                                    "serializers": ["json"]
-                                }
                             ],
                             "options": {
                                 "allowed_origins": ["*"],
@@ -199,6 +173,24 @@
             "type": "proxy",
             "options": {
             },
+            "connections": {
+                "conn1": {
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "router.sock"
+                        },
+                        "url": "ws://localhost",
+                        "serializer": "cbor"
+                    }
+                }
+            },
+            "routes": {
+                "realm1": {
+                    "anonymous": "conn1"
+                }
+            },
             "transports": [
                 {
                     "type": "web",
@@ -233,20 +225,9 @@
                             }
                         },
                         "ws": {
-                            "type": "websocket-proxy",
+                            "type": "websocket",
                             "serializers": [
                                 "cbor", "msgpack", "json"
-                            ],
-                            "backends": [
-                                {
-                                    "type": "websocket",
-                                    "endpoint": {
-                                        "type": "unix",
-                                        "path": "routerws.sock"
-                                    },
-                                    "url": "ws://localhost",
-                                    "serializers": ["json"]
-                                }
                             ],
                             "options": {
                                 "allowed_origins": ["*"],
