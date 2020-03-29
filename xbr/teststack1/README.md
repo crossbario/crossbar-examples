@@ -210,11 +210,13 @@ buyer1_1      | 2019-10-02T16:17:24+0000 Main loop terminated.
 ## Workbench
 
 ```python
+import cfxdb.xbr.schema
+import cfxdb.xbr
 import zlmdb
 import cfxdb
 
 db = zlmdb.Database('xbrdb-transactions', maxsize=2**30, readonly=False)
-xbr = cfxdb.xbr.Schema.attach(db)
+xbr = cfxdb.xbr.schema.Schema.attach(db)
 
 
 with db.begin() as txn:
