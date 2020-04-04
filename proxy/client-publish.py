@@ -49,7 +49,7 @@ elif TRANSPORT == 'rawsocket':
 @inlineCallbacks
 def _(session, details):
     print("joined: {}".format(details))
-    topic_name = u"io.crossbar.demo.public.foo"
+    topic_name = u"demo.foo"
     pid = os.getpid()
     counter = 0
 

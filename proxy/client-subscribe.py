@@ -10,6 +10,13 @@ if TRANSPORT not in ['websocket', 'rawsocket']:
 if SERIALIZER not in ['cbor', 'msgpack', 'json', 'ubjson']:
     raise Exception('invalid TRANSPORT "{}"'.format(TRANSPORT))
 
+AUTHENTICATION = {
+    'ticket': {
+        'authid': 'user1',
+        'ticket': 'secret1'
+    }
+}
+
 if TRANSPORT == 'websocket':
     comp = Component(
         transports=[
@@ -25,6 +32,7 @@ if TRANSPORT == 'websocket':
             },
         ],
         realm="realm1",
+        authentication=AUTHENTICATION
     )
 elif TRANSPORT == 'rawsocket':
     comp = Component(
@@ -41,13 +49,16 @@ elif TRANSPORT == 'rawsocket':
             },
         ],
         realm="realm1",
+        authentication=AUTHENTICATION
     )
+
+
 
 @comp.on_join
 @inlineCallbacks
 def _(session, details):
     print("joined: {}".format(details))
-    topic_name = u"io.crossbar.demo.public.foo"
+    topic_name = u"demo.foo"
 
     def _foo(*args, **kwargs):
         print("{}: {} {}".format(topic_name, args, kwargs))
