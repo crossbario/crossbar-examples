@@ -73,4 +73,4 @@ def _(session, details):
         yield sleep(1)
 
 if __name__ == "__main__":
-    run([comp], log_level='debug')
+    run([comp], log_level='info')
