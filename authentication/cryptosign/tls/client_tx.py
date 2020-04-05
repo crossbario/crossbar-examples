@@ -2,8 +2,11 @@ from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession
 from twisted.internet.error import ReactorNotRunning
 from twisted.internet import reactor
+from crossbar.common.twisted.endpoint import _create_tls_client_context
+
 import txaio
 txaio.use_twisted()
+
 from txaio import make_logger
 
 
@@ -32,7 +35,7 @@ class ClientSession(ApplicationSession):
 
         # authentication extra information for wamp-cryptosign
         #
-        extra = {
+        authextra = {
             # forward the client pubkey: required!
             'pubkey': self._key.public_key(),
 
@@ -50,13 +53,14 @@ class ClientSession(ApplicationSession):
             # encoded 32 bytes random value.
             # 'challenge': None,
         }
+        self.log.info('authenticating using authextra={authextra} ..', authextra=authextra)
 
         # now request to join ..
         self.join(self.config.realm,
                   authmethods=['cryptosign'],
                   # authid may bee None for WAMP-cryptosign!
-                  authid=self.config.extra['authid'],
-                  authextra=extra)
+                  authid=self.config.extra.get('authid', None),
+                  authextra=authextra)
 
     def onChallenge(self, challenge):
         self.log.info(
@@ -106,6 +110,7 @@ if __name__ == '__main__':
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
+
     parser.add_argument('--debug', dest='debug', action='store_true',
                         default=False, help='Enable logging at level "debug".')
     parser.add_argument('--channel_binding', dest='channel_binding', type=str, default=None,
@@ -116,8 +121,8 @@ if __name__ == '__main__':
                         help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--key', dest='key', type=str, required=True,
                         help='The private client key to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')
-    parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws',
-                        help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--url', dest='url', type=str, default='wss://localhost:8080/ws',
+                        help='The router URL (default: wss://localhost:8080/ws).')
     options = parser.parse_args()
 
     if options.debug:
@@ -139,7 +144,18 @@ if __name__ == '__main__':
     print("Connecting to {}: requesting realm={}, authid={}".format(
         options.url, options.realm, options.authid))
 
+    tls_config = {
+        "hostname": "localhost",
+        # "certificate": "client.crt",
+        # "key": "client.key",
+        "ca_certificates": [
+            "intermediate.cert.pem",
+            "ca.cert.pem"
+        ]
+    }
+    cert_options = _create_tls_client_context(tls_config, '.crossbar', log)
+
     # connect to router and run ClientSession
     runner = ApplicationRunner(
-        url=options.url, realm=options.realm, extra=extra)
+        url=options.url, realm=options.realm, extra=extra, ssl=cert_options)
     runner.run(ClientSession)
