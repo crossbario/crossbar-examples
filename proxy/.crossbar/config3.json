@@ -91,6 +91,11 @@
                         },
                         "url": "ws://localhost",
                         "serializer": "cbor"
+                    },
+                    "auth": {
+                        "anonymous-proxy": {
+                            "type": "static"
+                        }
                     }
                 }
             },
@@ -227,6 +232,11 @@
                         },
                         "url": "ws://localhost",
                         "serializer": "cbor"
+                    },
+                    "auth": {
+                        "anonymous-proxy": {
+                            "type": "static"
+                        }
                     }
                 }
             },
