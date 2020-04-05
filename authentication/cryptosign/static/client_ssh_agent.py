@@ -1,28 +1,28 @@
 ###############################################################################
 ##
-##  Copyright (C) Tavendo GmbH and/or collaborators. All rights reserved.
+# Copyright (C) Tavendo GmbH and/or collaborators. All rights reserved.
 ##
-##  Redistribution and use in source and binary forms, with or without
-##  modification, are permitted provided that the following conditions are met:
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
 ##
-##  1. Redistributions of source code must retain the above copyright notice,
-##     this list of conditions and the following disclaimer.
+# 1. Redistributions of source code must retain the above copyright notice,
+# this list of conditions and the following disclaimer.
 ##
-##  2. Redistributions in binary form must reproduce the above copyright notice,
-##     this list of conditions and the following disclaimer in the documentation
-##     and/or other materials provided with the distribution.
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
 ##
-##  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-##  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-##  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-##  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-##  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-##  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-##  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-##  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-##  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-##  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-##  POSSIBILITY OF SUCH DAMAGE.
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
 ##
 ###############################################################################
 
@@ -96,16 +96,24 @@ if __name__ == '__main__':
 
     # parse command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--authid', dest='authid', type=str, default=None, help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
-    parser.add_argument('--realm', dest='realm', type=str, default=None, help='The realm to join. If not provided, let the router auto-choose the realm.')
-    parser.add_argument('--pubkey', dest='pubkey', type=str, default=None, help='Filename of the client SSH Ed25519 public key.')
-    parser.add_argument('--trustroot', dest='trustroot', type=str, default=None, help='Filename of the router SSH Ed25519 public key (for server verification).')
-    parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws', help='The router URL (default: ws://localhost:8080/ws).')
-    parser.add_argument('--agent', dest='agent', type=str, default=None, help='Path to Unix domain socket of SSH agent to use.')
-    parser.add_argument('--trace', dest='trace', action='store_true', default=False, help='Trace traffic: log WAMP messages sent and received')
+    parser.add_argument('--authid', dest='authid', type=str, default=None,
+                        help='The authid to connect under. If not provided, let the router auto-choose the authid (based on client public key).')
+    parser.add_argument('--realm', dest='realm', type=str, default=None,
+                        help='The realm to join. If not provided, let the router auto-choose the realm.')
+    parser.add_argument('--pubkey', dest='pubkey', type=str, default=None,
+                        help='Filename of the client SSH Ed25519 public key.')
+    parser.add_argument('--trustroot', dest='trustroot', type=str, default=None,
+                        help='Filename of the router SSH Ed25519 public key (for server verification).')
+    parser.add_argument('--url', dest='url', type=str, default='ws://localhost:8080/ws',
+                        help='The router URL (default: ws://localhost:8080/ws).')
+    parser.add_argument('--agent', dest='agent', type=str, default=None,
+                        help='Path to Unix domain socket of SSH agent to use.')
+    parser.add_argument('--trace', dest='trace', action='store_true',
+                        default=False, help='Trace traffic: log WAMP messages sent and received')
     options = parser.parse_args()
 
-    print("Connecting to {}: realm={}, authid={}, pubkey={}, trustroot={}".format(options.url, options.realm, options.authid, options.pubkey, options.trustroot))
+    print("Connecting to {}: realm={}, authid={}, pubkey={}, trustroot={}".format(
+        options.url, options.realm, options.authid, options.pubkey, options.trustroot))
 
     if options.pubkey is None:
         options.pubkey = os.path.expanduser('~/.ssh/id_ed25519.pub')
@@ -131,5 +139,6 @@ if __name__ == '__main__':
         'trustroot': trustroot
     }
 
-    runner = ApplicationRunner(url=options.url, realm=options.realm, extra=extra)
+    runner = ApplicationRunner(
+        url=options.url, realm=options.realm, extra=extra)
     runner.run(ClientSession)

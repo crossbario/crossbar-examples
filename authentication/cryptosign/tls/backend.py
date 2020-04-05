@@ -29,7 +29,7 @@ class BackendSession(ApplicationSession):
         for topic in [
             'com.example.topic1',
             'com.foobar.topic1',
-            'com.foobar.topic2']:
+                'com.foobar.topic2']:
 
             try:
                 sub = yield self.subscribe(onhello, topic)

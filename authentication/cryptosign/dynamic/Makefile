@@ -1,9 +1,10 @@
 crossbar:
-	PYTHONPATH=../../../../crossbar python -m crossbar.controller.cli start
+	crossbar start --loglevel=info
 
-client:
-	python client.py --key client01.key
-#	python client.py --realm devices --authid client01@example.com --key client01.key
+clients: client_good client_bad
 
-bad_client:
-	python client.py --key client01-bad.key
+client_good:
+	python client.py --key .keys/client01.key
+
+client_bad:
+	python client.py --key .keys/client01-bad.key
