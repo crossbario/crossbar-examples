@@ -9,6 +9,7 @@
         {
             "type": "router",
             "options": {
+                "pythonpath": [".."]
             },
             "realms": [
                 {
@@ -53,6 +54,23 @@
                                     "cache": true
                                 }
                             ]
+                        },
+                        {
+                            "name": "auth",
+                            "permissions": [
+                                {
+                                    "uri": "auth.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "register": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
                         }
                     ]
                 }
@@ -69,16 +87,20 @@
                     },
                     "serializers": ["cbor"],
                     "auth": {
-                        "cryptosign-proxy": {                            
-                            "type": "static",
-                            "principals": {
-                                "node1": {
-                                    "authorized_keys": [
-                                        "feae7b53b1aa85f3aec09302fb800d40416df069a233b8c72833eca38cf59117"
-                                    ]
-                                }
-                            }
+                        "cryptosign-proxy": {
+                            "type": "dynamic",
+                            "authenticator": "auth.backend_cryptosign"
                         }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "type": "function",
+                    "realm": "realm1",
+                    "role": "auth",
+                    "callbacks": {
+                        "join": "dynauth.setup"
                     }
                 }
             ]
@@ -275,7 +297,7 @@
                                         "role": "user"
                                     }
                                 }
-                            }    
+                            }
                         },
                         "serializers": ["cbor", "msgpack", "json"],
                         "options": {
