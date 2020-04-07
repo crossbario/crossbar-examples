@@ -68,7 +68,7 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "crossbar.adapter.rest.RESTCallee",
+                    "classname": "crossbar.bridge.rest.RESTCallee",
                     "realm": "realm1",
                     "extra": {
                         "procedure": "com.myapp.rest",
