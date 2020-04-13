@@ -1,5 +1,7 @@
 # dynamic authenticator setup; see config4.json as well
 
+from autobahn.wamp.types import Deny
+
 
 def _authenticate(realm, authid, details):
     """
@@ -10,16 +12,19 @@ def _authenticate(realm, authid, details):
     "real" client .. so, we could base decisions here on that if we
      want.
     """
+
     if details['authextra']['proxy_authid'] not in ["user1", "user2"]:
-        raise Exception("Unknown user")
+        return Deny("Unknown user '{}'".format(details['authextra']['proxy_authid']))
+
+    if details['authextra']['proxy_authrole'] != 'user':
+        return Deny("only anonymous access")
 
     # this is the pubkey for our node (key.pub from .crossbar
     # directory) because the "client" (the proxy process) will use
     # key.priv by default
     return {
         "pubkey": "a1fd4c2c2954b92ef784b4d14442e2eb159cc74040bb59e43e84b3c56719256f",
-        "role": "user",
-        "authid": details['authextra']['proxy_authid']
+        "role": "anonymous"
     }
 
 
