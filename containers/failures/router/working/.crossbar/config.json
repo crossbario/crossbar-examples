@@ -1,12 +1,16 @@
 {
     "version": 2,
+    "controller": {
+        "options": {
+            "shutdown": ["shutdown_on_worker_exit"]
+        }
+    },
     "workers": [
         {
             "type": "router",
             "options": {
-                "pythonpath": [
-                    ".."
-                ]
+                "pythonpath": [".."],
+                "expose_controller": true
             },
             "realms": [
                 {

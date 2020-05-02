@@ -31,7 +31,7 @@ run_edge1:
 run_edge1_host:
 	CROSSBARFX_DISABLE_CE=1 \
 	CE_DISABLE=1 \
-	crossbarfx edge start --cbdir ./edge1/.crossbar --config=config.json --loglevel=info
+	$(CROSSBARFX) edge start --cbdir ./edge1/.crossbar --config=config.json --loglevel=info
 
 run_workbench:
 	docker-compose up workbench

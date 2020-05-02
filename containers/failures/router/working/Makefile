@@ -1,0 +1,2 @@
+run:
+	-crossbarfx edge start

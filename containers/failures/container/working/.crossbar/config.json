@@ -1,8 +1,15 @@
 {
     "version": 2,
+    "controller": {
+        "options": {
+            "shutdown": ["shutdown_on_worker_exit"]
+        }
+    },
     "workers": [
         {
             "type": "router",
+            "options": {
+            },
             "realms": [
                 {
                     "name": "realm1",
@@ -54,7 +61,9 @@
             "options": {
                 "pythonpath": [
                     ".."
-                ]
+                ],
+                "expose_controller": true,
+                "shutdown": "shutdown-on-last-component-stopped"
             },
             "components": [
                 {
