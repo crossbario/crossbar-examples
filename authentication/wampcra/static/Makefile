@@ -1,5 +1,5 @@
 crossbar:
-	PYTHONPATH=../../../../crossbar python -m crossbar.controller.cli start
+	MYSECRET="secret123" crossbar start
 
 client:
-	PYTHONPATH=../../../../autobahn python client.py
+	MYSECRET="secret123" python client.py

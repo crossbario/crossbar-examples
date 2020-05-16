@@ -1,5 +1,5 @@
 crossbar:
-	crossbar start --loglevel=info
+	crossbar start
 
 clients: client_tx client_aio client_tx_noauthid client_aio_noauthid
 

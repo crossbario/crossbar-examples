@@ -19,7 +19,7 @@
                                     "uri": "com.example.authenticate",
                                     "match": "exact",
                                     "allow": {
-                                        "call": false,
+                                        "call": true,
                                         "register": true,
                                         "publish": false,
                                         "subscribe": false
@@ -76,7 +76,9 @@
                             "auth": {
                                 "anonymous": {
                                     "type": "dynamic",
-                                    "authenticator": "com.example.authenticate"
+                                    "authenticator": "com.example.authenticate",
+                                    "authenticator-role": "trusted",
+                                    "authenticator-realm": "realm1"
                                 }
                             }
                         }
