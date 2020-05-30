@@ -2,7 +2,7 @@
 
 Crossbar includes a HTTP Callee module that is able to perform HTTP requests from WAMP calls.
 
-To configure the service, set up a component with the classname `crossbar.adapter.rest.RESTCallee` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](http://crossbar.io/docs/HTTP-Bridge-Services/).
+To configure the service, set up a component with the classname `crossbar.adapter.rest.RESTCallee` - e.g. see [.crossbar/config.json](.crossbar/config.json). For full documentation, please see [here](https://crossbar.io/docs/HTTP-Bridge/).
 
 ## Example
 
