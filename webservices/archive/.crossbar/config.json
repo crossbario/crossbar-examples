@@ -43,7 +43,7 @@
                     "paths": {
                         "/": {
                             "type": "archive",
-                            "archive": "home.zip",
+                            "archive": "../home.zip",
                             "default_object": "index.html",
                             "cache": true,
                             "mime_types": {
