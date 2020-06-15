@@ -78,6 +78,52 @@
                                     "type": "websocket"
                                 }
                             }
+                        },
+                        "double-nested": {
+                            "type": "path",
+                            "paths": {
+                                "/": {
+                                    "type": "archive",
+                                    "archive": "../home.zip",
+                                    "default_object": "index.html"
+                                },
+                                "info": {
+                                    "type": "nodeinfo"
+                                },
+                                "config": {
+                                    "type": "json",
+                                    "value": {
+                                        "url": "ws://localhost:8080/ws",
+                                        "realm": "testing"
+                                    }
+                                },
+                                "ws": {
+                                    "type": "websocket"
+                                },
+                                "nested": {
+                                    "type": "path",
+                                    "paths": {
+                                        "/": {
+                                            "type": "archive",
+                                            "archive": "../home.zip",
+                                            "default_object": "index.html"
+                                        },
+                                        "info": {
+                                            "type": "nodeinfo"
+                                        },
+                                        "config": {
+                                            "type": "json",
+                                            "value": {
+                                                "url": "ws://localhost:8080/ws",
+                                                "realm": "testing"
+                                            }
+                                        },
+                                        "ws": {
+                                            "type": "websocket"
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

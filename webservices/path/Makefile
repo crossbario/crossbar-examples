@@ -20,36 +20,70 @@ start:
 	crossbar start
 
 test:
-	@curl -s http://localhost:8080                       | openssl sha256
-	@curl -s http://localhost:8080/                      | openssl sha256
-	@curl -s http://localhost:8080/index.html            | openssl sha256
+	@curl -s http://localhost:8080                                     | openssl sha256
+	@curl -s http://localhost:8080/                                    | openssl sha256
+	@curl -s http://localhost:8080/index.html                          | openssl sha256
 	@echo
 
-	@curl -s http://localhost:8080/info                  | openssl sha256
-	@curl -s http://localhost:8080/info/                 | openssl sha256
+	@curl -s http://localhost:8080/nested                              | openssl sha256
+	@curl -s http://localhost:8080/nested/                             | openssl sha256
+	@curl -s http://localhost:8080/nested/index.html                   | openssl sha256
 	@echo
 
-	@curl -s http://localhost:8080/config                | openssl sha256
-	#curl -s http://localhost:8080/config/
+	@curl -s http://localhost:8080/double-nested                       | openssl sha256
+	@curl -s http://localhost:8080/double-nested/                      | openssl sha256
+	@curl -s http://localhost:8080/double-nested/index.html            | openssl sha256
 	@echo
 
-	@curl -s http://localhost:8080/ws                    | openssl sha256
-	@curl -s http://localhost:8080/ws/                   | openssl sha256
+	@curl -s http://localhost:8080/double-nested/nested                | openssl sha256
+	@curl -s http://localhost:8080/double-nested/nested/               | openssl sha256
+	@curl -s http://localhost:8080/double-nested/nested/index.html     | openssl sha256
 	@echo
 
-	#curl -s http://localhost:8080/nested
-	@curl -s http://localhost:8080/nested/               | openssl sha256
-	@curl -s http://localhost:8080/nested/index.html     | openssl sha256
+	@curl -s http://localhost:8080/info                                | openssl sha256
+	@curl -s http://localhost:8080/info/                               | openssl sha256
 	@echo
 
-	@curl -s http://localhost:8080/nested/info           | openssl sha256
-	@curl -s http://localhost:8080/nested/info/          | openssl sha256
+	@curl -s http://localhost:8080/nested/info                         | openssl sha256
+	@curl -s http://localhost:8080/nested/info/                        | openssl sha256
 	@echo
 
-	@curl -s http://localhost:8080/nested/config         | openssl sha256
-	#curl -s http://localhost:8080/nested/config/
+	@curl -s http://localhost:8080/double-nested/info                  | openssl sha256
+	@curl -s http://localhost:8080/double-nested/info/                 | openssl sha256
 	@echo
 
-	@curl -s http://localhost:8080/nested/ws             | openssl sha256
-	@curl -s http://localhost:8080/nested/ws/            | openssl sha256
+	@curl -s http://localhost:8080/double-nested/nested/info           | openssl sha256
+	@curl -s http://localhost:8080/double-nested/nested/info/          | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/config                              | openssl sha256
+	@curl -s http://localhost:8080/config/                             | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/nested/config                       | openssl sha256
+	@curl -s http://localhost:8080/nested/config/                      | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/double-nested/config                | openssl sha256
+	@curl -s http://localhost:8080/double-nested/config/               | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/double-nested/nested/config         | openssl sha256
+	@curl -s http://localhost:8080/double-nested/nested/config/        | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/ws                                  | openssl sha256
+	@curl -s http://localhost:8080/ws/                                 | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/nested/ws                           | openssl sha256
+	@curl -s http://localhost:8080/nested/ws/                          | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/double-nested/ws                    | openssl sha256
+	@curl -s http://localhost:8080/double-nested/ws/                   | openssl sha256
+	@echo
+
+	@curl -s http://localhost:8080/double-nested/nested/ws             | openssl sha256
+	@curl -s http://localhost:8080/double-nested/nested/ws/            | openssl sha256
 	@echo
