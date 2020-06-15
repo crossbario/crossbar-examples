@@ -3,16 +3,18 @@ default:
 	@echo ""
 	@echo "   clean        remove build artifacts"
 	@echo "   build        build zip archives"
-	@echo "   test         run crossbar"
+	@echo "   start        run crossbar"
+	@echo "   check        check crossbar config"
 
 clean:
-	-rm -f ./.crossbar/*.zip
+	-rm -f ./home.zip
 
 build:
-	cd web1 && zip -r ../.crossbar/web1.zip .
-	unzip -l .crossbar/web1.zip
-	cd web2 && zip -r ../.crossbar/web2.zip .
-	unzip -l .crossbar/web2.zip
+	cd home && zip ../home.zip * && cd ..
+	unzip -l home.zip
 
-test:
-	crossbar start --config=config.json
+check:
+	crossbar check
+
+start:
+	crossbar start

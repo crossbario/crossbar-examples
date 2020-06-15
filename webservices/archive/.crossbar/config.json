@@ -43,12 +43,9 @@
                     "paths": {
                         "/": {
                             "type": "archive",
-                            "archive": "web2.zip",
+                            "archive": "home.zip",
                             "default_object": "index.html",
                             "cache": true,
-                            "hashes": [
-                                "249644e5faa87b90c07a89eb214714d25511368cfcf18e134161dd8a66b7d5c7"
-                            ],
                             "mime_types": {
                                 ".ttf": "font/ttf",
                                 ".woff": "font/woff",
@@ -58,13 +55,20 @@
                         "ws": {
                             "type": "websocket"
                         },
-                        "web1": {
+                        "autobahn": {
                             "type": "archive",
-                            "archive": "web1.zip",
+                            "archive": "autobahn-v20.2.1.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.2.1.zip",
+                            "object_prefix": "autobahn-js-browser-20.2.1",
+                            "default_object": "autobahn.min.js",
+                            "download": true,
                             "cache": true,
+                            "hashes": [
+                               "b69cd17ac043cceceea8ed589a09a2555b5c39e32c2fea18ecc26dc5baf67de8"
+                            ],
                             "mime_types": {
-                                ".min.js": "text/javascript",
-                                ".jgz": "text/javascript"
+                               ".min.js": "text/javascript",
+                               ".jgz": "text/javascript"
                             }
                         },
                         "info": {
