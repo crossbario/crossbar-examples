@@ -140,4 +140,5 @@ def update_configuration(args):
 
 # We start our client.
 if __name__ == '__main__':
-    app.run(url='ws://{}:8080/ws'.format(SERVER))
+    app.run(url=u"ws://%s:8080/ws" % SERVER)
+    # app.run(url='ws://{}:8080/ws'.format(SERVER))
