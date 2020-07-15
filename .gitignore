@@ -15,3 +15,4 @@ autobahn.zip
 xbr/teststack1/master/default.pub
 *.mdb
 .ipynb_checkpoints
+.test
