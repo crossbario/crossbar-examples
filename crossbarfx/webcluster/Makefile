@@ -41,10 +41,8 @@ status_master:
 	${CROSSBAR} shell --realm default show node
 
 configure_cluster:
-	crossbarfx shell --realm default create webcluster cluster1
-	crossbarfx shell --realm default show node
-	crossbarfx shell --realm default add webcluster-node cluster1 node-74a814e7 --config '{"webcluster_oid": "b4077496-ad81-45e2-ad23-8e08d6910e2c"}'
-	crossbarfx shell --realm default add webcluster-node cluster1 node-ccad35c5 --config '{"webcluster_oid": "b4077496-ad81-45e2-ad23-8e08d6910e2c", "parallel": 4}'
+	crossbarfx shell --realm default create webcluster cluster1 --config='{"tcp_port": 8080, "tcp_shared": true}'
+	crossbarfx shell --realm default add webcluster-node cluster1 all --config '{"parallel": 2}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "/" --config '{"type": "static", "directory": "..", "options": {"enable_directory_listing": true}}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "info" --config '{"type": "nodeinfo"}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "settings" --config '{"type": "json", "value": [1, 2, 3]}'
@@ -52,6 +50,22 @@ configure_cluster:
 # docs/shot7.png, docs/shot8.png
 start_cluster:
 	crossbarfx shell --realm default start webcluster cluster1
+
+
+create_cluster_old:
+	crossbarfx shell --realm default create webcluster cluster1 --config='{"tcp_port": 8080, "tcp_shared": true}'
+	crossbarfx shell --realm default show node
+
+configure_cluster_old:
+	crossbarfx shell --realm default add webcluster-node cluster1 node-1a1f8f39 --config '{"webcluster_oid": "20f98b08-6cfa-4339-a828-0c213885ac46"}'
+	crossbarfx shell --realm default add webcluster-node cluster1 node-768f65b8 --config '{"webcluster_oid": "20f98b08-6cfa-4339-a828-0c213885ac46", "parallel": 4}'
+	crossbarfx shell --realm default add webcluster-service cluster1 "/" --config '{"type": "static", "directory": "..", "options": {"enable_directory_listing": true}}'
+	crossbarfx shell --realm default add webcluster-service cluster1 "info" --config '{"type": "nodeinfo"}'
+	crossbarfx shell --realm default add webcluster-service cluster1 "settings" --config '{"type": "json", "value": [1, 2, 3]}'
+
+configure_cluster_add1:
+	crossbarfx shell --realm default add webcluster-service cluster1 "other" --config '{"type": "json", "value": {"contents": "settings2"}}'
+
 
 
 ############################################################################################################
