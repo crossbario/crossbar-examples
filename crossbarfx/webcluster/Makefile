@@ -40,7 +40,7 @@ status_master:
 	${CROSSBAR} shell --realm default list nodes
 	${CROSSBAR} shell --realm default show node
 
-configure_cluster:
+configure_cluster:1
 	crossbarfx shell --realm default create webcluster cluster1 --config='{"tcp_port": 8080, "tcp_shared": true}'
 	crossbarfx shell --realm default add webcluster-node cluster1 all --config '{"parallel": 2}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "/" --config '{"type": "static", "directory": "..", "options": {"enable_directory_listing": true}}'
@@ -48,25 +48,58 @@ configure_cluster:
 	crossbarfx shell --realm default add webcluster-service cluster1 "settings" --config '{"type": "json", "value": [1, 2, 3]}'
 
 # docs/shot7.png, docs/shot8.png
-start_cluster:
+start_cluster1:
 	crossbarfx shell --realm default start webcluster cluster1
 
+stop_cluster1:
+	crossbarfx shell --realm default stop webcluster cluster1
 
-create_cluster_old:
-	crossbarfx shell --realm default create webcluster cluster1 --config='{"tcp_port": 8080, "tcp_shared": true}'
-	crossbarfx shell --realm default show node
+show_cluster1:
+	crossbarfx shell --realm default show webcluster cluster1
 
-configure_cluster_old:
-	crossbarfx shell --realm default add webcluster-node cluster1 node-1a1f8f39 --config '{"webcluster_oid": "20f98b08-6cfa-4339-a828-0c213885ac46"}'
-	crossbarfx shell --realm default add webcluster-node cluster1 node-768f65b8 --config '{"webcluster_oid": "20f98b08-6cfa-4339-a828-0c213885ac46", "parallel": 4}'
-	crossbarfx shell --realm default add webcluster-service cluster1 "/" --config '{"type": "static", "directory": "..", "options": {"enable_directory_listing": true}}'
-	crossbarfx shell --realm default add webcluster-service cluster1 "info" --config '{"type": "nodeinfo"}'
-	crossbarfx shell --realm default add webcluster-service cluster1 "settings" --config '{"type": "json", "value": [1, 2, 3]}'
-
-configure_cluster_add1:
+configure_cluster1_add1:
 	crossbarfx shell --realm default add webcluster-service cluster1 "other" --config '{"type": "json", "value": {"contents": "settings2"}}'
 
 
+configure_cluster2: configure_cluster2_cluster configure_cluster2_role configure_cluster2_arealm
+
+configure_cluster2_cluster:
+	crossbarfx shell --realm default create routercluster cluster2
+	crossbarfx shell --realm default add routercluster-node cluster2 all --config '{"softlimit": 4, "hardlimit": 8}'
+	crossbarfx shell --realm default add routercluster-workergroup cluster2 mygroup1 --config '{}'
+
+configure_cluster2_role:
+	crossbarfx shell --realm default create role myrole1 --config='{}'
+	crossbarfx shell --realm default add role-permission myrole1 "com.example." --config='{"match": "prefix", "allow_call": true, "allow_register": true, "allow_publish": true, "allow_subscribe": true, "disclose_caller": true, "disclose_publisher": true, "cache": true}'
+
+configure_cluster2_arealm:
+	crossbarfx shell --realm default create arealm myrealm1 --config='{"enable_meta_api": true, "bridge_meta_api": true}'
+	crossbarfx shell --realm default add arealm-role myrealm1 myrole1 --config='{"authmethod": "anonymous"}'
+
+
+start_cluster2:
+	crossbarfx shell --realm default start routercluster cluster2
+
+stop_cluster2:
+	crossbarfx shell --realm default stop routercluster cluster2
+
+
+start_cluster2_arealm:
+	crossbarfx shell --realm default start arealm myrealm1 cluster2 mygroup1
+
+stop_cluster2_arealm:
+	crossbarfx shell --realm default stop arealm myrealm1
+
+
+show_cluster2:
+	crossbarfx shell --realm default show routercluster cluster2
+
+show_cluster2_role:
+	crossbarfx shell --realm default show role myrole1
+
+show_cluster2_arealm:
+	crossbarfx shell --realm default show arealm myrealm1
+	crossbarfx shell --realm default show arealm-role myrealm1 myrole1
 
 ############################################################################################################
 
