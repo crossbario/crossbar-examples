@@ -40,7 +40,14 @@ status_master:
 	${CROSSBAR} shell --realm default list nodes
 	${CROSSBAR} shell --realm default show node
 
-configure_cluster:1
+configure_clusters: configure_cluster1 configure_cluster2
+
+start_clusters: start_cluster1 start_cluster2 start_cluster2_arealm
+
+show_clusters: show_cluster1 show_cluster2
+
+
+configure_cluster1:
 	crossbarfx shell --realm default create webcluster cluster1 --config='{"tcp_port": 8080, "tcp_shared": true}'
 	crossbarfx shell --realm default add webcluster-node cluster1 all --config '{"parallel": 2}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "/" --config '{"type": "static", "directory": "..", "options": {"enable_directory_listing": true}}'
@@ -85,13 +92,13 @@ stop_cluster2:
 
 
 start_cluster2_arealm:
-	crossbarfx shell --realm default start arealm myrealm1 cluster2 mygroup1
+	crossbarfx shell --realm default start arealm myrealm1 cluster2 mygroup1 cluster1
 
 stop_cluster2_arealm:
 	crossbarfx shell --realm default stop arealm myrealm1
 
 
-show_cluster2:
+show_cluster2: show_cluster2_role show_cluster2_arealm
 	crossbarfx shell --realm default show routercluster cluster2
 
 show_cluster2_role:
