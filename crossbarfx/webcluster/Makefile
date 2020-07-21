@@ -47,12 +47,14 @@ start_clusters: start_cluster1 start_cluster2 start_cluster2_arealm
 show_clusters: show_cluster1 show_cluster2
 
 
+
 configure_cluster1:
 	crossbarfx shell --realm default create webcluster cluster1 --config='{"tcp_port": 8080, "tcp_shared": true}'
 	crossbarfx shell --realm default add webcluster-node cluster1 all --config '{"parallel": 2}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "/" --config '{"type": "static", "directory": "..", "options": {"enable_directory_listing": true}}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "info" --config '{"type": "nodeinfo"}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "settings" --config '{"type": "json", "value": [1, 2, 3]}'
+	crossbarfx shell --realm default add webcluster-service cluster1 "ws" --config '{"type": "websocket"}'
 
 # docs/shot7.png, docs/shot8.png
 start_cluster1:
@@ -74,14 +76,21 @@ configure_cluster2_cluster:
 	crossbarfx shell --realm default create routercluster cluster2
 	crossbarfx shell --realm default add routercluster-node cluster2 all --config '{"softlimit": 4, "hardlimit": 8}'
 	crossbarfx shell --realm default add routercluster-workergroup cluster2 mygroup1 --config '{}'
+	crossbarfx shell --realm default add routercluster-workergroup cluster2 mygroup2 --config '{}'
 
 configure_cluster2_role:
 	crossbarfx shell --realm default create role myrole1 --config='{}'
 	crossbarfx shell --realm default add role-permission myrole1 "com.example." --config='{"match": "prefix", "allow_call": true, "allow_register": true, "allow_publish": true, "allow_subscribe": true, "disclose_caller": true, "disclose_publisher": true, "cache": true}'
+	crossbarfx shell --realm default create role myrole2 --config='{}'
+	crossbarfx shell --realm default add role-permission myrole2 "foobar." --config='{"match": "prefix", "allow_call": true, "allow_register": true, "allow_publish": true, "allow_subscribe": true, "disclose_caller": true, "disclose_publisher": true, "cache": true}'
 
 configure_cluster2_arealm:
 	crossbarfx shell --realm default create arealm myrealm1 --config='{"enable_meta_api": true, "bridge_meta_api": true}'
 	crossbarfx shell --realm default add arealm-role myrealm1 myrole1 --config='{"authmethod": "anonymous"}'
+	crossbarfx shell --realm default create arealm myrealm2 --config='{"enable_meta_api": true, "bridge_meta_api": true}'
+	crossbarfx shell --realm default add arealm-role myrealm2 myrole1 --config='{"authmethod": "anonymous"}'
+	crossbarfx shell --realm default create arealm myrealm3 --config='{"enable_meta_api": true, "bridge_meta_api": true}'
+	crossbarfx shell --realm default add arealm-role myrealm3 myrole2 --config='{"authmethod": "anonymous"}'
 
 
 start_cluster2:
@@ -93,9 +102,13 @@ stop_cluster2:
 
 start_cluster2_arealm:
 	crossbarfx shell --realm default start arealm myrealm1 cluster2 mygroup1 cluster1
+	crossbarfx shell --realm default start arealm myrealm2 cluster2 mygroup1 cluster1
+	crossbarfx shell --realm default start arealm myrealm3 cluster2 mygroup2 cluster1
 
 stop_cluster2_arealm:
 	crossbarfx shell --realm default stop arealm myrealm1
+	crossbarfx shell --realm default stop arealm myrealm2
+	crossbarfx shell --realm default stop arealm myrealm3
 
 
 show_cluster2: show_cluster2_role show_cluster2_arealm
@@ -103,10 +116,15 @@ show_cluster2: show_cluster2_role show_cluster2_arealm
 
 show_cluster2_role:
 	crossbarfx shell --realm default show role myrole1
+	crossbarfx shell --realm default show role myrole2
 
 show_cluster2_arealm:
 	crossbarfx shell --realm default show arealm myrealm1
 	crossbarfx shell --realm default show arealm-role myrealm1 myrole1
+	crossbarfx shell --realm default show arealm myrealm2
+	crossbarfx shell --realm default show arealm-role myrealm2 myrole1
+	crossbarfx shell --realm default show arealm myrealm3
+	crossbarfx shell --realm default show arealm-role myrealm3 myrole2
 
 ############################################################################################################
 
@@ -156,3 +174,32 @@ clean_profile:
 clean: clean_master clean_nodes
 
 clean_all: clean clean_bin clean_profile
+
+
+
+
+run_subscribe_ws_cbor:
+	python client-subscribe.py websocket-cbor
+
+run_subscribe_rs_cbor:
+	python client-subscribe.py rawsocket-cbor
+
+run_subscribe_ws_json:
+	python client-subscribe.py websocket-json
+
+run_subscribe_rs_json:
+	python client-subscribe.py rawsocket-json
+
+
+run_publish_ws_cbor:
+	python client-publish.py websocket-cbor
+
+run_publish_rs_cbor:
+	python client-publish.py rawsocket-cbor
+
+run_publish_ws_json:
+	python client-publish.py websocket-json
+
+run_publish_rs_json:
+	python client-publish.py rawsocket-json
+
