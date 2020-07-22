@@ -77,6 +77,7 @@ configure_cluster2_cluster:
 	crossbarfx shell --realm default add routercluster-node cluster2 all --config '{"softlimit": 4, "hardlimit": 8}'
 	crossbarfx shell --realm default add routercluster-workergroup cluster2 mygroup1 --config '{}'
 	crossbarfx shell --realm default add routercluster-workergroup cluster2 mygroup2 --config '{}'
+	crossbarfx shell --realm default add routercluster-workergroup cluster2 mygroup3 --config '{}'
 
 configure_cluster2_role:
 	crossbarfx shell --realm default create role myrole1 --config='{}'
@@ -91,7 +92,8 @@ configure_cluster2_arealm:
 	crossbarfx shell --realm default add arealm-role myrealm2 myrole1 --config='{"authmethod": "anonymous"}'
 	crossbarfx shell --realm default create arealm myrealm3 --config='{"enable_meta_api": true, "bridge_meta_api": true}'
 	crossbarfx shell --realm default add arealm-role myrealm3 myrole2 --config='{"authmethod": "anonymous"}'
-
+	crossbarfx shell --realm default create arealm myrealm4 --config='{"enable_meta_api": true, "bridge_meta_api": true}'
+	crossbarfx shell --realm default add arealm-role myrealm4 myrole1 --config='{"authmethod": "anonymous"}'
 
 start_cluster2:
 	crossbarfx shell --realm default start routercluster cluster2
@@ -99,17 +101,17 @@ start_cluster2:
 stop_cluster2:
 	crossbarfx shell --realm default stop routercluster cluster2
 
-
 start_cluster2_arealm:
 	crossbarfx shell --realm default start arealm myrealm1 cluster2 mygroup1 cluster1
-	crossbarfx shell --realm default start arealm myrealm2 cluster2 mygroup1 cluster1
-	crossbarfx shell --realm default start arealm myrealm3 cluster2 mygroup2 cluster1
+	crossbarfx shell --realm default start arealm myrealm2 cluster2 mygroup2 cluster1
+	crossbarfx shell --realm default start arealm myrealm3 cluster2 mygroup3 cluster1
+	crossbarfx shell --realm default start arealm myrealm4 cluster2 mygroup3 cluster1
 
 stop_cluster2_arealm:
 	crossbarfx shell --realm default stop arealm myrealm1
 	crossbarfx shell --realm default stop arealm myrealm2
 	crossbarfx shell --realm default stop arealm myrealm3
-
+	crossbarfx shell --realm default stop arealm myrealm4
 
 show_cluster2: show_cluster2_role show_cluster2_arealm
 	crossbarfx shell --realm default show routercluster cluster2
@@ -125,6 +127,8 @@ show_cluster2_arealm:
 	crossbarfx shell --realm default show arealm-role myrealm2 myrole1
 	crossbarfx shell --realm default show arealm myrealm3
 	crossbarfx shell --realm default show arealm-role myrealm3 myrole2
+	crossbarfx shell --realm default show arealm myrealm4
+	crossbarfx shell --realm default show arealm-role myrealm4 myrole1
 
 ############################################################################################################
 
