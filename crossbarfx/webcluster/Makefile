@@ -5,22 +5,71 @@ CROSSBAR_FABRIC_SUPERUSER=${HOME}/.crossbarfx/default.pub
 CROSSBAR_FABRIC_URL=ws://localhost:9000/ws
 CROSSBARFX_WATCH_TO_PAIR=${PWD}/.test/nodes
 
-# see screenshots docs/shot1.png
 install_crossbar:
 	mkdir -p ${PWD}/.test/bin
 	curl https://download.crossbario.com/crossbarfx/linux-amd64/crossbarfx-latest -o crossbarfx
 	chmod +x crossbarfx
 	mv crossbarfx ${PWD}/.test/bin
 
+version_crossbar:
+	${CROSSBAR} version
+
+clean_bin:
+	rm -rf ${PWD}/.test/bin
+	mkdir -p ${PWD}/.test/bin
+
+clean: clean_master clean_nodes
+
+clean_all: clean clean_bin clean_profile
+
+
 init_shell:
 	CROSSBAR_FABRIC_URL=${CROSSBAR_FABRIC_URL} \
 	${CROSSBAR} shell init --yes
 
-# see screenshots docs/shot2.png
+# WARNING: this will destroy your current CLI config & user profiles folder immediately
+# and create a fresh one from scratch!
+clean_shell:
+	rm -rf ${HOME}/.crossbarfx
+
+
 run_master:
 	CROSSBAR_FABRIC_SUPERUSER=${CROSSBAR_FABRIC_SUPERUSER} \
 	CROSSBARFX_WATCH_TO_PAIR=${CROSSBARFX_WATCH_TO_PAIR} \
 	${CROSSBAR} master start --cbdir=${PWD}/.test/master
+
+run_master_nowatch:
+	CROSSBAR_FABRIC_SUPERUSER=${CROSSBAR_FABRIC_SUPERUSER} \
+	${CROSSBAR} master start --cbdir=${PWD}/.test/master
+
+clean_master:
+	rm -rf ${PWD}/.test/master
+	mkdir -p ${PWD}/.test/master
+
+status_master:
+	${CROSSBAR} shell show status
+	${CROSSBAR} shell list mrealms
+	${CROSSBAR} shell show mrealm default
+	${CROSSBAR} shell --realm default list nodes
+	${CROSSBAR} shell --realm default show node
+
+
+init_nodes:
+	${CROSSBAR} edge keys --cbdir=${PWD}/.test/nodes/node1
+	${CROSSBAR} edge keys --cbdir=${PWD}/.test/nodes/node2
+	${CROSSBAR} edge keys --cbdir=${PWD}/.test/nodes/node3
+	find ${PWD}/.test/nodes
+
+pair_nodes:
+	${CROSSBAR} shell pair node .test/nodes/node1/key.pub default node1
+	${CROSSBAR} shell pair node .test/nodes/node2/key.pub default node2
+	${CROSSBAR} shell pair node .test/nodes/node3/key.pub default node3
+	${CROSSBAR} shell --realm default list nodes
+	${CROSSBAR} shell --realm default show node
+
+clean_nodes:
+	rm -rf ${PWD}/.test/nodes
+	mkdir -p ${PWD}/.test/nodes
 
 # see screenshots docs/shot3.png and docs/shot4.png
 run_node1:
@@ -32,21 +81,30 @@ run_node2:
 	CROSSBAR_FABRIC_URL=${CROSSBAR_FABRIC_URL} \
 	${CROSSBAR} edge start --cbdir=${PWD}/.test/nodes/node2
 
-# see screenshots docs/shot6.png
-status_master:
-	${CROSSBAR} shell show status
-	${CROSSBAR} shell list mrealms
-	${CROSSBAR} shell show mrealm default
-	${CROSSBAR} shell --realm default list nodes
+run_node3:
+	CROSSBAR_FABRIC_URL=${CROSSBAR_FABRIC_URL} \
+	${CROSSBAR} edge start --cbdir=${PWD}/.test/nodes/node3
+
+status_nodes:
 	${CROSSBAR} shell --realm default show node
+	find ${PWD}/.test/nodes -name key.pub -print -exec sh -c "grep 'public-key' {} && crossbarfx edge status --cbdir={}" \;
+
+find_nodes:
+	find ${PWD}/.test/nodes -name key.activate -print -exec cat {} \;
+
+run_node1_unmanaged:
+	CROSSBAR_FABRIC_URL="" \
+	${CROSSBAR} edge start --cbdir=${PWD}/.test/nodes/node1
+
+
+############################################################################################################
+
 
 configure_clusters: configure_cluster1 configure_cluster2
 
 start_clusters: start_cluster1 start_cluster2 start_cluster2_arealm
 
 show_clusters: show_cluster1 show_cluster2
-
-
 
 configure_cluster1:
 	crossbarfx shell --realm default create webcluster cluster1 --config='{"tcp_port": 8080, "tcp_shared": true}'
@@ -56,7 +114,6 @@ configure_cluster1:
 	crossbarfx shell --realm default add webcluster-service cluster1 "settings" --config '{"type": "json", "value": [1, 2, 3]}'
 	crossbarfx shell --realm default add webcluster-service cluster1 "ws" --config '{"type": "websocket"}'
 
-# docs/shot7.png, docs/shot8.png
 start_cluster1:
 	crossbarfx shell --realm default start webcluster cluster1
 
@@ -129,57 +186,6 @@ show_cluster2_arealm:
 	crossbarfx shell --realm default show arealm-role myrealm3 myrole2
 	crossbarfx shell --realm default show arealm myrealm4
 	crossbarfx shell --realm default show arealm-role myrealm4 myrole1
-
-############################################################################################################
-
-status_nodes:
-	${CROSSBAR} shell --realm default show node
-	find ${PWD}/.test/nodes -name key.pub -print -exec sh -c "grep 'public-key' {} && crossbarfx edge status --cbdir={}" \;
-
-find_nodes:
-	find ${PWD}/.test/nodes -name key.activate -print -exec cat {} \;
-
-run_node1_unmanaged:
-	CROSSBAR_FABRIC_URL="" \
-	${CROSSBAR} edge start --cbdir=${PWD}/.test/nodes/node1
-
-run_node3:
-	CROSSBAR_FABRIC_URL=${CROSSBAR_FABRIC_URL} \
-	${CROSSBAR} edge start --cbdir=${PWD}/.test/nodes/node3
-
-run_node4:
-	CROSSBAR_FABRIC_URL=${CROSSBAR_FABRIC_URL} \
-	${CROSSBAR} edge start --cbdir=${PWD}/.test/nodes/node4
-
-run_node5:
-	CROSSBAR_FABRIC_URL=${CROSSBAR_FABRIC_URL} \
-	${CROSSBAR} edge start --cbdir=${PWD}/.test/nodes/node5
-
-# WARNING: this will destroy your current CLI config & user profiles folder immediately
-# and create a fresh one from scratch!
-clean_shell:
-	rm -rf ${HOME}/.crossbarfx
-
-clean_master:
-	rm -rf ${PWD}/.test/master
-	mkdir -p ${PWD}/.test/master
-
-clean_nodes:
-	rm -rf ${PWD}/.test/nodes
-	mkdir -p ${PWD}/.test/nodes
-
-clean_bin:
-	rm -rf ${PWD}/.test/bin
-	mkdir -p ${PWD}/.test/bin
-
-clean_profile:
-	rm -rf ${HOME}/.crossbarfx
-
-clean: clean_master clean_nodes
-
-clean_all: clean clean_bin clean_profile
-
-
 
 
 run_subscribe_ws_cbor:
