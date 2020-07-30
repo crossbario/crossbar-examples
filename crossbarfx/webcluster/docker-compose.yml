@@ -1,6 +1,35 @@
 version: '3'
 services:
+    master:
+        container_name: master
+        image: crossbario/crossbarfx:pypy-slim-amd64
+        ports:
+            # TCP port mapping (HOST:CONTAINER port):
+            - "9000:9000"
+        environment:
+            # requires symlink on host:
+            # ln -s ${HOME}/.crossbarfx/default.pub .nodes/default.pub
+            - CROSSBAR_FABRIC_SUPERUSER=../default.pub
+
+            # both of these are required for auto-discovery & pairing of nodes
+            - CROSSBAR_FABRIC_URL=ws://master:9000/ws
+            - CROSSBARFX_WATCH_TO_PAIR=/nodes
+        volumes:
+            # superuser public key
+            - "${HOME}/.crossbarfx/default.pub:/default.pub:ro"
+
+            # nodes parent directory (of all nodes) is mapped from host:
+            - "${PWD}/.test/nodes:/nodes:rw"
+
+            # node directory of master node
+            - "${PWD}/.test/master:/master:rw"
+        command:
+            - master
+            - start
+            - --cbdir=/master
+
     node1:
+        container_name: node1
         image: crossbario/crossbarfx:pypy-slim-amd64
         ports:
             # TCP port mapping (HOST:CONTAINER port):
@@ -15,26 +44,35 @@ services:
             - start
             - --cbdir=/node
 
-    master:
+    node2:
+        container_name: node2
         image: crossbario/crossbarfx:pypy-slim-amd64
-        restart: always
-        environment:
-            # requires symlink on host:
-            # ln -s ${HOME}/.crossbarfx/default.pub .nodes/default.pub
-            - CROSSBAR_FABRIC_SUPERUSER=../default.pub
-            - CROSSBARFX_WATCH_TO_PAIR=/nodes
         ports:
-            - "9000:9000"
+            # TCP port mapping (HOST:CONTAINER port):
+            - "8082:8080"
+        environment:
+            - CROSSBAR_FABRIC_URL=ws://master:9000/ws
         volumes:
-            # superuser public key
-            - "${HOME}/.crossbarfx/default.pub:/default.pub:ro"
-
-            # nodes parent directory (of all nodes) is mapped from host:
-            - "${PWD}/.test/nodes:/nodes:rw"
-
-            # node directory of master node
-            - "${PWD}/.test/master:/master:rw"
+            # node directory (of this node only!) is mapped from host:
+            - "${PWD}/.test/nodes/node2:/node:rw"
         command:
-            - master
+            - edge
             - start
-            - --cbdir=/master
+            - --cbdir=/node
+
+    node3:
+        container_name: node3
+        image: crossbario/crossbarfx:pypy-slim-amd64
+        ports:
+            # TCP port mapping (HOST:CONTAINER port):
+            - "8083:8080"
+        environment:
+            - CROSSBAR_FABRIC_URL=ws://master:9000/ws
+        volumes:
+            # node directory (of this node only!) is mapped from host:
+            - "${PWD}/.test/nodes/node3:/node:rw"
+        command:
+            - edge
+            - start
+            - --cbdir=/node
+
