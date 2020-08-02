@@ -2,10 +2,12 @@ version: '3'
 services:
     master:
         container_name: master
+        restart: always
         image: crossbario/crossbarfx:pypy-slim-amd64
         ports:
             # TCP port mapping (HOST:CONTAINER port):
             - "9000:9000"
+        tty: true
         environment:
             # requires symlink on host:
             # ln -s ${HOME}/.crossbarfx/default.pub .nodes/default.pub
@@ -13,6 +15,7 @@ services:
 
             # both of these are required for auto-discovery & pairing of nodes
             - CROSSBAR_FABRIC_URL=ws://master:9000/ws
+            - CROSSBARFX_NODE_ID=master
             - CROSSBARFX_WATCH_TO_PAIR=/nodes
         volumes:
             # superuser public key
@@ -30,12 +33,18 @@ services:
 
     node1:
         container_name: node1
+        depends_on:
+            - master
+        restart: always
         image: crossbario/crossbarfx:pypy-slim-amd64
         ports:
             # TCP port mapping (HOST:CONTAINER port):
             - "8081:8080"
+        tty: true
         environment:
+            # auto-pairing configuration
             - CROSSBAR_FABRIC_URL=ws://master:9000/ws
+            - CROSSBARFX_NODE_ID=node1
         volumes:
             # node directory (of this node only!) is mapped from host:
             - "${PWD}/.test/nodes/node1:/node:rw"
@@ -46,12 +55,18 @@ services:
 
     node2:
         container_name: node2
+        depends_on:
+            - master
+        restart: always
         image: crossbario/crossbarfx:pypy-slim-amd64
         ports:
             # TCP port mapping (HOST:CONTAINER port):
             - "8082:8080"
+        tty: true
         environment:
+            # auto-pairing configuration
             - CROSSBAR_FABRIC_URL=ws://master:9000/ws
+            - CROSSBARFX_NODE_ID=node2
         volumes:
             # node directory (of this node only!) is mapped from host:
             - "${PWD}/.test/nodes/node2:/node:rw"
@@ -62,12 +77,18 @@ services:
 
     node3:
         container_name: node3
+        depends_on:
+            - master
+        restart: always
         image: crossbario/crossbarfx:pypy-slim-amd64
         ports:
             # TCP port mapping (HOST:CONTAINER port):
             - "8083:8080"
+        tty: true
         environment:
+            # auto-pairing configuration
             - CROSSBAR_FABRIC_URL=ws://master:9000/ws
+            - CROSSBARFX_NODE_ID=node1
         volumes:
             # node directory (of this node only!) is mapped from host:
             - "${PWD}/.test/nodes/node3:/node:rw"
@@ -76,3 +97,16 @@ services:
             - start
             - --cbdir=/node
 
+    haproxy:
+        container_name: haproxy
+        depends_on:
+            - node1
+            - node2
+            - node3
+        restart: always
+        image: haproxy
+        ports:
+            - "8080:8080"
+            - "1936:1936"
+        volumes:
+            - "${PWD}/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"
