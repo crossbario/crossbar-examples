@@ -17,9 +17,22 @@ and
 
 * [advanced](advanced), which shows how to run dynamic authenticators in dedicated realms, and how to let dynamic authenticators redirect clients to specific realms
 
-## Static, Dynamic and Database Authentication
+## Static, Dynamic and Function-based Authentication
 
 For the above examples, the
 
-* `static` folder contains examples where the credentials are stored in the Crossbar.io config
-* `dynamic` folder contains an examples where authentication is handled by an authenticator component (which may store the credentials itself or serve as a connector to an existing authentication mechanism/credentials store)
+* `static` folder contains examples where the credentials are configured statically in the Crossbar.io config
+* `dynamic` folder contains examples where authentication is handled by an authenticator WAMP component (which is called at run-time via WAMP RPC)
+* `function` folder contains examples where authentication is handled by an authenticator (Python) function (which is called at run-time via Python function call)
+
+## Status
+
+Method | Static | Dynamic | Function
+-- | -- | -- | --
+Anonymous |   |   |
+CRA | ok | ok | ok
+SCRAM |   |   |
+Cryptosign | ok | ok | ok
+Ticket | ok | ok | ok
+TLS |   |   |
+Cookie |   |   |

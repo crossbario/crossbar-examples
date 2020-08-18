@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+   </head>
+   <body>
+      <h1>WAMP Challenge-Response Authentication</h1>
+      <p>Open JavaScript console to watch output.</p>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="/shared/autobahn/autobahn.min.js"></script>
+      <script>
+         console.log("Ok, AutobahnJS loaded", autobahn.version);
+
+         // authenticate using authid "joe"
+         var user = "joe";
+         var key = "secret2";
+
+         // authenticate using authid "joe"
+         //var user = "hans";
+         //var key = "123456";
+
+         // authenticate using authid "peter", and using a salted password
+         //var user = "peter";
+         //var key = autobahn.auth_cra.derive_key("secret1", "salt123", 100, 16);
+
+         // this callback is fired during WAMP-CRA authentication
+         //
+         function onchallenge (session, method, extra) {
+
+            //console.log("onchallenge", method, extra);
+
+            if (method === "wampcra") {
+
+               console.log("onchallenge: authenticating via '" + method + "' and challenge '" + extra.challenge + "'");
+
+               return autobahn.auth_cra.sign(key, extra.challenge);
+
+            } else {
+               throw "don't know how to authenticate using '" + method + "'";
+            }
+         }
+
+         var wsuri;
+         if (document.location.origin == "file://") {
+            wsuri = "ws://127.0.0.1:8080/ws";
+
+         } else {
+            wsuri = (document.location.protocol === "http:" ? "ws:" : "wss:")
+               + "//" + document.location.host + "/ws";
+         }
+         var connection = new autobahn.Connection({
+            url: wsuri,
+            realm: 'realm1',
+
+            // the following attributes must be set of WAMP-CRA authentication
+            //
+            authmethods: ["wampcra"],
+            authid: user,
+            onchallenge: onchallenge
+         });
+
+         connection.onopen = function (session, details) {
+
+            console.log("connected session with ID " + session.id);
+            console.log("authenticated using method '" + details.authmethod + "' and provider '" + details.authprovider + "'");
+            console.log("authenticated with authid '" + details.authid + "' and authrole '" + details.authrole + "'");
+
+            // call a procedure we are allowed to call (so this should succeed)
+            //
+            session.call('com.example.add2', [2, 3]).then(
+               function (res) {
+                  console.log("OK: call result received", res);
+               },
+               function (error) {
+                  console.log("ERROR: call error (and this have succeeded!!)", error);
+               }
+            );
+
+            // (try to) register a procedure where we are not allowed to (so this should fail)
+            //
+            session.register('com.example.mul2', function (args, kwargs) {})
+               .then(
+                  function () {
+                     console.log("ERROR: registration succeeded, but should have failed!!");
+                  },
+                  function (err) {
+                     console.log("OK: registration failed (this is expected)", err.error);
+                  }
+               );
+
+            // (try to) publish to some topics
+            //
+            var topics = [
+               ['com.example.topic1', true],
+               ['com.example.topic2', false],
+               ['com.foobar.topic1', true],
+               ['com.foobar.topic2', false],
+            ];
+
+            for (var i = 0; i < topics.length; ++i) {
+
+               (function (j) {
+
+                  var topic = topics[j][0];
+                  var expect_success = topics[j][1];
+
+                  session.publish(topic, ['hello from browser'], {}, {acknowledge: true})
+                     .then(
+                        function (pub) {
+                           if (expect_success) {
+                              console.log("OK: event published to topic", topic);
+                           } else {
+                              console.log("ERROR: event published to topic succeeded, but should have failed!!", topic)
+                           }
+                        },
+                        function (err) {
+                           if (expect_success) {
+                              console.log("ERROR: publication to topic " + topic + " failed, but should have succeeded!!", err.error);
+                           } else {
+                              console.log("OK: publication to topic " + topic + " failed (this is expected)", err.error);
+                           }
+                        }
+                     );
+               })(i);
+            }
+
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("disconnected", reason, details.reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>

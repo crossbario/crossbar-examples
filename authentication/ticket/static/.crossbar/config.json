@@ -140,14 +140,6 @@
                                 "ticket": {
                                     "type": "static",
                                     "principals": {
-                                        "joe": {
-                                            "ticket": "secret!!!",
-                                            "role": "frontend"
-                                        },
-                                        "client2": {
-                                            "ticket": "123sekret",
-                                            "role": "frontend"
-                                        },
                                         "client1": {
                                             "ticket": "${MYTICKET}",
                                             "role": "frontend"

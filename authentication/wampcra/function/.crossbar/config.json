@@ -129,25 +129,17 @@
                         },
                         "shared": {
                             "type": "static",
-                            "directory": "../../../../_shared-web-resources"
+                            "directory": "../../../../../_shared-web-resources"
                         },
                         "ws": {
                             "type": "websocket",
                             "auth": {
                                 "wampcra": {
-                                    "type": "static",
-                                    "users": {
-                                        "client1": {
-                                            "secret": "${MYSECRET}",
-                                            "role": "frontend"
-                                        },
-                                        "client2": {
-                                            "secret": "${MYSECRET}",
-                                            "role": "frontend",
-                                            "salt": "salt123",
-                                            "iterations": 100,
-                                            "keylen": 16
-                                        }
+                                    "type": "function",
+                                    "create": "authenticator.create_authenticator",
+                                    "expose_controller": true,
+                                    "config": {
+                                        "dbname": "foo"
                                     }
                                 }
                             }
