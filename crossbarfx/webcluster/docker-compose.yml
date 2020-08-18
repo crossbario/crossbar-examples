@@ -88,7 +88,7 @@ services:
         environment:
             # auto-pairing configuration
             - CROSSBAR_FABRIC_URL=ws://master:9000/ws
-            - CROSSBARFX_NODE_ID=node1
+            - CROSSBARFX_NODE_ID=node3
         volumes:
             # node directory (of this node only!) is mapped from host:
             - "${PWD}/.test/nodes/node3:/node:rw"

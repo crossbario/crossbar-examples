@@ -1,8 +1,8 @@
 crossbar:
-	PYTHONPATH=../../../../crossbar python -m crossbar.controller.cli start
+	crossbar start
 
 client:
-	PYTHONPATH=../../../../autobahn python client.py
+	python client.py
 
 generator:
-	PYTHONPATH=../../../../autobahn python generator.py
+	python generator.py
