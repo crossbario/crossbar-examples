@@ -13,6 +13,26 @@
                     "name": "realm1",
                     "roles": [
                         {
+                            "name": "authenticator",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.authenticate",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": false,
+                                        "register": true,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
                             "name": "backend",
                             "permissions": [
                                 {
@@ -133,21 +153,16 @@
                         },
                         "ws": {
                             "type": "websocket",
+                            "serializers": [
+                                "json"
+                            ],
                             "auth": {
-                                "wampcra": {
-                                    "type": "static",
-                                    "users": {
-                                        "client1": {
-                                            "secret": "${MYSECRET}",
-                                            "role": "frontend"
-                                        },
-                                        "client2": {
-                                            "secret": "${MYSECRET}",
-                                            "role": "frontend",
-                                            "salt": "salt123",
-                                            "iterations": 100,
-                                            "keylen": 16
-                                        }
+                                "ticket": {
+                                    "type": "function",
+                                    "create": "authenticator.create_authenticator",
+                                    "expose_controller": true,
+                                    "config": {
+                                        "dbname": "foo"
                                     }
                                 }
                             }

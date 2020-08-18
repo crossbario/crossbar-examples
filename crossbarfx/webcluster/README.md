@@ -2,7 +2,7 @@
 
 ## Get up and running
 
-Add the following to a projet `Makefile' for easy access:
+Add the following to a project `Makefile' for easy access:
 
 ```console
 CROSSBAR=${PWD}/.test/bin/crossbarfx
@@ -239,7 +239,7 @@ Show details about a router worker group added to a router cluster:
 crossbarfx shell --realm default show routercluster-workergroup cluster2 mygroup1
 ```
 
-List webservices currently added to router cluster "cluster2" (*NOT YET IMPLEMENTED*):
+List worker groups currently added to router cluster "cluster2" (*NOT YET IMPLEMENTED*):
 
 ```console
 crossbarfx shell --realm default list routercluster-workergroups cluster2
