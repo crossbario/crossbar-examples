@@ -56,6 +56,13 @@
                               "9c194391af3bf566fc11a619e8df200ba02efb35b91bdd98b424f20f4163875e",
                               "585df51991780ee8dce4766324058a04ecae429dffd786ee80839c9467468c28"
                            ]
+                        },
+                        "client03@example.com": {
+                           "realm": "devices",
+                           "role": "device",
+                           "authorized_keys": [
+                              "874eb6ed21fb5959394c3f625bcb9b58c21a2fd7de2f0d7e94b3844a423da3c9"
+                           ]
                         }
                      }
                   }
