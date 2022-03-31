@@ -63,6 +63,13 @@
                            "authorized_keys": [
                               "874eb6ed21fb5959394c3f625bcb9b58c21a2fd7de2f0d7e94b3844a423da3c9"
                            ]
+                        },
+                        "client04@example.com": {
+                           "realm": "devices",
+                           "role": "device",
+                           "authorized_keys": [
+                              "665240aa834f36007896d030dd8382a96703dc282ee9d8c379e2413f99bdc4ea"
+                           ]
                         }
                      }
                   }
