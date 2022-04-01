@@ -1,10 +1,5 @@
 {
     "version": 2,
-    "controller": {
-        "id": "node1",
-        "options": {
-        }
-    },
     "workers": [
         {
             "type": "router",
@@ -18,27 +13,7 @@
                             "name": "anonymous",
                             "permissions": [
                                 {
-                                    "uri": "io.crossbar.demo.public.",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "call": true,
-                                        "register": true,
-                                        "publish": true,
-                                        "subscribe": true
-                                    },
-                                    "disclose": {
-                                        "caller": true,
-                                        "publisher": true
-                                    },
-                                    "cache": true
-                                }
-                            ]
-                        },
-                        {
-                            "name": "user",
-                            "permissions": [
-                                {
-                                    "uri": "io.crossbar.demo.user.",
+                                    "uri": "",
                                     "match": "prefix",
                                     "allow": {
                                         "call": true,
@@ -63,9 +38,6 @@
                     "endpoint": {
                         "type": "unix",
                         "path": "router.sock"
-                    },
-                    "options": {
-                        "max_message_size": 1048576
                     },
                     "serializers": ["cbor"],
                     "auth": {
@@ -113,7 +85,7 @@
                             "type": "static",
                             "directory": "../web",
                             "options": {
-                                "enable_directory_listing": false
+                                "enable_directory_listing": true
                             }
                         },
                         "autobahn": {
@@ -163,6 +135,14 @@
                         },
                         "info": {
                             "type": "nodeinfo"
+                        },
+                        "call": {
+                            "type": "caller",
+                            "realm": "realm1",
+                            "role": "anonymous",
+                            "options": {
+                                "debug": true
+                            }
                         }
                     }
                 }
@@ -205,7 +185,7 @@
                             "type": "static",
                             "directory": "../web",
                             "options": {
-                                "enable_directory_listing": false
+                                "enable_directory_listing": true
                             }
                         },
                         "autobahn": {
@@ -255,6 +235,14 @@
                         },
                         "info": {
                             "type": "nodeinfo"
+                        },
+                        "call": {
+                            "type": "caller",
+                            "realm": "realm1",
+                            "role": "anonymous",
+                            "options": {
+                                "debug": true
+                            }
                         }
                     }
                 }
