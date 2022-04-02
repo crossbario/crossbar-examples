@@ -44,3 +44,9 @@ run_publish_ws_json:
 
 run_publish_rs_json:
 	python client-publish.py rawsocket-json
+
+
+test1:
+	curl -H "Content-Type: application/json" \
+		-d '{"procedure": "com.example.add2", "args": [1, 2]}' \
+		http://localhost:8443/call

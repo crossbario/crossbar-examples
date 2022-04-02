@@ -28,6 +28,46 @@
                                     "cache": true
                                 }
                             ]
+                        },
+                        {
+                            "name": "restbridge",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "user",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
                         }
                     ]
                 }
@@ -41,9 +81,49 @@
                     },
                     "serializers": ["cbor"],
                     "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "anonymous"
+                        },
                         "anonymous-proxy": {
                             "type": "static"
+                        },
+                        "cryptosign": {
+                            "type": "static",
+                            "principals": {
+                                "public": {
+                                   "realm": "realm1",
+                                   "role": "anonymous",
+                                   "authorized_keys": [
+                                      "ee07d793bc3031374e4419c46b6a2e7656b54e290dce7bd22f6c32a5141999f5"
+                                   ]
+                                }
+                            }
                         }
+                    }
+                }
+            ]
+        },
+
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "backend.MyBackend",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "router.sock"
+                        },
+                        "serializer": "cbor"
                     }
                 }
             ]
@@ -63,12 +143,19 @@
                         },
                         "url": "ws://localhost",
                         "serializer": "cbor"
+                    },
+                    "auth": {
+                        "anonymous-proxy": {
+                            "type": "static"
+                        }
                     }
                 }
             },
             "routes": {
                 "realm1": {
-                    "anonymous": "conn1"
+                    "anonymous": "conn1",
+                    "restbridge": "conn1",
+                    "user": "conn1"
                 }
             },
             "transports": [
@@ -131,6 +218,25 @@
                                         "memory_level": 5
                                     }
                                 }
+                            },
+                            "auth": {
+                                "anonymous": {
+                                    "type": "static",
+                                    "role": "anonymous"
+                                },
+                                "ticket": {
+                                    "type": "static",
+                                    "principals": {
+                                        "user1": {
+                                            "ticket": "secret1",
+                                            "role": "user"
+                                        },
+                                        "user2": {
+                                            "ticket": "secret2",
+                                            "role": "user"
+                                        }
+                                    }
+                                }
                             }
                         },
                         "info": {
@@ -139,7 +245,7 @@
                         "call": {
                             "type": "caller",
                             "realm": "realm1",
-                            "role": "anonymous",
+                            "role": "restbridge",
                             "options": {
                                 "debug": true
                             }
@@ -163,12 +269,19 @@
                         },
                         "url": "ws://localhost",
                         "serializer": "cbor"
+                    },
+                    "auth": {
+                        "anonymous-proxy": {
+                            "type": "static"
+                        }
                     }
                 }
             },
             "routes": {
                 "realm1": {
-                    "anonymous": "conn1"
+                    "anonymous": "conn1",
+                    "restbridge": "conn1",
+                    "user": "conn1"
                 }
             },
             "transports": [
@@ -231,6 +344,25 @@
                                         "memory_level": 5
                                     }
                                 }
+                            },
+                            "auth": {
+                                "anonymous": {
+                                    "type": "static",
+                                    "role": "anonymous"
+                                },
+                                "ticket": {
+                                    "type": "static",
+                                    "principals": {
+                                        "user1": {
+                                            "ticket": "secret1",
+                                            "role": "user"
+                                        },
+                                        "user2": {
+                                            "ticket": "secret2",
+                                            "role": "user"
+                                        }
+                                    }
+                                }
                             }
                         },
                         "info": {
@@ -239,7 +371,7 @@
                         "call": {
                             "type": "caller",
                             "realm": "realm1",
-                            "role": "anonymous",
+                            "role": "restbridge",
                             "options": {
                                 "debug": true
                             }

@@ -18,6 +18,7 @@ AUTHENTICATION = {
         'ticket': 'secret2'
     }
 }
+# AUTHENTICATION = None
 
 if TRANSPORT == 'websocket':
     comp = Component(
