@@ -88,7 +88,7 @@
                         "anonymous-proxy": {
                             "type": "static"
                         },
-                        "cryptosign": {
+                        "cryptosign-proxy": {
                             "type": "static",
                             "principals": {
                                 "public": {
