@@ -19,6 +19,9 @@ run_config4:
 run_config5:
 	$(CROSSBAR) start --config=config5.json
 
+run_config6:
+	$(CROSSBAR) start --config=config6.json
+
 
 run_subscribe_ws_cbor:
 	python client-subscribe.py websocket-cbor

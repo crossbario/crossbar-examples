@@ -1,0 +1,366 @@
+{
+    "version": 2,
+    "controller": {
+        "id": "mynode1"
+    },
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+            },
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "restbridge",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "user",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8999
+                    },
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "cryptosign-proxy": {
+                            "type": "static",
+                            "principals": {
+                                "mynode1": {
+                                   "realm": "realm1",
+                                   "role": "anonymous",
+                                   "authorized_keys": [
+                                      "ee07d793bc3031374e4419c46b6a2e7656b54e290dce7bd22f6c32a5141999f5"
+                                   ]
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "backend.MyBackend",
+                    "realm": "realm1",
+                    "role": "anonymous"
+                }
+            ]
+        },
+
+        {
+            "type": "proxy",
+            "options": {
+            },
+            "connections": {
+                "conn1": {
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "localhost",
+                            "port": 8999
+                        },
+                        "serializer": "cbor",
+                        "url": "rs://localhost:8999"
+                    },
+                    "auth": {
+                        "cryptosign-proxy": {
+                            "type": "static"
+                        }
+                    }
+                }
+            },
+            "routes": {
+                "realm1": {
+                    "anonymous": "conn1",
+                    "restbridge": "conn1",
+                    "user": "conn1"
+                }
+            },
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8443,
+                        "shared": true,
+                        "backlog": 1024
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn-v20.1.1.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.1.1.zip",
+                            "object_prefix": "autobahn-js-browser-20.1.1",
+                            "default_object": "autobahn.min.js",
+                            "download": true,
+                            "cache": true,
+                            "hashes": [
+                                "a7e898a6a506c8bffe9a09d7e29b86a8adb90a15859024835df99cc7be82274a"
+                            ],
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 12,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            },
+                            "auth": {
+                                "anonymous": {
+                                    "type": "static",
+                                    "role": "anonymous"
+                                },
+                                "ticket": {
+                                    "type": "static",
+                                    "principals": {
+                                        "user1": {
+                                            "ticket": "secret1",
+                                            "role": "user"
+                                        },
+                                        "user2": {
+                                            "ticket": "secret2",
+                                            "role": "user"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "call": {
+                            "type": "caller",
+                            "realm": "realm1",
+                            "role": "restbridge",
+                            "options": {
+                                "debug": true
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+
+        {
+            "type": "proxy",
+            "options": {
+            },
+            "connections": {
+                "conn1": {
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "tcp",
+                            "host": "localhost",
+                            "port": 8999
+                        },
+                        "serializer": "cbor",
+                        "url": "rs://localhost:8999"
+                    },
+                    "auth": {
+                        "cryptosign-proxy": {
+                            "type": "static"
+                        }
+                    }
+                }
+            },
+            "routes": {
+                "realm1": {
+                    "anonymous": "conn1",
+                    "restbridge": "conn1",
+                    "user": "conn1"
+                }
+            },
+            "transports": [
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8443,
+                        "shared": true,
+                        "backlog": 1024
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web",
+                            "options": {
+                                "enable_directory_listing": true
+                            }
+                        },
+                        "autobahn": {
+                            "type": "archive",
+                            "archive": "autobahn-v20.1.1.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.1.1.zip",
+                            "object_prefix": "autobahn-js-browser-20.1.1",
+                            "default_object": "autobahn.min.js",
+                            "download": true,
+                            "cache": true,
+                            "hashes": [
+                                "a7e898a6a506c8bffe9a09d7e29b86a8adb90a15859024835df99cc7be82274a"
+                            ],
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": [
+                                "cbor", "msgpack", "json"
+                            ],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 12,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            },
+                            "auth": {
+                                "anonymous": {
+                                    "type": "static",
+                                    "role": "anonymous"
+                                },
+                                "ticket": {
+                                    "type": "static",
+                                    "principals": {
+                                        "user1": {
+                                            "ticket": "secret1",
+                                            "role": "user"
+                                        },
+                                        "user2": {
+                                            "ticket": "secret2",
+                                            "role": "user"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "call": {
+                            "type": "caller",
+                            "realm": "realm1",
+                            "role": "restbridge",
+                            "options": {
+                                "debug": true
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
