@@ -79,7 +79,7 @@
                                     "uri": "com.example.authenticate",
                                     "match": "exact",
                                     "allow": {
-                                        "call": false,
+                                        "call": true,
                                         "register": true,
                                         "publish": false,
                                         "subscribe": false
@@ -162,7 +162,8 @@
                 "realm1": {
                     "anonymous": "conn1",
                     "restbridge": "conn1",
-                    "user": "conn1"
+                    "user": "conn1",
+                    "authenticator": "conn1"
                 }
             },
             "transports": [
@@ -230,7 +231,8 @@
                                 "ticket": {
                                     "type": "dynamic",
                                     "authenticator": "com.example.authenticate",
-                                    "authenticator-realm": "realm1"
+                                    "authenticator-realm": "realm1",
+                                    "authenticator-role": "authenticator"
                                 }
                             }
                         },
@@ -277,7 +279,8 @@
                 "realm1": {
                     "anonymous": "conn1",
                     "restbridge": "conn1",
-                    "user": "conn1"
+                    "user": "conn1",
+                    "authenticator": "conn1"
                 }
             },
             "transports": [
@@ -349,7 +352,8 @@
                                 "ticket": {
                                     "type": "dynamic",
                                     "authenticator": "com.example.authenticate",
-                                    "authenticator-realm": "realm1"
+                                    "authenticator-realm": "realm1",
+                                    "authenticator-role": "authenticator"
                                 }
                             }
                         },

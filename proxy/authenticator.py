@@ -15,7 +15,7 @@ PRINCIPALS_DB = {
       'ticket': 'secret1'
    },
    'user2': {
-      'realm': 'realm2',
+      'realm': 'realm1',
       'role': 'user',
       'ticket': 'secret2'
    }
