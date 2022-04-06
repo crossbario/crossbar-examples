@@ -1,5 +1,7 @@
 # Proxy Workers
 
+**Last test: 06.04.2022**
+
 ## Introduction
 
 It is now possible to use "proxy" workers to terminate incoming client
