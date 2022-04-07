@@ -163,7 +163,7 @@
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 8443,
+                        "port": 8080,
                         "shared": true,
                         "backlog": 1024
                     },
@@ -289,7 +289,7 @@
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 8443,
+                        "port": 8080,
                         "shared": true,
                         "backlog": 1024
                     },

@@ -131,6 +131,12 @@
                     "classname": "authenticator.AuthenticatorSession",
                     "realm": "realm1",
                     "role": "authenticator"
+                },
+                {
+                    "type": "class",
+                    "classname": "reports.ReportsBackend",
+                    "realm": "realm1",
+                    "role": "anonymous"
                 }
             ]
         },
@@ -171,7 +177,7 @@
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 8443,
+                        "port": 8080,
                         "shared": true,
                         "backlog": 1024
                     },
@@ -246,6 +252,29 @@
                             "options": {
                                 "debug": true
                             }
+                        },
+                        "reports": {
+                            "type": "wap",
+                            "templates": "../templates",
+                            "sandbox": true,
+                            "routes": [
+                                {
+                                    "path": "/greeting/<name>",
+                                    "method": "GET",
+                                    "call": "com.example.greeting",
+                                    "render": "greeting.html"
+                                },
+                                {
+                                    "path": "/product/<int:product_id>/<report>/<int:year>/<int:month>",
+                                    "method": "GET",
+                                    "call": "com.example.get_product_report",
+                                    "render": "product_report.html"
+                                }
+                            ],
+                            "wamp": {
+                                "realm": "realm1",
+                                "authrole": "restbridge"
+                            }
                         }
                     }
                 }
@@ -288,7 +317,7 @@
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 8443,
+                        "port": 8080,
                         "shared": true,
                         "backlog": 1024
                     },
@@ -366,6 +395,29 @@
                             "role": "restbridge",
                             "options": {
                                 "debug": true
+                            }
+                        },
+                        "reports": {
+                            "type": "wap",
+                            "templates": "../templates",
+                            "sandbox": true,
+                            "routes": [
+                                {
+                                    "path": "/greeting/<name>",
+                                    "method": "GET",
+                                    "call": "com.example.greeting",
+                                    "render": "greeting.html"
+                                },
+                                {
+                                    "path": "/product/<int:product_id>/<report>/<int:year>/<int:month>",
+                                    "method": "GET",
+                                    "call": "com.example.get_product_report",
+                                    "render": "product_report.html"
+                                }
+                            ],
+                            "wamp": {
+                                "realm": "realm1",
+                                "authrole": "restbridge"
                             }
                         }
                     }

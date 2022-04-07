@@ -29,11 +29,11 @@ if TRANSPORT == 'websocket':
         transports=[
             {
                 "type": "websocket",
-                "url": "ws://localhost:8443/ws",
+                "url": "ws://localhost:8080/ws",
                 "endpoint": {
                     "type": "tcp",
                     "host": "localhost",
-                    "port": 8443,
+                    "port": 8080,
                 },
                 "serializers": [SERIALIZER],
             },
@@ -46,11 +46,11 @@ elif TRANSPORT == 'rawsocket':
         transports=[
             {
                 "type": "rawsocket",
-                "url": "rs://localhost:8443",
+                "url": "rs://localhost:8080",
                 "endpoint": {
                     "type": "tcp",
                     "host": "localhost",
-                    "port": 8443,
+                    "port": 8080,
                 },
                 "serializer": SERIALIZER,
             },

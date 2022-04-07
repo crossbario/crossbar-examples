@@ -102,7 +102,7 @@
             "transports": [
                 {
                     "type": "universal",
-                    "endpoint": {"type": "tcp", "port": 8443, "shared": true, "backlog": 1024},
+                    "endpoint": {"type": "tcp", "port": 8080, "shared": true, "backlog": 1024},
                     "rawsocket": {
                         "auth": {
                             "anonymous": {
@@ -211,7 +211,7 @@
             "transports": [
                 {
                     "type": "universal",
-                    "endpoint": {"type": "tcp", "port": 8443, "shared": true, "backlog": 1024},
+                    "endpoint": {"type": "tcp", "port": 8080, "shared": true, "backlog": 1024},
                     "rawsocket": {
                         "auth": {
                             "anonymous": {

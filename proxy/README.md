@@ -74,11 +74,11 @@ The example node configuration will start proxy workers, not only listening for 
 WebSocket connections (and proxying those to backend router workers), but _also_ serves
 various other web services:
 
-1. [http://localhost:8443](http://localhost:8443): **path "/", type "static"** - static web files
-1. [http://localhost:8443/info](http://localhost:8443/info): **path "info", type "info"** - node info page
-1. [http://localhost:8443/ws](http://localhost:8443/ws): **path "ws", type "websocket-proxy"** - websocket endpoint (of listening proxy)
-1. [http://localhost:8443/autobahn/autobahn/autobahn.js](http://localhost:8443/autobahn/autobahn/autobahn.js): **path "autobahn", type "archive"** - ZIP archive resource
-1. [http://localhost:8443/autobahn/autobahn-xbr/autobahn-xbr.js](http://127.0.0.1:8443/autobahn/autobahn-xbr/autobahn-xbr.js): **path "autobahn", type "archive"** - ZIP archive resource (same archive file, but different contained file referenced)
+1. [http://localhost:8080](http://localhost:8080): **path "/", type "static"** - static web files
+1. [http://localhost:8080/info](http://localhost:8080/info): **path "info", type "info"** - node info page
+1. [http://localhost:8080/ws](http://localhost:8080/ws): **path "ws", type "websocket-proxy"** - websocket endpoint (of listening proxy)
+1. [http://localhost:8080/autobahn/autobahn/autobahn.js](http://localhost:8080/autobahn/autobahn/autobahn.js): **path "autobahn", type "archive"** - ZIP archive resource
+1. [http://localhost:8080/autobahn/autobahn-xbr/autobahn-xbr.js](http://127.0.0.1:8080/autobahn/autobahn-xbr/autobahn-xbr.js): **path "autobahn", type "archive"** - ZIP archive resource (same archive file, but different contained file referenced)
 
 ## Testing
 
@@ -207,7 +207,7 @@ python client-subscribe.py websocket-cbor
 (cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/proxy$ make run_test_restbridge_call
 curl -H "Content-Type: application/json" \
 	-d '{"procedure": "com.example.add2", "args": [23, 666]}' \
-	http://localhost:8443/call
+	http://localhost:8080/call
 {"args":[689]}
 ```
 
