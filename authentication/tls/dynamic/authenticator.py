@@ -35,7 +35,7 @@ from autobahn.wamp.exception import ApplicationError
 class MyAuthenticator(ApplicationSession):
 
    # our "database" of accepted client certificate fingerprints
-   ACCEPTED_CERTS = set(['B6:E5:E6:F2:2A:86:DB:3C:DC:9F:51:42:58:39:9B:14:92:5D:A1:EB'])
+   ACCEPTED_CERTS = set(['90:7F:F5:2E:99:CE:F6:25:92:BA:C1:03:BA:CE:86:38:50:5C:C0:55'])
 
    @inlineCallbacks
    def onJoin(self, details):

@@ -23,7 +23,7 @@ openssl req -config openssl.cnf \
       -key ./ca/private/ca.key.pem \
       -new -x509 -days 7300 -sha256 -extensions v3_ca \
       -out ./ca/certs/ca.cert.pem \
-      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Tavendo/CN=root_ca/'
+      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Crossbar/CN=root_ca/'
 openssl x509 -noout -text -in ./ca/certs/ca.cert.pem > /dev/null || exit $?
 
 # XXX could make an intermediate CA here, but we'll just use the root
@@ -49,7 +49,7 @@ openssl req -config openssl-intermediate.cnf -new -sha256 \
       -passin pass:xyzzy \
       -key ./ca/intermediate/private/intermediate.key.pem \
       -out ./ca/intermediate/csr/intermediate.csr.pem \
-      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Tavendo/CN=intermediate_ca/' || exit $?
+      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Crossbar/CN=intermediate_ca/' || exit $?
 
 echo "signing intermediate CA with root CA"
 openssl ca -config openssl.cnf -extensions v3_intermediate_ca \
@@ -78,7 +78,7 @@ echo "server_0: certificate signing request (CSR)"
 openssl req -config openssl-intermediate.cnf \
       -passin pass:xyzzy -key ./ca/intermediate/private/server_0.key.pem \
       -new -sha256 -out ./ca/intermediate/csr/server_0.csr.pem \
-      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Tavendo/CN=localhost/'
+      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Crossbar/CN=localhost/'
 
 echo "server_0: actually signing CSR"
 openssl ca -config openssl-intermediate.cnf \
@@ -107,7 +107,7 @@ echo "client_0: certificate signing request (CSR)"
 openssl req -config openssl-intermediate.cnf \
       -passin pass:xyzzy -key ./ca/intermediate/private/client_0.key.pem \
       -new -sha256 -out ./ca/intermediate/csr/client_0.csr.pem \
-      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Tavendo/CN=client_0/'
+      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Crossbar/CN=client_0/'
 
 echo "client_0: actually signing CSR"
 openssl ca -config openssl-intermediate.cnf \

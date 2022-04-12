@@ -1,3 +1,4 @@
+from binascii import b2a_hex, a2b_hex
 from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession
 from twisted.internet.error import ReactorNotRunning
@@ -79,6 +80,9 @@ class ClientSession(ApplicationSession):
         signed_challenge = self._key.sign_challenge(
             self, challenge, channel_id_type=self._req_channel_binding)
 
+        print(challenge)
+        print(signed_challenge)
+
         # send back the signed challenge for verification
         return signed_challenge
 
@@ -117,7 +121,7 @@ if __name__ == '__main__':
                         help='TLS channel binding: None or "tls-unique"')
     parser.add_argument('--authid', dest='authid', type=str, default=None,
                         help='The authid to connect under. If not provided, let the router auto-choose the authid.')
-    parser.add_argument('--realm', dest='realm', type=str, default=None,
+    parser.add_argument('--realm', dest='realm', type=str, default='devices',
                         help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--key', dest='key', type=str, required=True,
                         help='The private client key to use for authentication. A 32 bytes file containing the raw Ed25519 private key.')

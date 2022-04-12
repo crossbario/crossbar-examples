@@ -1,9 +1,12 @@
 {
+    "version": 2,
     "workers": [
         {
             "type": "router",
             "options": {
-                "cpu_affinity": [0]
+                "cpu_affinity": [
+                    0
+                ]
             },
             "transports": [
                 {
@@ -30,7 +33,9 @@
         {
             "type": "router",
             "options": {
-                "cpu_affinity": [1]
+                "cpu_affinity": [
+                    1
+                ]
             },
             "transports": [
                 {

@@ -16,3 +16,4 @@ xbr/teststack1/master/default.pub
 *.mdb
 .ipynb_checkpoints
 .test
+authentication/tls/static/ca/
