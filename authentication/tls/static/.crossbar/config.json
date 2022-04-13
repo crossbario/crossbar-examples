@@ -101,7 +101,7 @@
                                     "type": "static",
                                     "principals": {
                                         "client_0": {
-                                            "certificate-sha1": "90:7F:F5:2E:99:CE:F6:25:92:BA:C1:03:BA:CE:86:38:50:5C:C0:55",
+                                            "certificate-sha1": "D1:E3:9B:0B:E4:ED:8E:77:83:F8:7E:71:D9:BF:CD:BB:07:3E:23:6F",
                                             "role": "backend"
                                         }
                                     }
