@@ -13,7 +13,7 @@ wamp_tls_tx_cnlbind_unique_good=$?
 python ./tls/static/client_tx.py --url wss://localhost:8080/ws --key client1.key --cert client1.crt --channel_binding="tls-unique"
 wamp_tls_tx_cnlbind_unique_bad=$?
 
-crossbar stop  --cbdir=./cryptosign/tls/.crossbar || true
+crossbar stop  --cbdir=./tls/static/.crossbar || true
 
 
 ########################################################################################
