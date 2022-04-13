@@ -134,6 +134,8 @@ echo "Test results:"
 echo "============="
 echo ""
 
+exec >> test.log
+
 [ $wamp_cryptosign_static_tx_good              -eq 0 ] && echo "wamp-cryptosign-static-tx-good:              OK" || echo "wamp-cryptosign-static-tx-good:               FAIL"
 [ $wamp_cryptosign_static_tx_bad               -eq 1 ] && echo "wamp-cryptosign-static-tx-bad:               OK" || echo "wamp-cryptosign-static-tx-bad:                FAIL"
 [ $wamp_cryptosign_static_tx_noauthid_good     -eq 0 ] && echo "wamp-cryptosign-static-tx-noauthid-good:     OK" || echo "wamp-cryptosign-static-tx-no-authid-good:     FAIL"

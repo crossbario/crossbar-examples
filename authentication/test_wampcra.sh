@@ -56,6 +56,8 @@ echo "Test results:"
 echo "============="
 echo ""
 
+exec >> test.log
+
 [ $wamp_cra_static_good                        -eq 0 ] && echo "wamp-cra-static-good:                        OK" || echo "wamp-cra-static-good:                         FAIL"
 [ $wamp_cra_static_bad                         -eq 1 ] && echo "wamp-cra-static-bad:                         OK" || echo "wamp-cra-static-bad:                          FAIL"
 [ $wamp_cra_dynamic_good                       -eq 0 ] && echo "wamp-cra-dynamic-good:                       OK" || echo "wamp-cra-dynamic-good:                        FAIL"

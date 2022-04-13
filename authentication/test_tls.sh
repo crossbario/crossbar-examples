@@ -26,5 +26,7 @@ echo "Test results:"
 echo "============="
 echo ""
 
-[ $wamp_tls_tx_cnlbind_unique_good   -eq 0 ] && echo "wamp-tls-static-cnlbind-unique-good:                        OK" || echo "wamp-tls-static-cnlbind-unique-good:                         FAIL"
-[ $wamp_tls_tx_cnlbind_unique_bad    -eq 1 ] && echo "wamp-tls-static-cnlbind-unique-bad:                         OK" || echo "wamp-tls-static-cnlbind-unique-bad:                          FAIL"
+exec >> test.log
+
+[ $wamp_tls_tx_cnlbind_unique_good   -eq 0 ] && echo "wamp-tls-static-cnlbind-unique-good:         OK" || echo "wamp-tls-static-cnlbind-unique-good:          FAIL"
+[ $wamp_tls_tx_cnlbind_unique_bad    -eq 1 ] && echo "wamp-tls-static-cnlbind-unique-bad:          OK" || echo "wamp-tls-static-cnlbind-unique-bad:           FAIL"

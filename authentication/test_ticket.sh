@@ -56,9 +56,11 @@ echo "Test results:"
 echo "============="
 echo ""
 
-[ $wamp_ticket_static_good                        -eq 0 ] && echo "wamp-ticket-static-good:                        OK" || echo "wamp-ticket-static-good:                         FAIL"
-[ $wamp_ticket_static_bad                         -eq 1 ] && echo "wamp-ticket-static-bad:                         OK" || echo "wamp-ticket-static-bad:                          FAIL"
-[ $wamp_ticket_dynamic_good                       -eq 0 ] && echo "wamp-ticket-dynamic-good:                       OK" || echo "wamp-ticket-dynamic-good:                        FAIL"
-[ $wamp_ticket_dynamic_bad                        -eq 1 ] && echo "wamp-ticket-dynamic-bad:                        OK" || echo "wamp-ticket-dynamic-bad:                         FAIL"
-[ $wamp_ticket_function_good                      -eq 0 ] && echo "wamp-ticket-function-good:                      OK" || echo "wamp-ticket-function-good:                       FAIL"
-[ $wamp_ticket_function_bad                       -eq 1 ] && echo "wamp-ticket-function-bad:                       OK" || echo "wamp-ticket-function-bad:                        FAIL"
+exec >> test.log
+
+[ $wamp_ticket_static_good   -eq 0 ] && echo "wamp-ticket-static-good:                     OK" || echo "wamp-ticket-static-good:                      FAIL"
+[ $wamp_ticket_static_bad    -eq 1 ] && echo "wamp-ticket-static-bad:                      OK" || echo "wamp-ticket-static-bad:                       FAIL"
+[ $wamp_ticket_dynamic_good  -eq 0 ] && echo "wamp-ticket-dynamic-good:                    OK" || echo "wamp-ticket-dynamic-good:                     FAIL"
+[ $wamp_ticket_dynamic_bad   -eq 1 ] && echo "wamp-ticket-dynamic-bad:                     OK" || echo "wamp-ticket-dynamic-bad:                      FAIL"
+[ $wamp_ticket_function_good -eq 0 ] && echo "wamp-ticket-function-good:                   OK" || echo "wamp-ticket-function-good:                    FAIL"
+[ $wamp_ticket_function_bad  -eq 1 ] && echo "wamp-ticket-function-bad:                    OK" || echo "wamp-ticket-function-bad:                     FAIL"
