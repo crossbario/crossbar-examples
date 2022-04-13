@@ -3,12 +3,15 @@ help: ## Help on available Makefile targets
 
 trunc_log: ## Truncate log file collecting test results ("test.log")
 	-rm -f ./test.log
+	@date  >> ./test.log
+	@echo "" >> ./test.log
 	@echo "Crossbar.io WAMP Authentication Test Summary:" >> ./test.log
 	@echo "=============================================" >> ./test.log
 	@echo "" >> ./test.log
 
 test_all: trunc_log test_anonymous test_cookie test_cryptosign test_scram test_ticket test_tls test_wampcra ## Test all WAMP authentication methods
-	cat ./test.log
+	@clear
+	@cat ./test.log
 
 test_anonymous: ## Test WAMP-anonymous
 	./test_anonymous.sh
