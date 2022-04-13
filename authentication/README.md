@@ -37,15 +37,11 @@ To run all examples, start the script [test_all.sh](test_all.sh):
 ```
 (cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication$ ./test_all.sh
 ...
-Test results:
-=============
+Mi 13. Apr 19:03:10 CEST 2022
 
-wamp-cra-static-good:                        OK
-wamp-cra-static-bad:                         OK
-wamp-cra-dynamic-good:                       OK
-wamp-cra-dynamic-bad:                        OK
-wamp-cra-function-good:                      OK
-wamp-cra-function-bad:                       OK
+Crossbar.io WAMP Authentication Test Summary:
+=============================================
+
 wamp-cryptosign-static-tx-good:              OK
 wamp-cryptosign-static-tx-bad:               OK
 wamp-cryptosign-static-tx-noauthid-good:     OK
@@ -58,7 +54,35 @@ wamp-cryptosign-tls-tx-cnlbin-none-good:     OK
 wamp-cryptosign-tls-tx-cnlbin-none-bad:      OK
 wamp-cryptosign-tls-tx-cnlbin-unique-good:   OK
 wamp-cryptosign-tls-tx-cnlbin-unique-bad:    OK
+wamp-scram-tx-good:                          OK
+wamp-scram-tx-bad:                           FAIL
+wamp-ticket-static-good:                     OK
+wamp-ticket-static-bad:                      OK
+wamp-ticket-dynamic-good:                    OK
+wamp-ticket-dynamic-bad:                     OK
+wamp-ticket-function-good:                   OK
+wamp-ticket-function-bad:                    OK
+wamp-tls-static-cnlbind-unique-good:         OK
+wamp-tls-static-cnlbind-unique-bad:          OK
+wamp-cra-static-good:                        OK
+wamp-cra-static-bad:                         OK
+wamp-cra-dynamic-good:                       OK
+wamp-cra-dynamic-bad:                        OK
+wamp-cra-function-good:                      OK
+wamp-cra-function-bad:                       OK
 ```
+
+### Tests Structure
+
+1. authentication: `anonymous`, `ticket`, `wampcra`, `scram`, `cryptosign`, `cookie`
+2. client credentials: `good`, `bad`
+3. client framework: `tx`, `aio`
+4. client API: `apprun`, `comp`
+5. router authenticator: `static`, `dynamic`
+6. router TLS: `plain`, `tls`, `tls-unique`
+7. router setup: `rtr`, `pxy-rtr`
+
+> These are potentially 6*2*2*2*2*3*2 == 576 test combinations!
 
 ## More
 
