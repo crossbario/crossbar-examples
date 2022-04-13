@@ -26,6 +26,9 @@ class ClientSession(ApplicationSession):
             self.log.info("client public key loaded: {}".format(
                 self._key.public_key()))
 
+        # when running over TLS, require TLS channel binding: None or "tls-unique"
+        self._req_channel_binding = config.extra['channel_binding']
+
     def onConnect(self):
         self.log.info("connected to router")
 
@@ -36,7 +39,7 @@ class ClientSession(ApplicationSession):
             'pubkey': self._key.public_key(),
 
             # when running over TLS, require TLS channel binding
-            'channel_binding': ClientSession.CHANNEL_BINDING,
+            'channel_binding': self._req_channel_binding,
 
             # not yet implemented. a public key the router should provide
             # a trustchain for it's public key. the trustroot can eg be
@@ -49,6 +52,7 @@ class ClientSession(ApplicationSession):
             # encoded 32 bytes random value.
             # 'challenge': None,
         }
+        self.log.info('authenticating using authextra={authextra} and channel_binding={channel_binding} ..', authextra=extra, channel_binding=self._req_channel_binding)
 
         # now request to join ..
         self.join(self.config.realm,
@@ -67,9 +71,15 @@ class ClientSession(ApplicationSession):
         # router for our previous challenge. if both are ok, everything
         # is fine - the router is authentic wrt our trustroot.
 
+        assert challenge.method == 'cryptosign'
+        assert challenge.extra['channel_binding'] == self._req_channel_binding
+
         # sign the challenge with our private key.
         signed_challenge = self._key.sign_challenge(
             self, challenge, channel_id_type=ClientSession.CHANNEL_BINDING)
+
+        print(challenge)
+        print(signed_challenge)
 
         # send back the signed challenge for verification
         return signed_challenge
@@ -84,6 +94,7 @@ class ClientSession(ApplicationSession):
 
     def onLeave(self, details):
         self.log.info("session closed: {details}", details=details)
+        self.config.extra['exit_details'] = details
         self.disconnect()
 
     def onDisconnect(self):
@@ -101,6 +112,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', dest='debug', action='store_true',
                         default=False, help='Enable logging at level "debug".')
+    parser.add_argument('--channel_binding', dest='channel_binding', type=str, default=None,
+                        help='TLS channel binding: None or "tls-unique"')
     parser.add_argument('--authid', dest='authid', type=str, default=None,
                         help='The authid to connect under. If not provided, let the router auto-choose the authid.')
     parser.add_argument('--realm', dest='realm', type=str, default=None,
@@ -117,11 +130,15 @@ if __name__ == '__main__':
 
     # forward requested authid and key filename to ClientSession
     extra = {
+        'channel_binding': options.channel_binding,
+
         # this is optional
         'authid': options.authid,
 
         # the private key is required
-        'key': options.key
+        'key': options.key,
+
+        'exit_details': None,
     }
     print("Connecting to {}: requesting realm={}, authid={}".format(
         options.url, options.realm, options.authid))
@@ -142,3 +159,11 @@ if __name__ == '__main__':
     runner = ApplicationRunner(
         url=options.url, realm=options.realm, extra=extra)
     runner.run(ClientSession)
+
+    # CloseDetails(reason=<wamp.error.not_authorized>, message='WAMP-CRA signature is invalid')
+    print(extra['exit_details'])
+
+    if extra['exit_details'].reason != 'wamp.close.normal':
+        sys.exit(1)
+    else:
+        sys.exit(0)

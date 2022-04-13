@@ -92,6 +92,7 @@ class ClientSession(ApplicationSession):
 
    def onLeave(self, details):
       print("Client session left: {}".format(details))
+      self.config.extra['exit_details'] = details
       self.disconnect()
 
    def onDisconnect(self):
@@ -103,5 +104,17 @@ if __name__ == '__main__':
 
    from autobahn.twisted.wamp import ApplicationRunner
 
-   runner = ApplicationRunner(url='ws://localhost:8080/ws', realm='realm1')
+   extra = {
+      'exit_reason': None,
+   }
+
+   runner = ApplicationRunner(url='ws://localhost:8080/ws', realm='realm1', extra=extra)
    runner.run(ClientSession)
+
+   # CloseDetails(reason=<wamp.error.not_authorized>, message='WAMP-CRA signature is invalid')
+   print(extra['exit_details'])
+
+   if extra['exit_details'].reason != 'wamp.close.normal':
+      sys.exit(1)
+   else:
+      sys.exit(0)

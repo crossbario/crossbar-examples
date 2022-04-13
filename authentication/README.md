@@ -30,6 +30,36 @@ Cryptosign | OK | OK | OK
 TLS | FIXME | FIXME | FIXME
 Cookie | FIXME | FIXME | FIXME
 
+## Test
+
+To run all examples, start the script [test_all.sh](test_all.sh):
+
+```
+(cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication$ ./test_all.sh
+...
+Test results:
+=============
+
+wamp-cra-static-good:                        OK
+wamp-cra-static-bad:                         OK
+wamp-cra-dynamic-good:                       OK
+wamp-cra-dynamic-bad:                        OK
+wamp-cra-function-good:                      OK
+wamp-cra-function-bad:                       OK
+wamp-cryptosign-static-tx-good:              OK
+wamp-cryptosign-static-tx-bad:               OK
+wamp-cryptosign-static-tx-noauthid-good:     OK
+wamp-cryptosign-static-tx-noauthid-bad:      OK
+wamp-cryptosign-static-aio-good:             OK
+wamp-cryptosign-static-aio-bad:              OK
+wamp-cryptosign-static-aio-noauthid-good:    OK
+wamp-cryptosign-static-aio-noauthid-bad:     OK
+wamp-cryptosign-tls-tx-cnlbin-none-good:     OK
+wamp-cryptosign-tls-tx-cnlbin-none-bad:      OK
+wamp-cryptosign-tls-tx-cnlbin-unique-good:   OK
+wamp-cryptosign-tls-tx-cnlbin-unique-bad:    OK
+```
+
 ## More
 
 Then there is
