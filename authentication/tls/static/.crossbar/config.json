@@ -101,7 +101,7 @@
                                     "type": "static",
                                     "principals": {
                                         "client_0": {
-                                            "certificate-sha1": "D1:E3:9B:0B:E4:ED:8E:77:83:F8:7E:71:D9:BF:CD:BB:07:3E:23:6F",
+                                            "certificate-sha1": "E0:01:DC:37:BB:50:79:DC:E7:A7:CF:E9:CE:08:21:D6:F8:31:C3:5F",
                                             "role": "backend"
                                         }
                                     }
@@ -132,8 +132,8 @@
                             "port": 8080,
                             "tls": {
                                 "hostname": "localhost",
-                                "key": "client.key",
-                                "certificate": "client.crt",
+                                "key": "client0.key",
+                                "certificate": "client0.crt",
                                 "ca_certificates": [
                                     "ca.cert.pem",
                                     "intermediate.cert.pem"

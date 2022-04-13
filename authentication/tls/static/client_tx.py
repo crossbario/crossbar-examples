@@ -84,6 +84,8 @@ if __name__ == '__main__':
                         default=False, help='Enable logging at level "debug".')
     parser.add_argument('--channel_binding', dest='channel_binding', type=str, default=None,
                         help='TLS channel binding: None or "tls-unique"')
+    parser.add_argument('--key', dest='key', type=str, help='The TLS private client key.', default='client.key')
+    parser.add_argument('--cert', dest='cert', type=str, help='The TLS client certification .', default='client.crt')
     parser.add_argument('--authid', dest='authid', type=str, default=None,
                         help='The authid to connect under. If not provided, let the router auto-choose the authid.')
     parser.add_argument('--realm', dest='realm', type=str, default='realm1',
@@ -112,8 +114,8 @@ if __name__ == '__main__':
 
     tls_config = {
         "hostname": "localhost",
-        "certificate": "client.crt",
-        "key": "client.key",
+        "certificate": options.cert,
+        "key": options.key,
         "ca_certificates": [
             "intermediate.cert.pem",
             "ca.cert.pem"
