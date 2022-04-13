@@ -1,3 +1,4 @@
+import sys
 from autobahn.wamp import cryptosign
 from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
 import asyncio
@@ -84,6 +85,7 @@ class ClientSession(ApplicationSession):
 
     def onLeave(self, details):
         self.log.info("session closed: {details}", details=details)
+        self.config.extra['exit_details'] = details
         self.disconnect()
 
     def onDisconnect(self):
@@ -121,7 +123,9 @@ if __name__ == '__main__':
         'authid': options.authid,
 
         # the private key is required
-        'key': options.key
+        'key': options.key,
+
+        'exit_reason': None,
     }
     print("Connecting to {}: requesting realm={}, authid={}".format(
         options.url, options.realm, options.authid))
@@ -130,3 +134,11 @@ if __name__ == '__main__':
     runner = ApplicationRunner(
         url=options.url, realm=options.realm, extra=extra)
     runner.run(ClientSession)
+
+    # CloseDetails(reason=<wamp.error.not_authorized>, message='WAMP-CRA signature is invalid')
+    print(extra['exit_details'])
+
+    if extra['exit_details'].reason != 'wamp.close.normal':
+        sys.exit(1)
+    else:
+        sys.exit(0)

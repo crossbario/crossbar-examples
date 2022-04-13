@@ -122,6 +122,29 @@ openssl x509 -noout -text -in ./ca/intermediate/certs/client_0.cert.pem > /dev/n
 openssl verify -CAfile ./ca/intermediate/certs/ca-chain.cert.pem \
       ./ca/intermediate/certs/client_0.cert.pem || exit $?
 
+echo "client_1: keypair"
+openssl genrsa -aes256 \
+      -passout pass:xyzzy -out ./ca/intermediate/private/client_1.key.pem 2048
+
+echo "client_1: certificate signing request (CSR)"
+openssl req -config openssl-intermediate.cnf \
+      -passin pass:xyzzy -key ./ca/intermediate/private/client_1.key.pem \
+      -new -sha256 -out ./ca/intermediate/csr/client_1.csr.pem \
+      -subj '/C=DE/ST=Bavaria/L=Erlangen/O=Crossbar/CN=client_1/'
+
+echo "client_1: actually signing CSR"
+openssl ca -config openssl-intermediate.cnf \
+      -passin pass:xyzzy -batch \
+      -extensions usr_cert -days 375 -notext -md sha256 \
+      -in ./ca/intermediate/csr/client_1.csr.pem \
+      -out ./ca/intermediate/certs/client_1.cert.pem
+# should contain 1 entry, for the cert we just made ^^
+cat ./ca/intermediate/index.txt
+
+openssl x509 -noout -text -in ./ca/intermediate/certs/client_1.cert.pem > /dev/null || exit $?
+openssl verify -CAfile ./ca/intermediate/certs/ca-chain.cert.pem \
+      ./ca/intermediate/certs/client_1.cert.pem || exit $?
+
 #
 # "deployment"; put our keys in the right spots
 #
@@ -134,8 +157,11 @@ echo "Deploying private keys and certificates (into ./.crossbar/{server,client}.
 cp ./ca/intermediate/private/server_0.key.pem .crossbar/server.key
 cp ./ca/intermediate/certs/server_0.cert.pem .crossbar/server.crt
 
-cp ./ca/intermediate/private/client_0.key.pem .crossbar/client.key
-cp ./ca/intermediate/certs/client_0.cert.pem .crossbar/client.crt
+cp ./ca/intermediate/private/client_0.key.pem .crossbar/client0.key
+cp ./ca/intermediate/certs/client_0.cert.pem .crossbar/client0.crt
+
+cp ./ca/intermediate/private/client_1.key.pem .crossbar/client1.key
+cp ./ca/intermediate/certs/client_1.cert.pem .crossbar/client1.crt
 
 echo "Deploying intermediate and root CA certs"
 
@@ -148,8 +174,11 @@ pushd ./.crossbar
 openssl rsa -passin pass:xyzzy -in server.key -out server.new.key
 mv server.new.key server.key
 
-openssl rsa -passin pass:xyzzy -in client.key -out client.new.key
-mv client.new.key client.key
+openssl rsa -passin pass:xyzzy -in client0.key -out client0.new.key
+mv client0.new.key client0.key
+
+openssl rsa -passin pass:xyzzy -in client1.key -out client1.new.key
+mv client1.new.key client1.key
 popd
 
 echo "creating dhparam file"

@@ -1,3 +1,5 @@
+import sys
+import os
 from binascii import b2a_hex, a2b_hex
 from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession
@@ -54,7 +56,7 @@ class ClientSession(ApplicationSession):
             # encoded 32 bytes random value.
             # 'challenge': None,
         }
-        self.log.info('authenticating using authextra={authextra} ..', authextra=authextra)
+        self.log.info('authenticating using authextra={authextra} and channel_binding={channel_binding} ..', authextra=extra, channel_binding=self._req_channel_binding)
 
         # now request to join ..
         self.join(self.config.realm,
@@ -96,6 +98,7 @@ class ClientSession(ApplicationSession):
 
     def onLeave(self, details):
         self.log.info("session closed: {details}", details=details)
+        self.config.extra['exit_details'] = details
         self.disconnect()
 
     def onDisconnect(self):
@@ -143,7 +146,9 @@ if __name__ == '__main__':
         'authid': options.authid,
 
         # the private key is required
-        'key': options.key
+        'key': options.key,
+
+        'exit_details': None,
     }
     print("Connecting to {}: requesting realm={}, authid={}".format(
         options.url, options.realm, options.authid))
@@ -157,9 +162,18 @@ if __name__ == '__main__':
             "ca.cert.pem"
         ]
     }
-    cert_options = _create_tls_client_context(tls_config, '.crossbar', log)
+    cbdir = os.path.join(os.path.dirname(__file__), '.crossbar')
+    cert_options = _create_tls_client_context(tls_config, cbdir, log)
 
     # connect to router and run ClientSession
     runner = ApplicationRunner(
         url=options.url, realm=options.realm, extra=extra, ssl=cert_options)
     runner.run(ClientSession)
+
+    # CloseDetails(reason=<wamp.error.not_authorized>, message='WAMP-CRA signature is invalid')
+    print(extra['exit_details'])
+
+    if extra['exit_details'].reason != 'wamp.close.normal':
+        sys.exit(1)
+    else:
+        sys.exit(0)
