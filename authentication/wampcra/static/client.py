@@ -18,7 +18,7 @@ else:
 
 class ClientSession(ApplicationSession):
 
-   def onConnect(self):
+   def onConnect(self, _):
       print("Client session connected. Starting WAMP-CRA authentication on realm '{}' as user '{}' ..".format(self.config.realm, USER))
       self.join(self.config.realm, ["wampcra"], USER)
 

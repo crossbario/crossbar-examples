@@ -78,11 +78,13 @@ wamp-cra-function-bad:                       OK
 2. client credentials: `good`, `bad`
 3. client framework: `tx`, `aio`
 4. client API: `apprun`, `comp`
-5. router authenticator: `static`, `dynamic`
-6. router TLS: `plain`, `tls`, `tls-unique`
-7. router setup: `rtr`, `pxy-rtr`
+5. router setup: `rtr`, `pxy-rtr`
+6. router authenticator: `static`, `dynamic`
+7. router transport: `tcp-ws`, `tcp-webws`, `tcp-univ`, `tcp-rs`, `uds-rs`
+8. router transport serializer: `json`, `cbor`, `msgpack`, `ubjson`
+9. router transport TLS: `plain`, `tls`, `tls-unique`
 
-> These are potentially 6*2*2*2*2*3*2 == 576 test combinations!
+> These are potentially `6 x 2 x 2 x 2 x 2 x 2 x 5 x 4 x 3 == 11520` test combinations
 
 ## More
 
