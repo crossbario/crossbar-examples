@@ -1,33 +1,5 @@
-Mi 13. Apr 20:06:05 CEST 2022
+Do 14. Apr 20:55:51 CEST 2022
 
 Crossbar.io WAMP Authentication Test Summary:
 =============================================
 
-wamp-cryptosign-static-tx-good:              OK
-wamp-cryptosign-static-tx-bad:               OK
-wamp-cryptosign-static-tx-noauthid-good:     OK
-wamp-cryptosign-static-tx-noauthid-bad:      OK
-wamp-cryptosign-static-aio-good:             OK
-wamp-cryptosign-static-aio-bad:              OK
-wamp-cryptosign-static-aio-noauthid-good:    OK
-wamp-cryptosign-static-aio-noauthid-bad:     OK
-wamp-cryptosign-tls-tx-cnlbin-none-good:     OK
-wamp-cryptosign-tls-tx-cnlbin-none-bad:      OK
-wamp-cryptosign-tls-tx-cnlbin-unique-good:   OK
-wamp-cryptosign-tls-tx-cnlbin-unique-bad:    OK
-wamp-scram-tx-good:                          OK
-wamp-scram-tx-bad:                           FAIL
-wamp-ticket-static-good:                     OK
-wamp-ticket-static-bad:                      OK
-wamp-ticket-dynamic-good:                    OK
-wamp-ticket-dynamic-bad:                     OK
-wamp-ticket-function-good:                   OK
-wamp-ticket-function-bad:                    OK
-wamp-tls-static-cnlbind-unique-good:         OK
-wamp-tls-static-cnlbind-unique-bad:          OK
-wamp-cra-static-good:                        OK
-wamp-cra-static-bad:                         OK
-wamp-cra-dynamic-good:                       OK
-wamp-cra-dynamic-bad:                        OK
-wamp-cra-function-good:                      OK
-wamp-cra-function-bad:                       OK

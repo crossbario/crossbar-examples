@@ -134,7 +134,7 @@ if __name__ == '__main__':
         # the private key is required
         'key': options.key,
 
-        'exit_reason': None,
+        'exit_details': None,
     }
     print("Connecting to {}: requesting realm={}, authid={}".format(
         options.url, options.realm, options.authid))

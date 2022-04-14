@@ -105,7 +105,7 @@ if __name__ == '__main__':
    from autobahn.twisted.wamp import ApplicationRunner
 
    extra = {
-      'exit_reason': None,
+      'exit_details': None,
    }
 
    runner = ApplicationRunner(url='ws://localhost:8080/ws', realm='realm1', extra=extra)
