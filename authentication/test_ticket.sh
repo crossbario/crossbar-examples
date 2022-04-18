@@ -5,7 +5,7 @@
 ## WAMP-Ticket static
 ##
 MYTICKET="secret123" crossbar start --cbdir=./ticket/static/.crossbar &
-sleep 5
+sleep 10
 
 MYTICKET="secret123"     python ./ticket/static/client.py client1
 wamp_ticket_static_good=$?
@@ -20,7 +20,7 @@ crossbar stop  --cbdir=./ticket/static/.crossbar || true
 ## WAMP-Ticket dynamic
 ##
 MYTICKET="secret123" crossbar start --cbdir=./ticket/dynamic/.crossbar &
-sleep 5
+sleep 10
 
 MYTICKET="secret123"     python ./ticket/dynamic/client.py client1
 wamp_ticket_dynamic_good=$?
@@ -35,7 +35,7 @@ crossbar stop  --cbdir=./ticket/dynamic/.crossbar || true
 ## WAMP-Ticket function-based
 ##
 MYTICKET="secret123" crossbar start --cbdir=./ticket/function/.crossbar &
-sleep 5
+sleep 10
 
 MYTICKET="secret123"     python ./ticket/function/client.py client1
 wamp_ticket_function_good=$?

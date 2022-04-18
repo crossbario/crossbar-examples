@@ -5,7 +5,7 @@
 ## WAMP-TLS(-client-authentication) static
 ##
 crossbar start --cbdir=./tls/static/.crossbar &
-sleep 5
+sleep 10
 
 python ./tls/static/client_tx.py --url wss://localhost:8080/ws --key client0.key --cert client0.crt --channel_binding="tls-unique"
 wamp_tls_tx_cnlbind_unique_good=$?

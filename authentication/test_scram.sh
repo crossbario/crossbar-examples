@@ -5,7 +5,7 @@
 ## WAMP-SCRAM static
 ##
 crossbar start --cbdir=./scram/static/.crossbar &
-sleep 5
+sleep 10
 
 python ./scram/static/client_tx.py --realm realm1 --authid foobar@example.com --password secret123
 wamp_scram_tx_good=$?

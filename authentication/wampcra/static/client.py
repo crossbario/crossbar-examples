@@ -18,7 +18,7 @@ else:
 
 class ClientSession(ApplicationSession):
 
-   def onConnect(self, _):
+   def onConnect(self):
       print("Client session connected. Starting WAMP-CRA authentication on realm '{}' as user '{}' ..".format(self.config.realm, USER))
       self.join(self.config.realm, ["wampcra"], USER)
 
@@ -112,7 +112,7 @@ if __name__ == '__main__':
    # CloseDetails(reason=<wamp.error.not_authorized>, message='WAMP-CRA signature is invalid')
    print(extra['exit_details'])
 
-   if extra['exit_details'].reason != 'wamp.close.normal':
+   if not extra['exit_details'] or extra['exit_details'].reason != 'wamp.close.normal':
       sys.exit(1)
    else:
       sys.exit(0)

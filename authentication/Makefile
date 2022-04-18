@@ -19,21 +19,28 @@ test_all: trunc_log test_anonymous test_cookie test_cryptosign test_scram test_t
 
 test_anonymous: ## Test WAMP-anonymous
 	./test_anonymous.sh
+	@cat ./test.log
 
 test_cookie: ## Test WAMP-cookie
 	./test_cookie.sh
+	@cat ./test.log
 
 test_cryptosign: ## Test WAMP-cryptosign
 	./test_cryptosign.sh
+	@cat ./test.log
 
 test_scram: ## Test WAMP-scram
 	./test_scram.sh
+	@cat ./test.log
 
 test_ticket: ## Test WAMP-ticket
 	./test_ticket.sh
+	@cat ./test.log
 
 test_tls: ## Test WAMP-TLS
 	./test_tls.sh
+	@cat ./test.log
 
 test_wampcra: ## Test WAMP-CRA
 	./test_wampcra.sh
+	@cat ./test.log

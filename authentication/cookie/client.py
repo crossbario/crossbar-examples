@@ -1,6 +1,7 @@
 import os
 import sys
 from pprint import pformat, pprint
+import werkzeug
 
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
@@ -14,48 +15,32 @@ class ClientSession(ApplicationSession):
 
     def __init__(self, config):
         super().__init__(config)
-        self._authmethods_next = None
+        self.log.info('{meth}(config=\n{config}): init completed',
+                      meth=hltype(self.__init__),
+                      config=config)
 
-    def onConnecting(self, transport_details, connecting_request):
-        self.log.debug('{meth}(transport_details=\n{transport_details},\nconnecting_request=\n{connecting_request})',
-                       meth=hltype(self.onConnecting),
-                       transport_details=pformat(transport_details.__json__()),
-                       connecting_request=pformat(connecting_request.__json__()))
+    def onConnect(self):
+        self.log.info('{meth}()', meth=hltype(self.onConnect))
 
-        # check if we have stored a cookie from a previous successful authentication
-        cookie = self.config.extra.get('cookie', None)
-        if cookie:
-            connecting_request.headers['Cookie'] = cookie
-            self._authmethods_next = ['cookie']
+        # autobahn.twisted.websocket.WampWebSocketClientProtocol
+        pprint(self.transport.http_headers)
+        pprint(self.transport.transport_details.marshal())
+
+        if self.config.extra['cookie']:
+            authmethods = ['cookie']
         else:
-            # self._authmethods_next = ['wampcra', 'cookie']
-            self._authmethods_next = ['wampcra']
-
-        connecting_request.useragent = 'SilverSurfer2022'
-
-        self.log.debug('{meth}: connecting with connecting_request=\n{connecting_request}',
-                       meth=hltype(self.onConnecting),
-                       connecting_request=pformat(connecting_request.__json__()))
-        return connecting_request
-
-    def onConnect(self, connection_response):
-        self.log.debug('{meth}(connection_response=\n{connection_response})', meth=hltype(self.onConnect),
-                       connection_response=pformat(connection_response.__json__()) if connection_response else None)
-
-        # 'set-cookie': 'cbtid=pNXWaQASsPqjhHoWEInL3Hzv;max-age=604800'
-        if 'set-cookie' in connection_response.headers:
-            self.config.extra['cookie'] = connection_response.headers['set-cookie']
+            authmethods = ['wampcra']
 
         self.log.info('{meth}: joining realm "{realm}" as "{authid}" using authmethods {authmethods}',
                       meth=hltype(self.onConnect),
                       realm=self.config.realm,
                       authid=self.config.extra.get('authid', None),
-                      authmethods=self._authmethods_next)
-        self.join(self.config.realm, self._authmethods_next, self.config.extra.get('authid', None))
+                      authmethods=authmethods)
+        self.join(self.config.realm, authmethods, self.config.extra.get('authid', None))
 
     def onChallenge(self, challenge):
-        self.log.debug('{meth}(challenge=\n{challenge})', meth=hltype(self.onChallenge),
-                       challenge=challenge)
+        self.log.info('{meth}(challenge=\n{challenge})', meth=hltype(self.onChallenge),
+                      challenge=challenge)
 
         if challenge.method == 'wampcra':
             if 'salt' in challenge.extra:
@@ -78,6 +63,17 @@ class ClientSession(ApplicationSession):
     def onJoin(self, details):
         self.log.info('{meth}(details=\n{details})', meth=hltype(self.onJoin),
                       details=details)
+
+        # 'set-cookie': 'cbtid=pNXWaQASsPqjhHoWEInL3Hzv;max-age=604800'
+        if hasattr(self.transport, 'http_headers') and 'set-cookie' in self.transport.http_headers:
+            cookie_name = 'cbtid'
+            cookie_received = self.transport.http_headers['set-cookie']
+            cookie_sent = str(
+                werkzeug.http.dump_cookie(cookie_name, werkzeug.http.parse_cookie(cookie_received)[cookie_name],
+                                          path=None))
+            self.config.extra['cookie'] = cookie_sent
+            self.transport.factory.headers['Set-Cookie'] = cookie_sent
+
         res = yield self.call('com.example.add2', 23, 666)
         assert res == 689
         self.log.info('\n\nRPC result (success): {res}\n\n', res=res)
@@ -128,7 +124,7 @@ if __name__ == '__main__':
         'secret': USER_SECRET,
         'exit_details': None,
         'cookie': None,
-        'run_count': 2,
+        'run_count': 3,
         'run_log': [],
     }
 

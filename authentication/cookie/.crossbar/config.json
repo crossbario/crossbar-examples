@@ -84,7 +84,7 @@
                                     "type": "static",
                                     "users": {
                                         "client1": {
-                                            "secret": "secret123",
+                                            "secret": "${MYSECRET}",
                                             "role": "frontend"
                                         },
                                         "client2": {
