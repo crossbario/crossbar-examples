@@ -5,9 +5,6 @@ import txaio
 txaio.use_twisted()
 
 from autobahn.twisted.component import Component, run
-from autobahn.wamp.types import RegisterOptions
-from autobahn.wamp.exception import ApplicationError
-from twisted.internet.defer import inlineCallbacks
 
 
 if __name__ == '__main__':
@@ -41,10 +38,10 @@ if __name__ == '__main__':
         transports=options.url,
         realm=options.realm,
         authentication={
-            "scram": {
-                "authid": options.authid,
-                "password": options.password,
-                "kdf": "argon2id13",
+            'scram': {
+                'authid': options.authid,
+                'password': options.password,
+                'kdf': 'argon2id13',
                 'iterations': 4096,
                 'memory': 512,
             }
@@ -66,8 +63,10 @@ if __name__ == '__main__':
     @component.on_disconnect
     def _on_disconnect(session, was_clean):
         print("Session disconnected: {}".format(was_clean))
+        component._done_f.callback(extra['exit_details'])
 
-    run([component], log_level='debug' if options.debug else 'info')
+    d = run([component], log_level='debug' if options.debug else 'info')
+    print(d)
 
     # CloseDetails(reason=<wamp.error.not_authorized>, message='WAMP-CRA signature is invalid')
     print("Session ended: {}".format(extra['exit_details']))

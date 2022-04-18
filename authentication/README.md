@@ -32,16 +32,22 @@ Cookie | FIXME | FIXME | FIXME
 
 ## Test
 
-To run all examples, start the script [test_all.sh](test_all.sh):
+To run all examples, run:
 
 ```
-(cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication$ ./test_all.sh
-...
-Mi 13. Apr 19:03:10 CEST 2022
+make trunc_log test_all
+```
+
+You should see output similar to the following:
+
+```
+Mo 18. Apr 21:39:57 CEST 2022
 
 Crossbar.io WAMP Authentication Test Summary:
 =============================================
 
+wamp-cra-cookie-good:                        OK
+wamp-cra-cookie-bad:                         OK
 wamp-cryptosign-static-tx-good:              OK
 wamp-cryptosign-static-tx-bad:               OK
 wamp-cryptosign-static-tx-noauthid-good:     OK
@@ -55,7 +61,7 @@ wamp-cryptosign-tls-tx-cnlbin-none-bad:      OK
 wamp-cryptosign-tls-tx-cnlbin-unique-good:   OK
 wamp-cryptosign-tls-tx-cnlbin-unique-bad:    OK
 wamp-scram-tx-good:                          OK
-wamp-scram-tx-bad:                           FAIL
+wamp-scram-tx-bad:                           OK
 wamp-ticket-static-good:                     OK
 wamp-ticket-static-bad:                      OK
 wamp-ticket-dynamic-good:                    OK

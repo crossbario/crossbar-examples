@@ -7,10 +7,10 @@
 crossbar start --cbdir=./scram/static/.crossbar &
 sleep 10
 
-python ./scram/static/client_tx.py --realm realm1 --authid foobar@example.com --password secret123
+python ./scram/static/client.py --realm realm1 --authid foobar@example.com --password secret123
 wamp_scram_tx_good=$?
 
-python ./scram/static/client_tx.py --realm realm1 --authid foobar@example.com --password wrongpassword
+python ./scram/static/client.py --realm realm1 --authid foobar@example.com --password wrongpassword
 wamp_scram_tx_bad=$?
 
 crossbar stop  --cbdir=./scram/static/.crossbar || true
