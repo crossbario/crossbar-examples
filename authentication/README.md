@@ -32,20 +32,22 @@ Cookie | FIXME | FIXME | FIXME
 
 ## Test
 
-To run all examples, start the script [test_all.sh](test_all.sh):
+To run all examples, run:
 
 ```
-(cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication$ ./test_all.sh
-...
-Test results:
-=============
+make trunc_log test_all
+```
 
-wamp-cra-static-good:                        OK
-wamp-cra-static-bad:                         OK
-wamp-cra-dynamic-good:                       OK
-wamp-cra-dynamic-bad:                        OK
-wamp-cra-function-good:                      OK
-wamp-cra-function-bad:                       OK
+You should see output similar to the following:
+
+```
+Mo 18. Apr 21:39:57 CEST 2022
+
+Crossbar.io WAMP Authentication Test Summary:
+=============================================
+
+wamp-cra-cookie-good:                        OK
+wamp-cra-cookie-bad:                         OK
 wamp-cryptosign-static-tx-good:              OK
 wamp-cryptosign-static-tx-bad:               OK
 wamp-cryptosign-static-tx-noauthid-good:     OK
@@ -58,7 +60,37 @@ wamp-cryptosign-tls-tx-cnlbin-none-good:     OK
 wamp-cryptosign-tls-tx-cnlbin-none-bad:      OK
 wamp-cryptosign-tls-tx-cnlbin-unique-good:   OK
 wamp-cryptosign-tls-tx-cnlbin-unique-bad:    OK
+wamp-scram-tx-good:                          OK
+wamp-scram-tx-bad:                           OK
+wamp-ticket-static-good:                     OK
+wamp-ticket-static-bad:                      OK
+wamp-ticket-dynamic-good:                    OK
+wamp-ticket-dynamic-bad:                     OK
+wamp-ticket-function-good:                   OK
+wamp-ticket-function-bad:                    OK
+wamp-tls-static-cnlbind-unique-good:         OK
+wamp-tls-static-cnlbind-unique-bad:          OK
+wamp-cra-static-good:                        OK
+wamp-cra-static-bad:                         OK
+wamp-cra-dynamic-good:                       OK
+wamp-cra-dynamic-bad:                        OK
+wamp-cra-function-good:                      OK
+wamp-cra-function-bad:                       OK
 ```
+
+### Tests Structure
+
+1. authentication: `anonymous`, `ticket`, `wampcra`, `scram`, `cryptosign`, `cookie`
+2. client credentials: `good`, `bad`
+3. client framework: `tx`, `aio`
+4. client API: `apprun`, `comp`
+5. router setup: `rtr`, `pxy-rtr`
+6. router authenticator: `static`, `dynamic`
+7. router transport: `tcp-ws`, `tcp-webws`, `tcp-univ`, `tcp-rs`, `uds-rs`
+8. router transport serializer: `json`, `cbor`, `msgpack`, `ubjson`
+9. router transport TLS: `plain`, `tls`, `tls-unique`
+
+> These are potentially `6 x 2 x 2 x 2 x 2 x 2 x 5 x 4 x 3 == 11520` test combinations
 
 ## More
 

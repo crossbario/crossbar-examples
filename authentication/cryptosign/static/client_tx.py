@@ -134,7 +134,7 @@ if __name__ == '__main__':
         # the private key is required
         'key': options.key,
 
-        'exit_reason': None,
+        'exit_details': None,
     }
     print("Connecting to {}: requesting realm={}, authid={}".format(
         options.url, options.realm, options.authid))
@@ -147,7 +147,7 @@ if __name__ == '__main__':
     # CloseDetails(reason=<wamp.error.not_authorized>, message='WAMP-CRA signature is invalid')
     print(extra['exit_details'])
 
-    if extra['exit_details'].reason != 'wamp.close.normal':
+    if not extra['exit_details'] or (extra['exit_details'] and extra['exit_details'].reason != 'wamp.close.normal'):
         sys.exit(1)
     else:
         sys.exit(0)

@@ -5,7 +5,7 @@
 ## WAMP-Cryptosign static (using Twisted with authid)
 ##
 crossbar start --cbdir=./cryptosign/static/.crossbar &
-sleep 5
+sleep 10
 
 python ./cryptosign/static/client_tx.py --realm devices --authid client01@example.com --key ./cryptosign/static/.keys/client01.key
 wamp_cryptosign_static_tx_good=$?
@@ -20,7 +20,7 @@ crossbar stop  --cbdir=./cryptosign/static/.crossbar || true
 ## WAMP-Cryptosign static (using Twisted and NO authid)
 ##
 crossbar start --cbdir=./cryptosign/static/.crossbar &
-sleep 5
+sleep 10
 
 python ./cryptosign/static/client_tx.py --realm devices --key ./cryptosign/static/.keys/client01.key
 wamp_cryptosign_static_tx_noauthid_good=$?
@@ -35,7 +35,7 @@ crossbar stop  --cbdir=./cryptosign/static/.crossbar || true
 ## WAMP-Cryptosign static (using asyncio with authid)
 ##
 crossbar start --cbdir=./cryptosign/static/.crossbar &
-sleep 5
+sleep 10
 
 python ./cryptosign/static/client_aio.py --realm devices --authid client01@example.com --key ./cryptosign/static/.keys/client01.key
 wamp_cryptosign_static_aio_good=$?
@@ -50,7 +50,7 @@ crossbar stop  --cbdir=./cryptosign/static/.crossbar || true
 ## WAMP-Cryptosign static (using asyncio and NO authid)
 ##
 crossbar start --cbdir=./cryptosign/static/.crossbar &
-sleep 5
+sleep 10
 
 python ./cryptosign/static/client_aio.py --realm devices --key ./cryptosign/static/.keys/client01.key
 wamp_cryptosign_static_aio_noauthid_good=$?
@@ -66,7 +66,7 @@ crossbar stop  --cbdir=./cryptosign/static/.crossbar || true
 ## WAMP-Cryptosign with-TLS (using Twisted with no channel binding)
 ##
 crossbar start --cbdir=./cryptosign/tls/.crossbar &
-sleep 5
+sleep 10
 
 python ./cryptosign/tls/client_tx.py --url wss://localhost:8080 --key ./cryptosign/tls/.keys/client01.key
 wamp_cryptosign_tls_tx_cnlbind_none_good=$?
@@ -81,7 +81,7 @@ crossbar stop  --cbdir=./cryptosign/tls/.crossbar || true
 ## WAMP-Cryptosign with-TLS (using Twisted with channel binding "tls-unique")
 ##
 crossbar start --cbdir=./cryptosign/tls/.crossbar &
-sleep 5
+sleep 10
 
 python ./cryptosign/tls/client_tx.py --url wss://localhost:8080 --key ./cryptosign/tls/.keys/client01.key --channel_binding="tls-unique"
 wamp_cryptosign_tls_tx_cnlbind_unique_good=$?
@@ -98,7 +98,7 @@ crossbar stop  --cbdir=./cryptosign/tls/.crossbar || true
 # ## WAMP-Cryptosign with-TLS (using asyncio with no channel binding)
 # ##
 # crossbar start --cbdir=./cryptosign/tls/.crossbar &
-# sleep 5
+# sleep 10
 
 # python ./cryptosign/tls/client_aio.py --url wss://localhost:8080 --key ./cryptosign/tls/.keys/client01.key
 # wamp_cryptosign_tls_aio_cnlbind_none_good=$?
@@ -113,7 +113,7 @@ crossbar stop  --cbdir=./cryptosign/tls/.crossbar || true
 # ## WAMP-Cryptosign with-TLS (using asyncio with channel binding "tls-unique")
 # ##
 # crossbar start --cbdir=./cryptosign/tls/.crossbar &
-# sleep 5
+# sleep 10
 
 # python ./cryptosign/tls/client_aio.py --url wss://localhost:8080 --key ./cryptosign/tls/.keys/client01.key --channel_binding="tls-unique"
 # wamp_cryptosign_tls_aio_cnlbind_unique_good=$?
@@ -133,6 +133,8 @@ echo ""
 echo "Test results:"
 echo "============="
 echo ""
+
+exec >> test.log
 
 [ $wamp_cryptosign_static_tx_good              -eq 0 ] && echo "wamp-cryptosign-static-tx-good:              OK" || echo "wamp-cryptosign-static-tx-good:               FAIL"
 [ $wamp_cryptosign_static_tx_bad               -eq 1 ] && echo "wamp-cryptosign-static-tx-bad:               OK" || echo "wamp-cryptosign-static-tx-bad:                FAIL"

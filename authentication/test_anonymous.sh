@@ -1,3 +1,3 @@
 #!/bin/sh
 
-# FIXME
+echo "FIXME: test not implemented"

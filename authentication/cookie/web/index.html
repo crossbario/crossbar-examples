@@ -12,9 +12,9 @@
       <script>
          console.log("Ok, AutobahnJS loaded", autobahn.version);
 
-         // authenticate using authid "joe"
-         var user = "joe";
-         var key = "123456";
+         // authenticate using authid "client1"
+         var user = "client1";
+         var key = "secret123";
 
          // this callback is fired during WAMP-CRA authentication
          function onchallenge (session, method, extra) {
@@ -33,7 +33,7 @@
          }
 
          var connection = new autobahn.Connection({
-            url: 'ws://127.0.0.1:8080/ws',
+            url: 'ws://localhost:8080/ws',
             realm: 'realm1',
 
             // the following attributes must be set of WAMP-CRA authentication
