@@ -13,7 +13,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 from autobahn.wamp import auth
-from autobahn.xbr._util import hltype
+from autobahn.util import hltype
 
 
 class ClientSession(ApplicationSession):

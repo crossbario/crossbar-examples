@@ -17,3 +17,4 @@ xbr/teststack1/master/default.pub
 .ipynb_checkpoints
 .test
 authentication/tls/static/ca/
+*.zip

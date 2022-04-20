@@ -41,7 +41,7 @@ make trunc_log test_all
 You should see output similar to the following:
 
 ```
-Mo 18. Apr 21:39:57 CEST 2022
+Mi 20. Apr 11:50:17 CEST 2022
 
 Crossbar.io WAMP Authentication Test Summary:
 =============================================
