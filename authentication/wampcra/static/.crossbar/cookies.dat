@@ -1,0 +1,2 @@
+{"id": "9yRPaMystp0KLas5eI4rdo3N", "created": "2022-04-20T16:36:41.148Z", "max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "authrealm": null, "authextra": null}
+{"id": "9yRPaMystp0KLas5eI4rdo3N", "modified": "2022-04-20T16:36:41.148Z", "max_age": 604800, "authid": "client1", "authrole": "frontend", "authmethod": "wampcra", "authrealm": "realm1", "authextra": {"x_cb_node": "intel-nuci7-60231", "x_cb_worker": "test_router1", "x_cb_peer": "tcp4:127.0.0.1:38996", "x_cb_pid": 60240}}
