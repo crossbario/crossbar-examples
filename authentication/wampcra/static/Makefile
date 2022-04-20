@@ -1,6 +1,9 @@
 crossbar:
 	MYSECRET="secret123" crossbar edge start
 
+crossbar_rtrpxy:
+	MYSECRET="secret123" crossbar edge start --config=config-rtrpxy.json
+
 clients: client_good client_bad
 
 client_good:

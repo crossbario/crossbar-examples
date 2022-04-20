@@ -1,2 +1,5 @@
-{"id": "9yRPaMystp0KLas5eI4rdo3N", "created": "2022-04-20T16:36:41.148Z", "max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "authrealm": null, "authextra": null}
-{"id": "9yRPaMystp0KLas5eI4rdo3N", "modified": "2022-04-20T16:36:41.148Z", "max_age": 604800, "authid": "client1", "authrole": "frontend", "authmethod": "wampcra", "authrealm": "realm1", "authextra": {"x_cb_node": "intel-nuci7-60231", "x_cb_worker": "test_router1", "x_cb_peer": "tcp4:127.0.0.1:38996", "x_cb_pid": 60240}}
+{"id": "rsQegiVPxI3qUjk6NrXQvu7u", "created": "2022-04-20T17:37:22.600Z", "max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "authrealm": null, "authextra": null}
+{"id": "rsQegiVPxI3qUjk6NrXQvu7u", "modified": "2022-04-20T17:37:22.600Z", "max_age": 604800, "authid": "client1", "authrole": "frontend", "authmethod": "wampcra", "authrealm": "realm1", "authextra": {"x_cb_node": "intel-nuci7-64823", "x_cb_worker": "test_router1", "x_cb_peer": "tcp4:127.0.0.1:40082", "x_cb_pid": 64832}}
+{"id": "t+SGoXRWztGFN1cE6JmftcbP", "created": "2022-04-20T22:19:09.423Z", "max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "authrealm": null, "authextra": null}
+{"id": "W7oq5/jhMKMLmnaEvD+xSsKO", "created": "2022-04-20T22:23:05.684Z", "max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "authrealm": null, "authextra": null}
+{"id": "AHTXtysc1FQdR3rqmb+gXTOD", "created": "2022-04-20T22:26:52.683Z", "max_age": 604800, "authid": null, "authrole": null, "authmethod": null, "authrealm": null, "authextra": null}

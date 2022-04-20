@@ -18,3 +18,4 @@ xbr/teststack1/master/default.pub
 .test
 authentication/tls/static/ca/
 *.zip
+cookies.dat
