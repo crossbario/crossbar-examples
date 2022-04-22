@@ -115,9 +115,12 @@
                             },
                             "cookie": {
                                 "store": {
-                                    "type": "file",
-                                    "filename": "cookies.dat",
-                                    "purge_on_startup": true
+                                    "type": "database",
+                                    "path": ".cookies",
+                                    "purge_on_startup": false,
+                                    "maxsize": 1048576,
+                                    "readonly": false,
+                                    "sync": true
                                 }
                             },
                             "auth": {
