@@ -153,14 +153,58 @@
                             "type": "static",
                             "realm": "realm1",
                             "role": "backend"
+                        },
+                        "anonymous-proxy": {
+                            "type": "static"
                         }
                     }
-                },
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "backend.BackendSession",
+                    "realm": "realm1",
+                    "role": "backend"
+                }
+            ]
+        },
+
+        {
+            "type": "proxy",
+            "id": "test_proxy1",
+            "options": {
+                "env": {
+                    "inherit": ["MYSECRET"]
+                }
+            },
+            "connections": {
+                "conn1": {
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "url": "ws://localhost",
+                        "serializer": "cbor"
+                    }
+                }
+            },
+            "routes": {
+                "realm1": {
+                    "anonymous": "conn1",
+                    "frontend": "conn1"
+                }
+            },
+            "transports": [
                 {
                     "type": "web",
                     "endpoint": {
                         "type": "tcp",
-                        "port": 8080
+                        "port": 8080,
+                        "shared": true,
+                        "backlog": 1024
                     },
                     "paths": {
                         "/": {
@@ -189,6 +233,29 @@
                         "ws": {
                             "type": "websocket",
                             "serializers": ["json", "msgpack", "cbor"],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 12,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            },
                             "cookie": {
                                 "store": {
                                     "type": "file",
@@ -200,11 +267,11 @@
                                     "type": "static",
                                     "users": {
                                         "client1": {
-                                            "secret": "${MYSECRET}",
+                                            "secret": "secret123",
                                             "role": "frontend"
                                         },
                                         "client2": {
-                                            "secret": "${MYSECRET}",
+                                            "secret": "secret123",
                                             "role": "frontend",
                                             "salt": "salt123",
                                             "iterations": 100,
@@ -217,16 +284,126 @@
                         }
                     }
                 }
-            ],
-            "components": [
+            ]
+        },
+
+        {
+            "type": "proxy",
+            "id": "test_proxy2",
+            "options": {
+                "env": {
+                    "inherit": ["MYSECRET"]
+                }
+            },
+            "connections": {
+                "conn1": {
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "url": "ws://localhost",
+                        "serializer": "cbor"
+                    }
+                }
+            },
+            "routes": {
+                "realm1": {
+                    "anonymous": "conn1",
+                    "frontend": "conn1"
+                }
+            },
+            "transports": [
                 {
-                    "type": "class",
-                    "classname": "backend.BackendSession",
-                    "realm": "realm1",
-                    "role": "backend"
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "shared": true,
+                        "backlog": 1024
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web"
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "shared": {
+                            "type": "archive",
+                            "archive": "autobahn-v20.9.2.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.9.2.zip",
+                            "object_prefix": "autobahn-js-browser-20.9.2",
+                            "default_object": "autobahn.min.js",
+                            "download": true,
+                            "cache": true,
+                            "hashes": [
+                                "f63fb912ee13ba8ccd519be5d0a99e70b18c04ef6827c78b23a73cf328e733c4"
+                            ],
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": ["json", "msgpack", "cbor"],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 12,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            },
+                            "cookie": {
+                                "store": {
+                                    "type": "file",
+                                    "filename": "cookies.dat"
+                                }
+                            },
+                            "auth": {
+                                "wampcra": {
+                                    "type": "static",
+                                    "users": {
+                                        "client1": {
+                                            "secret": "secret123",
+                                            "role": "frontend"
+                                        },
+                                        "client2": {
+                                            "secret": "secret123",
+                                            "role": "frontend",
+                                            "salt": "salt123",
+                                            "iterations": 100,
+                                            "keylen": 16
+                                        }
+                                    }
+                                },
+                                "cookie": {}
+                            }
+                        }
+                    }
                 }
             ]
         },
+
         {
             "type": "container",
             "id": "test_cont1",

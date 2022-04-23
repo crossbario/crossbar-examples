@@ -12,14 +12,19 @@
       <script>
          console.log("Ok, AutobahnJS loaded", autobahn.version);
 
-         if (false) {
-            // authenticate using authid "joe"
-            var user = "joe";
-            var key = "secret2";
+         var use_unsalted_key = true;
+
+         if (use_unsalted_key) {
+            // authenticate using authid "client1"
+            var user = "client1";
+            var key = "secret123";
+            console.log("using unsalted (plain) secret key:", key);
          } else {
-            // authenticate using authid "peter", and using a salted password
-            var user = "peter";
-            var key = autobahn.auth_cra.derive_key("secret1", "salt123", 100, 16);
+            // FIXME: fails with "WAMP-CRA client signature is invalid"
+            // authenticate using authid "client2", and using a salted password
+            var user = "client2";
+            var key = autobahn.auth_cra.derive_key("secret123", "salt123", 100, 16);
+            console.log("derived salted secret key:", key);
          }
 
          // this callback is fired during WAMP-CRA authentication
@@ -40,11 +45,12 @@
          }
 
          var connection = new autobahn.Connection({
-            url: 'ws://127.0.0.1:8080/ws',
+            url: 'ws://localhost:8080/ws',
             realm: 'realm1',
 
             // the following attributes must be set of WAMP-CRA authentication
             //
+            // authmethods: ["cookie", "wampcra"],
             authmethods: ["wampcra"],
             authid: user,
             onchallenge: onchallenge

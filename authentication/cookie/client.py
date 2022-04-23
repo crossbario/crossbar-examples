@@ -8,7 +8,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp import auth
-from autobahn.xbr._util import hltype
+from autobahn.util import hltype
 
 
 class ClientSession(ApplicationSession):
@@ -72,7 +72,7 @@ class ClientSession(ApplicationSession):
                 werkzeug.http.dump_cookie(cookie_name, werkzeug.http.parse_cookie(cookie_received)[cookie_name],
                                           path=None))
             self.config.extra['cookie'] = cookie_sent
-            self.transport.factory.headers['Set-Cookie'] = cookie_sent
+            self.transport.factory.headers['Cookie'] = cookie_sent
 
         res = yield self.call('com.example.add2', 23, 666)
         assert res == 689

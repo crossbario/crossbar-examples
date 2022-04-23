@@ -3,7 +3,7 @@ import random
 from pprint import pformat
 from txaio import make_logger
 from autobahn.wamp.exception import ApplicationError
-from autobahn.xbr._util import hlval, hlid, hl, hltype
+from autobahn.util import hl, hltype, hlid, hlval
 
 # a simple principals database. in real world use, this likey would be
 # replaced by some persistent database used to store principals.

@@ -11,6 +11,7 @@ trunc_log: ## Truncate log file collecting test results ("test.log")
 
 print_log:
 	@clear
+	@crossbar version
 	@cat ./test.log
 
 test_all: trunc_log test_anonymous test_cookie test_cryptosign test_scram test_ticket test_tls test_wampcra ## Test all WAMP authentication methods

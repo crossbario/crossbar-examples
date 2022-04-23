@@ -10,7 +10,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
-from autobahn.xbr._util import hlval, hlid, hl, hltype
+from autobahn.util import hl, hltype, hlid, hlval
 
 MYTICKET = os.environ.get('MYTICKET', None)
 

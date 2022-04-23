@@ -41,13 +41,17 @@ make trunc_log test_all
 You should see output similar to the following:
 
 ```
-Mo 18. Apr 21:39:57 CEST 2022
+Sa 23. Apr 20:23:06 CEST 2022
 
 Crossbar.io WAMP Authentication Test Summary:
 =============================================
 
-wamp-cra-cookie-good:                        OK
-wamp-cra-cookie-bad:                         OK
+wamp-cookie-file-good:                       OK
+wamp-cookie-file-bad:                        OK
+wamp-cookie-db-good:                         OK
+wamp-cookie-db-bad:                          OK
+wamp-cookie-rtrpxy-db-good:                  OK
+wamp-cookie-rtrpxy-db-bad:                   OK
 wamp-cryptosign-static-tx-good:              OK
 wamp-cryptosign-static-tx-bad:               OK
 wamp-cryptosign-static-tx-noauthid-good:     OK
