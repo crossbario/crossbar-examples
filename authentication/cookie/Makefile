@@ -4,6 +4,9 @@ crossbar:
 crossbar_database:
 	MYSECRET="secret123" crossbar start --config=config-database.json
 
+crossbar_rtrpxy_database:
+	MYSECRET="secret123" crossbar edge start --config=config-rtrpxy-database.json
+
 clients: client_good client_bad
 
 client_good:
