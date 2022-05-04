@@ -1,9 +1,9 @@
-import sys
+import txaio
+txaio.use_asyncio()
+
 from autobahn.wamp import cryptosign
 from autobahn.asyncio.wamp import ApplicationSession, ApplicationRunner
 import asyncio
-import txaio
-txaio.use_asyncio()
 
 
 class ClientSession(ApplicationSession):

@@ -1,0 +1,278 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "id": "test_router1",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ]
+            },
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": true,
+                                        "publisher": true
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "backend",
+                            "permissions": [
+                                {
+                                    "uri": "",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "register": true,
+                                        "publish": true,
+                                        "subscribe": true
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "com.example.topic2",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": false,
+                                        "register": false,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        },
+                        {
+                            "name": "frontend",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.add2",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": true,
+                                        "register": false,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "com.example.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": false,
+                                        "register": false,
+                                        "publish": true,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "com.example.topic2",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": false,
+                                        "register": false,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "com.foobar.topic1",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": false,
+                                        "register": false,
+                                        "publish": true,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "cache": true
+                                }
+                            ]
+                        }
+                    ],
+                    "store": {
+                        "type": "cfxdb",
+                        "path": ".realm1db",
+                        "maxsize": 1073741824,
+                        "buffer-flush": 250,
+                        "event-history": [
+                            {
+                                "uri": "",
+                                "match": "prefix"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "crossbar.sock",
+                        "backlog": 1024
+                    },
+                    "options": {
+                        "max_message_size": 1048576
+                    },
+                    "serializers": ["cbor"],
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "realm": "realm1",
+                            "role": "backend"
+                        }
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web"
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "shared": {
+                            "type": "archive",
+                            "archive": "autobahn-v20.9.2.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.9.2.zip",
+                            "object_prefix": "autobahn-js-browser-20.9.2",
+                            "default_object": "autobahn.min.js",
+                            "download": true,
+                            "cache": true,
+                            "hashes": [
+                                "f63fb912ee13ba8ccd519be5d0a99e70b18c04ef6827c78b23a73cf328e733c4"
+                            ],
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": ["json", "msgpack", "cbor"],
+                            "cookie": {
+                                "store": {
+                                    "type": "file",
+                                    "filename": "cookies.dat"
+                                }
+                            },
+                            "auth": {
+                                "wampcra": {
+                                    "type": "static",
+                                    "users": {
+                                        "client1": {
+                                            "secret": "${MYSECRET}",
+                                            "role": "frontend"
+                                        },
+                                        "client2": {
+                                            "secret": "${MYSECRET}",
+                                            "role": "frontend",
+                                            "salt": "salt123",
+                                            "iterations": 100,
+                                            "keylen": 16
+                                        }
+                                    }
+                                },
+                                "cookie": {}
+                            }
+                        }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "backend.BackendSession",
+                    "realm": "realm1",
+                    "role": "backend"
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "id": "test_cont1",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ],
+                "shutdown": "shutdown-on-last-component-stopped",
+                "restart": "restart-on-failed",
+                "expose_controller": true,
+                "expose_shared": true
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "monitor.MyMonitor",
+                    "realm": "realm1",
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "crossbar.sock"
+                        },
+                        "serializer": "cbor",
+                        "url": "rs://unix:crossbar.sock",
+                        "options": {
+                            "max_message_size": 1048576
+                        }
+                    },
+                    "extra": {
+                        "var1": "Hello, world!"
+                    }
+                }
+            ]
+        }
+    ]
+}
