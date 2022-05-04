@@ -24,12 +24,15 @@ class MyMonitor(ApplicationSession):
         self.log.info('{func}: client session joined:\n{details}',
                       func=hltype(self.onJoin), details=pformat(details))
 
+        self._session_info_cache = {}
+
         sessions = yield self.call('wamp.session.list')
         for session_id in sessions:
             try:
-                session_info = yield self.call('wamp.session.get', session_id)
+                si = yield self.call('wamp.session.get', session_id)
+                self._session_info_cache[session_id] = si
                 self.log.info('{func}: session_info=\n{session_info}',
-                              func=hltype(self.onJoin), session_info=pformat(session_info))
+                              func=hltype(self.onJoin), session_info=pformat(si))
             except:
                 self.log.failure()
 
@@ -42,19 +45,21 @@ class MyMonitor(ApplicationSession):
             session_id = session_info.get('session', None)
             if session_id:
                 try:
-                    _session_info = yield self.call('wamp.session.get', session_id)
+                    session_info_from_rpc = yield self.call('wamp.session.get', session_id)
 
                     # FIXME
-                    for attr in ['realm', 'serializer', 'resumable', 'resume_token', 'resumed']:
-                        if attr in _session_info:
-                            del _session_info[attr]
+                    if False:
+                        for attr in ['realm', 'serializer', 'resumable', 'resume_token', 'resumed']:
+                            if attr in session_info_from_rpc:
+                                del session_info_from_rpc[attr]
 
-                    if session_info == _session_info:
+                    if session_info == session_info_from_rpc:
                         self.log.info('{func}: ok, event data identical to getter API!', func=hltype(on_session_join))
+                        self._session_info_cache[session_id] = session_info
                     else:
                         self.log.warn('{func}: event data mismatch to getter API!\nEvent:\n{session_info_event}\nCall:\n{session_info_call}',
                                       session_info_event=pformat(session_info),
-                                      session_info_call=pformat(_session_info),
+                                      session_info_call=pformat(session_info_from_rpc),
                                       func=hltype(on_session_join))
                 except:
                     self.log.failure()
@@ -64,14 +69,22 @@ class MyMonitor(ApplicationSession):
         @inlineCallbacks
         def on_session_leave(session_id):
             self.log.info('{func}: existing session left, session_id={session_id}',
-                          func=hltype(on_session_join), session_id=hlid(session_id))
+                          func=hltype(on_session_leave), session_id=hlid(session_id))
 
-            # ApplicationError(error=<wamp.error.no_such_session)
             if session_id:
                 try:
-                    _session_info = yield self.call('wamp.session.get', session_id)
-                    if session_info == _session_info:
-                        self.log.info('{func}: ok, event data identical to getter API', func=hltype(on_session_join))
+                    session_info_from_rpc = yield self.call('wamp.session.get', session_id)
+                    self.log.info('{func} session data retrieved for closed session:\n{session_info}',
+                                  func=hltype(on_session_leave),
+                                  session_info=pformat(session_info_from_rpc))
+
+                    session_info = self._session_info_cache.get(session_id, None)
+                    if session_info == session_info_from_rpc:
+                        self.log.info('{func} ok, event data identical to getter API',
+                                      func=hltype(on_session_leave))
+                    else:
+                        self.log.warn('{func} session info differs from what we got before!',
+                                      func=hltype(on_session_leave))
                 except:
                     self.log.failure()
 

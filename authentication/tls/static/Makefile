@@ -1,9 +1,9 @@
 default:
 	@echo "Targets:"
 	@echo ""
-	@echo "   test              Run a TLS router and a TLS client component in a container"
-	@echo "   test_shared       Run 2 non-TLS Web workers sharing a TCP listening port"
-	@echo "   test_shared_tls   Run 2 TLS Web workers sharing a TCP listening port"
+	@echo "   crossbar              Run a TLS router and a TLS client component in a container"
+	@echo "   crossbar_shared       Run 2 non-TLS Web workers sharing a TCP listening port"
+	@echo "   crossbar_shared_tls   Run 2 TLS Web workers sharing a TCP listening port"
 
 generate_certs:
 	./create-self-signed-cert.sh

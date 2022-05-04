@@ -1,10 +1,10 @@
-import sys
+import txaio
+txaio.use_twisted()
+
 from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession
 from twisted.internet.error import ReactorNotRunning
 from twisted.internet import reactor
-import txaio
-txaio.use_twisted()
 
 
 class ClientSession(ApplicationSession):

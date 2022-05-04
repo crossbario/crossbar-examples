@@ -45,3 +45,204 @@ MYSECRET="wrongpassword" python client.py client1
 2020-08-18T21:34:19+0200 Main loop terminated.
 (cpy382_1) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication/wampcra/static$
 ```
+
+## Meta API
+
+```
+2022-05-04T00:29:21+0200 [Proxy      104034] <autobahn.twisted.websocket.WebSocketAdapterProtocol.connectionMade> connection established for peer="tcp4:127.0.0.1:45674"
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.router.protocol.WampWebSocketServerProtocol.onConnect>: no tracking/authentication cookie cbtid found in HTTP request headers!
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.router.protocol.WampWebSocketServerProtocol.onConnect>: setting new cookie cbtid=g2G9WNnUSfPdIgDkLiNtgDqO;max-age=604800
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.router.protocol.WampWebSocketServerProtocol.onConnect> cookie-based authentication enabled, but cookie is not authenticated yet
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.worker.proxy.ProxyFrontendSession.onOpen> proxy frontend session connected from peer tcp4:127.0.0.1:45674
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.worker.proxy.ProxyFrontendSession.frontend_accepted> proxy frontend session accepted (Accept(realm=<realm1>, authid=<client1>, authrole=<frontend>, authmethod=wampcra, authprovider=static, authextra=None))
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.worker.proxy.make_backend_connection> proxy connecting to backend with backend_config=
+{'transport': {'endpoint': {'path': 'crossbar.sock', 'type': 'unix'},
+               'serializer': 'cbor',
+               'type': 'rawsocket',
+               'url': 'ws://localhost'}}
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.worker.proxy.ProxyFrontendSession.frontend_accepted.<locals>.backend_connected> proxy backend session authenticating with authmethods=['anonymous-proxy'], pubkey=c71289fe71920793da6c95086cc71dafd96aeaa171831154f5a5301a6fc20387: proxy_authid="client1", proxy_authrole="frontend", proxy_realm="realm1"
+2022-05-04T00:29:21+0200 [Router     104013] <crossbar.router.router.Router.attach> new session attached for realm="realm1", session=6287901217990880, authid="client1", authrole="frontend", authmethod="anonymous-proxy", authprovider="static", authextra=
+{'transport': {'channel_framing': 'websocket',
+               'channel_id': {},
+               'channel_serializer': None,
+               'channel_type': 'tcp',
+               'http_cbtid': 'g2G9WNnUSfPdIgDkLiNtgDqO',
+               'http_headers_received': {'cache-control': 'no-cache',
+                                         'connection': 'Upgrade',
+                                         'host': 'localhost:8080',
+                                         'pragma': 'no-cache',
+                                         'sec-websocket-extensions': 'permessage-deflate; '
+                                                                     'client_no_context_takeover; '
+                                                                     'client_max_window_bits',
+                                         'sec-websocket-key': 'WSNfuVrqbukehRyNsQghVA==',
+                                         'sec-websocket-protocol': 'wamp.2.json',
+                                         'sec-websocket-version': '13',
+                                         'upgrade': 'WebSocket',
+                                         'user-agent': 'AutobahnPython/22.4.1'},
+               'http_headers_sent': {'Set-Cookie': 'cbtid=g2G9WNnUSfPdIgDkLiNtgDqO;max-age=604800'},
+               'is_secure': False,
+               'is_server': True,
+               'own': None,
+               'own_fd': -1,
+               'own_pid': 104034,
+               'own_tid': 104034,
+               'peer': 'tcp4:127.0.0.1:45674',
+               'peer_cert': None,
+               'websocket_extensions_in_use': [{'client_max_window_bits': 13,
+                                                'client_no_context_takeover': False,
+                                                'extension': 'permessage-deflate',
+                                                'is_server': True,
+                                                'mem_level': 5,
+                                                'server_max_window_bits': 13,
+                                                'server_no_context_takeover': False}],
+               'websocket_protocol': 'wamp.2.json'},
+ 'x_cb_node': 'intel-nuci7-104003',
+ 'x_cb_peer': 'unix',
+ 'x_cb_pid': 104013,
+ 'x_cb_worker': 'test_router1'}
+2022-05-04T00:29:21+0200 [Proxy      104034] <crossbar.worker.proxy.ProxyBackendSession.onJoin> proxy backend session joined (authmethod=anonymous-proxy, authprovider=static): realm="realm1", authid="client1", authrole="frontend"
+2022-05-04T00:29:21+0200 [Container  104045] <monitor.MyMonitor.onJoin.<locals>.on_session_join>: new session joined, session_info=
+{'authextra': {'transport': {'channel_framing': 'websocket',
+                             'channel_id': {},
+                             'channel_serializer': None,
+                             'channel_type': 'tcp',
+                             'http_cbtid': 'g2G9WNnUSfPdIgDkLiNtgDqO',
+                             'http_headers_received': {'cache-control': 'no-cache',
+                                                       'connection': 'Upgrade',
+                                                       'host': 'localhost:8080',
+                                                       'pragma': 'no-cache',
+                                                       'sec-websocket-extensions': 'permessage-deflate; '
+                                                                                   'client_no_context_takeover; '
+                                                                                   'client_max_window_bits',
+                                                       'sec-websocket-key': 'WSNfuVrqbukehRyNsQghVA==',
+                                                       'sec-websocket-protocol': 'wamp.2.json',
+                                                       'sec-websocket-version': '13',
+                                                       'upgrade': 'WebSocket',
+                                                       'user-agent': 'AutobahnPython/22.4.1'},
+                             'http_headers_sent': {'Set-Cookie': 'cbtid=g2G9WNnUSfPdIgDkLiNtgDqO;max-age=604800'},
+                             'is_secure': False,
+                             'is_server': True,
+                             'own': None,
+                             'own_fd': -1,
+                             'own_pid': 104034,
+                             'own_tid': 104034,
+                             'peer': 'tcp4:127.0.0.1:45674',
+                             'peer_cert': None,
+                             'websocket_extensions_in_use': [{'client_max_window_bits': 13,
+                                                              'client_no_context_takeover': False,
+                                                              'extension': 'permessage-deflate',
+                                                              'is_server': True,
+                                                              'mem_level': 5,
+                                                              'server_max_window_bits': 13,
+                                                              'server_no_context_takeover': False}],
+                             'websocket_protocol': 'wamp.2.json'},
+               'x_cb_node': 'intel-nuci7-104003',
+               'x_cb_peer': 'unix',
+               'x_cb_pid': 104013,
+               'x_cb_worker': 'test_router1'},
+ 'authid': 'client1',
+ 'authmethod': 'anonymous-proxy',
+ 'authprovider': 'static',
+ 'authrole': 'frontend',
+ 'realm': 'realm1',
+ 'resumable': False,
+ 'resume_token': None,
+ 'resumed': False,
+ 'serializer': None,
+ 'session': 6287901217990880,
+ 'transport': {'channel_framing': 'rawsocket',
+               'channel_id': {},
+               'channel_serializer': 'cbor',
+               'channel_type': 'tcp',
+               'http_cbtid': None,
+               'http_headers_received': None,
+               'http_headers_sent': None,
+               'is_secure': False,
+               'is_server': None,
+               'own': None,
+               'own_fd': -1,
+               'own_pid': 104013,
+               'own_tid': 104013,
+               'peer': 'unix',
+               'peer_cert': None,
+               'websocket_extensions_in_use': None,
+               'websocket_protocol': 'wamp.2.cbor'}}
+2022-05-04T00:29:21+0200 [Router     104013] <crossbar.router.service.RouterServiceAgent.session_get> session 6287901217990880 in active memory
+2022-05-04T00:29:21+0200 [Container  104045] <monitor.MyMonitor.onJoin.<locals>.on_session_join>: ok, event data identical to getter API!
+2022-05-04T00:29:22+0200 [Router     104013] add2() called with 2 and 3
+2022-05-04T00:29:22+0200 [Router     104013] event received on com.foobar.topic2: hello
+2022-05-04T00:29:22+0200 [Router     104013] event received on com.foobar.topic2: hello
+2022-05-04T00:29:22+0200 [Router     104013] Router detached session from realm "realm1" (session=6287901217990880, detached_session_ids=1, authid="client1", authrole="frontend", authmethod="anonymous-proxy", authprovider="static") <crossbar.router.router.Router.detach>
+2022-05-04T00:29:22+0200 [Proxy      104034] <crossbar.worker.proxy.ProxyFrontendSession.onClose> proxy frontend session closed (wasClean=True)
+2022-05-04T00:29:22+0200 [Proxy      104034] <autobahn.twisted.websocket.WebSocketAdapterProtocol.connectionLost> connection lost for peer="tcp4:127.0.0.1:45674", closed cleanly
+2022-05-04T00:29:22+0200 [Container  104045] <monitor.MyMonitor.onJoin.<locals>.on_session_leave>: existing session left, session_id=6287901217990880
+2022-05-04T00:29:22+0200 [Proxy      104034] <crossbar.worker.proxy.ProxyBackendSession.onClose> proxy backend session closed (wasClean=True)
+2022-05-04T00:29:22+0200 [Router     104013] <crossbar.router.service.RouterServiceAgent.session_get> session 6287901217990880 loaded from database
+2022-05-04T00:29:22+0200 [Container  104045] <monitor.MyMonitor.onJoin.<locals>.on_session_leave> session data retrieved for closed session:
+{'authextra': {'transport': {'channel_framing': 'websocket',
+                             'channel_id': {},
+                             'channel_serializer': None,
+                             'channel_type': 'tcp',
+                             'http_cbtid': 'g2G9WNnUSfPdIgDkLiNtgDqO',
+                             'http_headers_received': {'cache-control': 'no-cache',
+                                                       'connection': 'Upgrade',
+                                                       'host': 'localhost:8080',
+                                                       'pragma': 'no-cache',
+                                                       'sec-websocket-extensions': 'permessage-deflate; '
+                                                                                   'client_no_context_takeover; '
+                                                                                   'client_max_window_bits',
+                                                       'sec-websocket-key': 'WSNfuVrqbukehRyNsQghVA==',
+                                                       'sec-websocket-protocol': 'wamp.2.json',
+                                                       'sec-websocket-version': '13',
+                                                       'upgrade': 'WebSocket',
+                                                       'user-agent': 'AutobahnPython/22.4.1'},
+                             'http_headers_sent': {'Set-Cookie': 'cbtid=g2G9WNnUSfPdIgDkLiNtgDqO;max-age=604800'},
+                             'is_secure': False,
+                             'is_server': True,
+                             'own': None,
+                             'own_fd': -1,
+                             'own_pid': 104034,
+                             'own_tid': 104034,
+                             'peer': 'tcp4:127.0.0.1:45674',
+                             'peer_cert': None,
+                             'websocket_extensions_in_use': [{'client_max_window_bits': 13,
+                                                              'client_no_context_takeover': False,
+                                                              'extension': 'permessage-deflate',
+                                                              'is_server': True,
+                                                              'mem_level': 5,
+                                                              'server_max_window_bits': 13,
+                                                              'server_no_context_takeover': False}],
+                             'websocket_protocol': 'wamp.2.json'},
+               'x_cb_node': 'intel-nuci7-104003',
+               'x_cb_peer': 'unix',
+               'x_cb_pid': 104013,
+               'x_cb_worker': 'test_router1'},
+ 'authid': 'client1',
+ 'authmethod': 'anonymous-proxy',
+ 'authprovider': 'static',
+ 'authrole': 'frontend',
+ 'realm': 'realm1',
+ 'resumable': False,
+ 'resume_token': None,
+ 'resumed': False,
+ 'serializer': None,
+ 'session': 6287901217990880,
+ 'transport': {'channel_framing': 'rawsocket',
+               'channel_id': {},
+               'channel_serializer': 'cbor',
+               'channel_type': 'tcp',
+               'http_cbtid': None,
+               'http_headers_received': None,
+               'http_headers_sent': None,
+               'is_secure': False,
+               'is_server': None,
+               'own': None,
+               'own_fd': -1,
+               'own_pid': 104013,
+               'own_tid': 104013,
+               'peer': 'unix',
+               'peer_cert': None,
+               'websocket_extensions_in_use': None,
+               'websocket_protocol': 'wamp.2.cbor'}}
+2022-05-04T00:29:22+0200 [Container  104045] <monitor.MyMonitor.onJoin.<locals>.on_session_leave> ok, event data identical to getter API
+```

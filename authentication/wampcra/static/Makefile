@@ -7,6 +7,18 @@ crossbar_rtrpxy:
 	MYSECRET="secret123" crossbar start --config=config-rtrpxy.json
 #	MYSECRET="secret123" crossbar edge start --config=config-rtrpxy.json
 
+# FIXME: realmstore cfxdb requires "crossbar edge" rather than "crossbar (standalone)" (!)
+
+crossbar_realmstore:
+	rm -f .crossbar/cookies.dat
+	rm -rf .crossbar/.realm1db
+	MYSECRET="secret123" crossbar edge start --config=config-realmstore.json
+
+crossbar_rtrpxy_realmstore:
+	rm -f .crossbar/cookies.dat
+	rm -rf .crossbar/.realm1db
+	MYSECRET="secret123" crossbar edge start --config=config-rtrpxy-realmstore.json
+
 clients: client_good client_bad
 
 client_good:
