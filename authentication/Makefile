@@ -16,6 +16,7 @@ print_log:
 
 test_all: trunc_log test_anonymous test_cookie test_cryptosign test_scram test_ticket test_tls test_wampcra ## Test all WAMP authentication methods
 	@clear
+	@crossbar version
 	@cat ./test.log
 
 test_anonymous: ## Test WAMP-anonymous

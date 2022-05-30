@@ -20,7 +20,7 @@ if not exists('alice.priv'):
 class Component(ApplicationSession):
     """
     """
-    key = cryptosign.SigningKey.from_raw_key('alice.priv')
+    key = cryptosign.CryptosignKey.from_file('alice.priv')
 
     @inlineCallbacks
     def onJoin(self, details):
