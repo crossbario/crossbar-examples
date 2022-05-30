@@ -1,0 +1,201 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "options": {
+                "pythonpath": [".."]
+            },
+            "realms": [
+                {
+                    "name": "realm1",
+                    "roles": [
+                        {
+                            "name": "backend",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.backend.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "register": true,
+                                        "publish": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "authorizer",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.authorize",
+                                    "match": "exact",
+                                    "allow": {
+                                        "register": true
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "name": "frontend",
+                            "authorizer": "com.example.authorize"
+                        },
+                        {
+                            "name": "anonymous",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.public",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "call": true,
+                                        "subscribe": true
+                                    },
+                                   "disclose": {
+                                      "caller": true,
+                                      "publisher": true
+                                   },
+                                   "cache": true
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "transports": [
+                {
+                    "type": "rawsocket",
+                    "endpoint": {
+                        "type": "unix",
+                        "path": "backend.sock"
+                    },
+                    "auth": {
+                        "anonymous": {
+                            "type": "static",
+                            "role": "backend"
+                        }
+                    },
+                    "serializers": ["cbor"],
+                    "options": {
+                        "max_message_size": 1048576
+                    }
+                },
+                {
+                    "type": "web",
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080
+                    },
+                    "paths": {
+                        "/": {
+                            "type": "static",
+                            "directory": "../web"
+                        },
+                        "info": {
+                            "type": "nodeinfo"
+                        },
+                        "shared": {
+                            "type": "archive",
+                            "archive": "autobahn-v20.9.2.zip",
+                            "origin": "https://github.com/crossbario/autobahn-js-browser/archive/v20.9.2.zip",
+                            "object_prefix": "autobahn-js-browser-20.9.2",
+                            "default_object": "autobahn.min.js",
+                            "download": true,
+                            "cache": true,
+                            "hashes": [
+                                "f63fb912ee13ba8ccd519be5d0a99e70b18c04ef6827c78b23a73cf328e733c4"
+                            ],
+                            "mime_types": {
+                                ".min.js": "text/javascript",
+                                ".jgz": "text/javascript"
+                            }
+                        },
+                        "ws": {
+                            "type": "websocket",
+                            "serializers": ["json", "msgpack", "cbor"],
+                            "options": {
+                                "allowed_origins": ["*"],
+                                "allow_null_origin": true,
+                                "enable_webstatus": true,
+                                "max_frame_size": 1048576,
+                                "max_message_size": 1048576,
+                                "auto_fragment_size": 65536,
+                                "fail_by_drop": true,
+                                "open_handshake_timeout": 2500,
+                                "close_handshake_timeout": 1000,
+                                "auto_ping_interval": 10000,
+                                "auto_ping_timeout": 5000,
+                                "auto_ping_size": 12,
+                                "compression": {
+                                    "deflate": {
+                                        "request_no_context_takeover": false,
+                                        "request_max_window_bits": 13,
+                                        "no_context_takeover": false,
+                                        "max_window_bits": 13,
+                                        "memory_level": 5
+                                    }
+                                }
+                            },
+                            "auth": {
+                                "anonymous": {
+                                   "type": "static",
+                                   "realm": "realm1",
+                                   "role": "anonymous"
+                                },
+                                "cryptosign": {
+                                    "type": "static",
+                                    "principals": {
+                                        "client1@example.com": {
+                                            "realm": "realm1",
+                                            "role": "frontend",
+                                            "authorized_keys": [
+                                                "545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "authorizer.ExampleAuthorizer",
+                    "realm": "realm1",
+                    "role": "authorizer"
+                }
+            ]
+        },
+        {
+            "type": "container",
+            "options": {
+                "pythonpath": [
+                    ".."
+                ],
+                "shutdown": "shutdown-on-last-component-stopped",
+                "restart": "restart-on-failed"
+            },
+            "components": [
+                {
+                    "type": "class",
+                    "classname": "backend.ExampleBackend",
+                    "realm": "realm1",
+                    "extra": {
+                    },
+                    "transport": {
+                        "type": "rawsocket",
+                        "endpoint": {
+                            "type": "unix",
+                            "path": "backend.sock"
+                        },
+                        "serializer": "cbor",
+                        "url": "rs://localhost",
+                        "options": {
+                            "max_message_size": 1048576
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
