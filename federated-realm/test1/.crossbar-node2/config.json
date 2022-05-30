@@ -12,7 +12,7 @@
          },
          "realms": [
             {
-               "name": "realm1",
+               "name": "wamp-proto.eth",
                "roles": [
                   {
                      "name": "anonymous",
@@ -104,7 +104,7 @@
                   "cryptosign": {
                      "type": "dynamic",
                      "authenticator": "com.example.authenticate",
-                     "authenticator-realm": "realm1"
+                     "authenticator-realm": "wamp-proto.eth"
                   }
                }
             }
@@ -113,13 +113,13 @@
             {
                "type": "class",
                "classname": "_authenticator.Authenticator",
-               "realm": "realm1",
+               "realm": "wamp-proto.eth",
                "role": "backend"
             },
             {
                "type": "class",
                "classname": "_backend.Backend",
-               "realm": "realm1",
+               "realm": "wamp-proto.eth",
                "role": "backend"
             }
          ]

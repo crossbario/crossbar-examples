@@ -1,5 +1,6 @@
 from twisted.internet.defer import inlineCallbacks
 
+from autobahn.util import hlval
 from autobahn.twisted.wamp import ApplicationSession
 from autobahn.wamp.exception import ApplicationError
 
@@ -11,10 +12,10 @@ from autobahn.wamp.exception import ApplicationError
 PRINCIPALS = [
     {
         "authid": "client1@example.com",
-        "realm": "realm1",
+        "realm": "wamp-proto.eth",
         "role": "user",
         "extra": {
-            "foo": 23
+            "reserved_bandwidth": 100
         },
         "authorized_keys": [
             "15cfa4acef5cc312e0b9ba77634849d0a8c6222a546f90eb5123667935d2f561"
@@ -50,7 +51,19 @@ class Authenticator(ApplicationSession):
 
             pubkey = details['authextra']['pubkey']
             self.log.info(
-                "authenticating session with public key = {pubkey}", pubkey=pubkey)
+                "authenticating session with pubkey={pubkey}", pubkey=hlval(pubkey))
+
+            if 'operator' in details['authextra']:
+                operator = details['authextra']['operator']
+                self.log.info('Using operator={operator}', operator=hlval(operator))
+            else:
+                operator = None
+
+            if 'bandwidth_requested' in details['authextra']:
+                bandwidth_requested = details['authextra']['bandwidth_requested']
+                self.log.info('Using bandwidth_requested={bandwidth_requested}', bandwidth_requested=hlval(bandwidth_requested))
+            else:
+                bandwidth_requested = None
 
             if pubkey in pubkey_to_principals:
                 principal = pubkey_to_principals[pubkey]

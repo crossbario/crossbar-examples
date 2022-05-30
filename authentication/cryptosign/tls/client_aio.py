@@ -17,7 +17,7 @@ class ClientSession(ApplicationSession):
 
         # load the client private key (raw format)
         try:
-            self._key = cryptosign.SigningKey.from_raw_key(config.extra['key'])
+            self._key = cryptosign.CryptosignKey.from_file(config.extra['key'])
         except Exception as e:
             self.log.error(
                 "could not load client private key: {log_failure}", log_failure=e)

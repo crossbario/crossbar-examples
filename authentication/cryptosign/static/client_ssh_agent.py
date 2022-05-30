@@ -33,7 +33,7 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn import util
 from autobahn.twisted.wamp import ApplicationSession
-from autobahn.twisted.cryptosign import SSHAgentSigningKey
+from autobahn.twisted.cryptosign import SSHAgentCryptosignKey
 
 
 class ClientSession(ApplicationSession):
@@ -49,7 +49,7 @@ class ClientSession(ApplicationSession):
         print('Using public key from {}'.format(self.config.extra['pubkey']))
 
         # create a proxy signing key with the private key being held in SSH agent
-        self._key = yield SSHAgentSigningKey.new(self.config.extra['pubkey'])
+        self._key = yield SSHAgentCryptosignKey.new(self.config.extra['pubkey'])
 
         print('Public key: {}'.format(self._key.public_key()))
 
