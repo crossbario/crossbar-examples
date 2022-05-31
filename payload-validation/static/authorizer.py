@@ -12,11 +12,14 @@ class ExampleAuthorizer(ApplicationSession):
         self.log.info('{func} ok, ready!', func=hltype(self.onJoin))
 
     def authorize(self, session, uri, action, _):
-        self.log.info('{func} authorize: session={session}, uri="{uri}", action="{action}"',
-                      func=hltype(self.authorize), session=hlval(session), uri=hlval(uri),
+        self.log.info('{func}: authrole="{authrole}", uri="{uri}", action="{action}"',
+                      func=hltype(self.authorize),
+                      authrole=hlval(session['authrole']),
+                      uri=hlval(uri),
                       action=hlval(action))
 
-        if uri.startswith('com.example.backend.') and action in ['call', 'subscribe']:
+        if (session['authrole'] == 'frontend' and uri.startswith('com.example.backend.') and
+                action in ['call', 'subscribe']):
             return {
                 'allow': True,
                 'cache': False,  # optional

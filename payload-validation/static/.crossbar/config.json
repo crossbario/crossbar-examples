@@ -89,6 +89,10 @@
                             "type": "static",
                             "directory": "../web"
                         },
+                        "catalog1": {
+                            "type": "catalog",
+                            "filename": "../schema/trading.bfbs"
+                        },
                         "info": {
                             "type": "nodeinfo"
                         },

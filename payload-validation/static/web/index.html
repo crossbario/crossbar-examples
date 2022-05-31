@@ -1,64 +1,28 @@
 <!DOCTYPE html>
 <html>
-   <head>
-      <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-   </head>
    <body>
-      <h1>Combining WAMP-CRA with Cookie-based Authentication</h1>
-      <p>Open JavaScript console to watch output.</p>
+      <h1>Crossbar.io Application Payload Validation</h1>
+      <ul>
+         <li><a href="info">Node Info</a></li>
+         <li><a href="catalog1">Catalog 1</a></li>
+         <li><a href="catalog2">Catalog 2</a></li>
+      </ul>
 
       <script>AUTOBAHN_DEBUG = false;</script>
       <script src="/shared/autobahn/autobahn.min.js"></script>
       <script>
          console.log("Ok, AutobahnJS loaded", autobahn.version);
 
-         // authenticate using authid "client1"
-         var user = "client1@example.com";
-         var key = "secret123";
-
-         // this callback is fired during WAMP-CRA authentication
-         function onchallenge (session, method, extra) {
-
-            console.log("onchallenge", method, extra);
-
-            if (method === "wampcra") {
-
-               console.log("authenticating via '" + method + "' and challenge '" + extra.challenge + "'");
-
-               return autobahn.auth_cra.sign(key, extra.challenge);
-
-            } else {
-               throw "don't know how to authenticate using '" + method + "'";
-            }
-         }
-
          var connection = new autobahn.Connection({
-            url: 'ws://localhost:8080/ws',
-            realm: 'realm1',
-
-            // the following attributes must be set of WAMP-CRA authentication
-            //
+            url: "ws://localhost:8080/ws",
+            realm: "realm1",
             authmethods: ["anonymous"],
-            authid: user,
-            onchallenge: onchallenge
          });
 
          connection.onopen = function (session, details) {
-
             console.log("connected session with ID " + session.id);
             console.log("authenticated using method '" + details.authmethod + "' and provider '" + details.authprovider + "'");
             console.log("authenticated with authid '" + details.authid + "' and authrole '" + details.authrole + "'");
-
-            // call a procedure we are allowed to call (so this should succeed)
-            //
-            session.call('com.example.add2', [2, 3]).then(
-               function (res) {
-                  console.log("call result", res);
-               },
-               function (error) {
-                  console.log("call error", error);
-               }
-            );
          };
 
          connection.onclose = function (reason, details) {
