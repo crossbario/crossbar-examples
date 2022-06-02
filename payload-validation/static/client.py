@@ -1,8 +1,10 @@
 import sys
 import argparse
+import uuid
 from typing import Optional
 
 import txaio
+from txaio import time_ns
 
 txaio.use_twisted()
 
@@ -13,6 +15,7 @@ from twisted.internet.defer import inlineCallbacks
 from autobahn.util import hltype, hlval
 from autobahn.wamp import cryptosign
 from autobahn.wamp.types import CloseDetails, EventDetails
+from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
 
@@ -59,8 +62,10 @@ class ExampleClient(ApplicationSession):
     def onJoin(self, session_details):
         self.log.info('{func} session joined:\n{details}', func=hltype(self.onJoin), details=session_details)
 
-        value = yield self.call('com.example.backend.get_time')
-        self.log.info('get_time(): {value}', value=hlval(value))
+        for i in range(5):
+            value = yield self.call('com.example.backend.get_time')
+            self.log.info('get_time(): {value}', value=hlval(value))
+            yield sleep(.5)
 
         value = yield self.call('com.example.backend.add2', 23, 666)
         self.log.info('add2(23, 666): {value}', value=hlval(value))
@@ -82,6 +87,22 @@ class ExampleClient(ApplicationSession):
         value = yield self.call('com.example.backend.set_message',
                                 'Der Räuber Hotzenplotz ist da! ({})'.format(t0))
         self.log.info('set_message(): {value}', value=hlval(value))
+
+        clock_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
+        result = yield self.call('eth.pydefi.clock.{}.get_clock_address'.format(clock_oid))
+        self.log.info('get_clock_address(): {result}', result=hlval(result))
+
+        replica_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
+        book_oid = uuid.UUID('a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b')
+        period = {
+            # PeriodDuration.MINUTE
+            'period_dur': 9,
+            'start_ts': txaio.time_ns(),
+            'limit': 10,
+        }
+        result = yield self.call('eth.pydefi.replica.{}.book.{}.get_candle_history'.format(replica_oid, book_oid),
+                                 period)
+        self.log.info('get_candle_history(): {result}', result=hlval(result))
 
         self.leave()
 

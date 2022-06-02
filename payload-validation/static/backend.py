@@ -15,23 +15,22 @@ class ExampleBackend(ApplicationSession):
     def __init__(self, config):
         super().__init__(config)
         self._message = 'Hello, world!'
-        self._prefix = 'com.example.backend.'
 
     @inlineCallbacks
     def onJoin(self, details: SessionDetails):
         self.log.info('{func} Session joined with details {details}', func=hltype(self.onJoin), details=details)
 
-        regs = yield self.register(self, prefix=self._prefix)
+        regs = yield self.register(self)
         for reg in regs:
             self.log.info('{reg}', reg=reg)
 
         self.log.info('{func} Ready!', func=hltype(self.onJoin))
 
-    @wamp.register('get_time')
+    @wamp.register('com.example.backend.get_time')
     def get_time(self) -> int:
         return time_ns()
 
-    @wamp.register('add2', check_types=True)
+    @wamp.register('com.example.backend.add2', check_types=True)
     def add2(self, x: int, y: int) -> int:
         result = x + y
         self.log.info('{func}: {x} + {y} = {result}', func=hltype(self.add2),
@@ -39,18 +38,21 @@ class ExampleBackend(ApplicationSession):
         return result
 
     @inlineCallbacks
-    @wamp.register('slow_square', check_types=True)
+    @wamp.register('com.example.backend.slow_square', check_types=True)
     def slow_square(self, x: int, delay: float) -> int:
+        result = x * x
+        self.log.info('{func}(delay={delay}): {x}^2 = {result}', func=hltype(self.slow_square),
+                      delay=hlval(delay), result=hlval(result), x=hlval(x))
         yield sleep(delay)
-        return x * x
+        return result
 
-    @wamp.register('get_message', options=RegisterOptions(details=True))
+    @wamp.register('com.example.backend.get_message', options=RegisterOptions(details=True))
     def get_message(self, details: Optional[CallDetails]) -> str:
         self.log.info('{func}: details={details}', func=hltype(self.get_message),  details=details)
         return self._message
 
     @inlineCallbacks
-    @wamp.register('set_message', check_types=True, options=RegisterOptions(details=True))
+    @wamp.register('com.example.backend.set_message', check_types=True, options=RegisterOptions(details=True))
     def set_message(self, message: str, details: Optional[CallDetails]) -> bool:
         if not 10 < len(message) < 100:
             raise ApplicationError('{}.silly_message'.format(self._prefix), 'Your message too silly!', 10, 100)
@@ -63,10 +65,29 @@ class ExampleBackend(ApplicationSession):
                 'old': old_message,
                 'new': message,
             }
-            yield self.publish('{}on_message_changed'.format(self._prefix),
+            yield self.publish('com.example.backend.on_message_changed',
                                notification,
                                options=PublishOptions(acknowledge=True))
             self.log.info('{func}:\n{notification}', func=hltype(self.set_message), notification=pformat(notification))
             return True
         else:
             return False
+
+    @wamp.register('eth.pydefi.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.get_clock_address',
+                   check_types=True,
+                   options=RegisterOptions(details=True))
+    def get_clock_address(self, details: Optional[CallDetails]):
+        return '0x29B6c56497CA179e9AAFD739BeBded3f23768903'
+
+    @wamp.register('eth.pydefi.'
+                   'replica.ba3b1e9f-3006-4eae-ae88-cf5896b36342.'
+                   'book.a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b.'
+                   'get_candle_history',
+                   check_types=True,
+                   options=RegisterOptions(details=True))
+    def get_candle_history(self, period, details: Optional[CallDetails]):
+        self.log.info('{func} period={period}, details={details}', func=hltype(self.get_candle_history),
+                      period=hlval(period), details=details)
+        # Candle
+        result = {}
+        return result

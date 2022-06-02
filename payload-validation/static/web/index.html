@@ -2,10 +2,20 @@
 <html>
    <body>
       <h1>Crossbar.io Application Payload Validation</h1>
+      <h2>Main</h2>
       <ul>
          <li><a href="info">Node Info</a></li>
          <li><a href="catalog1">Catalog 1</a></li>
          <li><a href="catalog2">Catalog 2</a></li>
+         <li><a href="catalog3">Catalog 3</a></li>
+      </ul>
+      <h2>Catalog 1</h2>
+      <ul>
+         <li><a href="catalog1/table?name=trading.Orderbook">Catalog 1: Orderbook Table</a></li>
+         <li><a href="catalog1/table?name=trading.Candle">Catalog 1: Candle Table</a></li>
+         <li><a href="catalog1/struct?name=trading.ClockTick">Catalog 1: ClockTick Struct</a></li>
+         <li><a href="catalog1/struct?name=uint160_t">Catalog 1: uint160_t Struct</a></li>
+         <li><a href="catalog1/struct?name=uint256_t">Catalog 1: uint256_t Struct</a></li>
       </ul>
 
       <script>AUTOBAHN_DEBUG = false;</script>

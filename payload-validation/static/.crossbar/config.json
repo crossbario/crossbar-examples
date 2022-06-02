@@ -9,10 +9,29 @@
             "realms": [
                 {
                     "name": "realm1",
+                    "inventory": {
+                        "type": "wamp.eth"
+                    },
                     "roles": [
                         {
                             "name": "backend",
                             "permissions": [
+                                {
+                                    "uri": "eth.pydefi.clock.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "register": true,
+                                        "publish": true
+                                    }
+                                },
+                                {
+                                    "uri": "eth.pydefi.replica.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "register": true,
+                                        "publish": true
+                                    }
+                                },
                                 {
                                     "uri": "com.example.backend.",
                                     "match": "prefix",
@@ -92,6 +111,14 @@
                         "catalog1": {
                             "type": "catalog",
                             "filename": "../schema/trading.bfbs"
+                        },
+                        "catalog2": {
+                            "type": "catalog",
+                            "filename": "../schema/eip712.bfbs"
+                        },
+                        "catalog3": {
+                            "type": "catalog",
+                            "filename": "../schema/demo.bfbs"
                         },
                         "info": {
                             "type": "nodeinfo"
