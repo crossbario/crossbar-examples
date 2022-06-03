@@ -13,7 +13,7 @@
                         "type": "wamp.eth",
                         "catalogs": [
                             {
-                                "name": "pydefi",
+                                "name": "pydefi-trading",
                                 "filename": "../schema/trading.bfbs"
                             }
                         ]

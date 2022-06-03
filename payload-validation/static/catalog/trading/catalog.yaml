@@ -2,6 +2,12 @@
 # hyphen and underscore so the catalog name can be used in HTTP URLs
 name: pydefi-trading
 
+version: 22.6.1
+
+schemata:
+  - schema/trading.bfbs
+  - schema/demo.bfbs
+
 # Catalog title for display purposes
 title: PyDeFi Trading API Catalog
 
@@ -10,10 +16,6 @@ author: typedef int GmbH
 
 # Catalog description, a short text describing the API catalog
 description: Write me.
-
-schemata:
-  - schema/trading.bfbs
-  - schema/demo.bfbs
 
 # SPDX license identifier (see https://spdx.org/licenses/) for the catalog
 license: MIT
