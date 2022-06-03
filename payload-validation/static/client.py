@@ -101,7 +101,7 @@ class ExampleClient(ApplicationSession):
             'limit': 10,
         }
         result = yield self.call('eth.pydefi.replica.{}.book.{}.get_candle_history'.format(replica_oid, book_oid),
-                                 period)
+                                 period, 23)
         self.log.info('get_candle_history(): {result}', result=hlval(result))
 
         self.leave()

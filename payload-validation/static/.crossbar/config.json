@@ -10,11 +10,31 @@
                 {
                     "name": "realm1",
                     "inventory": {
-                        "type": "wamp.eth"
+                        "type": "wamp.eth",
+                        "catalogs": [
+                            {
+                                "name": "pydefi",
+                                "filename": "../schema/trading.bfbs"
+                            }
+                        ]
                     },
                     "roles": [
                         {
                             "name": "backend",
+                            "activations": [
+                                {
+                                    "interface": "81256d9b-1e0a-434c-aa75-9cc0dfe8e1ea",
+                                    "allow": {
+                                        "provide": true
+                                    }
+                                },
+                                {
+                                    "interface": "6563cfac-498c-47cd-9ff1-24cbd0bdc6e5",
+                                    "allow": {
+                                        "provide": true
+                                    }
+                                }
+                            ],
                             "permissions": [
                                 {
                                     "uri": "eth.pydefi.clock.",

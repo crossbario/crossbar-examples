@@ -1,0 +1,29 @@
+# Catalog name, which must contain only lower-case letter, numbers,
+# hyphen and underscore so the catalog name can be used in HTTP URLs
+name: pydefi-trading
+
+# Catalog title for display purposes
+title: PyDeFi Trading API Catalog
+
+# Catalog author
+author: typedef int GmbH
+
+# Catalog description, a short text describing the API catalog
+description: Write me.
+
+schemata:
+  - schema/trading.bfbs
+  - schema/demo.bfbs
+
+# SPDX license identifier (see https://spdx.org/licenses/) for the catalog
+license: MIT
+
+# Catalog keywords to hint at the contents, topic, usage or similar of the catalog
+keywords: trading, defi, analytics
+
+# Catalog visual theme
+theme:
+  background: #333333
+  text: #e0e0e0
+  highlight: #00ccff
+  logo: img/trading.png

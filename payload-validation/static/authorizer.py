@@ -46,24 +46,13 @@ class ExampleAuthorizer(ApplicationSession):
                 pass
             else:
                 if action == 'call' and uri.endswith('.get_clock_address'):
+                    # possible keys: args, kwargs, results, kwresults, errors, kwerrors
                     validate = {
-                        'catalog': 'pydefi.eth',
-                        'interface': '81256d9b-1e0a-434c-aa75-9cc0dfe8e1ea',
-                        'procedure': 'get_clock_address',
-                        'args': None,
-                        'kwargs': None,
                         'results': ['Address'],
-                        'kwresults': None,
                     }
                 elif action == 'subscribe' and uri.endswith('.on_clock_tick'):
                     validate = {
-                        'catalog': 'pydefi.eth',
-                        'interface': '81256d9b-1e0a-434c-aa75-9cc0dfe8e1ea',
-                        'topic': 'on_clock_tick',
                         'args': ['trading.ClockTickSigned'],
-                        'kwargs': None,
-                        'results': None,
-                        'kwresults': None,
                     }
                 else:
                     validate = None
@@ -71,6 +60,8 @@ class ExampleAuthorizer(ApplicationSession):
                 authorization = {
                     'allow': True,
                     'disclose': False,
+
+                    # FIXME
                     'meta': {
                         'args': None,
                         'kwargs': {
@@ -100,14 +91,10 @@ class ExampleAuthorizer(ApplicationSession):
                 pass
             else:
                 if action == 'call' and uri.endswith('.get_candle_history'):
+                    # possible keys: args, kwargs, results, kwresults, errors, kwerrors
                     validate = {
-                        'catalog': 'pydefi.eth',
-                        'interface': '6563cfac-498c-47cd-9ff1-24cbd0bdc6e5',
-                        'procedure': 'get_candle_history',
                         'args': ['trading.Period'],
-                        'kwargs': None,
                         'results': ['trading.Candle'],
-                        'kwresults': None,
                     }
                 else:
                     validate = None
