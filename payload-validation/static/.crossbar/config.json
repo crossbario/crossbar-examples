@@ -130,15 +130,11 @@
                         },
                         "catalog1": {
                             "type": "catalog",
-                            "filename": "../schema/trading.bfbs"
+                            "filename": "../catalog/trading/build/schema/trading.bfbs"
                         },
                         "catalog2": {
                             "type": "catalog",
-                            "filename": "../schema/eip712.bfbs"
-                        },
-                        "catalog3": {
-                            "type": "catalog",
-                            "filename": "../schema/demo.bfbs"
+                            "filename": "../catalog/trading/build/schema/demo.bfbs"
                         },
                         "info": {
                             "type": "nodeinfo"

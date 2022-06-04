@@ -8,6 +8,11 @@ setup_ipfs_client_tool:
 	tar xvf ipfs-upload-client-v0.1.1-linux-amd64.tar.gz
 	sudo cp ipfs-upload-client /usr/local/bin/
 
+# https://github.com/KittyHawkCorp/stripzip
+# https://linux.die.net/man/1/zip
+setup_stripzip:
+	cd /tmp && git clone https://github.com/KittyHawkCorp/stripzip.git && cd stripzip && make && sudo cp ./stripzip /usr/local/bin/
+
 clean:
 	rm -rf $(BUILD_DIR)
 	@mkdir -p $(BUILD_DIR)/schema
@@ -19,13 +24,15 @@ compile:
 describe:
 	xbrnetwork describe-schema --schema $(FBS_OUTPUT)
 
+# IMPORTANT: note the use of "-X" and stripzip to preserve privacy and support repeatable builds
 build: compile
 	@cp catalog.yaml $(BUILD_DIR)/
 	@cp $(FBS_OUTPUT)/*.bfbs $(BUILD_DIR)/schema/
-	@cp LICENSE $(BUILD_DIR)/
+	@cp LICENSE.txt $(BUILD_DIR)/
 	@cp README.md $(BUILD_DIR)/
 	@cp img/*.png $(BUILD_DIR)/img/
-	@cd $(BUILD_DIR) && zip -9 -r pydefi-trading .
+	@cd $(BUILD_DIR) && zip -9 -X -r pydefi-trading .
+	@stripzip $(BUILD_DIR)/pydefi-trading.zip
 	@du -hs $(BUILD_DIR)/pydefi-trading.zip
 	@openssl sha256 $(BUILD_DIR)/pydefi-trading.zip
 
