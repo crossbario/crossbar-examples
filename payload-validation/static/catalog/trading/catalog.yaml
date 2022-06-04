@@ -4,24 +4,29 @@ name: pydefi-trading
 
 version: 22.6.1
 
-schemata:
-  - schema/trading.bfbs
-  - schema/demo.bfbs
-
 # Catalog title for display purposes
 title: PyDeFi Trading API Catalog
-
-# Catalog author
-author: typedef int GmbH
 
 # Catalog description, a short text describing the API catalog
 description: Write me.
 
+# Catalog author
+author: typedef int GmbH
+
 # SPDX license identifier (see https://spdx.org/licenses/) for the catalog
 license: MIT
 
+schemas:
+  - schema/trading.bfbs
+  - schema/demo.bfbs
+
 # Catalog keywords to hint at the contents, topic, usage or similar of the catalog
 keywords: trading, defi, analytics
+
+# Catalog home page or project page
+homepage: https://wamp-proto.org/
+
+git: https://github.com/wamp-proto/wamp-proto.git
 
 # Catalog visual theme
 theme:

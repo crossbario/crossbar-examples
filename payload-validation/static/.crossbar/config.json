@@ -14,7 +14,7 @@
                         "catalogs": [
                             {
                                 "name": "pydefi-trading",
-                                "filename": "../schema/trading.bfbs"
+                                "filename": "../catalog/trading/build/schema/trading.bfbs"
                             }
                         ]
                     },
