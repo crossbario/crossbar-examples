@@ -15,6 +15,7 @@ from twisted.internet.defer import inlineCallbacks
 from autobahn.util import hltype, hlval
 from autobahn.wamp import cryptosign
 from autobahn.wamp.types import CloseDetails, EventDetails
+from autobahn.wamp.exception import ApplicationError
 from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
@@ -100,9 +101,35 @@ class ExampleClient(ApplicationSession):
             'start_ts': txaio.time_ns(),
             'limit': 10,
         }
-        result = yield self.call('eth.pydefi.replica.{}.book.{}.get_candle_history'.format(replica_oid, book_oid),
-                                 period, 23)
+        procedure = 'eth.pydefi.replica.{}.book.{}.get_candle_history'.format(replica_oid, book_oid)
+
+        # test valid call
+        result = yield self.call(procedure, period)
         self.log.info('get_candle_history(): {result}', result=hlval(result))
+
+        # test call with invalid args length
+        try:
+            yield self.call(procedure, period, 23)
+        except Exception as e:
+            if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                if 'invalid args length' not in e.args[0]:
+                    raise RuntimeError('did not find expected error text in exception!')
+            else:
+                raise RuntimeError('unexpected exception raised!')
+        else:
+            raise RuntimeError('invalid call did not raise!')
+
+        # test call with invalid args type
+        try:
+            yield self.call(procedure, 23)
+        except Exception as e:
+            if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                if 'invalid arg type' not in e.args[0]:
+                    raise RuntimeError('did not find expected error text in exception!')
+            else:
+                raise RuntimeError('unexpected exception raised!')
+        else:
+            raise RuntimeError('invalid call did not raise!')
 
         self.leave()
 

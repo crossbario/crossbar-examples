@@ -13,7 +13,14 @@
                         "type": "wamp.eth",
                         "catalogs": [
                             {
+                                "name": "pydefi-trading",
+                                "bfbs": "../catalog/trading/build/schema/trading.bfbs"
+                            },
+                            {
                                 "archive": "../catalog/trading/build/pydefi-trading.zip"
+                            },
+                            {
+                                "address": "0xAA8Cc377db31a354137d8Bb86D0E38495dbD5266"
                             }
                         ]
                     },

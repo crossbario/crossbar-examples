@@ -21,13 +21,16 @@ schemas:
 author: typedef int GmbH
 
 # Ethereum Mainnet address of publisher
-publisher: 0x60CC48BFC44b48A53e793FE4cB50e2d625BABB27
+publisher: "0x60CC48BFC44b48A53e793FE4cB50e2d625BABB27"
 
 # SPDX license identifier (see https://spdx.org/licenses/) for the catalog
 license: MIT
 
 # Catalog keywords to hint at the contents, topic, usage or similar of the catalog
-keywords: trading, defi, analytics
+keywords:
+  - trading
+  - defi
+  - analytics
 
 # Catalog home page or project page
 homepage: https://wamp-proto.org/
