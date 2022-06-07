@@ -20,19 +20,21 @@ class ExampleAuthorizer(ApplicationSession):
         yield self.register(self.authorize, 'com.example.authorize')
         self.log.info('{func} ok, ready!', func=hltype(self.onJoin))
 
+    # eth.pydefi.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick
+
     def authorize(self, session, uri, action, options):
         authorization = None
 
-        if (session['authrole'] == 'frontend' and uri.startswith('com.example.backend.') and
-                action in ['call', 'subscribe']):
+        if (session['authrole'] in ['frontend', 'backend'] and uri.startswith('com.example.backend.') and
+                action in ['call', 'subscribe', 'register', 'publish']):
             authorization = {
                 'allow': True,
                 'cache': True,  # optional
                 'disclose': True,  # optional
             }
 
-        elif (session['authrole'] == 'frontend' and uri.startswith('eth.pydefi.clock.') and
-              action in ['call', 'subscribe']):
+        elif (session['authrole'] in ['frontend', 'backend'] and uri.startswith('eth.pydefi.clock.') and
+              action in ['call', 'subscribe', 'register', 'publish']):
             try:
                 # match
                 # eth.pydefi.clock.<clock:str>.get_clock_address
@@ -50,7 +52,7 @@ class ExampleAuthorizer(ApplicationSession):
                     validate = {
                         'results': ['Address'],
                     }
-                elif action == 'subscribe' and uri.endswith('.on_clock_tick'):
+                elif action in ['event', 'publish'] and uri.endswith('.on_clock_tick'):
                     validate = {
                         'args': ['trading.ClockTickSigned'],
                     }
@@ -63,7 +65,6 @@ class ExampleAuthorizer(ApplicationSession):
 
                     # FIXME
                     'meta': {
-                        'args': None,
                         'kwargs': {
                             'clock_oid': _clock_oid
                         }
@@ -72,8 +73,8 @@ class ExampleAuthorizer(ApplicationSession):
                     'cache': True,
                 }
 
-        elif (session['authrole'] == 'frontend' and uri.startswith('eth.pydefi.replica.') and
-              action in ['call', 'subscribe']):
+        elif (session['authrole'] in ['frontend', 'backend'] and uri.startswith('eth.pydefi.replica.') and
+              action in ['call', 'subscribe', 'register', 'publish']):
             try:
                 # match
                 # eth.pydefi.replica.<replica:str>.book.<book:str>.get_candle_history

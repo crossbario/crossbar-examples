@@ -34,32 +34,7 @@
                                     }
                                 }
                             ],
-                            "permissions": [
-                                {
-                                    "uri": "eth.pydefi.clock.",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "register": true,
-                                        "publish": true
-                                    }
-                                },
-                                {
-                                    "uri": "eth.pydefi.replica.",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "register": true,
-                                        "publish": true
-                                    }
-                                },
-                                {
-                                    "uri": "com.example.backend.",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "register": true,
-                                        "publish": true
-                                    }
-                                }
-                            ]
+                            "authorizer": "com.example.authorize"
                         },
                         {
                             "name": "authorizer",

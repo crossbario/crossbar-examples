@@ -1,11 +1,14 @@
 from pprint import pformat
 from typing import Optional
+
 from twisted.internet.defer import inlineCallbacks
+from twisted.internet.task import LoopingCall
+
 from txaio import time_ns
 from autobahn.util import hltype, hlval
 from autobahn import wamp
 from autobahn.wamp.exception import ApplicationError
-from autobahn.wamp.types import SessionDetails, CallDetails, RegisterOptions, PublishOptions
+from autobahn.wamp.types import SessionDetails, CloseDetails, CallDetails, RegisterOptions, PublishOptions
 from autobahn.twisted import sleep
 from autobahn.twisted.wamp import ApplicationSession
 
@@ -15,6 +18,8 @@ class ExampleBackend(ApplicationSession):
     def __init__(self, config):
         super().__init__(config)
         self._message = 'Hello, world!'
+        self._counter = 0
+        self._periodic_loop = LoopingCall(self._periodic)
 
     @inlineCallbacks
     def onJoin(self, details: SessionDetails):
@@ -24,7 +29,22 @@ class ExampleBackend(ApplicationSession):
         for reg in regs:
             self.log.info('{reg}', reg=reg)
 
+        self._periodic_loop.start(10.)
+
         self.log.info('{func} Ready!', func=hltype(self.onJoin))
+
+    @inlineCallbacks
+    def _periodic(self):
+        self._counter += 1
+        evt = {'counter': self._counter}
+        pub = yield self.publish('eth.pydefi.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick', evt,
+                                 options=PublishOptions(acknowledge=True))
+        self.log.info('{func} published (publication_id={publication_id})', func=hltype(self._periodic),
+                      publication_id=hlval(pub.id))
+
+    def onLeave(self, details: CloseDetails):
+        self._periodic_loop.stop()
+        self._periodic_loop = None
 
     @wamp.register('com.example.backend.get_time')
     def get_time(self) -> int:

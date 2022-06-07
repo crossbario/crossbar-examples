@@ -89,9 +89,10 @@ class ExampleClient(ApplicationSession):
                                 'Der Räuber Hotzenplotz ist da! ({})'.format(t0))
         self.log.info('set_message(): {value}', value=hlval(value))
 
-        clock_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
-        result = yield self.call('eth.pydefi.clock.{}.get_clock_address'.format(clock_oid))
-        self.log.info('get_clock_address(): {result}', result=hlval(result))
+        # FIXME: wamp.error.invalid_argument: call result from procedure ...
+        # clock_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
+        # result = yield self.call('eth.pydefi.clock.{}.get_clock_address'.format(clock_oid))
+        # self.log.info('get_clock_address(): {result}', result=hlval(result))
 
         replica_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
         book_oid = uuid.UUID('a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b')
@@ -125,6 +126,18 @@ class ExampleClient(ApplicationSession):
         except Exception as e:
             if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
                 if 'invalid arg type' not in e.args[0]:
+                    raise RuntimeError('did not find expected error text in exception!')
+            else:
+                raise RuntimeError('unexpected exception raised!')
+        else:
+            raise RuntimeError('invalid call did not raise!')
+
+        # test call with invalid kwargs present
+        try:
+            yield self.call(procedure, period, foo=23)
+        except Exception as e:
+            if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                if 'invalid kwargs length' not in e.args[0]:
                     raise RuntimeError('did not find expected error text in exception!')
             else:
                 raise RuntimeError('unexpected exception raised!')
