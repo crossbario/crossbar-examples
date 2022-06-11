@@ -1,3 +1,4 @@
+import os
 from pprint import pformat
 from typing import Optional
 
@@ -29,13 +30,27 @@ class ExampleBackend(ApplicationSession):
         for reg in regs:
             self.log.info('{reg}', reg=reg)
 
-        self._periodic_loop.start(10.)
+        # self._periodic_loop.start(10.)
 
         self.log.info('{func} Ready!', func=hltype(self.onJoin))
 
     @inlineCallbacks
     def _periodic(self):
         self._counter += 1
+
+        evt = self._counter
+        try:
+            yield self.publish('eth.pydefi.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick', evt,
+                               options=PublishOptions(acknowledge=True))
+        except Exception as e:
+            if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                if 'invalid arg type' not in e.args[0]:
+                    raise RuntimeError('did not find expected error text in exception!')
+            else:
+                raise RuntimeError('unexpected exception raised!')
+        else:
+            raise RuntimeError('invalid publish did not raise!')
+
         evt = {'counter': self._counter}
         pub = yield self.publish('eth.pydefi.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick', evt,
                                  options=PublishOptions(acknowledge=True))
@@ -108,6 +123,26 @@ class ExampleBackend(ApplicationSession):
     def get_candle_history(self, period, details: Optional[CallDetails]):
         self.log.info('{func} period={period}, details={details}', func=hltype(self.get_candle_history),
                       period=hlval(period), details=details)
-        # Candle
-        result = {}
-        return result
+        # trading.Candle
+        candle = {
+            'period_dur': 10,
+            'start_ts': 1654900797173358641,
+            'market_oid': os.urandom(16),
+            'modified': 1654900797173358641,
+            'quantity': 1.,
+            'volume': 1.,
+            'price_open': 1.,
+            'price_close': 1.,
+            'price_min': 1.,
+            'price_max': 1.,
+            'price_avg': 1.,
+            'price_var': 1.,
+            'price_avg_volw': 1.,
+            'price_var_volw': 1.,
+        }
+        if 5 < period['period_dur'] < 10:
+            candle['foobar_invalid'] = 'something'
+        elif 0 < period['period_dur'] <= 5:
+            candle['price_open'] = 'something'
+
+        return candle

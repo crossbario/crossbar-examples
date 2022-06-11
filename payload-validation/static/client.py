@@ -97,52 +97,83 @@ class ExampleClient(ApplicationSession):
         replica_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
         book_oid = uuid.UUID('a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b')
         period = {
-            # PeriodDuration.MINUTE
-            'period_dur': 9,
+            'period_dur': 12,
             'start_ts': txaio.time_ns(),
             'limit': 10,
         }
         procedure = 'eth.pydefi.replica.{}.book.{}.get_candle_history'.format(replica_oid, book_oid)
 
-        # test valid call
-        result = yield self.call(procedure, period)
-        self.log.info('get_candle_history(): {result}', result=hlval(result))
+        if True:
+            # test valid call
+            result = yield self.call(procedure, period)
+            self.log.info('get_candle_history(): {result}', result=hlval(result))
 
-        # test call with invalid args length
-        try:
-            yield self.call(procedure, period, 23)
-        except Exception as e:
-            if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
-                if 'invalid args length' not in e.args[0]:
-                    raise RuntimeError('did not find expected error text in exception!')
+        if True:
+            # test call with invalid args length
+            try:
+                yield self.call(procedure, period, 23)
+            except Exception as e:
+                if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                    if 'invalid args length' not in e.args[0]:
+                        raise RuntimeError('did not find expected error text in exception!')
+                else:
+                    raise RuntimeError('unexpected exception raised!')
             else:
-                raise RuntimeError('unexpected exception raised!')
-        else:
-            raise RuntimeError('invalid call did not raise!')
+                raise RuntimeError('invalid call did not raise!')
 
-        # test call with invalid args type
-        try:
-            yield self.call(procedure, 23)
-        except Exception as e:
-            if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
-                if 'invalid arg type' not in e.args[0]:
-                    raise RuntimeError('did not find expected error text in exception!')
+        if True:
+            # test call with invalid args type
+            try:
+                yield self.call(procedure, 23)
+            except Exception as e:
+                if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                    if 'invalid arg type' not in e.args[0]:
+                        raise RuntimeError('did not find expected error text in exception!')
+                else:
+                    raise RuntimeError('unexpected exception raised!')
             else:
-                raise RuntimeError('unexpected exception raised!')
-        else:
-            raise RuntimeError('invalid call did not raise!')
+                raise RuntimeError('invalid call did not raise!')
 
-        # test call with invalid kwargs present
-        try:
-            yield self.call(procedure, period, foo=23)
-        except Exception as e:
-            if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
-                if 'invalid kwargs length' not in e.args[0]:
-                    raise RuntimeError('did not find expected error text in exception!')
+        if True:
+            # test call with invalid kwargs present
+            try:
+                yield self.call(procedure, period, foo=23)
+            except Exception as e:
+                if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                    if 'invalid kwargs length' not in e.args[0]:
+                        raise RuntimeError('did not find expected error text in exception!')
+                else:
+                    raise RuntimeError('unexpected exception raised!')
             else:
-                raise RuntimeError('unexpected exception raised!')
-        else:
-            raise RuntimeError('invalid call did not raise!')
+                raise RuntimeError('invalid call did not raise!')
+
+        if True:
+            # test call with invalid _result_ key present
+            try:
+                period['period_dur'] = 8
+                yield self.call(procedure, period)
+            except Exception as e:
+                if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                    if 'unexpected key' not in e.args[0]:
+                        raise RuntimeError('did not find expected error text in exception!')
+                else:
+                    raise RuntimeError('unexpected exception raised!')
+            else:
+                raise RuntimeError('invalid call did not raise!')
+
+        if True:
+            # test call with invalid _result_ type in (valid) key
+            try:
+                period['period_dur'] = 3
+                yield self.call(procedure, period)
+            except Exception as e:
+                if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                    if 'invalid type' not in e.args[0]:
+                        raise RuntimeError('did not find expected error text in exception!')
+                else:
+                    raise RuntimeError('unexpected exception raised!')
+            else:
+                raise RuntimeError('invalid call did not raise!')
 
         self.leave()
 
