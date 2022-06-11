@@ -50,11 +50,21 @@ class ExampleAuthorizer(ApplicationSession):
                 if action == 'call' and uri.endswith('.get_clock_address'):
                     # possible keys: args, kwargs, results, kwresults, errors, kwerrors
                     validate = {
-                        'results': ['Address'],
+                        'call_result': 'Address',
+                        'meta': {
+                            'kwargs': {
+                                'clock_oid': _clock_oid
+                            }
+                        },
                     }
                 elif action in ['event', 'publish'] and uri.endswith('.on_clock_tick'):
                     validate = {
-                        'args': ['trading.ClockTickSigned'],
+                        'event': 'trading.ClockTickSigned',
+                        'meta': {
+                            'kwargs': {
+                                'clock_oid': _clock_oid
+                            }
+                        },
                     }
                 else:
                     validate = None
@@ -62,13 +72,6 @@ class ExampleAuthorizer(ApplicationSession):
                 authorization = {
                     'allow': True,
                     'disclose': False,
-
-                    # FIXME
-                    'meta': {
-                        'kwargs': {
-                            'clock_oid': _clock_oid
-                        }
-                    },
                     'validate': validate,
                     'cache': True,
                 }
@@ -94,8 +97,16 @@ class ExampleAuthorizer(ApplicationSession):
                 if action == 'call' and uri.endswith('.get_candle_history'):
                     # possible keys: args, kwargs, results, kwresults, errors, kwerrors
                     validate = {
-                        'args': ['trading.Period'],
-                        'results': ['trading.Candle'],
+                        'call': 'trading.Period',
+                        'call_result': 'trading.CandleResult',
+                        'call_error': 'trading.ErrorInvalidPeriod',
+                        'meta': {
+                            'args': None,
+                            'kwargs': {
+                                'replica_oid': _replica_oid,
+                                'book_oid': _book_oid,
+                            }
+                        },
                     }
                 else:
                     validate = None
@@ -103,13 +114,6 @@ class ExampleAuthorizer(ApplicationSession):
                 authorization = {
                     'allow': True,
                     'disclose': False,
-                    'meta': {
-                        'args': None,
-                        'kwargs': {
-                            'replica_oid': _replica_oid,
-                            'book_oid': _book_oid,
-                        }
-                    },
                     'validate': validate,
                     'cache': True,
                 }

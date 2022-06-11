@@ -120,9 +120,9 @@ class ExampleBackend(ApplicationSession):
                    'get_candle_history',
                    check_types=True,
                    options=RegisterOptions(details=True))
-    def get_candle_history(self, period, details: Optional[CallDetails]):
-        self.log.info('{func} period={period}, details={details}', func=hltype(self.get_candle_history),
-                      period=hlval(period), details=details)
+    def get_candle_history(self, period_dur: int, start_ts: int, limit: Optional[int] = None, details: Optional[CallDetails] = None):
+        self.log.info('{func} period_dur={period_dur}, start_ts={start_ts}, limit={limit}, details={details}', func=hltype(self.get_candle_history),
+                      period_dur=hlval(period_dur), start_ts=hlval(start_ts), limit=hlval(limit), details=details)
         # trading.Candle
         candle = {
             'period_dur': 10,
@@ -140,9 +140,9 @@ class ExampleBackend(ApplicationSession):
             'price_avg_volw': 1.,
             'price_var_volw': 1.,
         }
-        if 5 < period['period_dur'] < 10:
+        if 5 < period_dur < 10:
             candle['foobar_invalid'] = 'something'
-        elif 0 < period['period_dur'] <= 5:
+        elif 0 < period_dur <= 5:
             candle['price_open'] = 'something'
 
         return candle
