@@ -105,21 +105,21 @@ class ExampleClient(ApplicationSession):
 
         if True:
             # test valid call
-            result = yield self.call(procedure, txaio.time_ns(), 12)
+            result = yield self.call(procedure, 12, txaio.time_ns())
             self.log.info('get_candle_history(): {result}', result=hlval(result))
 
         if True:
             # test valid call
-            result = yield self.call(procedure, txaio.time_ns(), 12, limit=100)
+            result = yield self.call(procedure, 12, txaio.time_ns(), limit=100)
             self.log.info('get_candle_history(): {result}', result=hlval(result))
 
         if True:
             # test call with invalid args length (too many)
             try:
-                yield self.call(procedure, txaio.time_ns(), 12, 'invalid additional argument')
+                yield self.call(procedure, 12, txaio.time_ns(), 'invalid additional argument')
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
-                    if 'unexpected additional positional argument(s)' not in e.args[0]:
+                    if 'unexpected positional argument' not in e.args[0]:
                         raise RuntimeError('did not find expected error text in exception!')
                 else:
                     raise RuntimeError('unexpected exception raised!')
@@ -142,31 +142,31 @@ class ExampleClient(ApplicationSession):
         if True:
             # test call with invalid kwargs present
             try:
-                yield self.call(procedure, txaio.time_ns(), 12, foo=23)
+                yield self.call(procedure, 12, txaio.time_ns(), foo=23)
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
-                    if 'unexpected additional keyword argument(s)' not in e.args[0]:
+                    if 'unexpected keyword argument' not in e.args[0]:
                         raise RuntimeError('did not find expected error text in exception!')
                 else:
                     raise RuntimeError('unexpected exception raised!')
             else:
                 raise RuntimeError('invalid call did not raise!')
 
-        if False:
+        if True:
             # test call with invalid _result_ key present
             try:
                 period['period_dur'] = 8
                 yield self.call(procedure, period)
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
-                    if 'unexpected key' not in e.args[0]:
+                    if 'invalid type' not in e.args[0]:
                         raise RuntimeError('did not find expected error text in exception!')
                 else:
                     raise RuntimeError('unexpected exception raised!')
             else:
                 raise RuntimeError('invalid call did not raise!')
 
-        if False:
+        if True:
             # test call with invalid _result_ type in (valid) key
             try:
                 period['period_dur'] = 3

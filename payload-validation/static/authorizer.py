@@ -100,7 +100,7 @@ class ExampleAuthorizer(ApplicationSession):
                         'call': 'trading.Period',
                         'call_result': 'trading.CandleResult',
                         'call_error': 'trading.ErrorInvalidPeriod',
-                        'meta': {
+                        'call_extra': {
                             'args': None,
                             'kwargs': {
                                 'replica_oid': _replica_oid,

@@ -30,7 +30,8 @@ class ExampleBackend(ApplicationSession):
         for reg in regs:
             self.log.info('{reg}', reg=reg)
 
-        # self._periodic_loop.start(10.)
+        if False:
+            self._periodic_loop.start(10.)
 
         self.log.info('{func} Ready!', func=hltype(self.onJoin))
 
@@ -58,8 +59,10 @@ class ExampleBackend(ApplicationSession):
                       publication_id=hlval(pub.id))
 
     def onLeave(self, details: CloseDetails):
-        self._periodic_loop.stop()
-        self._periodic_loop = None
+        if self._periodic_loop:
+            if self._periodic_loop.running:
+                self._periodic_loop.stop()
+            self._periodic_loop = None
 
     @wamp.register('com.example.backend.get_time')
     def get_time(self) -> int:
