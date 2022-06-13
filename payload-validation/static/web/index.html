@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <h1>Crossbar.io Application Payload Validation</h1>
+      <h2>Main</h2>
+      <ul>
+         <li><a href="info">Node Info</a></li>
+         <li><a href="catalog1">Catalog 1</a></li>
+         <li><a href="catalog2">Catalog 2</a></li>
+      </ul>
+      <h2>Catalog 1</h2>
+      <ul>
+         <li><a href="catalog1/table?name=trading.Orderbook">Catalog 1: Orderbook Table</a></li>
+         <li><a href="catalog1/table?name=trading.Candle">Catalog 1: Candle Table</a></li>
+         <li><a href="catalog1/struct?name=trading.ClockTick">Catalog 1: ClockTick Struct</a></li>
+         <li><a href="catalog1/struct?name=uint160_t">Catalog 1: uint160_t Struct</a></li>
+         <li><a href="catalog1/struct?name=uint256_t">Catalog 1: uint256_t Struct</a></li>
+      </ul>
+
+      <script>AUTOBAHN_DEBUG = false;</script>
+      <script src="/shared/autobahn/autobahn.min.js"></script>
+      <script>
+         console.log("Ok, AutobahnJS loaded", autobahn.version);
+
+         var connection = new autobahn.Connection({
+            url: "ws://localhost:8080/ws",
+            realm: "realm1",
+            authmethods: ["anonymous"],
+         });
+
+         connection.onopen = function (session, details) {
+            console.log("connected session with ID " + session.id);
+            console.log("authenticated using method '" + details.authmethod + "' and provider '" + details.authprovider + "'");
+            console.log("authenticated with authid '" + details.authid + "' and authrole '" + details.authrole + "'");
+         };
+
+         connection.onclose = function (reason, details) {
+            console.log("disconnected", reason, details.reason, details);
+         }
+
+         connection.open();
+      </script>
+   </body>
+</html>
