@@ -1,7 +1,10 @@
 import os
 import sys
-from pprint import pformat, pprint
+from pprint import pprint
+from binascii import b2a_hex
+from typing import List
 import werkzeug
+from tabulate import tabulate
 
 from twisted.internet import reactor
 from twisted.internet.defer import inlineCallbacks
@@ -15,6 +18,7 @@ class ClientSession(ApplicationSession):
 
     def __init__(self, config):
         super().__init__(config)
+        self._run_log_record: List[str] = []
         self.log.info('{meth}(config=\n{config}): init completed',
                       meth=hltype(self.__init__),
                       config=config)
@@ -22,14 +26,18 @@ class ClientSession(ApplicationSession):
     def onConnect(self):
         self.log.info('{meth}()', meth=hltype(self.onConnect))
 
+        self._run_log_record = []
+
         # autobahn.twisted.websocket.WampWebSocketClientProtocol
         pprint(self.transport.http_headers)
         pprint(self.transport.transport_details.marshal())
 
         if self.config.extra['cookie']:
-            authmethods = ['cookie']
+            authmethods = ['cookie', 'wampcra']
         else:
             authmethods = ['wampcra']
+
+        self._run_log_record.append(', '.join(authmethods))
 
         self.log.info('{meth}: joining realm "{realm}" as "{authid}" using authmethods {authmethods}',
                       meth=hltype(self.onConnect),
@@ -55,6 +63,8 @@ class ClientSession(ApplicationSession):
 
             signature = auth.compute_wcs(key, challenge.extra['challenge'])
 
+            self._run_log_record.append('0x' + b2a_hex(signature).decode()[:4] + '..')
+
             return signature
         else:
             raise Exception('Challenge received for unexpected authmethod "{}"'.format(challenge.method))
@@ -63,6 +73,9 @@ class ClientSession(ApplicationSession):
     def onJoin(self, details):
         self.log.info('{meth}(details=\n{details})', meth=hltype(self.onJoin),
                       details=details)
+
+        if not self._run_log_record[-1].startswith('0x'):
+            self._run_log_record.append('   -    ')
 
         # 'set-cookie': 'cbtid=pNXWaQASsPqjhHoWEInL3Hzv;max-age=604800'
         if hasattr(self.transport, 'http_headers') and 'set-cookie' in self.transport.http_headers:
@@ -82,11 +95,18 @@ class ClientSession(ApplicationSession):
         if self.config.extra['run_count'] == 3:
             action = 'logout'
 
-        self.config.extra['run_log'].append(
-            [self.config.extra['run_count'], details.realm, details.authid, details.authrole, details.authmethod,
-             details.authprovider, action])
+        self.config.extra['run_log'].append([
+            self.config.extra['run_count'],
+            *self._run_log_record,
+            details.realm,
+            details.authid,
+            details.authrole,
+            details.authmethod,
+            details.authprovider,
+            action
+        ])
 
-        misuse_old_cookie = False
+        misuse_old_cookie = True
         if action == 'logout':
             if misuse_old_cookie:
                 pass
@@ -150,9 +170,14 @@ if __name__ == '__main__':
     runner.run(ClientSession, auto_reconnect=True)
 
     print('*' * 20 + ' TEST SUMMARY ' + '*' * 50)
-    print(['RUN-NO', 'REALM', 'AUTHID', 'AUTHROLE', 'AUTHMETHOD', 'AUTHPROVIDER', 'ACTION'])
-    pprint(extra['run_log'])
+    print()
 
+    print(tabulate(extra['run_log'],
+                   headers=['RUN-NO', 'REQ-AUTHMETHODS', 'WAMPCRA-SIG', 'REALM', 'AUTHID', 'AUTHROLE', 'AUTHMETHOD',
+                            'AUTHPROVIDER', 'ACTION']))
+    # pprint(extra['run_log'], width=120)
+
+    print()
     if not extra['exit_details'] or extra['exit_details'].reason != 'wamp.close.normal':
         print('*' * 20 + ' FAILED       ' + '*' * 50)
         sys.exit(1)
