@@ -7,10 +7,5 @@ crossbar_database:
 crossbar_rtrpxy_database:
 	MYSECRET="secret123" crossbar edge start --config=config-rtrpxy-database.json
 
-clients: client_good client_bad
-
-client_good:
+client:
 	MYSECRET="secret123" python client.py client1
-
-client_bad:
-	MYSECRET="wrongpassword" python client.py client1

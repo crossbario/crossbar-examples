@@ -78,11 +78,20 @@ class ClientSession(ApplicationSession):
         assert res == 689
         self.log.info('\n\nRPC result (success): {res}\n\n', res=res)
 
+        action = 'reconnect'
+        if self.config.extra['run_count'] == 3:
+            action = 'logout'
+
         self.config.extra['run_log'].append(
             [self.config.extra['run_count'], details.realm, details.authid, details.authrole, details.authmethod,
-             details.authprovider])
+             details.authprovider, action])
 
-        self.leave()
+        if action == 'logout':
+            self.config.extra['cookie'] = None
+            self.transport.factory.headers['Cookie'] = None
+            self.leave('wamp.close.logout', message='some custom message that nobody uses and could be removed')
+        else:
+            self.leave()
 
     def onLeave(self, details):
         self.log.info('{meth}(details={details})', meth=hltype(self.onLeave),
@@ -97,13 +106,16 @@ class ClientSession(ApplicationSession):
         else:
             pass
 
+        # once our session left the realm, we disconnect the transport (and rely on auto-reconnection)
         self.disconnect()
 
     def onDisconnect(self):
         self.log.info('{meth}()', meth=hltype(self.onDisconnect))
         if self.config.extra['run_count']:
+            # keep on auto-reconnecting ...
             self.config.extra['run_count'] -= 1
         else:
+            # stop auto-reconnecting, and stop client
             self.config.extra['runner'].stop()
             reactor.stop()
 
@@ -124,7 +136,7 @@ if __name__ == '__main__':
         'secret': USER_SECRET,
         'exit_details': None,
         'cookie': None,
-        'run_count': 3,
+        'run_count': 6,
         'run_log': [],
     }
 
@@ -133,11 +145,13 @@ if __name__ == '__main__':
 
     runner.run(ClientSession, auto_reconnect=True)
 
+    print('*' * 20 + ' TEST SUMMARY ' + '*' * 50)
+    print(['RUN-NO', 'REALM', 'AUTHID', 'AUTHROLE', 'AUTHMETHOD', 'AUTHPROVIDER', 'ACTION'])
     pprint(extra['run_log'])
 
     if not extra['exit_details'] or extra['exit_details'].reason != 'wamp.close.normal':
-        print('FAILED')
+        print('*' * 20 + ' FAILED       ' + '*' * 50)
         sys.exit(1)
     else:
-        print('SUCCESS')
+        print('*' * 20 + ' SUCCESS      ' + '*' * 50)
         sys.exit(0)
