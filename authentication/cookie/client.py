@@ -86,9 +86,13 @@ class ClientSession(ApplicationSession):
             [self.config.extra['run_count'], details.realm, details.authid, details.authrole, details.authmethod,
              details.authprovider, action])
 
+        misuse_old_cookie = False
         if action == 'logout':
-            self.config.extra['cookie'] = None
-            self.transport.factory.headers['Cookie'] = None
+            if misuse_old_cookie:
+                pass
+            else:
+                self.config.extra['cookie'] = None
+                self.transport.factory.headers['Cookie'] = None
             self.leave('wamp.close.logout', message='some custom message that nobody uses and could be removed')
         else:
             self.leave()
