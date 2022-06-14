@@ -94,6 +94,7 @@ class ClientSession(ApplicationSession):
         action = 'reconnect'
         if self.config.extra['run_count'] == 3:
             action = 'logout'
+            print('LOGOUT ' * 10)
 
         self.config.extra['run_log'].append([
             self.config.extra['run_count'],

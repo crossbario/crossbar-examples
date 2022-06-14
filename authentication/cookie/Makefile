@@ -1,10 +1,14 @@
-crossbar:
+clean:
+	rm -rf .crossbar/.cookies/
+	rm -f .crossbar/cookies.dat
+
+crossbar: clean
 	MYSECRET="secret123" crossbar start
 
-crossbar_database:
+crossbar_database: clean
 	MYSECRET="secret123" crossbar start --config=config-database.json
 
-crossbar_rtrpxy_database:
+crossbar_rtrpxy_database: clean
 	MYSECRET="secret123" crossbar edge start --config=config-rtrpxy-database.json
 
 client:
