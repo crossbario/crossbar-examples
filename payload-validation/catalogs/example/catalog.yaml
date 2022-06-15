@@ -1,21 +1,20 @@
 # Catalog name, which must contain only lower-case letter, numbers,
 # hyphen and underscore so the catalog name can be used in HTTP URLs
-name: pydefi-trading
+name: example
 
 # Catalog version (e.g. semver or calendarver version string)
 version: 22.6.1
 
 # Catalog title for display purposes
-title: PyDeFi Trading API Catalog
+title: WAMP Example API Catalog
 
 # Catalog description, a short text describing the API catalog
-description: Write me.
+description: An example of a WAMP API catalog.
 
 # FlatBuffers schemas compiled into binary schema reflection format
 # (see https://github.com/google/flatbuffers/blob/master/reflection/reflection.fbs)
 schemas:
-  - schema/trading.bfbs
-  - schema/demo.bfbs
+  - schema/example.bfbs
 
 # Catalog author
 author: typedef int GmbH
@@ -28,9 +27,8 @@ license: MIT
 
 # Catalog keywords to hint at the contents, topic, usage or similar of the catalog
 keywords:
-  - trading
-  - defi
-  - analytics
+  - wamp
+  - sample
 
 # Catalog home page or project page
 homepage: https://wamp-proto.org/

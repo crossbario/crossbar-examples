@@ -1,6 +1,9 @@
 default:
 	@echo "Targets: crossbar, client"
 
+clean:
+	rm -rf ./__pycache__
+
 crossbar:
 	crossbar start
 

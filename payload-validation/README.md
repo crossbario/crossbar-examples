@@ -176,7 +176,7 @@ class ExampleAuthorizer(ApplicationSession):
             return False
 ```
 
-With above configuration, Crossbar.io will validate the application payloads of calls (and their results or errors) using the types refered in `validate`.
+With above configuration, Crossbar.io will validate the application payloads of calls (and their results or errors) to `com.example.get_candle_history` using the types referred in `validate`.
 
 ## Testing
 
