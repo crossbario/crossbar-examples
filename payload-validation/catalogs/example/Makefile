@@ -23,7 +23,7 @@ distclean: clean
 	rm -rf $(FBS_OUTPUT)
 
 compile:
-	mkdir $(FBS_OUTPUT)
+	mkdir -p $(FBS_OUTPUT)
 	flatc -o $(FBS_OUTPUT) --binary --schema --bfbs-comments --bfbs-builtins $(FBS_FILES)
 
 describe:

@@ -2,6 +2,73 @@
 
 ## Type Catalogs
 
+*Payload Validation* is a proposed *WAMP Avanced Profile* feature for WAMP routers allows to *define and share definitions of WAMP interfaces* written in [FlatBuffers IDL](https://google.github.io/flatbuffers/md__schemas.html).
+
+Collections of types defined in FlatBuffers IDL can be bundled in *Type Catalogs* which are just ZIP files with
+
+* a main `catalog.yaml` file with catalog metadata
+* one or more `*.bfbs` compiled FlatBuffer IDL schemas
+
+and optionally
+
+* schema source files
+* image and documentation files
+
+The example here includes an [example schema](src/example.fbs) with the following interface definition:
+
+```flatbuffers
+/// Interface definition of Example 1 services.
+rpc_service IExample1(type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241")
+{
+    /// Procedure declaration for WAMP RPC.
+    my_procedure1 (TestRequest1): TestResponse1 (type: "procedure", wampuri: "com.example.my_procedure1");
+
+    /// Topic declaration for WAMP PubSub.
+    on_something1 (TestEvent1): Void (type: "topic", wampuri: "com.example.on_something1");
+}
+```
+
+Given this schema, and with payload validation enabled, Crossbar.io will validate:
+
+* **calls** to `com.example.my_procedure1` must have `args/kwargs` values that match the `TestRequest1` validation type
+* **call** results returned from that procedure must have `args/kwargs` values that match the `TestResponse1` validation type
+* **events** published to `com.example.on_something1` must have `args/kwargs` values that match the `TestEvent1` validation type
+
+The validation types used are also contained in the schema
+
+```flatbuffers
+struct TestData1
+{
+    field1: float;
+    field2: int64;
+}
+
+table TestRequest1 (type: "call")
+{
+    field1: bool;
+    field2: uint32;
+    field3: uint64 (timestamp);
+    field4: string (kwarg);
+    field5: [uint8] (kwarg);
+}
+
+table TestResponse1 (type: "call_result")
+{
+    field1: uint32;
+    field2: string;
+    field3: bool;
+    field4: TestData1;
+    field5: uint64 (kwarg, timestamp);
+}
+
+table TestEvent1 (type: "event") {
+    field1: string;
+    field2: bool;
+    field3: uint32;
+    field4: uint64 (kwarg);
+}
+```
+
 ### Local Catalog Archives
 
 ```json

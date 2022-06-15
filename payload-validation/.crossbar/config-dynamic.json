@@ -13,34 +13,16 @@
                         "type": "wamp.eth",
                         "catalogs": [
                             {
-                                "archive": "../catalog/trading/build/pydefi-trading.zip"
+                                "archive": "../catalogs/example/build/example.zip"
                             }
                         ]
                     },
                     "roles": [
                         {
-                            "name": "backend",
-                            "activations": [
-                                {
-                                    "interface": "81256d9b-1e0a-434c-aa75-9cc0dfe8e1ea",
-                                    "allow": {
-                                        "provide": true
-                                    }
-                                },
-                                {
-                                    "interface": "6563cfac-498c-47cd-9ff1-24cbd0bdc6e5",
-                                    "allow": {
-                                        "provide": true
-                                    }
-                                }
-                            ],
-                            "authorizer": "com.example.authorize"
-                        },
-                        {
                             "name": "authorizer",
                             "permissions": [
                                 {
-                                    "uri": "com.example.authorize",
+                                    "uri": "com.example.internal.authorize",
                                     "match": "exact",
                                     "allow": {
                                         "register": true
@@ -50,7 +32,25 @@
                         },
                         {
                             "name": "frontend",
-                            "authorizer": "com.example.authorize"
+                            "authorizer": "com.example.internal.authorize"
+                        },
+                        {
+                            "name": "backend",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.private.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "register": true,
+                                        "publish": true
+                                    },
+                                   "disclose": {
+                                      "caller": true,
+                                      "publisher": true
+                                   },
+                                   "cache": true
+                                }
+                            ]
                         },
                         {
                             "name": "anonymous",
@@ -102,13 +102,9 @@
                             "type": "static",
                             "directory": "../web"
                         },
-                        "catalog1": {
+                        "example": {
                             "type": "catalog",
-                            "filename": "../catalog/trading/build/schema/trading.bfbs"
-                        },
-                        "catalog2": {
-                            "type": "catalog",
-                            "filename": "../catalog/trading/build/schema/demo.bfbs"
+                            "filename": "../catalogs/example/schema/example.bfbs"
                         },
                         "info": {
                             "type": "nodeinfo"
@@ -131,7 +127,7 @@
                         },
                         "ws": {
                             "type": "websocket",
-                            "serializers": ["json", "msgpack", "cbor"],
+                            "serializers": ["cbor", "msgpack", "json"],
                             "options": {
                                 "allowed_origins": ["*"],
                                 "allow_null_origin": true,
