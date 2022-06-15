@@ -142,6 +142,7 @@ To configure *dynamic payload validation*, specify the URI of your WAMP procedur
                             "authorizer": "com.example.authorize"
                         }
                     ]
+                }
             ]
         }
     ]
