@@ -15,6 +15,7 @@
          // authenticate using authid "client1"
          var user = "client1";
          var key = "secret123";
+         var session = null;
 
          // this callback is fired during WAMP-CRA authentication
          function onchallenge (session, method, extra) {
@@ -43,7 +44,9 @@
             onchallenge: onchallenge
          });
 
-         connection.onopen = function (session, details) {
+         connection.onopen = function (newSession, details) {
+
+            session = newSession;
 
             console.log("connected session with ID " + session.id);
             console.log("authenticated using method '" + details.authmethod + "' and provider '" + details.authprovider + "'");
@@ -60,6 +63,8 @@
                }
             );
          };
+
+         // session.leave("wamp.close.logout", "some custom message that nobody uses and could be removed");
 
          connection.onclose = function (reason, details) {
             console.log("disconnected", reason, details.reason, details);
