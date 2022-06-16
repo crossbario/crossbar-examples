@@ -1,5 +1,13 @@
 # Payload Validation
 
+**Contents**
+
+1. [Type Catalogs](#type-catalogs)
+2. [Type Inventories](#type-inventories)
+3. [Realm Configuration](#realm-configuration)
+4. [Testing](#testing)
+---------
+
 ## Type Catalogs
 
 *Payload Validation* is a proposed *WAMP Advanced Profile* feature for WAMP routers that allows to *define and share definitions of WAMP interfaces* written in [FlatBuffers IDL](https://google.github.io/flatbuffers/md__schemas.html).
@@ -41,17 +49,14 @@ flatc -o ./schema --binary --schema --bfbs-comments --bfbs-builtins ./src
 
 from [FlatBuffers IDL source](src/example.fbs):
 
-```protobuf
-/// Interface definition of Example 1 services.
+```flatbuffers
 rpc_service IExample1 (
     type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241"
 ) {
-    /// Procedure declaration for WAMP RPC.
     my_procedure1 (TestRequest1): TestResponse1 (
         type: "procedure", wampuri: "com.example.my_procedure1"
     );
 
-    /// Topic declaration for WAMP PubSub.
     on_something1 (TestEvent1): Void (
         type: "topic", wampuri: "com.example.on_something1"
     );
@@ -61,12 +66,12 @@ rpc_service IExample1 (
 Given this schema, and with payload validation enabled, Crossbar.io will validate:
 
 * **calls** to `com.example.my_procedure1` must have `args/kwargs` values that match the `TestRequest1` validation type
-* **call** results returned from that procedure must have `args/kwargs` values that match the `TestResponse1` validation type
+* **call results** returned from that procedure must have `args/kwargs` values that match the `TestResponse1` validation type
 * **events** published to `com.example.on_something1` must have `args/kwargs` values that match the `TestEvent1` validation type
 
-The validation types used are also contained in the schema
+The validation types used are also defined in the schema
 
-```protobuf
+```flatbuffers
 struct TestData1
 {
     field1: float;
@@ -99,8 +104,6 @@ table TestEvent1 (type: "event") {
 }
 ```
 
-> Currently there is [no FlatBuffers](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml) support in [GitHub Markdown syntax highlighting](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks#syntax-highlighting). So above is misusing "protobuf", which is somewhat similar, but incomplete for FlatBuffers.
-
 ------
 
 ## Type Inventories
@@ -127,9 +130,7 @@ Type catalogs are used at run-time in Crossbar.io in realms via *Type Inventorie
 }
 ```
 
-The only currently supported inventory type is `"wamp.eth"`, and such type inventories must have contain a collection of catalogs.
-
-There are two supported catalog types:
+The only currently supported inventory type is `"wamp.eth"`, and such type inventories must have a list of catalogs. There are two supported catalog types:
 
 1. **Local Type Catalogs**
 2. **Network Type Catalogs**
@@ -137,6 +138,7 @@ There are two supported catalog types:
 
 ### Local Type Catalogs
 
+*Local Type Catalogs* are read from local ZIP archive files and configured by including an `archive` attribute with the file path to the catalog archive:
 
 ```json
 {
@@ -162,7 +164,11 @@ There are two supported catalog types:
 }
 ```
 
+> As with most paths in node configuration items, the path is relative to the node directory (usually `.crossbar/`).
+
 ### Network Type Catalogs
+
+*Network Type Catalogs* are public, shared catalogs stored in Ethereum and IPFS with optional names from ENS, and are configured by including an `address` attribute with the on-chain address of the catalog entity:
 
 ```json
 {
@@ -188,8 +194,9 @@ There are two supported catalog types:
 }
 ```
 
+## Realm Configuration
 
-## Static Configuration
+### Static Configuration
 
 ```json
 {
@@ -248,10 +255,9 @@ as well as more application payload types (*FUTURE*)
 
 and meta information parsed (in the authorizer)
 
-* `meta`: meta arguments parsed from URI
+* `extra`: meta arguments parsed from URI, forwarded as `Call.Details.extra|dict` or `Event.Details.extra|dict` (t.b.d.)
 
-
-## Dynamic Configuration
+### Dynamic Configuration
 
 *Dynamic payload validation* involves a user WAMP procedure that is called by
 Crossbar.io to get *validation types* for the application payloads used in

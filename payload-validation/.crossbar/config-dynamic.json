@@ -104,7 +104,7 @@
                         },
                         "example": {
                             "type": "catalog",
-                            "filename": "../catalogs/example/schema/example.bfbs"
+                            "filename": "../catalogs/example/schema/example1.bfbs"
                         },
                         "info": {
                             "type": "nodeinfo"
