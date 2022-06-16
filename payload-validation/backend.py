@@ -123,6 +123,8 @@ class ExampleBackend(ApplicationSession):
     def get_clock_address(self, details: Optional[CallDetails]):
         return '0x29B6c56497CA179e9AAFD739BeBded3f23768903'
 
+    # eth.pydefi.replica.<uuid:replica>.book.<uuid:book>.get_candle_history
+    # com.example.private.replica.ba3b1e9f-3006-4eae-ae88-cf5896b36342.book.a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b.get_candle_history
     @wamp.register('com.example.private.'
                    'replica.ba3b1e9f-3006-4eae-ae88-cf5896b36342.'
                    'book.a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b.'

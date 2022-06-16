@@ -102,9 +102,21 @@
                             "type": "static",
                             "directory": "../web"
                         },
-                        "example": {
+                        "catalog1": {
                             "type": "catalog",
                             "filename": "../catalogs/example/schema/example1.bfbs"
+                        },
+                        "catalog2": {
+                            "type": "catalog",
+                            "filename": "../catalogs/example/schema/example2.bfbs"
+                        },
+                        "catalog3": {
+                            "type": "catalog",
+                            "filename": "../catalogs/example/schema/example3.bfbs"
+                        },
+                        "catalog4": {
+                            "type": "catalog",
+                            "filename": "../catalogs/example/schema/example4.bfbs"
                         },
                         "info": {
                             "type": "nodeinfo"
