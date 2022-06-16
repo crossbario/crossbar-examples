@@ -2,11 +2,11 @@
 
 ## Type Catalogs
 
-*Payload Validation* is a proposed *WAMP Avanced Profile* feature for WAMP routers allows to *define and share definitions of WAMP interfaces* written in [FlatBuffers IDL](https://google.github.io/flatbuffers/md__schemas.html).
+*Payload Validation* is a proposed *WAMP Advanced Profile* feature for WAMP routers that allows to *define and share definitions of WAMP interfaces* written in [FlatBuffers IDL](https://google.github.io/flatbuffers/md__schemas.html).
 
-Collections of types defined in FlatBuffers IDL can be bundled in *Type Catalogs* which are just ZIP files with
+Collections of types defined in FlatBuffers IDL are bundled in *Type Catalogs* which are just ZIP files with
 
-* a main `catalog.yaml` file with catalog metadata
+* one [catalog.yaml](catalog.yaml) file with catalog metadata
 * one or more `*.bfbs` compiled FlatBuffer IDL schemas
 
 and optionally
@@ -14,17 +14,47 @@ and optionally
 * schema source files
 * image and documentation files
 
-The example here includes an [example schema](src/example.fbs) with the following interface definition:
+The type catalog `example.zip` in this example has the following contents:
 
-```flatbuffers
+```sh
+$ unzip -l ./catalogs/example/build/example.zip
+Archive:  build/example.zip
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  1980-00-00 00:00   schema/
+    23240  1980-00-00 00:00   schema/example.bfbs
+     6520  1980-00-00 00:00   schema/wamp.bfbs
+     1564  1980-00-00 00:00   README.md
+        0  1980-00-00 00:00   img/
+    13895  1980-00-00 00:00   img/logo.png
+     1070  1980-00-00 00:00   LICENSE.txt
+     1212  1980-00-00 00:00   catalog.yaml
+---------                     -------
+    47501                     8 files
+```
+
+Above [FlatBuffers binary schema](schema/example.bfbs) is compiled
+
+```
+flatc -o ./schema --binary --schema --bfbs-comments --bfbs-builtins ./src
+```
+
+from [FlatBuffers IDL source](src/example.fbs):
+
+```protobuf
 /// Interface definition of Example 1 services.
-rpc_service IExample1(type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241")
-{
+rpc_service IExample1 (
+    type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241"
+) {
     /// Procedure declaration for WAMP RPC.
-    my_procedure1 (TestRequest1): TestResponse1 (type: "procedure", wampuri: "com.example.my_procedure1");
+    my_procedure1 (TestRequest1): TestResponse1 (
+        type: "procedure", wampuri: "com.example.my_procedure1"
+    );
 
     /// Topic declaration for WAMP PubSub.
-    on_something1 (TestEvent1): Void (type: "topic", wampuri: "com.example.on_something1");
+    on_something1 (TestEvent1): Void (
+        type: "topic", wampuri: "com.example.on_something1"
+    );
 }
 ```
 
@@ -36,7 +66,7 @@ Given this schema, and with payload validation enabled, Crossbar.io will validat
 
 The validation types used are also contained in the schema
 
-```flatbuffers
+```protobuf
 struct TestData1
 {
     field1: float;
@@ -69,7 +99,44 @@ table TestEvent1 (type: "event") {
 }
 ```
 
-### Local Catalog Archives
+> Currently there is [no FlatBuffers](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml) support in [GitHub Markdown syntax highlighting](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-and-highlighting-code-blocks#syntax-highlighting). So above is misusing "protobuf", which is somewhat similar, but incomplete for FlatBuffers.
+
+------
+
+## Type Inventories
+
+Type catalogs are used at run-time in Crossbar.io in realms via *Type Inventories* by configuring an `inventory` in the respective `realm` in the Crossbar.io node configuration of the application realm:
+
+```json
+{
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "realm1",
+                    "inventory": {
+                        "type": "wamp.eth",
+                        "catalogs": [
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}
+```
+
+The only currently supported inventory type is `"wamp.eth"`, and such type inventories must have contain a collection of catalogs.
+
+There are two supported catalog types:
+
+1. **Local Type Catalogs**
+2. **Network Type Catalogs**
+
+
+### Local Type Catalogs
+
 
 ```json
 {
@@ -87,7 +154,7 @@ table TestEvent1 (type: "event") {
                                 "archive": "../catalogs/example-catalog.zip"
                             }
                         ]
-                    },
+                    }
                 }
             ]
         }
@@ -95,7 +162,7 @@ table TestEvent1 (type: "event") {
 }
 ```
 
-### Public Network Catalogs
+### Network Type Catalogs
 
 ```json
 {
@@ -113,7 +180,7 @@ table TestEvent1 (type: "event") {
                                 "address": "0x2F070c2f49a59159A0346396f1139203355ACA43"
                             }
                         ]
-                    },
+                    }
                 }
             ]
         }

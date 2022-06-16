@@ -42,6 +42,7 @@ build: compile
 	@stripzip $(BUILD_DIR)/$(CATALOG_NAME).zip
 	@du -hs $(BUILD_DIR)/$(CATALOG_NAME).zip
 	@openssl sha256 $(BUILD_DIR)/$(CATALOG_NAME).zip
+	@unzip -l $(BUILD_DIR)/$(CATALOG_NAME).zip
 
 publish:
 	ipfs-upload-client --id ${INFURA_IPFS_PROJECT_ID} --secret ${INFURA_IPFS_PROJECT_SECRET} \

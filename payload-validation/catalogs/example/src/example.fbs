@@ -517,11 +517,16 @@ rpc_service ITradingClock(type: "interface",
 // }
 
 /// Interface definition of Example 1 services.
-rpc_service IExample1(type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241")
-{
+rpc_service IExample1 (
+    type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241"
+) {
     /// Procedure declaration for WAMP RPC.
-    my_procedure1 (TestRequest1): TestResponse1 (type: "procedure", wampuri: "com.example.my_procedure1");
+    my_procedure1 (TestRequest1): TestResponse1 (
+        type: "procedure", wampuri: "com.example.my_procedure1"
+    );
 
     /// Topic declaration for WAMP PubSub.
-    on_something1 (TestEvent1): Void (type: "topic", wampuri: "com.example.on_something1");
+    on_something1 (TestEvent1): Void (
+        type: "topic", wampuri: "com.example.on_something1"
+    );
 }
