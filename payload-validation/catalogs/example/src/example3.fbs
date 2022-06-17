@@ -1,0 +1,136 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (C) typedef int GmbH and contributors.
+//  All rights reserved. Licensed under the MIT open-source license.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+include "wamp.fbs";
+
+
+namespace example;
+
+
+table MyCall1 (type: "call")
+{
+    column1: bool;
+    column2: uint32;
+    column3: uint64 (timestamp);
+    column4: string (kwarg);
+    column5: [uint8] (kwarg);
+}
+
+table MyCall2 (type: "call")
+{
+    column1: bool;
+    column2: uint32;
+    column3: uint64 (timestamp);
+    column4: string (kwarg);
+    column5: [uint8] (kwarg);
+}
+
+table MyCallProgress1 (type: "call_progress")
+{
+    column1: string (arg);
+    column2: uint32 (kwarg);
+}
+
+table MyCallProgress2 (type: "call_progress")
+{
+    column1: string (arg);
+    column2: uint32 (kwarg);
+}
+
+table MyCallResult1 (type: "call_result")
+{
+}
+
+table MyCallResult2 (type: "call_result")
+{
+}
+
+table MyCallResultProgress1 (type: "call_result_progress")
+{
+    column1: string (arg);
+    column2: uint32 (kwarg);
+    column3: uint64 (kwarg, timestamp);
+}
+
+table MyCallResultProgress2 (type: "call_result_progress")
+{
+    column1: string (arg);
+    column2: uint32 (kwarg);
+    column3: uint64 (kwarg, timestamp);
+}
+
+table MyCallError1 (type: "call_error")
+{
+    column1: string (arg);
+    column2: uint32 (kwarg);
+}
+
+table MyCallError2 (type: "call_error")
+{
+    column1: string (arg);
+    column2: string (arg);
+    column3: uint32 (kwarg);
+}
+
+union MyCallRequestU {
+    MyCall1,
+    MyCall2,
+    MyCallProgress1,
+    MyCallProgress2
+}
+
+union MyCallResponseU {
+    MyCallResult1,
+    MyCallResult2,
+    MyCallResultProgress1,
+    MyCallResultProgress2,
+    MyCallError1,
+    MyCallError2
+}
+
+table MyCallRequest {
+    msg: MyCallRequestU;
+}
+
+table MyCallResponse {
+    msg: MyCallResponseU;
+}
+
+table MyEvent1 {
+    column1: string (arg);
+    column2: string (arg);
+    column3: uint32 (kwarg);
+}
+
+table MyEvent2 {
+    column1: uint64 (arg);
+    column2: [ubyte] (arg);
+}
+
+union MyEventAny {
+    MyEvent1,
+    MyEvent2
+}
+
+table MyEvent {
+    msg: MyEventAny;
+}
+
+
+/// Test WAMP interface for service 1.
+rpc_service ITestService1(type: "interface",
+                          uuid: "bf469db0-efea-425b-8de4-24b5770e6241",
+                          wampuri: "eth.wamp-proto.provider.<uuid:provider>.testsvc1")
+{
+    run_something1 (MyCall1): MyCallResult1 (type: "procedure");
+
+    on_something1 (MyEvent1): Void (type: "topic");
+
+    run_something2 (MyCallRequest): MyCallResponse (type: "procedure");
+
+    on_something2 (MyEvent): Void (type: "topic");
+}

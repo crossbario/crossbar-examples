@@ -1,0 +1,60 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright (C) typedef int GmbH and contributors.
+//  All rights reserved. Licensed under the MIT open-source license.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+include "wamp.fbs";
+
+
+namespace example;
+
+
+struct TestData1
+{
+    field1: float;
+    field2: int64;
+}
+
+table TestRequest1 (type: "call")
+{
+    field1: bool;
+    field2: uint32;
+    field3: uint64 (timestamp);
+    field4: string (kwarg);
+    field5: [uint8] (kwarg);
+}
+
+table TestResponse1 (type: "call_result")
+{
+    field1: uint32;
+    field2: string;
+    field3: bool;
+    field4: TestData1;
+    field5: uint64 (kwarg, timestamp);
+}
+
+table TestEvent1 (type: "event") {
+    field1: string;
+    field2: bool;
+    field3: uint32;
+    field4: uint64 (kwarg);
+}
+
+
+
+/// Interface definition of Example 1 services.
+rpc_service IExample1 (
+    type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241"
+) {
+    /// Procedure declaration for WAMP RPC.
+    my_procedure1 (TestRequest1): TestResponse1 (
+        type: "procedure", wampuri: "com.example.my_procedure1"
+    );
+
+    /// Topic declaration for WAMP PubSub.
+    on_something1 (TestEvent1): Void (
+        type: "topic", wampuri: "com.example.on_something1"
+    );
+}

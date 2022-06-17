@@ -13,44 +13,78 @@
                         "type": "wamp.eth",
                         "catalogs": [
                             {
-                                "archive": "../catalog/trading/build/pydefi-trading.zip"
+                                "archive": "../catalogs/example/build/example.zip"
                             }
                         ]
                     },
                     "roles": [
                         {
-                            "name": "backend",
-                            "activations": [
-                                {
-                                    "interface": "81256d9b-1e0a-434c-aa75-9cc0dfe8e1ea",
-                                    "allow": {
-                                        "provide": true
-                                    }
-                                },
-                                {
-                                    "interface": "6563cfac-498c-47cd-9ff1-24cbd0bdc6e5",
-                                    "allow": {
-                                        "provide": true
-                                    }
-                                }
-                            ],
-                            "authorizer": "com.example.authorize"
-                        },
-                        {
-                            "name": "authorizer",
+                            "name": "frontend",
                             "permissions": [
                                 {
-                                    "uri": "com.example.authorize",
+                                    "uri": "com.example.private.replica.ba3b1e9f-3006-4eae-ae88-cf5896b36342.book.a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b.get_candle_history",
                                     "match": "exact",
                                     "allow": {
-                                        "register": true
-                                    }
+                                        "call": true,
+                                        "register": false,
+                                        "publish": false,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "validate": {
+                                        "call": "trading.Period",
+                                        "call_result": "trading.CandleResult",
+                                        "call_error": "trading.ErrorInvalidPeriod",
+                                        "extra": {
+                                            "replica_oid": "{replica}",
+                                            "book_oid": "{book}"
+                                        }
+                                    },
+                                    "cache": true
                                 }
                             ]
                         },
                         {
-                            "name": "frontend",
-                            "authorizer": "com.example.authorize"
+                            "name": "backend",
+                            "permissions": [
+                                {
+                                    "uri": "com.example.private.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": false,
+                                        "register": false,
+                                        "publish": true,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "validate": {
+                                        "event": "trading.ClockTickSimple",
+                                        "extra": {
+                                            "clock_oid": "{clock}"
+                                        }
+                                    },
+                                    "cache": true
+                                },
+                                {
+                                    "uri": "com.example.private.",
+                                    "match": "prefix",
+                                    "allow": {
+                                        "register": true,
+                                        "publish": true
+                                    },
+                                   "disclose": {
+                                      "caller": true,
+                                      "publisher": true
+                                   },
+                                   "cache": true
+                                }
+                            ]
                         },
                         {
                             "name": "anonymous",
@@ -104,11 +138,19 @@
                         },
                         "catalog1": {
                             "type": "catalog",
-                            "filename": "../catalog/trading/build/schema/trading.bfbs"
+                            "filename": "../catalogs/example/schema/example1.bfbs"
                         },
                         "catalog2": {
                             "type": "catalog",
-                            "filename": "../catalog/trading/build/schema/demo.bfbs"
+                            "filename": "../catalogs/example/schema/example2.bfbs"
+                        },
+                        "catalog3": {
+                            "type": "catalog",
+                            "filename": "../catalogs/example/schema/example3.bfbs"
+                        },
+                        "catalog4": {
+                            "type": "catalog",
+                            "filename": "../catalogs/example/schema/example4.bfbs"
                         },
                         "info": {
                             "type": "nodeinfo"
@@ -131,7 +173,7 @@
                         },
                         "ws": {
                             "type": "websocket",
-                            "serializers": ["json", "msgpack", "cbor"],
+                            "serializers": ["cbor", "msgpack", "json"],
                             "options": {
                                 "allowed_origins": ["*"],
                                 "allow_null_origin": true,
@@ -176,14 +218,6 @@
                             }
                         }
                     }
-                }
-            ],
-            "components": [
-                {
-                    "type": "class",
-                    "classname": "authorizer.ExampleAuthorizer",
-                    "realm": "realm1",
-                    "role": "authorizer"
                 }
             ]
         },
