@@ -51,6 +51,27 @@
                             "name": "backend",
                             "permissions": [
                                 {
+                                    "uri": "com.example.private.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick",
+                                    "match": "exact",
+                                    "allow": {
+                                        "call": false,
+                                        "register": false,
+                                        "publish": true,
+                                        "subscribe": false
+                                    },
+                                    "disclose": {
+                                        "caller": false,
+                                        "publisher": false
+                                    },
+                                    "validate": {
+                                        "event": "trading.ClockTickSimple",
+                                        "extra": {
+                                            "clock_oid": "{clock}"
+                                        }
+                                    },
+                                    "cache": true
+                                },
+                                {
                                     "uri": "com.example.private.",
                                     "match": "prefix",
                                     "allow": {

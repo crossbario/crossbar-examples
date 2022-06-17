@@ -31,7 +31,7 @@ class ExampleBackend(ApplicationSession):
             self.log.info('{func} registered procedure "{proc}"', func=hltype(self.onJoin), proc=hlid(reg.procedure))
 
         period = 10.
-        self._periodic_loop.start(period)
+        self._periodic_loop.start(period, now=False)
         self.log.info('{func} started background loop ({period}s period)', func=hltype(self.onOpen),
                       period=hlval(period))
 
@@ -58,9 +58,13 @@ class ExampleBackend(ApplicationSession):
                 raise RuntimeError('invalid publish did not raise!')
 
         # test publish with valid payload
-        evt = {'counter': self._counter}
+        # FIXME
+        # evt = {
+        #     'counter': self._counter,
+        #     'clock_ts': time_ns(),
+        # }
         topic = 'com.example.private.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick'
-        pub = yield self.publish(topic, evt, options=PublishOptions(acknowledge=True))
+        pub = yield self.publish(topic, self._counter, time_ns(), options=PublishOptions(acknowledge=True))
         self.log.info('{func} published to "{topic}" (publication_id={publication_id})', func=hltype(self._periodic),
                       topic=hlid(topic), publication_id=hlval(pub.id))
 

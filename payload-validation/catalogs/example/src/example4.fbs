@@ -7,7 +7,7 @@
 
 include "wamp.fbs";
 
-namespace demo;
+namespace trading;
 
 
 enum ClockMode: uint8
@@ -55,47 +55,12 @@ table ClockTickSigned
 }
 
 
-
-
-/// Interface for trading clocks providing a signed, shared trading time base.
-rpc_service ITradingClock (
-    type: "interface", uuid: "81256d9b-1e0a-434c-aa75-9cc0dfe8e1ea",
-    wampuri: "eth.pydefi.clock.<uuid:clock_oid>"
-) {
-    /// Get the signing public address of this trading clock.
-    get_clock_address (Void): EthAddress (
-        type: "procedure"
-    );
-
-    /// Get the last clock tick at the respective warp level.
-    get_clock_tick (Void): ClockTickSigned (
-        type: "procedure", wampuri: "get_clock_tick.<int:warp_level>"
-    );
-
-    /// Event fired on each clock tick at the respective warp level.
-    on_clock_tick (ClockTickSigned): Void (
-        type: "topic", wampuri: "on_clock_tick.<int:warp_level>"
-    );
-
-    pause_clock (Void): ClockTickSigned (
-        type: "procedure"
-    );
-
-    resume_clock (Void): ClockTickSigned (
-        type: "procedure"
-    );
-
-    on_clock_paused  (ClockTickSigned): Void (
-        type: "topic"
-    );
-
-    on_clock_resumed  (ClockTickSigned): Void (
-        type: "topic"
-    );
+table ClockTickSimple
+{
+    counter: uint32;
+    clock_ts: uint64 (timestamp);
 }
 
-
-namespace trading;
 
 /// Time period, eg to aggregate transaction data within.
 enum PeriodDuration: uint8

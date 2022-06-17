@@ -4,8 +4,16 @@
 
 1. [Type Catalogs](#type-catalogs)
 2. [Type Inventories](#type-inventories)
+   - [Local Type Catalogs](#local-type-catalogs)
+   - [Network Type Catalogs](#network-type-catalogs)
 3. [Realm Configuration](#realm-configuration)
+   - [Static Configuration](#static-configuration)
+   - [Dynamic Configuration](#dynamic-configuration)
 4. [Testing](#testing)
+   - [Build Catalog](#build-catalog)
+   - [Start Crossbar.io](#start-crossbar)
+   - [Run Test Client](#run-test-client)
+   - [Open Test Pages](#open-test-pages)
 ---------
 
 ## Type Catalogs
@@ -320,7 +328,77 @@ With above configuration, Crossbar.io will validate the application payloads of 
 
 ## Testing
 
-### Test Pages
+### Build Catalog
+
+For this step, you need the FlatBuffers compiler [flatc](http://google.github.io/flatbuffers/flatbuffers_guide_building.html)
+
+```
+sudo apt update
+sudo apt install -y flatbuffers-compiler
+
+OR
+
+sudo snap install flatbuffers
+```
+
+and the archive cleaner [stripzip](https://github.com/KittyHawkCorp/stripzip)
+
+```
+make setup_stripzip
+```
+
+To build the included example catalog, and compile the FlatBuffers IDL source files to binary schemas and bundle everything into a ZIP archive:
+
+```
+cd catalogs/example
+make distclean build
+```
+
+This will create `./build/example.zip`:
+
+```
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+        0  1980-00-00 00:00   schema/
+    14992  1980-00-00 00:00   schema/example2.bfbs
+    16208  1980-00-00 00:00   schema/example4.bfbs
+    13360  1980-00-00 00:00   schema/example3.bfbs
+     8932  1980-00-00 00:00   schema/example1.bfbs
+     6520  1980-00-00 00:00   schema/wamp.bfbs
+     1564  1980-00-00 00:00   README.md
+        0  1980-00-00 00:00   img/
+    13895  1980-00-00 00:00   img/logo.png
+     1070  1980-00-00 00:00   LICENSE.txt
+     1288  1980-00-00 00:00   catalog.yaml
+---------                     -------
+    77829                     11 files
+```
+
+> IMPORTANT: The build makes sure to create the ZIP archive in a repeatable way, with files staying the same and archive metadata removed. This is crucial (!). The hash of the ZIP archive must change only when one of the contained file's *contents* changes.
+
+### Start Crossbar
+
+To start Crossbar.io with the [static configuration](.crossbar/config-static.json) type for payload validation:
+
+```
+make crossbar_static
+```
+
+To start Crossbar.io with the [dynamic configuration](.crossbar/config-dynamic.json) type for payload validation:
+
+```
+make crossbar_dynamic
+```
+
+### Run Test Client
+
+To run the included test client, executing a couple test cases that work against the [backend](backend.py) included:
+
+```
+make client
+```
+
+### Open Test Pages
 
 * [Node Info Page](http://localhost:8080/info)
 * [WAMP-WebSocket Endpoint](http://localhost:8080/ws)
