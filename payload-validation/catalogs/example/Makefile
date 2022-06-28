@@ -24,7 +24,8 @@ distclean: clean
 
 compile:
 	mkdir -p $(FBS_OUTPUT)
-	flatc -o $(FBS_OUTPUT) --binary --schema --bfbs-comments --bfbs-builtins $(FBS_FILES)
+#	flatc -o $(FBS_OUTPUT) --binary --schema --bfbs-comments --bfbs-builtins $(FBS_FILES)
+	flatc -o $(FBS_OUTPUT) --binary --schema --bfbs-comments --bfbs-builtins ./src/example4.fbs
 
 describe:
 	xbrnetwork describe-schema --schema $(FBS_OUTPUT)
