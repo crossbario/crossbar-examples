@@ -398,6 +398,10 @@ To run the included test client, executing a couple test cases that work against
 make client
 ```
 
+Router log:
+
+![Alt text](screenshot1.png)
+
 ### Open Test Pages
 
 * [Node Info Page](http://localhost:8080/info)

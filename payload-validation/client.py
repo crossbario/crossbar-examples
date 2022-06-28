@@ -109,13 +109,13 @@ class ExampleClient(ApplicationSession):
             result = yield self.call(procedure, 12, txaio.time_ns())
             self.log.info('get_candle_history() - test case 1: {result}', result=hlval(result))
 
-        # test case 2: test valid call with kwargs
-        if False:
+        # test case 2: test valid call with valid kwargs
+        if True:
             result = yield self.call(procedure, 12, txaio.time_ns(), limit=100)
             self.log.info('get_candle_history() - test case 2: {result}', result=hlval(result))
 
         # test case 3: test call with invalid args length (too many)
-        if False:
+        if True:
             try:
                 yield self.call(procedure, 12, txaio.time_ns(), 'invalid additional argument')
             except Exception as e:
@@ -130,7 +130,7 @@ class ExampleClient(ApplicationSession):
                 raise RuntimeError('test case 3: invalid call did not raise!')
 
         # test case 4: test call with invalid args type
-        if False:
+        if True:
             try:
                 yield self.call(procedure, 'foo', 'bar')
             except Exception as e:
@@ -145,7 +145,7 @@ class ExampleClient(ApplicationSession):
                 raise RuntimeError('test case 4: invalid call did not raise!')
 
         # test case 5: test call with invalid kwargs present
-        if False:
+        if True:
             try:
                 yield self.call(procedure, 12, txaio.time_ns(), foo=23)
             except Exception as e:
@@ -160,13 +160,13 @@ class ExampleClient(ApplicationSession):
                 raise RuntimeError('test case 5: invalid call did not raise!')
 
         # test case 6: test call with invalid _result_ key present
-        if False:
+        if True:
             try:
-                period['period_dur'] = 8
-                yield self.call(procedure, period)
+                # calling with "5 < period_dur < 10" will make the callee return an invalid result key!
+                yield self.call(procedure, 7, txaio.time_ns())
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
-                    if 'invalid type' not in e.args[0]:
+                    if 'unexpected argument' not in e.args[0]:
                         raise RuntimeError('test case 6: did not find expected error text in exception!')
                     else:
                         self.log.info('get_candle_history() - test case 6: ok, correct exception raised!')
@@ -176,10 +176,11 @@ class ExampleClient(ApplicationSession):
                 raise RuntimeError('test case 6: invalid call did not raise!')
 
         # test case 7: test call with invalid _result_ type in (valid) key
-        if False:
+        if True:
             try:
-                period['period_dur'] = 3
-                yield self.call(procedure, period)
+                # calling with "0 < period_dur <= 5" will make the callee return an invalid result type
+                # in a valid result key!
+                yield self.call(procedure, 3, txaio.time_ns())
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
                     if 'invalid type' not in e.args[0]:
