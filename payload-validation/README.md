@@ -34,39 +34,43 @@ The type catalog `example.zip` in this example has the following contents:
 
 ```sh
 $ unzip -l ./catalogs/example/build/example.zip
-Archive:  build/example.zip
+Archive:  ./catalogs/example/build/example.zip
   Length      Date    Time    Name
 ---------  ---------- -----   ----
         0  1980-00-00 00:00   schema/
-    23240  1980-00-00 00:00   schema/example.bfbs
-     6520  1980-00-00 00:00   schema/wamp.bfbs
+     9440  1980-00-00 00:00   schema/example4.bfbs
      1564  1980-00-00 00:00   README.md
         0  1980-00-00 00:00   img/
     13895  1980-00-00 00:00   img/logo.png
      1070  1980-00-00 00:00   LICENSE.txt
-     1212  1980-00-00 00:00   catalog.yaml
+     1213  1980-00-00 00:00   catalog.yaml
 ---------                     -------
-    47501                     8 files
+    27182                     7 files
+
 ```
 
 Above [FlatBuffers binary schema](schema/example.bfbs) is compiled
 
 ```
-flatc -o ./schema --binary --schema --bfbs-comments --bfbs-builtins ./src
+flatc -o ./schema --binary --schema --bfbs-comments --bfbs-builtins ./src/example4.fbs
 ```
 
-from [FlatBuffers IDL source](src/example.fbs):
+from [FlatBuffers IDL source](src/example4.fbs):
 
 ```flatbuffers
-rpc_service IExample1 (
-    type: "interface", uuid: "bf469db0-efea-425b-8de4-24b5770e6241"
+rpc_service ILimitOrderBookReplica (
+    type: "interface",
+    uuid: "6563cfac-498c-47cd-9ff1-24cbd0bdc6e5",
+    wampuri: "eth.pydefi.replica.<uuid:replica>"
 ) {
-    my_procedure1 (TestRequest1): TestResponse1 (
-        type: "procedure", wampuri: "com.example.my_procedure1"
+    get_candle_history (Period): CandleResult (
+        type: "procedure",
+        wampuri: "book.<uuid:book>.get_candle_history"
     );
 
-    on_something1 (TestEvent1): Void (
-        type: "topic", wampuri: "com.example.on_something1"
+    on_clock_tick (ClockTickSimple): Void (
+        type: "topic",
+        wampuri: "clock.<uuid:clock>.on_clock_tick"
     );
 }
 ```
@@ -80,35 +84,49 @@ Given this schema, and with payload validation enabled, Crossbar.io will validat
 The validation types used are also defined in the schema
 
 ```flatbuffers
-struct TestData1
+table ClockTickSimple
 {
-    field1: float;
-    field2: int64;
+    counter: uint32;
+    clock_ts: uint64 (timestamp);
 }
 
-table TestRequest1 (type: "call")
+enum PeriodDuration: uint8
 {
-    field1: bool;
-    field2: uint32;
-    field3: uint64 (timestamp);
-    field4: string (kwarg);
-    field5: [uint8] (kwarg);
+    NONE = 0,
+    MS_100 = 3,
+    SECONDS_5 = 7,
+    MINUTES_15 = 12
 }
 
-table TestResponse1 (type: "call_result")
+table Period
 {
-    field1: uint32;
-    field2: string;
-    field3: bool;
-    field4: TestData1;
-    field5: uint64 (kwarg, timestamp);
+    period_dur: PeriodDuration;
+    start_ts: uint64 (timestamp);
+    limit: uint32 (kwarg);
 }
 
-table TestEvent1 (type: "event") {
-    field1: string;
-    field2: bool;
-    field3: uint32;
-    field4: uint64 (kwarg);
+table Candle
+{
+    period_dur: PeriodDuration;
+    start_ts: uint64 (timestamp);
+    market_oid: [uint8] (uuid);
+    modified: uint64 (timestamp);
+    quantity: double;
+    volume: double;
+    price_open: double;
+    price_close: double;
+    price_min: double;
+    price_max: double;
+    price_avg: double;
+    price_var: double;
+    price_avg_volw: double;
+    price_var_volw: double;
+}
+
+table CandleResult
+{
+    /// args[0] (1st positional call result) has type Candle
+    value: Candle;
 }
 ```
 
@@ -174,7 +192,7 @@ The only currently supported inventory type is `"wamp.eth"`, and such type inven
 
 > As with most paths in node configuration items, the path is relative to the node directory (usually `.crossbar/`).
 
-### Network Type Catalogs
+### Network Type Catalogs (under development)
 
 *Network Type Catalogs* are public, shared catalogs stored in Ethereum and IPFS with optional names from ENS, and are configured by including an `address` attribute with the on-chain address of the catalog entity:
 
@@ -219,7 +237,7 @@ The only currently supported inventory type is `"wamp.eth"`, and such type inven
                             "name": "frontend",
                             "permissions": [
                                 {
-                                    "uri": "com.example.get_candle_history",
+                                    "uri": "com.example.private.replica.ba3b1e9f-3006-4eae-ae88-cf5896b36342.book.a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b.get_candle_history",
                                     "match": "exact",
                                     "allow": {
                                         "call": true,
@@ -234,7 +252,11 @@ The only currently supported inventory type is `"wamp.eth"`, and such type inven
                                     "validate": {
                                         "call": "trading.Period",
                                         "call_result": "trading.CandleResult",
-                                        "call_error": "trading.ErrorInvalidPeriod"
+                                        "call_error": "trading.ErrorInvalidPeriod",
+                                        "extra": {
+                                            "replica_oid": "{replica}",
+                                            "book_oid": "{book}"
+                                        }
                                     },
                                     "cache": true
                                 }
@@ -259,7 +281,7 @@ The types refered to are provided according to *application payload type*:
 as well as more application payload types (*FUTURE*)
 
 * `call_progress`: WAMP call, any call updates sent by the caller subsequently and while the call is still active
-* `event_confirmation`: WAMP event confirmation sent by subscribers for subscribed-confirmed publications
+* `event_result`: WAMP event confirmation sent by subscribers for subscribed-confirmed publications
 
 and meta information parsed (in the authorizer)
 

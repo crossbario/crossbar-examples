@@ -55,6 +55,17 @@ table CandleResult
     value: Candle;
 }
 
+table ErrorInvalidPeriod
+{
+    reason: string (wampuri);
+    message: string;
+}
+
+table ErrorInvalidPeriodResult
+{
+    value: ErrorInvalidPeriod;
+}
+
 rpc_service ILimitOrderBookReplica (
     type: "interface",
     uuid: "6563cfac-498c-47cd-9ff1-24cbd0bdc6e5",

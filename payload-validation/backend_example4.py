@@ -105,12 +105,14 @@ class ExampleBackend(ApplicationSession):
         # according to validation type:
         # example4.bfs: trading.CandleResult
 
-        if 5 < period_dur < 10:
+        if period_dur == 6:
             # return invalid key in result
             candle['foobar_invalid'] = 'something'
-        elif 0 < period_dur <= 5:
+        elif period_dur == 7:
             # return invalid value type for valid key in result
             candle['price_open'] = 'something'
+        elif period_dur == 8:
+            raise ApplicationError('com.example.error1', 'Something bad has happened!')
         else:  # period_dur >= 10
             # return a valid result
             pass

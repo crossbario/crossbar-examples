@@ -37,7 +37,7 @@
                                     "validate": {
                                         "call": "trading.Period",
                                         "call_result": "trading.CandleResult",
-                                        "call_error": "trading.ErrorInvalidPeriod",
+                                        "call_error": "trading.ErrorInvalidPeriodResult",
                                         "extra": {
                                             "replica_oid": "{replica}",
                                             "book_oid": "{book}"

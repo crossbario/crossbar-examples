@@ -124,8 +124,8 @@ class ExampleClient(ApplicationSession):
         # test case 6: test call with invalid _result_ key present
         if True:
             try:
-                # calling with "5 < period_dur < 10" will make the callee return an invalid result key!
-                yield self.call(procedure, 7, txaio.time_ns())
+                # calling with "period_dur == 6" will make the callee return an invalid result key!
+                yield self.call(procedure, 6, txaio.time_ns())
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
                     if 'unexpected argument' not in e.args[0]:
@@ -140,9 +140,9 @@ class ExampleClient(ApplicationSession):
         # test case 7: test call with invalid _result_ type in (valid) key
         if True:
             try:
-                # calling with "0 < period_dur <= 5" will make the callee return an invalid result type
+                # calling with "period_dur == 7" will make the callee return an invalid result type
                 # in a valid result key!
-                yield self.call(procedure, 3, txaio.time_ns())
+                yield self.call(procedure, 7, txaio.time_ns())
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
                     if 'invalid type' not in e.args[0]:
@@ -153,6 +153,23 @@ class ExampleClient(ApplicationSession):
                     raise RuntimeError('test case 7: unexpected exception raised!')
             else:
                 raise RuntimeError('test case 7: invalid call did not raise!')
+
+        # test case 8: test call where callee raises exception
+        if True:
+            try:
+                # calling with "period_dur == 8" will make the callee return an invalid result type
+                # in a valid result key!
+                yield self.call(procedure, 8, txaio.time_ns())
+            except Exception as e:
+                if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                    if 'invalid type' not in e.args[0]:
+                        raise RuntimeError('test case 8: did not find expected error text in exception: "{}"'.format(e.args[0]))
+                    else:
+                        self.log.info('get_candle_history() - test case 8: ok, correct exception raised!')
+                else:
+                    raise RuntimeError('test case 8: unexpected exception raised!')
+            else:
+                raise RuntimeError('test case 8: invalid call did not raise!')
 
         self.leave()
 
