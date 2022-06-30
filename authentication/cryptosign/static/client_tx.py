@@ -1,6 +1,14 @@
+import os
+import binascii
+
 import txaio
 txaio.use_twisted()
 
+import nacl
+from nacl.exceptions import BadSignatureError
+from nacl.signing import VerifyKey
+
+from autobahn.util import hltype
 from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession
 from twisted.internet.error import ReactorNotRunning
@@ -45,14 +53,13 @@ class ClientSession(ApplicationSession):
             # hard-coded in the client, or come from a command line option.
             # 'trustroot': None,
 
-            # not yet implemented. for authenticating the router, this
-            # challenge will need to be signed by the router and send back
-            # in AUTHENTICATE for client to verify. A string with a hex
-            # encoded 32 bytes random value.
-            # 'challenge': None,
+            # for authenticating the router, this challenge will need to be signed by
+            # the router and send back in AUTHENTICATE for client to verify.
+            # A string with a hex encoded 32 bytes random value.
+            'challenge': binascii.b2a_hex(os.urandom(32)).decode(),
         }
 
-        # now request to join ..
+        # now request to join
         self.join(self.config.realm,
                   authmethods=['cryptosign'],
                   # authid may bee None for WAMP-cryptosign!
@@ -68,6 +75,23 @@ class ClientSession(ApplicationSession):
         # our trustroot, and check the signature provided by the
         # router for our previous challenge. if both are ok, everything
         # is fine - the router is authentic wrt our trustroot.
+        verify_key = None
+        if 'pubkey' in challenge.extra:
+            verify_key = VerifyKey(challenge.extra['pubkey'], encoder=nacl.encoding.HexEncoder)
+
+        if 'signature' in challenge.extra:
+            assert verify_key
+
+            signature = binascii.a2b_hex(challenge.extra['signature'])
+            # assert len(signature) == 96, 'unexpected length {} of signature'.format(len(signature))
+            try:
+                message = verify_key.verify(signature)
+            except BadSignatureError:
+                raise RuntimeError('invalid router signature for client challenge')
+            else:
+                self.log.info('{func} ok, successfully verified router signature for router public key {pubkey}',
+                              func=hltype(self.onChallenge),
+                              pubkey=challenge.extra['pubkey'])
 
         # sign the challenge with our private key.
         signed_challenge = self._key.sign_challenge(
