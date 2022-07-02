@@ -58,7 +58,7 @@ class ClientSession(ApplicationSession):
         }
         self.log.info('authenticating using authextra={authextra} and channel_binding={channel_binding} ..', authextra=extra, channel_binding=self._req_channel_binding)
 
-        # now request to join ..
+        # now request to join
         self.join(self.config.realm,
                   authmethods=['cryptosign'],
                   # authid may bee None for WAMP-cryptosign!
@@ -79,8 +79,9 @@ class ClientSession(ApplicationSession):
         assert challenge.extra['channel_binding'] == self._req_channel_binding
 
         # sign the challenge with our private key.
-        signed_challenge = self._key.sign_challenge(
-            self, challenge, channel_id_type=self._req_channel_binding)
+        signed_challenge = self._key.sign_challenge(challenge,
+                                                    channel_id=self.transport.transport_details.channel_id.get(self._req_channel_binding, None),
+                                                    channel_id_type=self._req_channel_binding)
 
         print(challenge)
         print(signed_challenge)

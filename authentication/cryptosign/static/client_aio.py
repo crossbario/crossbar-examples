@@ -69,8 +69,9 @@ class ClientSession(ApplicationSession):
         # is fine - the router is authentic wrt our trustroot.
 
         # sign the challenge with our private key.
-        signed_challenge = self._key.sign_challenge(
-            self, challenge, channel_id_type=ClientSession.CHANNEL_BINDING)
+        signed_challenge = self._key.sign_challenge(challenge,
+                                                    channel_id=self.transport.transport_details.channel_id.get(ClientSession.CHANNEL_BINDING, None),
+                                                    channel_id_type=ClientSession.CHANNEL_BINDING)
 
         # send back the signed challenge for verification
         return signed_challenge

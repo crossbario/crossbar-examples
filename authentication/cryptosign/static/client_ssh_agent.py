@@ -41,6 +41,9 @@ class ClientSession(ApplicationSession):
     A WAMP client component authenticating using WAMP-cryptosign using
     a private (Ed25519) key held in SSH agent.
     """
+    # when running over TLS, require TLS channel binding
+    # CHANNEL_BINDING = 'tls-unique'
+    CHANNEL_BINDING = None
 
     @inlineCallbacks
     def onConnect(self):
@@ -59,8 +62,8 @@ class ClientSession(ApplicationSession):
             # the router can identify us with the pubkey already
             'pubkey': self._key.public_key(),
 
-            # request channel binding
-            'channel_binding': 'tls-unique'
+            # when running over TLS, require TLS channel binding
+            'channel_binding': ClientSession.CHANNEL_BINDING,
         }
 
         # join and authenticate using WAMP-cryptosign
@@ -72,10 +75,12 @@ class ClientSession(ApplicationSession):
     def onChallenge(self, challenge):
         print("onChallenge(challenge={})".format(challenge))
 
-        # router has sent us a challenge .. sign it and return the signature
-        # the actual signing is done within SSH agent! that means: the private key
-        # is actually _never_ touched (other than by SSH agent itself)
-        return self._key.sign_challenge(self, challenge)
+        signed_challenge = self._key.sign_challenge(challenge,
+                                                    channel_id=self.transport.transport_details.channel_id.get(ClientSession.CHANNEL_BINDING, None),
+                                                    channel_id_type=ClientSession.CHANNEL_BINDING)
+
+        # send back the signed challenge for verification
+        return signed_challenge
 
     def onJoin(self, details):
         print("onJoin(details={})".format(details))
