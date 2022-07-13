@@ -36,6 +36,9 @@ class ClientSession(ApplicationSession):
             self.log.info("client public key loaded: {}".format(
                 self._key.public_key()))
 
+        # when running over TLS, require TLS channel binding: None or "tls-unique"
+        self._req_channel_binding = config.extra['channel_binding']
+
     def onConnect(self):
         self.log.info("connected to router")
 
@@ -71,7 +74,7 @@ class ClientSession(ApplicationSession):
             "authentication challenge received: {challenge}", challenge=challenge)
         # alright, we've got a challenge from the router.
 
-        # not yet implemented. check the trustchain the router provided against
+        # check the trustchain the router provided against
         # our trustroot, and check the signature provided by the
         # router for our previous challenge. if both are ok, everything
         # is fine - the router is authentic wrt our trustroot.
