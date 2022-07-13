@@ -1,10 +1,13 @@
 import os
 import binascii
+from binascii import b2a_hex
+from pprint import pformat
 
 import nacl
 from nacl.exceptions import BadSignatureError
 from nacl.signing import VerifyKey
 
+from twisted.internet.defer import inlineCallbacks
 from twisted.internet.error import ReactorNotRunning
 from twisted.internet import reactor
 
@@ -17,6 +20,11 @@ from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession
 from crossbar.common.twisted.endpoint import _create_tls_client_context
 
+from autobahn.wamp.cryptosign import CryptosignKey
+from autobahn.xbr import make_w3, EthereumKey
+from autobahn.xbr._secmod import SecurityModuleMemory
+from autobahn.xbr import create_eip712_delegate_certificate, create_eip712_authority_certificate
+
 
 class ClientSession(ApplicationSession):
 
@@ -24,43 +32,81 @@ class ClientSession(ApplicationSession):
         self.log.info('{func} initializing component: {config}', func=hltype(self.__init__), config=config)
         ApplicationSession.__init__(self, config)
 
-        # load the client private key (raw format)
-        try:
-            self._key = cryptosign.CryptosignKey.from_file(config.extra['key'])
-        except Exception as e:
-            self.log.error(
-                "could not load client private key: {log_failure}", log_failure=e)
-            self.leave()
+        self._key = None
+        self._eth_key = None
+        if False:
+            # load the client private key (raw format)
+            try:
+                self._key = cryptosign.CryptosignKey.from_file(config.extra['key'])
+            except Exception as e:
+                self.log.error(
+                    "could not load client private key: {log_failure}", log_failure=e)
+                self.leave()
+            else:
+                self.log.info("client public key loaded: {}".format(
+                    self._key.public_key()))
         else:
-            self.log.info("client public key loaded: {}".format(
-                self._key.public_key()))
+            self._sm: SecurityModuleMemory = SecurityModuleMemory.from_seedphrase(self.config.extra['seedphrase'], num_eth_keys=5, num_cs_keys=5)
 
-        # when running over TLS, require TLS channel binding: None or "tls-unique"
-        self._req_channel_binding = config.extra['channel_binding']
+        self._gw_config = {
+            'type': 'infura',
+            'key': os.environ.get('WEB3_INFURA_PROJECT_ID', ''),
+            'network': 'mainnet',
+        }
+        self._w3 = make_w3(self._gw_config)
 
+    @inlineCallbacks
     def onConnect(self):
         self.log.info('{func} connected to router', func=hltype(self.onConnect))
 
+        assert self._w3.isConnected()
+
+        yield self._sm.open()
+
+        self._eth_key: EthereumKey = self._sm[1]
+        self._key: CryptosignKey = self._sm[6]
+
+        chainId = self._w3.eth.chain_id
+        verifyingContract = binascii.a2b_hex('0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'[2:])
+        validFrom = self._w3.eth.block_number
+        delegate = self._eth_key.address(binary=True)
+        csPubKey = self._key.public_key(binary=True)
+        bootedAt = txaio.time_ns()
+
+        cert_data = create_eip712_delegate_certificate(chainId=chainId, verifyingContract=verifyingContract,
+                                                       validFrom=validFrom, delegate=delegate, csPubKey=csPubKey,
+                                                       bootedAt=bootedAt)
+
+        # print('\n\n{}\n\n'.format(pformat(cert_data)))
+
+        cert_sig = yield self._eth_key.sign_typed_data(cert_data, binary=False)
+
+        cert_data['message']['csPubKey'] = b2a_hex(cert_data['message']['csPubKey']).decode()
+        cert_data['message']['delegate'] = self._w3.toChecksumAddress(cert_data['message']['delegate'])
+        cert_data['message']['verifyingContract'] = self._w3.toChecksumAddress(cert_data['message']['verifyingContract'])
+
         # authentication extra information for wamp-cryptosign
-        #
         authextra = {
             # forward the client pubkey: required!
             'pubkey': self._key.public_key(),
 
             # when running over TLS, require TLS channel binding
-            'channel_binding': self._req_channel_binding,
+            'channel_binding': self.config.extra['channel_binding'],
 
             # not yet implemented. a public key the router should provide
-            # a trustchain for it's public key. the trustroot can eg be
+            # a trust chain for its public key. the trustroot can e.g. be
             # hard-coded in the client, or come from a command line option.
-            # 'trustroot': None,
+            'trustroot': self.config.extra['trustroot'],
+
+            # certificate chain beginning with delegate certificate for this client (the delegate)
+            'certificates': [(cert_data, cert_sig)],
 
             # for authenticating the router, this challenge will need to be signed by
             # the router and send back in AUTHENTICATE for client to verify.
             # A string with a hex encoded 32 bytes random value.
-            'challenge': binascii.b2a_hex(os.urandom(32)).decode(),
+            'challenge': self.config.extra['challenge'],
         }
-        self.log.info('authenticating using authextra={authextra} and channel_binding={channel_binding} ..', authextra=extra, channel_binding=self._req_channel_binding)
+        self.log.info('authenticating using authextra:\n\n{authextra}\n', authextra=pformat(authextra))
 
         # now request to join
         self.join(self.config.realm,
@@ -95,12 +141,12 @@ class ClientSession(ApplicationSession):
                               func=hltype(self.onChallenge),
                               pubkey=challenge.extra['pubkey'])
 
-        channel_id = self.transport.transport_details.channel_id.get(self._req_channel_binding, None)
+        channel_id = self.transport.transport_details.channel_id.get(self.config.extra['channel_binding'], None)
 
         # sign the challenge with our private key.
         signed_challenge = self._key.sign_challenge(challenge,
                                                     channel_id=channel_id,
-                                                    channel_id_type=self._req_channel_binding)
+                                                    channel_id_type=self.config.extra['channel_binding'])
 
         # send back the signed challenge for verification
         return signed_challenge
@@ -113,9 +159,14 @@ class ClientSession(ApplicationSession):
         self.log.info('*' * 80)
         self.leave()
 
+
+    @inlineCallbacks
     def onLeave(self, details):
         self.log.info("{func} session closed: {details}", func=hltype(self.onLeave), details=details)
         self.config.extra['exit_details'] = details
+
+        yield self._sm.close()
+
         self.disconnect()
 
     def onDisconnect(self):
@@ -141,6 +192,8 @@ if __name__ == '__main__':
                         help='Optional TLS channel binding, e.g. "tls-unique"')
     parser.add_argument('--trustroot', dest='trustroot', type=str, default=None,
                         help='Optional client trustroot, e.g. "0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57"')
+    parser.add_argument('--challenge', dest='challenge', action='store_true',
+                        default=False, help='Enable router challenge.')
     parser.add_argument('--authid', dest='authid', type=str, default=None,
                         help='The authid to connect under. If not provided, let the router auto-choose the authid.')
     parser.add_argument('--realm', dest='realm', type=str, default='devices',
@@ -162,8 +215,12 @@ if __name__ == '__main__':
     extra = {
         'channel_binding': options.channel_binding,
         'trustroot': options.trustroot,
+        'challenge': binascii.b2a_hex(os.urandom(32)).decode() if options.challenge else None,
         'authid': options.authid,
-        'key': options.key,
+
+        # 'key': options.key,
+        'seedphrase': "avocado style uncover thrive same grace crunch want essay reduce current edge",
+
         'exit_details': None,
     }
     print("Connecting to {}: requesting realm={}, authid={}".format(
