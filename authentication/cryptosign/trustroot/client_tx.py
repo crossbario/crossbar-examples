@@ -24,7 +24,7 @@ from crossbar.common.twisted.endpoint import _create_tls_client_context
 from autobahn.wamp.cryptosign import CryptosignKey
 from autobahn.xbr import make_w3, EthereumKey
 from autobahn.xbr._secmod import SecurityModuleMemory
-from autobahn.xbr import create_eip712_delegate_certificate, create_eip712_authority_certificate
+from autobahn.xbr import create_eip712_delegate_certificate, create_eip712_authority_certificate, EIP712AuthorityCertificate
 
 
 class ClientSession(ApplicationSession):
@@ -35,6 +35,7 @@ class ClientSession(ApplicationSession):
 
         self._key = None
         self._eth_key = None
+        self._trustroot_eth_key = None
         if False:
             # load the client private key (raw format)
             try:
@@ -60,82 +61,136 @@ class ClientSession(ApplicationSession):
     @inlineCallbacks
     def onConnect(self):
         self.log.info('{func} connected to router', func=hltype(self.onConnect))
+        try:
+            assert self._w3.isConnected()
 
-        assert self._w3.isConnected()
+            yield self._sm.open()
 
-        yield self._sm.open()
+            # keys needed to create all certificates in certificate chain
+            #
+            self._trustroot_eth_key: EthereumKey = self._sm[0]
+            self._eth_key: EthereumKey = self._sm[1]
+            self._key: CryptosignKey = self._sm[6]
 
-        self._eth_key: EthereumKey = self._sm[1]
-        self._key: CryptosignKey = self._sm[6]
+            # data needed for delegate certificate: cert1
+            #
+            chainId = self._w3.eth.chain_id
+            verifyingContract = a2b_hex('0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'[2:])
+            validFrom = self._w3.eth.block_number
+            delegate = self._eth_key.address(binary=True)
+            csPubKey = self._key.public_key(binary=True)
+            bootedAt = txaio.time_ns()
+            delegateMeta = ''
 
-        chainId = self._w3.eth.chain_id
-        verifyingContract = a2b_hex('0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'[2:])
-        validFrom = self._w3.eth.block_number
-        delegate = self._eth_key.address(binary=True)
-        csPubKey = self._key.public_key(binary=True)
-        bootedAt = txaio.time_ns()
+            # data needed for intermediate authority certificate: cert2
+            #
+            issuer_cert2 = self._trustroot_eth_key.address(binary=True)
+            subject_cert2 = delegate
+            realm_cert2 = a2b_hex('0xA6e693CC4A2b4F1400391a728D26369D9b82ef96'[2:])
+            capabilities_cert2 = EIP712AuthorityCertificate.CAPABILITY_PUBLIC_RELAY | EIP712AuthorityCertificate.CAPABILITY_PRIVATE_RELAY
+            meta_cert2 = ''
 
-        cert1_data = create_eip712_delegate_certificate(chainId=chainId, verifyingContract=verifyingContract,
-                                                        validFrom=validFrom, delegate=delegate, csPubKey=csPubKey,
-                                                        bootedAt=bootedAt)
+            # data needed for root authority certificate: cert3
+            #
+            issuer_cert3 = self._trustroot_eth_key.address(binary=True)
+            subject_cert3 = issuer_cert3
+            realm_cert3 = realm_cert2
+            capabilities_cert3 = EIP712AuthorityCertificate.CAPABILITY_ROOT_CA | EIP712AuthorityCertificate.CAPABILITY_INTERMEDIATE_CA | EIP712AuthorityCertificate.CAPABILITY_PUBLIC_RELAY | EIP712AuthorityCertificate.CAPABILITY_PRIVATE_RELAY | EIP712AuthorityCertificate.CAPABILITY_PROVIDER | EIP712AuthorityCertificate.CAPABILITY_CONSUMER
+            meta_cert3 = ''
 
-        # print('\n\n{}\n\n'.format(pformat(cert1_data)))
+            # delegate certificate
+            #
+            cert1_data = create_eip712_delegate_certificate(chainId=chainId, verifyingContract=verifyingContract,
+                                                            validFrom=validFrom, delegate=delegate, csPubKey=csPubKey,
+                                                            bootedAt=bootedAt, meta=delegateMeta)
 
-        cert1_sig = yield self._eth_key.sign_typed_data(cert1_data, binary=False)
+            # print('\n\n{}\n\n'.format(pformat(cert1_data)))
 
-        cert1_data['message']['csPubKey'] = b2a_hex(cert1_data['message']['csPubKey']).decode()
-        cert1_data['message']['delegate'] = self._w3.toChecksumAddress(cert1_data['message']['delegate'])
-        cert1_data['message']['verifyingContract'] = self._w3.toChecksumAddress(
-            cert1_data['message']['verifyingContract'])
+            cert1_sig = yield self._eth_key.sign_typed_data(cert1_data, binary=False)
 
-        authority = a2b_hex('0xe78ea2fE1533D4beD9A10d91934e109A130D0ad8'[2:])
-        domain = a2b_hex('0x5f61F4c611501c1084738c0c8c5EbB5D3d8f2B6E'[2:])
-        realm = a2b_hex('0xA6e693CC4A2b4F1400391a728D26369D9b82ef96'[2:])
-        role = 'consumer'
-        reservation = a2b_hex('0x52d66f36A7927cF9612e1b40bD6549d08E0513Ff'[2:])
+            cert1_data['message']['csPubKey'] = b2a_hex(cert1_data['message']['csPubKey']).decode()
+            cert1_data['message']['delegate'] = self._w3.toChecksumAddress(cert1_data['message']['delegate'])
+            cert1_data['message']['verifyingContract'] = self._w3.toChecksumAddress(
+                cert1_data['message']['verifyingContract'])
 
-        cert2_data = create_eip712_authority_certificate(chainId=chainId, verifyingContract=verifyingContract,
-                                                         validFrom=validFrom, authority=authority, delegate=delegate,
-                                                         domain=domain, realm=realm, role=role, reservation=reservation)
+            authority = self._trustroot_eth_key.address(binary=True)
+            domain = a2b_hex('0x5f61F4c611501c1084738c0c8c5EbB5D3d8f2B6E'[2:])
+            realm = a2b_hex('0xA6e693CC4A2b4F1400391a728D26369D9b82ef96'[2:])
+            role = 'consumer'
+            reservation = a2b_hex('0x52d66f36A7927cF9612e1b40bD6549d08E0513Ff'[2:])
 
-        # print('\n\n{}\n\n'.format(pformat(cert2_data)))
+            # intermediate CA certificate
+            #
+            cert2_data = create_eip712_authority_certificate(chainId=chainId, verifyingContract=verifyingContract,
+                                                             validFrom=validFrom, issuer=issuer_cert2,
+                                                             subject=subject_cert2,
+                                                             realm=realm_cert2, capabilities=capabilities_cert2,
+                                                             meta=meta_cert2)
 
-        cert2_sig = yield self._eth_key.sign_typed_data(cert2_data, binary=False)
+            # print('\n\n{}\n\n'.format(pformat(cert2_data)))
 
-        cert2_data['message']['authority'] = self._w3.toChecksumAddress(cert2_data['message']['authority'])
-        cert2_data['message']['domain'] = self._w3.toChecksumAddress(cert2_data['message']['domain'])
-        cert2_data['message']['realm'] = self._w3.toChecksumAddress(cert2_data['message']['realm'])
-        cert2_data['message']['reservation'] = self._w3.toChecksumAddress(cert2_data['message']['reservation'])
+            cert2_sig = yield self._trustroot_eth_key.sign_typed_data(cert2_data, binary=False)
 
-        # authentication extra information for wamp-cryptosign
-        authextra = {
-            # forward the client pubkey: required!
-            'pubkey': self._key.public_key(),
+            cert2_data['message']['verifyingContract'] = self._w3.toChecksumAddress(
+                cert2_data['message']['verifyingContract'])
+            cert2_data['message']['issuer'] = self._w3.toChecksumAddress(cert2_data['message']['issuer'])
+            cert2_data['message']['subject'] = self._w3.toChecksumAddress(cert2_data['message']['subject'])
+            cert2_data['message']['realm'] = self._w3.toChecksumAddress(cert2_data['message']['realm'])
 
-            # when running over TLS, require TLS channel binding
-            'channel_binding': self.config.extra['channel_binding'],
+            # create root authority certificate
+            #
+            cert3_data = create_eip712_authority_certificate(chainId=chainId, verifyingContract=verifyingContract,
+                                                             validFrom=validFrom, issuer=issuer_cert3,
+                                                             subject=subject_cert3,
+                                                             realm=realm_cert3, capabilities=capabilities_cert3,
+                                                             meta=meta_cert3)
 
-            # not yet implemented. a public key the router should provide
-            # a trust chain for its public key. the trustroot can e.g. be
-            # hard-coded in the client, or come from a command line option.
-            'trustroot': self.config.extra['trustroot'],
+            cert3_sig = yield self._trustroot_eth_key.sign_typed_data(cert3_data, binary=False)
 
-            # certificate chain beginning with delegate certificate for this client (the delegate)
-            'certificates': [(cert1_data, cert1_sig), (cert2_data, cert2_sig)],
+            cert3_data['message']['verifyingContract'] = self._w3.toChecksumAddress(
+                cert3_data['message']['verifyingContract'])
+            cert3_data['message']['issuer'] = self._w3.toChecksumAddress(cert3_data['message']['issuer'])
+            cert3_data['message']['subject'] = self._w3.toChecksumAddress(cert3_data['message']['subject'])
+            cert3_data['message']['realm'] = self._w3.toChecksumAddress(cert3_data['message']['realm'])
 
-            # for authenticating the router, this challenge will need to be signed by
-            # the router and send back in AUTHENTICATE for client to verify.
-            # A string with a hex encoded 32 bytes random value.
-            'challenge': self.config.extra['challenge'],
-        }
-        self.log.info('authenticating using authextra:\n\n{authextra}\n', authextra=pformat(authextra))
+            # create certificates chain
+            #
+            certificates = [(cert1_data, cert1_sig), (cert2_data, cert2_sig), (cert3_data, cert3_sig)]
 
-        # now request to join
-        self.join(self.config.realm,
-                  authmethods=['cryptosign'],
-                  # authid may bee None for WAMP-cryptosign!
-                  authid=self.config.extra.get('authid', None),
-                  authextra=authextra)
+            # authentication extra information for wamp-cryptosign
+            authextra = {
+                # forward the client pubkey: required!
+                'pubkey': self._key.public_key(binary=False),
+
+                # when running over TLS, require TLS channel binding
+                'channel_binding': self.config.extra['channel_binding'],
+
+                # not yet implemented. a public key the router should provide
+                # a trust chain for its public key. the trustroot can e.g. be
+                # hard-coded in the client, or come from a command line option.
+                # 'trustroot': self.config.extra['trustroot'],
+                'trustroot': self._trustroot_eth_key.address(binary=False),
+
+                # certificate chain beginning with delegate certificate for this client (the delegate)
+                'certificates': certificates,
+
+                # for authenticating the router, this challenge will need to be signed by
+                # the router and send back in AUTHENTICATE for client to verify.
+                # A string with a hex encoded 32 bytes random value.
+                'challenge': self.config.extra['challenge'],
+            }
+            self.log.info('authenticating using authextra:\n\n{authextra}\n', authextra=pformat(authextra))
+
+            # now request to join
+            self.join(self.config.realm,
+                      authmethods=['cryptosign'],
+                      # authid may be None for WAMP-cryptosign!
+                      # authid=self.config.extra.get('authid', None),
+                      authrole='user',
+                      authextra=authextra)
+        except:
+            self.log.failure()
+            raise
 
     def onChallenge(self, challenge):
         self.log.info('{func} authentication challenge received: {challenge}',

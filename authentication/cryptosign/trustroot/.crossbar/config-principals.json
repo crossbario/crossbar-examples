@@ -5,35 +5,10 @@
             "type": "router",
             "realms": [
                 {
-                    "name": "realm1",
+                    "name": "devices",
                     "roles": [
                         {
-                            "name": "user",
-                            "permissions": [
-                                {
-                                    "uri": "",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "call": true,
-                                        "register": true,
-                                        "publish": true,
-                                        "subscribe": true
-                                    },
-                                    "disclose": {
-                                        "caller": false,
-                                        "publisher": false
-                                    },
-                                    "cache": true
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "realm2",
-                    "roles": [
-                        {
-                            "name": "user",
+                            "name": "device",
                             "permissions": [
                                 {
                                     "uri": "",
@@ -75,12 +50,15 @@
                     "auth": {
                         "cryptosign": {
                            "type": "static",
-                           "trustroots": {
-                               "0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57": {
-                                   "realm": "realm1",
-                                   "role": "user"
-                               }
-                           }
+                           "principals": {
+                               "client01@example.com": {
+                                   "realm": "devices",
+                                   "role": "device",
+                                   "authorized_keys": [
+                                       "12ae0184b180e9a9c5e45be4a1afbce3c6491320063701cd9c4011a777d04089"
+                                    ]
+                                }
+                            }
                         }
                     }
                 }

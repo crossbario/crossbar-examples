@@ -17,10 +17,6 @@ from twisted.internet import reactor
 
 class ClientSession(ApplicationSession):
 
-    # when running over TLS, require TLS channel binding
-    # CHANNEL_BINDING = 'tls-unique'
-    CHANNEL_BINDING = None
-
     def __init__(self, config=None):
         self.log.info("initializing component: {config}", config=config)
         ApplicationSession.__init__(self, config)
@@ -37,7 +33,7 @@ class ClientSession(ApplicationSession):
                 self._key.public_key()))
 
         # when running over TLS, require TLS channel binding: None or "tls-unique"
-        self._req_channel_binding = config.extra['channel_binding']
+        self._req_channel_binding = config.extra.get('channel_binding', None)
 
     def onConnect(self):
         self.log.info("connected to router")
@@ -49,7 +45,7 @@ class ClientSession(ApplicationSession):
             'pubkey': self._key.public_key(),
 
             # when running over TLS, require TLS channel binding
-            'channel_binding': ClientSession.CHANNEL_BINDING,
+            'channel_binding': self._req_channel_binding,
 
             # not yet implemented. a public key the router should provide
             # a trustchain for it's public key. the trustroot can eg be
@@ -98,8 +94,8 @@ class ClientSession(ApplicationSession):
 
         # sign the challenge with our private key.
         signed_challenge = self._key.sign_challenge(challenge,
-                                                    channel_id=self.transport.transport_details.channel_id.get(ClientSession.CHANNEL_BINDING, None),
-                                                    channel_id_type=ClientSession.CHANNEL_BINDING)
+                                                    channel_id=self.transport.transport_details.channel_id.get(self._req_channel_binding, None),
+                                                    channel_id_type=self._req_channel_binding)
 
         # send back the signed challenge for verification
         return signed_challenge
