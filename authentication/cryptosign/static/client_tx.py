@@ -1,6 +1,14 @@
+import os
+import binascii
+
 import txaio
 txaio.use_twisted()
 
+import nacl
+from nacl.exceptions import BadSignatureError
+from nacl.signing import VerifyKey
+
+from autobahn.util import hltype
 from autobahn.wamp import cryptosign
 from autobahn.twisted.wamp import ApplicationSession
 from twisted.internet.error import ReactorNotRunning
@@ -8,10 +16,6 @@ from twisted.internet import reactor
 
 
 class ClientSession(ApplicationSession):
-
-    # when running over TLS, require TLS channel binding
-    # CHANNEL_BINDING = 'tls-unique'
-    CHANNEL_BINDING = None
 
     def __init__(self, config=None):
         self.log.info("initializing component: {config}", config=config)
@@ -28,6 +32,9 @@ class ClientSession(ApplicationSession):
             self.log.info("client public key loaded: {}".format(
                 self._key.public_key()))
 
+        # when running over TLS, require TLS channel binding: None or "tls-unique"
+        self._req_channel_binding = config.extra.get('channel_binding', None)
+
     def onConnect(self):
         self.log.info("connected to router")
 
@@ -38,21 +45,20 @@ class ClientSession(ApplicationSession):
             'pubkey': self._key.public_key(),
 
             # when running over TLS, require TLS channel binding
-            'channel_binding': ClientSession.CHANNEL_BINDING,
+            'channel_binding': self._req_channel_binding,
 
             # not yet implemented. a public key the router should provide
             # a trustchain for it's public key. the trustroot can eg be
             # hard-coded in the client, or come from a command line option.
             # 'trustroot': None,
 
-            # not yet implemented. for authenticating the router, this
-            # challenge will need to be signed by the router and send back
-            # in AUTHENTICATE for client to verify. A string with a hex
-            # encoded 32 bytes random value.
-            # 'challenge': None,
+            # for authenticating the router, this challenge will need to be signed by
+            # the router and send back in AUTHENTICATE for client to verify.
+            # A string with a hex encoded 32 bytes random value.
+            'challenge': binascii.b2a_hex(os.urandom(32)).decode(),
         }
 
-        # now request to join ..
+        # now request to join
         self.join(self.config.realm,
                   authmethods=['cryptosign'],
                   # authid may bee None for WAMP-cryptosign!
@@ -64,14 +70,32 @@ class ClientSession(ApplicationSession):
             "authentication challenge received: {challenge}", challenge=challenge)
         # alright, we've got a challenge from the router.
 
-        # not yet implemented. check the trustchain the router provided against
+        # check the trustchain the router provided against
         # our trustroot, and check the signature provided by the
         # router for our previous challenge. if both are ok, everything
         # is fine - the router is authentic wrt our trustroot.
+        verify_key = None
+        if 'pubkey' in challenge.extra:
+            verify_key = VerifyKey(challenge.extra['pubkey'], encoder=nacl.encoding.HexEncoder)
+
+        if 'signature' in challenge.extra:
+            assert verify_key
+
+            signature = binascii.a2b_hex(challenge.extra['signature'])
+            # assert len(signature) == 96, 'unexpected length {} of signature'.format(len(signature))
+            try:
+                message = verify_key.verify(signature)
+            except BadSignatureError:
+                raise RuntimeError('invalid router signature for client challenge')
+            else:
+                self.log.info('{func} ok, successfully verified router signature for router public key {pubkey}',
+                              func=hltype(self.onChallenge),
+                              pubkey=challenge.extra['pubkey'])
 
         # sign the challenge with our private key.
-        signed_challenge = self._key.sign_challenge(
-            self, challenge, channel_id_type=ClientSession.CHANNEL_BINDING)
+        signed_challenge = self._key.sign_challenge(challenge,
+                                                    channel_id=self.transport.transport_details.channel_id.get(self._req_channel_binding, None),
+                                                    channel_id_type=self._req_channel_binding)
 
         # send back the signed challenge for verification
         return signed_challenge

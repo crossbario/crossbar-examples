@@ -1,4 +1,4 @@
-Mi 15. Jun 03:05:24 CEST 2022
+Mi 20. Jul 17:12:41 CEST 2022
 
 Crossbar.io WAMP Authentication Test Summary:
 =============================================
@@ -21,6 +21,8 @@ wamp-cryptosign-tls-tx-cnlbin-none-good:     OK
 wamp-cryptosign-tls-tx-cnlbin-none-bad:      OK
 wamp-cryptosign-tls-tx-cnlbin-unique-good:   OK
 wamp-cryptosign-tls-tx-cnlbin-unique-bad:    OK
+wamp-cryptosign-trustroot-tx-cnlbin-unique-good:   OK
+wamp-cryptosign-trustroot-tx-cnlbin-unique-bad:    OK
 wamp-scram-tx-good:                          OK
 wamp-scram-tx-bad:                           OK
 wamp-ticket-static-good:                     OK

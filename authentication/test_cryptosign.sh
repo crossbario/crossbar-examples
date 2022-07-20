@@ -1,5 +1,9 @@
 #!/bin/sh
 
+SEEDPHRASE="avocado style uncover thrive same grace crunch want essay reduce current edge"
+BAD_SEEDPHRASE="edge current reduce essay want crunch grace same thrive uncover style avocado"
+
+
 ########################################################################################
 ##
 ## WAMP-Cryptosign static (using Twisted with authid)
@@ -126,6 +130,22 @@ crossbar stop  --cbdir=./cryptosign/tls/.crossbar || true
 
 ########################################################################################
 ##
+## WAMP-Cryptosign with Trustroot (using Twisted with channel binding "tls-unique")
+##
+crossbar start --cbdir=./cryptosign/trustroot/.crossbar &
+sleep 10
+
+python ./cryptosign/trustroot/client_tx.py --url wss://localhost:8080 --seedphrase "${SEEDPHRASE}" --channel_binding="tls-unique" --challenge --trustroot 0x2F070c2f49a59159A0346396f1139203355ACA43
+wamp_cryptosign_trustroot_tx_cnlbind_unique_good=$?
+
+python ./cryptosign/trustroot/client_tx.py --url wss://localhost:8080 --seedphrase "${BAD_SEEDPHRASE}" --channel_binding="tls-unique" --challenge --trustroot 0x2F070c2f49a59159A0346396f1139203355ACA43
+wamp_cryptosign_trustroot_tx_cnlbind_unique_bad=$?
+
+crossbar stop  --cbdir=./cryptosign/trustroot/.crossbar || true
+
+
+########################################################################################
+##
 ## Test Summary
 ##
 
@@ -155,3 +175,6 @@ exec >> test.log
 # [ $wamp_cryptosign_tls_aio_cnlbind_none_bad    -eq 1 ] && echo "wamp-cryptosign-tls-aio-cnlbin-none-bad:       OK" || echo "wamp-cryptosign-tls-aio-cnlbin-none-bad:       FAIL"
 # [ $wamp_cryptosign_tls_aio_cnlbind_unique_good -eq 0 ] && echo "wamp-cryptosign-tls-aio-cnlbin-unique-good:    OK" || echo "wamp-cryptosign-tls-aio-cnlbin-unique-good:    FAIL"
 # [ $wamp_cryptosign_tls_aio_cnlbind_unique_bad  -eq 1 ] && echo "wamp-cryptosign-tls-aio-cnlbin-unique-bad:     OK" || echo "wamp-cryptosign-tls-aio-cnlbin-unique-bad:     FAIL"
+
+[ $wamp_cryptosign_trustroot_tx_cnlbind_unique_good  -eq 0 ] && echo "wamp-cryptosign-trustroot-tx-cnlbin-unique-good:   OK" || echo "wamp-cryptosign-trustroot-tx-cnlbin-unique-good:    FAIL"
+[ $wamp_cryptosign_trustroot_tx_cnlbind_unique_bad   -eq 1 ] && echo "wamp-cryptosign-trustroot-tx-cnlbin-unique-bad:    OK" || echo "wamp-cryptosign-trustroot-tx-cnlbin-unique-bad:     FAIL"

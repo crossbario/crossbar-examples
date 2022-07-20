@@ -207,7 +207,7 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "backend.ExampleBackend",
+                    "classname": "backend_example4.ExampleBackend",
                     "realm": "realm1",
                     "extra": {
                     },

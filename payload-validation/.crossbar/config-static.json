@@ -37,7 +37,7 @@
                                     "validate": {
                                         "call": "trading.Period",
                                         "call_result": "trading.CandleResult",
-                                        "call_error": "trading.ErrorInvalidPeriod",
+                                        "call_error": "trading.ErrorInvalidPeriodResult",
                                         "extra": {
                                             "replica_oid": "{replica}",
                                             "book_oid": "{book}"
@@ -51,7 +51,7 @@
                             "name": "backend",
                             "permissions": [
                                 {
-                                    "uri": "com.example.private.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick",
+                                    "uri": "com.example.private.replica.ba3b1e9f-3006-4eae-ae88-cf5896b36342.clock.ba3b1e9f-3006-4eae-ae88-cf5896b36342.on_clock_tick",
                                     "match": "exact",
                                     "allow": {
                                         "call": false,
@@ -135,18 +135,6 @@
                         "/": {
                             "type": "static",
                             "directory": "../web"
-                        },
-                        "catalog1": {
-                            "type": "catalog",
-                            "filename": "../catalogs/example/schema/example1.bfbs"
-                        },
-                        "catalog2": {
-                            "type": "catalog",
-                            "filename": "../catalogs/example/schema/example2.bfbs"
-                        },
-                        "catalog3": {
-                            "type": "catalog",
-                            "filename": "../catalogs/example/schema/example3.bfbs"
                         },
                         "catalog4": {
                             "type": "catalog",
@@ -233,7 +221,7 @@
             "components": [
                 {
                     "type": "class",
-                    "classname": "backend.ExampleBackend",
+                    "classname": "backend_example4.ExampleBackend",
                     "realm": "realm1",
                     "extra": {
                     },

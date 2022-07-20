@@ -7,10 +7,6 @@ txaio.use_asyncio()
 
 class ClientSession(ApplicationSession):
 
-    # when running over TLS, require TLS channel binding
-    CHANNEL_BINDING = 'tls-unique'
-    # CHANNEL_BINDING = None
-
     def __init__(self, config=None):
         self.log.info("initializing component: {config}", config=config)
         ApplicationSession.__init__(self, config)
@@ -75,8 +71,9 @@ class ClientSession(ApplicationSession):
         assert challenge.extra['channel_binding'] == self._req_channel_binding
 
         # sign the challenge with our private key.
-        signed_challenge = self._key.sign_challenge(
-            self, challenge, channel_id_type=ClientSession.CHANNEL_BINDING)
+        signed_challenge = self._key.sign_challenge(challenge,
+                                                    channel_id=self.transport.transport_details.channel_id.get(self._req_channel_binding, None),
+                                                    channel_id_type=self._req_channel_binding)
 
         print(challenge)
         print(signed_challenge)

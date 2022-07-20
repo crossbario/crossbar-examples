@@ -156,8 +156,13 @@ class ExampleBackend(ApplicationSession):
             'price_var_volw': 1.,
         }
         if 5 < period_dur < 10:
+            # return invalid key in result
             candle['foobar_invalid'] = 'something'
         elif 0 < period_dur <= 5:
+            # return invalid value type for valid key in result
             candle['price_open'] = 'something'
+        else:  # period_dur >= 10
+            # return a valid result
+            pass
 
         return candle

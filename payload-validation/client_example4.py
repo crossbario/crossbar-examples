@@ -4,8 +4,6 @@ import uuid
 from typing import Optional
 
 import txaio
-from txaio import time_ns
-
 txaio.use_twisted()
 
 from twisted.internet import reactor
@@ -14,9 +12,8 @@ from twisted.internet.defer import inlineCallbacks
 
 from autobahn.util import hltype, hlval
 from autobahn.wamp import cryptosign
-from autobahn.wamp.types import CloseDetails, EventDetails
+from autobahn.wamp.types import CloseDetails
 from autobahn.wamp.exception import ApplicationError
-from autobahn.twisted.util import sleep
 from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
 
 
@@ -63,43 +60,10 @@ class ExampleClient(ApplicationSession):
     def onJoin(self, session_details):
         self.log.info('{func} session joined:\n{details}', func=hltype(self.onJoin), details=session_details)
 
-        if False:
-            for i in range(5):
-                value = yield self.call('com.example.private.get_time')
-                self.log.info('get_time(): {value}', value=hlval(value))
-                yield sleep(.5)
-
-            value = yield self.call('com.example.private.add2', 23, 666)
-            self.log.info('add2(23, 666): {value}', value=hlval(value))
-
-            t0 = txaio.time_ns()
-            value = yield self.call('com.example.private.slow_square', 16, 0.5)
-            t1 = txaio.time_ns()
-            duration = (t1 - t0) / 10**6
-            self.log.info('slow_square(16): {value} in {duration} ms', value=hlval(value), duration=hlval(duration))
-
-            def on_message_changed(notification, event_details: Optional[EventDetails] = None):
-                self.log.info('{func}: {notification}\n{details}',
-                              func=hltype(on_message_changed),
-                              notification=notification,
-                              details=event_details)
-
-            yield self.subscribe(on_message_changed, 'com.example.private.on_message_changed')
-
-            value = yield self.call('com.example.private.set_message',
-                                    'Der Räuber Hotzenplotz ist da! ({})'.format(t0))
-            self.log.info('set_message(): {value}', value=hlval(value))
-
-        # FIXME: wamp.error.invalid_argument: call result from procedure ...
-        # clock_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
-        # result = yield self.call('eth.pydefi.clock.{}.get_clock_address'.format(clock_oid))
-        # self.log.info('get_clock_address(): {result}', result=hlval(result))
-
+        # test "get_candle_history (Period): CandleResult" in example4.fbs
+        #
         replica_oid = uuid.UUID('ba3b1e9f-3006-4eae-ae88-cf5896b36342')
         book_oid = uuid.UUID('a17f0b45-1ed2-4b1a-9a7d-c112e8cd5d9b')
-
-        # see "get_candle_history (Period): CandleResult" in example4.fbs
-        #
         procedure = 'com.example.private.replica.{}.book.{}.get_candle_history'.format(replica_oid, book_oid)
 
         # test case 1: test valid call
@@ -160,8 +124,8 @@ class ExampleClient(ApplicationSession):
         # test case 6: test call with invalid _result_ key present
         if True:
             try:
-                # calling with "5 < period_dur < 10" will make the callee return an invalid result key!
-                yield self.call(procedure, 7, txaio.time_ns())
+                # calling with "period_dur == 6" will make the callee return an invalid result key!
+                yield self.call(procedure, 6, txaio.time_ns())
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
                     if 'unexpected argument' not in e.args[0]:
@@ -176,9 +140,9 @@ class ExampleClient(ApplicationSession):
         # test case 7: test call with invalid _result_ type in (valid) key
         if True:
             try:
-                # calling with "0 < period_dur <= 5" will make the callee return an invalid result type
+                # calling with "period_dur == 7" will make the callee return an invalid result type
                 # in a valid result key!
-                yield self.call(procedure, 3, txaio.time_ns())
+                yield self.call(procedure, 7, txaio.time_ns())
             except Exception as e:
                 if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
                     if 'invalid type' not in e.args[0]:
@@ -189,6 +153,23 @@ class ExampleClient(ApplicationSession):
                     raise RuntimeError('test case 7: unexpected exception raised!')
             else:
                 raise RuntimeError('test case 7: invalid call did not raise!')
+
+        # test case 8: test call where callee raises exception
+        if True:
+            try:
+                # calling with "period_dur == 8" will make the callee return an invalid result type
+                # in a valid result key!
+                yield self.call(procedure, 8, txaio.time_ns())
+            except Exception as e:
+                if isinstance(e, ApplicationError) and e.error == 'wamp.error.invalid_argument':
+                    if 'invalid type' not in e.args[0]:
+                        raise RuntimeError('test case 8: did not find expected error text in exception: "{}"'.format(e.args[0]))
+                    else:
+                        self.log.info('get_candle_history() - test case 8: ok, correct exception raised!')
+                else:
+                    raise RuntimeError('test case 8: unexpected exception raised!')
+            else:
+                raise RuntimeError('test case 8: invalid call did not raise!')
 
         self.leave()
 

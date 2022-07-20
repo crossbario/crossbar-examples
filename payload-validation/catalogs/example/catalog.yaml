@@ -14,9 +14,6 @@ description: An example of a WAMP API catalog.
 # FlatBuffers schemas compiled into binary schema reflection format
 # (see https://github.com/google/flatbuffers/blob/master/reflection/reflection.fbs)
 schemas:
-  - schema/example1.bfbs
-  - schema/example2.bfbs
-  - schema/example3.bfbs
   - schema/example4.bfbs
 
 # Catalog author
