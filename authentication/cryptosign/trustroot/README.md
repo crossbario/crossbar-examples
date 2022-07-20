@@ -1,10 +1,30 @@
-# WAMP-cryptosign over TLS authentication
+# WAMP-cryptosign with certificates and trustroot
 
-*Last tested: 2020/08/18 using Crossbar.io v20.8.2*
+*Last tested: 2022/07/20 using Crossbar.io 22.7.1.dev1*
 
------
+See [here](https://github.com/wamp-proto/wamp-proto/pull/413).
 
-WAMP-cryptosign over TLS authentication example.
+## Configuration
+
+To configure the use of trustroots, add a configuration item for `cryptosign` authentication specifying a map `trustroots` with accepted Ethereum (checksummed) addresses mapping to the principals (realm, authrole and optional authextra) for authentication:
+
+```
+"auth": {
+    "cryptosign": {
+        "type": "static",
+        "trustroots": {
+            "0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57": {
+                "realm": "realm1",
+                "role": "user"
+            }
+        }
+    }
+}
+```
+
+If the client presents an EIP712 certificate chain starting with a delegate certificate for the client's own key, and ending with a self-signed root CA certificate for address `0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57`, grant access to the client on realm `"realm1"` with authrole `"user"`, and with the client's delegate address as authid .
+
+## How to test
 
 In a first terminal, start a [Crossbar.io node](.crossbar/config.json) with a TLS transport listening
 on port 8080, and using a [self-signed certificate](.crossbar/client.crt):
@@ -16,81 +36,20 @@ make crossbar
 In a second terminal, start the clients
 
 ```console
-make clients
+make client_tx_cnlbind_unique
 ```
 
-This will run the following clients in series:
+You should see the following message in the client logs:
 
-* **Twisted** example over TLS, but *without TLS channel binding*: [python client_tx.py](client_tx.py)
-* **Twisted** example over TLS and *with "tls-unique" TLS channel binding*: [python client_tx.py --channel_binding="tls-unique"](client_tx.py)
-* **asyncio** example over TLS, but *without TLS channel binding*: [python client_aio.py](client_aio.py)
-* **asyncio** example over TLS and *with "tls-unique" TLS channel binding*: [python client_aio.py --channel_binding="tls-unique"](client_aio.py)
+```
+...
+********************************************************************************
+2022-07-20T22:53:36+0200 OK, successfully authenticated with WAMP-cryptosign:
 
-```console
-(cpy382_1) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication/cryptosign/tls$ make clients
-python client_tx.py --url wss://localhost:8080 --key .keys/client01.key
+    realm="realm1"
+    authrole="user"
+    authid="0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6"
 
-2020-08-18T18:53:56+0200 Connecting to wss://localhost:8080: requesting realm=None, authid=None
-2020-08-18T18:53:56+0200 TLS client using explicit trust (2 certificates)
-2020-08-18T18:53:56+0200 TLS client trust root CA certificate loaded from '/home/oberstet/scm/crossbario/crossbar-examples/authentication/cryptosign/tls/.crossbar/intermediate.cert.pem'
-2020-08-18T18:53:56+0200 TLS client trust root CA certificate loaded from '/home/oberstet/scm/crossbario/crossbar-examples/authentication/cryptosign/tls/.crossbar/ca.cert.pem'
-2020-08-18T18:53:56+0200 initializing component: ComponentConfig(realm=<None>, extra={'channel_binding': None, 'authid': None, 'key': '.keys/client01.key'}, keyring=None, controller=None, shared=None, runner=<autobahn.twisted.wamp.ApplicationRunner object at 0x7f761bbbd670>)
-2020-08-18T18:53:56+0200 client public key loaded: 545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122
-2020-08-18T18:53:56+0200 connected to router
-2020-08-18T18:53:56+0200 authenticating using authextra={'pubkey': '545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122', 'channel_binding': None} ..
-2020-08-18T18:53:56+0200 authentication challenge received: Challenge(method=cryptosign, extra={'challenge': '5f35962096a5e97611c92b8f533b46e3b9a9a1be229de873d637cc9cbd972384', 'channel_binding': None})
-2020-08-18T18:53:56+0200 session joined:
-SessionDetails(realm="devices",
-               session=6842364109815795,
-               authid="client01@example.com",
-               authrole="device",
-               authmethod="cryptosign",
-               authprovider="static",
-               authextra={'x_cb_node': 'intel-nuci7-323', 'x_cb_worker': 'worker001', 'x_cb_peer': 'tcp4:127.0.0.1:39346', 'x_cb_pid': 337},
-               serializer="cbor.batched",
-               transport="websocket",
-               resumed=None,
-               resumable=None,
-               resume_token=None)
-2020-08-18T18:53:56+0200 ********************************************************************************
-2020-08-18T18:53:56+0200 OK, successfully authenticated with WAMP-cryptosign: realm="devices", authid="client01@example.com", authrole="device"
-2020-08-18T18:53:56+0200 ********************************************************************************
-2020-08-18T18:53:56+0200 session closed: CloseDetails(reason=<wamp.close.normal>, message='None')
-2020-08-18T18:53:56+0200 connection to router closed
-2020-08-18T18:53:56+0200 Main loop terminated.
-python client_tx.py --url wss://localhost:8080 --key .keys/client01.key --channel_binding="tls-unique"
-
-2020-08-18T18:53:56+0200 Connecting to wss://localhost:8080: requesting realm=None, authid=None
-2020-08-18T18:53:56+0200 TLS client using explicit trust (2 certificates)
-2020-08-18T18:53:56+0200 TLS client trust root CA certificate loaded from '/home/oberstet/scm/crossbario/crossbar-examples/authentication/cryptosign/tls/.crossbar/intermediate.cert.pem'
-2020-08-18T18:53:56+0200 TLS client trust root CA certificate loaded from '/home/oberstet/scm/crossbario/crossbar-examples/authentication/cryptosign/tls/.crossbar/ca.cert.pem'
-2020-08-18T18:53:57+0200 initializing component: ComponentConfig(realm=<None>, extra={'channel_binding': 'tls-unique', 'authid': None, 'key': '.keys/client01.key'}, keyring=None, controller=None, shared=None, runner=<autobahn.twisted.wamp.ApplicationRunner object at 0x7f1c7c16b760>)
-2020-08-18T18:53:57+0200 client public key loaded: 545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122
-2020-08-18T18:53:57+0200 connected to router
-2020-08-18T18:53:57+0200 authenticating using authextra={'pubkey': '545efb0a2192db8d43f118e9bf9aee081466e1ef36c708b96ee6f62dddad9122', 'channel_binding': 'tls-unique'} ..
-2020-08-18T18:53:57+0200 authentication challenge received: Challenge(method=cryptosign, extra={'challenge': '0e4b9543f31fbfa02cd9239caf98023edbbe54d4257df888bcbc753a2ea3ac9e', 'channel_binding': 'tls-unique'})
-2020-08-18T18:53:57+0200 session joined:
-SessionDetails(realm="devices",
-               session=3020589441961526,
-               authid="client01@example.com",
-               authrole="device",
-               authmethod="cryptosign",
-               authprovider="static",
-               authextra={'x_cb_node': 'intel-nuci7-323', 'x_cb_worker': 'worker001', 'x_cb_peer': 'tcp4:127.0.0.1:39352', 'x_cb_pid': 337},
-               serializer="cbor.batched",
-               transport="websocket",
-               resumed=None,
-               resumable=None,
-               resume_token=None)
-2020-08-18T18:53:57+0200 ********************************************************************************
-2020-08-18T18:53:57+0200 OK, successfully authenticated with WAMP-cryptosign: realm="devices", authid="client01@example.com", authrole="device"
-2020-08-18T18:53:57+0200 ********************************************************************************
-2020-08-18T18:53:57+0200 session closed: CloseDetails(reason=<wamp.close.normal>, message='None')
-2020-08-18T18:53:57+0200 connection to router closed
-2020-08-18T18:53:57+0200 Main loop terminated.
-FIXME: client_aio_cnlbind_none
-# python client_aio.py --url wss://localhost:8080 --key .keys/client01.key
-FIXME: client_aio_cnlbind_unique
-# python client_aio.py --url wss://localhost:8080 --key .keys/client01.key --channel_binding="tls-unique"
-(cpy382_1) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication/cryptosign/tls$
+2022-07-20T22:53:36+0200 ********************************************************************************
+...
 ```
