@@ -76,13 +76,11 @@
                         "cryptosign": {
                            "type": "static",
                            "trustroots": {
-                                "realm1": {
-                                    "certificate": "root_ca_cert_realm1.crt"
-                                },
-                                "realm2": {
-                                    "certificate": "root_ca_cert_realm2.crt"
-                                }
-                            }
+                               "0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57": {
+                                   "realm": "realm1",
+                                   "role": "user"
+                               }
+                           }
                         }
                     }
                 }

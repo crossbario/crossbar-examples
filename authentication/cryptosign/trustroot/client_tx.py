@@ -268,7 +268,7 @@ if __name__ == '__main__':
 
     parser.add_argument('--url', dest='url', type=str, default='wss://localhost:8080/ws',
                         help='The router URL (default: wss://localhost:8080/ws).')
-    parser.add_argument('--realm', dest='realm', type=str, default='devices',
+    parser.add_argument('--realm', dest='realm', type=str, default='realm1',
                         help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--authid', dest='authid', type=str, default=None,
                         help='The authid to connect under. If not provided, let the router auto-choose the authid.')
