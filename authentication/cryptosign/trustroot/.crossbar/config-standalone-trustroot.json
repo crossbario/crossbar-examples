@@ -28,31 +28,6 @@
                             ]
                         }
                     ]
-                },
-                {
-                    "name": "realm2",
-                    "roles": [
-                        {
-                            "name": "user",
-                            "permissions": [
-                                {
-                                    "uri": "",
-                                    "match": "prefix",
-                                    "allow": {
-                                        "call": true,
-                                        "register": true,
-                                        "publish": true,
-                                        "subscribe": true
-                                    },
-                                    "disclose": {
-                                        "caller": false,
-                                        "publisher": false
-                                    },
-                                    "cache": true
-                                }
-                            ]
-                        }
-                    ]
                 }
             ],
             "transports": [
@@ -77,10 +52,7 @@
                            "type": "static",
                            "trustroots": {
                                 "realm1": {
-                                    "certificate": "root_ca_cert_realm1.crt"
-                                },
-                                "realm2": {
-                                    "certificate": "root_ca_cert_realm2.crt"
+                                    "certificate": "root_ca1.crt"
                                 }
                             }
                         }

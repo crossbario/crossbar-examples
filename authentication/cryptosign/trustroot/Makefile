@@ -1,7 +1,7 @@
 SEEDPHRASE="avocado style uncover thrive same grace crunch want essay reduce current edge"
 
-crossbar:
-	crossbar start --loglevel=info
+crossbar_standalone:
+	crossbar start --loglevel=info --config=config-standalone-trustroot.json
 
 clients: client_tx_cnlbind_none client_tx_cnlbind_unique
 
@@ -22,4 +22,4 @@ generate_certificates:
 	python generate_certificates.py --debug \
 		--seedphrase=$(SEEDPHRASE) \
 		--realm=0x72b3486d38E9f49215b487CeAaDF27D6acf22115 \
-		--certfile=./.crossbar/root_ca1.crt \
+		--outdir=./.crossbar/

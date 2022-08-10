@@ -27,8 +27,8 @@ from autobahn.twisted.wamp import ApplicationSession
 from crossbar.common.twisted.endpoint import _create_tls_client_context
 
 from autobahn.wamp.cryptosign import CryptosignKey
-from autobahn.xbr import make_w3, EthereumKey
-from autobahn.xbr._secmod import SecurityModuleMemory
+from autobahn.xbr import make_w3, EthereumKey, SecurityModuleMemory, EIP712DelegateCertificate
+
 from autobahn.xbr import create_eip712_delegate_certificate, create_eip712_authority_certificate, \
     EIP712AuthorityCertificate
 
@@ -38,19 +38,14 @@ class ClientSession(ApplicationSession):
     def __init__(self, config=None):
         self.log.debug('{func} initializing component: {config}', func=hltype(self.__init__), config=config)
         ApplicationSession.__init__(self, config)
-
         self._gw_config = {
             'type': 'infura',
             'key': os.environ.get('WEB3_INFURA_PROJECT_ID', ''),
             'network': 'mainnet',
         }
         self._w3 = make_w3(self._gw_config)
-
-        self._key = None
-        self._eth_key = None
-        self._trustroot_eth_key = None
         self._sm: SecurityModuleMemory = SecurityModuleMemory.from_seedphrase(self.config.extra['seedphrase'],
-                                                                              num_eth_keys=5, num_cs_keys=5)
+                                                                              num_eth_keys=10, num_cs_keys=6)
 
     @inlineCallbacks
     def _create_certificate_chain(self):
@@ -142,17 +137,40 @@ class ClientSession(ApplicationSession):
 
             yield self._sm.open()
 
-            # keys needed to create all certificates in certificate chain
-            self._trustroot_eth_key: EthereumKey = self._sm[0]
-            self._eth_key: EthereumKey = self._sm[1]
-            self._key: CryptosignKey = self._sm[6]
+            # Ethereum key pairs
+            root_ca1_ekey: EthereumKey = self._sm[1]
+            relay_ep1_ekey: EthereumKey = self._sm[6]
 
-            certificates = yield self._create_certificate_chain()
+            # Cryptosign key pairs
+            relay_dl1_ckey: CryptosignKey = self._sm[10]
+
+            # ######## delegate ("node") certificate ############################################
+            relay_dl1_cert_chainId = self._w3.eth.chain_id
+            relay_dl1_cert_verifyingContract = a2b_hex('0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'[2:])
+            relay_dl1_cert_validFrom = self._w3.eth.block_number
+            relay_dl1_cert_meta = ''
+            relay_dl1_cert_bootedAt = txaio.time_ns()
+            relay_dl1_cert = EIP712DelegateCertificate(chainId=relay_dl1_cert_chainId,
+                                                       verifyingContract=relay_dl1_cert_verifyingContract,
+                                                       validFrom=relay_dl1_cert_validFrom,
+                                                       delegate=relay_ep1_ekey.address(binary=True),
+                                                       csPubKey=relay_dl1_ckey.public_key(binary=True),
+                                                       bootedAt=relay_dl1_cert_bootedAt,
+                                                       meta=relay_dl1_cert_meta)
+            relay_dl1_cert_sig = yield relay_dl1_cert.sign(relay_ep1_ekey, binary=False)
+            log.info(
+                'EIP712DelegateCertificate issued by delegate {delegate} for csPubKey {csPubKey} and bootedAt {bootedAt}',
+                delegate=self._w3.toChecksumAddress(relay_dl1_cert.delegate),
+                csPubKey=binascii.b2a_hex(relay_dl1_cert.csPubKey).decode(),
+                bootedAt=relay_dl1_cert_bootedAt)
+
+            # certificates = yield self._create_certificate_chain()
+            certificates = [(relay_dl1_cert.marshal(), relay_dl1_cert_sig)]
 
             # authentication extra information for wamp-cryptosign
             authextra = {
                 # forward the client pubkey: required!
-                'pubkey': self._key.public_key(binary=False),
+                'pubkey': relay_dl1_ckey.public_key(binary=False),
 
                 # when running over TLS, require TLS channel binding
                 'channel_binding': self.config.extra['channel_binding'],
@@ -161,7 +179,7 @@ class ClientSession(ApplicationSession):
                 # a trust chain for its public key. the trustroot can e.g. be
                 # hard-coded in the client, or come from a command line option.
                 # 'trustroot': self.config.extra['trustroot'],
-                'trustroot': self._trustroot_eth_key.address(binary=False),
+                'trustroot': root_ca1_ekey.address(binary=False),
 
                 # certificate chain beginning with delegate certificate for this client (the delegate)
                 'certificates': certificates,

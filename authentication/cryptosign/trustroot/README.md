@@ -1,6 +1,6 @@
 # WAMP-cryptosign with certificates and trustroot
 
-## Test Accounts Setup
+## Test Accounts
 
 All key pairs, both WAMP-Cryptosign and Ethereum, for this demo are generated from one seedphrase defined in the [Makefile](Makefile)
 
@@ -29,10 +29,10 @@ The 16 keys (asymmetric key pairs of private and public keys) generated in the s
 | 7           | Ethereum    | `relay_ep2_ekey`    | Relay Endpoint            | User 3
 | 8           | Ethereum    | `gateway_ep1_ekey`  | Gateway Endpoint          | User 4
 | 9           | Ethereum    | `gateway_ep2_ekey`  | Gateway Endpoint          | User 5
-| 10          | Cryptosign  | `relay_ep1_ckey`    | Relay Node                | User 2
-| 11          | Cryptosign  | `relay_ep2_ckey`    | Relay Node                | User 3
-| 12          | Cryptosign  | `gateway_ep1_ckey`  | Gateway Node              | User 4
-| 13          | Cryptosign  | `gateway_ep2_ckey`  | Gateway Node              | User 5
+| 10          | Cryptosign  | `relay_dl1_ckey`    | Relay Node                | User 2
+| 11          | Cryptosign  | `relay_dl2_ckey`    | Relay Node                | User 3
+| 12          | Cryptosign  | `gateway_dl1_ckey`  | Gateway Node              | User 4
+| 13          | Cryptosign  | `gateway_dl2_ckey`  | Gateway Node              | User 5
 | 14          | Cryptosign  | -                   | *unused*                  | -
 | 15          | Cryptosign  | -                   | *unused*                  | -
 
@@ -51,17 +51,20 @@ certificate = EIP712AuthorityCertificate(...)
 signature = await cert.sign(root_ca1_ekey, binary=True)
 ```
 
-## Root CA Certificate
+## Test Certificates
 
-To create a new self-signed *Root CA Certificate* you can use the included script [gen_ca_cert.py](gen_ca_cert.py)
+To create a new self-signed *Root CA Certificate* you can use the included script [generate_certificates.py](generate_certificates.py)
 
 ```console
-python gen_ca_cert.py --debug \
-    --seedphrase=$(SEEDPHRASE) \
-    --verifyingContract=0x163D58cE482560B7826b4612f40aa2A7d53310C4 \
-    --realm=0x72b3486d38E9f49215b487CeAaDF27D6acf22115 \
-    --keyno=0 \
-    --certfile=./.crossbar/root_ca_cert_realm1.crt \
+(cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication/cryptosign/trustroot$ make generate_certificates
+python generate_certificates.py --debug \
+	--seedphrase="avocado style uncover thrive same grace crunch want essay reduce current edge" \
+	--realm=0x72b3486d38E9f49215b487CeAaDF27D6acf22115 \
+	--outdir=./.crossbar/
+2022-08-10T23:43:27+0200 EIP712AuthorityCertificate issued by 0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6 for subject 0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6 saved to "./.crossbar/root_ca1.crt"
+2022-08-10T23:43:27+0200 EIP712AuthorityCertificate issued by 0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6 for subject 0xecdb40C2B34f3bA162C413CC53BA3ca99ff8A047 saved to "./.crossbar/relay_ca1.crt"
+2022-08-10T23:43:27+0200 EIP712AuthorityCertificate issued by 0xecdb40C2B34f3bA162C413CC53BA3ca99ff8A047 for subject 0xeD22Fd82230B613a638e09E90dfBFeE6d604D3D2 saved to "./.crossbar/relay_ep1.crt"
+2022-08-10T23:43:27+0200 Main loop terminated.
 ```
 
 This will use the provided BIP-39 seedphrase ("Mnemonic") to generate security module keys from (both Ethereum and Cryptosign).
@@ -74,10 +77,9 @@ certificate will be self-signed, and hence `subject` will match that same addres
 
 A complete Crossbar.io node configuration using *Standalone Trustroots* can be found [here](.crossbar/config-standalone-trustroot.json).
 
-This example configures two realms
+This example configures one realm
 
 * `realm1`
-* `realm2`
 
 and a WebSocket listening transport with an authentication item `auth` for *WAMP-Cryptosign*
 
@@ -87,20 +89,16 @@ and a WebSocket listening transport with an authentication item `auth` for *WAMP
         "type": "static",
         "trustroots": {
             "realm1": {
-                "certificate": "root_ca_cert_realm1.crt"
-            },
-            "realm2": {
-                "certificate": "root_ca_cert_realm2.crt"
+                "certificate": "root_ca1.crt"
             }
         }
     }
 }
 ```
 
-The `trustroots` item for `cryptosign` configures a map from realm names (here `realm1` and `realm2`) to files with WAMP EIP712  *Root CA Certificates*
+The `trustroots` item for `cryptosign` configures a map from realm names (here only `realm1`) to files with WAMP EIP712  *Root CA Certificates*
 
-* `root_ca_cert_realm1.crt`
-* `root_ca_cert_realm2.crt`
+* `root_ca1.crt`
 
 These certificate filenames are relative to the Crossbar.io node directory (`.crossbar`), and are binary files which contain the CBOR serialized certificate and signature `[certificate, signature]`.
 
