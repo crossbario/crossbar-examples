@@ -22,7 +22,6 @@ txaio.use_twisted()
 from txaio import make_logger
 
 from autobahn.util import hltype, hlval, hlid
-from autobahn.wamp import cryptosign
 from autobahn.websocket.util import parse_url
 from autobahn.twisted.wamp import ApplicationSession
 from crossbar.common.twisted.endpoint import _create_tls_client_context
