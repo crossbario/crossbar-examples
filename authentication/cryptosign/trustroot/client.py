@@ -83,19 +83,20 @@ class ClientSession(ApplicationSession):
                                                        bootedAt=relay_dl1_cert_bootedAt,
                                                        meta=relay_dl1_cert_meta)
             relay_dl1_cert_sig = yield relay_dl1_cert.sign(relay_ep1_ekey, binary=False)
+            relay_dl1_cert.signatures = [relay_dl1_cert_sig]
             log.info(
                 'EIP712DelegateCertificate issued by delegate {delegate} for csPubKey {csPubKey} and bootedAt {bootedAt}',
                 delegate=self._w3.toChecksumAddress(relay_dl1_cert.delegate),
                 csPubKey=binascii.b2a_hex(relay_dl1_cert.csPubKey).decode(),
                 bootedAt=relay_dl1_cert_bootedAt)
 
-            # start certificate chain we will send with out fresh delegate certificate above
-            certificates = [(relay_dl1_cert.marshal(), relay_dl1_cert_sig)]
+            # start certificate chain we will send with our fresh delegate certificate above
+            certificates = [(relay_dl1_cert.hash, relay_dl1_cert.marshal(), relay_dl1_cert.signatures)]
 
             # append certificates of whole certificate chain, ending with root CA certificate of trustroot
             for fn in ['relay_ep1.crt', 'relay_ca1.crt', 'root_ca1.crt']:
-                cert, cert_sig = EIP712AuthorityCertificate.load(os.path.join('.crossbar', fn))
-                certificates.append((cert.marshal(), cert_sig))
+                cert = EIP712AuthorityCertificate.load(os.path.join('.crossbar', fn))
+                certificates.append((cert.hash, cert.marshal(), cert.signatures))
 
             # authentication extra information for wamp-cryptosign
             authextra = {

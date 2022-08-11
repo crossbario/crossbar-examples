@@ -60,7 +60,8 @@ async def main(reactor, log, gw_config, seedphrase, outdir, realm):
                                                capabilities=EIP712AuthorityCertificate.CAPABILITY_ROOT_CA | EIP712AuthorityCertificate.CAPABILITY_INTERMEDIATE_CA | EIP712AuthorityCertificate.CAPABILITY_PUBLIC_RELAY | EIP712AuthorityCertificate.CAPABILITY_PRIVATE_RELAY | EIP712AuthorityCertificate.CAPABILITY_PROVIDER | EIP712AuthorityCertificate.CAPABILITY_CONSUMER,
                                                meta=cert_meta)
     root_ca1_cert_sig = await root_ca1_cert.sign(root_ca1_ekey, binary=True)
-    root_ca1_cert.save(root_ca1_cert_filename, root_ca1_cert_sig)
+    root_ca1_cert.signatures = [root_ca1_cert_sig]
+    root_ca1_cert.save(root_ca1_cert_filename)
     log.info('EIP712AuthorityCertificate issued by {issuer} for subject {subject} saved to "{filename}"',
              issuer=w3.toChecksumAddress(root_ca1_cert.issuer),
              subject=w3.toChecksumAddress(root_ca1_cert.subject),
@@ -77,7 +78,8 @@ async def main(reactor, log, gw_config, seedphrase, outdir, realm):
                                                 capabilities=EIP712AuthorityCertificate.CAPABILITY_INTERMEDIATE_CA | EIP712AuthorityCertificate.CAPABILITY_PUBLIC_RELAY | EIP712AuthorityCertificate.CAPABILITY_PRIVATE_RELAY | EIP712AuthorityCertificate.CAPABILITY_PROVIDER | EIP712AuthorityCertificate.CAPABILITY_CONSUMER,
                                                 meta=cert_meta)
     relay_ca1_cert_sig = await relay_ca1_cert.sign(relay_ca1_ekey, binary=True)
-    relay_ca1_cert.save(relay_ca1_cert_filename, relay_ca1_cert_sig)
+    relay_ca1_cert.signatures = [relay_ca1_cert_sig]
+    relay_ca1_cert.save(relay_ca1_cert_filename)
     log.info('EIP712AuthorityCertificate issued by {issuer} for subject {subject} saved to "{filename}"',
              issuer=w3.toChecksumAddress(relay_ca1_cert.issuer),
              subject=w3.toChecksumAddress(relay_ca1_cert.subject),
@@ -94,7 +96,8 @@ async def main(reactor, log, gw_config, seedphrase, outdir, realm):
                                                 capabilities=EIP712AuthorityCertificate.CAPABILITY_PUBLIC_RELAY | EIP712AuthorityCertificate.CAPABILITY_PRIVATE_RELAY,
                                                 meta=cert_meta)
     relay_ep1_cert_sig = await relay_ep1_cert.sign(relay_ca1_ekey, binary=True)
-    relay_ep1_cert.save(relay_ep1_cert_filename, relay_ep1_cert_sig)
+    relay_ep1_cert.signatures = [relay_ep1_cert_sig]
+    relay_ep1_cert.save(relay_ep1_cert_filename)
     log.info('EIP712AuthorityCertificate issued by {issuer} for subject {subject} saved to "{filename}"',
              issuer=w3.toChecksumAddress(relay_ep1_cert.issuer),
              subject=w3.toChecksumAddress(relay_ep1_cert.subject),
