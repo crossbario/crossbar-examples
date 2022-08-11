@@ -1,5 +1,35 @@
 # WAMP-cryptosign with certificates and trustroot
 
+## Testing
+
+Start Crossbar.io using
+
+```
+make crossbar_standalone
+```
+
+and run a client (from a new terminal) using
+
+```
+make client_good
+```
+
+To run a client that fails to authenticate successfully:
+
+```
+make client_bad
+```
+
+These tests are also integrated into the automated CI tests for WAMP-Authentication:
+
+```
+cd crossbar-examples/authentication
+make test_all
+```
+
+![WAMP authentication test results](auth-tests-results.png "WAMP authentication test results")
+
+
 ## Test Accounts
 
 All key pairs, both WAMP-Cryptosign and Ethereum, for this demo are generated from one seedphrase defined in the [Makefile](Makefile)
@@ -72,6 +102,97 @@ The index within these auto-generated (Ethereum) key which we will use is specif
 The certificate will have an `issuer` with address matching this key, and since we generate a Root CA certificate, the
 certificate will be self-signed, and hence `subject` will match that same address.
 
+To read certificate files and print information from the loaded certificates:
+
+```
+(cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication/cryptosign/trustroot$ make print_certificates
+python print_certificates.py
+Loaded certificate with hash a695cbb338aebc7ee66826251bb2df46996b9d50d36317141a3d9f161316e836 by issuer 0xecdb40C2B34f3bA162C413CC53BA3ca99ff8A047 with 1 signatures:
+
+{'domain': {'name': 'WMP', 'version': '1'},
+ 'message': {'capabilities': 12,
+             'chainId': 1,
+             'issuer': '0xecdb40C2B34f3bA162C413CC53BA3ca99ff8A047',
+             'meta': '',
+             'realm': '0x72b3486d38E9f49215b487CeAaDF27D6acf22115',
+             'subject': '0xeD22Fd82230B613a638e09E90dfBFeE6d604D3D2',
+             'validFrom': 15321256,
+             'verifyingContract': '0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'},
+ 'primaryType': 'EIP712AuthorityCertificate',
+ 'types': {'EIP712AuthorityCertificate': [{'name': 'chainId',
+                                           'type': 'uint256'},
+                                          {'name': 'verifyingContract',
+                                           'type': 'address'},
+                                          {'name': 'validFrom',
+                                           'type': 'uint256'},
+                                          {'name': 'issuer', 'type': 'address'},
+                                          {'name': 'subject',
+                                           'type': 'address'},
+                                          {'name': 'realm', 'type': 'address'},
+                                          {'name': 'capabilities',
+                                           'type': 'uint64'},
+                                          {'name': 'meta', 'type': 'string'}],
+           'EIP712Domain': [{'name': 'name', 'type': 'string'},
+                            {'name': 'version', 'type': 'string'}]}}
+
+Loaded certificate with hash ce21b90a2cb3f043383283c611bd435e8a1f1beea4b171ee652aff3576a74421 by issuer 0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6 with 1 signatures:
+
+{'domain': {'name': 'WMP', 'version': '1'},
+ 'message': {'capabilities': 62,
+             'chainId': 1,
+             'issuer': '0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6',
+             'meta': '',
+             'realm': '0x72b3486d38E9f49215b487CeAaDF27D6acf22115',
+             'subject': '0xecdb40C2B34f3bA162C413CC53BA3ca99ff8A047',
+             'validFrom': 15321256,
+             'verifyingContract': '0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'},
+ 'primaryType': 'EIP712AuthorityCertificate',
+ 'types': {'EIP712AuthorityCertificate': [{'name': 'chainId',
+                                           'type': 'uint256'},
+                                          {'name': 'verifyingContract',
+                                           'type': 'address'},
+                                          {'name': 'validFrom',
+                                           'type': 'uint256'},
+                                          {'name': 'issuer', 'type': 'address'},
+                                          {'name': 'subject',
+                                           'type': 'address'},
+                                          {'name': 'realm', 'type': 'address'},
+                                          {'name': 'capabilities',
+                                           'type': 'uint64'},
+                                          {'name': 'meta', 'type': 'string'}],
+           'EIP712Domain': [{'name': 'name', 'type': 'string'},
+                            {'name': 'version', 'type': 'string'}]}}
+
+Loaded certificate with hash 442f7ba7960a43a71dd37e7793d99d668dce82384f87a7be4bbd358cb52d5f14 by issuer 0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6 with 1 signatures:
+
+{'domain': {'name': 'WMP', 'version': '1'},
+ 'message': {'capabilities': 63,
+             'chainId': 1,
+             'issuer': '0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6',
+             'meta': '',
+             'realm': '0x72b3486d38E9f49215b487CeAaDF27D6acf22115',
+             'subject': '0xf5173a6111B2A6B3C20fceD53B2A8405EC142bF6',
+             'validFrom': 15321256,
+             'verifyingContract': '0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'},
+ 'primaryType': 'EIP712AuthorityCertificate',
+ 'types': {'EIP712AuthorityCertificate': [{'name': 'chainId',
+                                           'type': 'uint256'},
+                                          {'name': 'verifyingContract',
+                                           'type': 'address'},
+                                          {'name': 'validFrom',
+                                           'type': 'uint256'},
+                                          {'name': 'issuer', 'type': 'address'},
+                                          {'name': 'subject',
+                                           'type': 'address'},
+                                          {'name': 'realm', 'type': 'address'},
+                                          {'name': 'capabilities',
+                                           'type': 'uint64'},
+                                          {'name': 'meta', 'type': 'string'}],
+           'EIP712Domain': [{'name': 'name', 'type': 'string'},
+                            {'name': 'version', 'type': 'string'}]}}
+
+(cpy39_1) (base) oberstet@intel-nuci7:~/scm/crossbario/crossbar-examples/authentication/cryptosign/trustroot$
+```
 
 ## Standalone Trustroots
 

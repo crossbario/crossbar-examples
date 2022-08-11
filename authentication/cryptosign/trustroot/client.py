@@ -5,7 +5,7 @@ from autobahn.twisted.wamp import ApplicationRunner
 
 import os
 import binascii
-from binascii import b2a_hex, a2b_hex
+from binascii import a2b_hex
 from pprint import pformat
 
 import nacl
@@ -27,10 +27,7 @@ from autobahn.twisted.wamp import ApplicationSession
 from crossbar.common.twisted.endpoint import _create_tls_client_context
 
 from autobahn.wamp.cryptosign import CryptosignKey
-from autobahn.xbr import make_w3, EthereumKey, SecurityModuleMemory, EIP712DelegateCertificate
-
-from autobahn.xbr import create_eip712_delegate_certificate, create_eip712_authority_certificate, \
-    EIP712AuthorityCertificate
+from autobahn.xbr import make_w3, EthereumKey, SecurityModuleMemory, EIP712DelegateCertificate, EIP712AuthorityCertificate
 
 
 class ClientSession(ApplicationSession):
@@ -56,7 +53,7 @@ class ClientSession(ApplicationSession):
 
             yield self._sm.open()
 
-            # The Trustroot we announce
+            # The Trustroot we announce (we only need read access to the public address)
             root_ca1_ekey: EthereumKey = self._sm[1]
             trustroot = root_ca1_ekey.address(binary=False)
 
@@ -69,36 +66,31 @@ class ClientSession(ApplicationSession):
             # We will use this key later in WAMP-Cryptosign authentication to sign the CHALLENGE
             self._key = relay_dl1_ckey
 
-            # ######## delegate ("node") certificate ############################################
-            relay_dl1_cert_chainId = self._w3.eth.chain_id
-            relay_dl1_cert_verifyingContract = a2b_hex('0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'[2:])
-            relay_dl1_cert_validFrom = self._w3.eth.block_number
-            relay_dl1_cert_meta = ''
-            relay_dl1_cert_bootedAt = txaio.time_ns()
-            relay_dl1_cert = EIP712DelegateCertificate(chainId=relay_dl1_cert_chainId,
-                                                       verifyingContract=relay_dl1_cert_verifyingContract,
-                                                       validFrom=relay_dl1_cert_validFrom,
+            # Now create and sign a fresh EIP712DelegateCertificate
+            relay_dl1_cert = EIP712DelegateCertificate(chainId=self._w3.eth.chain_id,
+                                                       verifyingContract=a2b_hex('0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'[2:]),
+                                                       validFrom=self._w3.eth.block_number,
                                                        delegate=relay_ep1_ekey.address(binary=True),
                                                        csPubKey=relay_dl1_ckey.public_key(binary=True),
-                                                       bootedAt=relay_dl1_cert_bootedAt,
-                                                       meta=relay_dl1_cert_meta)
+                                                       bootedAt=txaio.time_ns(),
+                                                       meta='')
             relay_dl1_cert_sig = yield relay_dl1_cert.sign(relay_ep1_ekey, binary=False)
             relay_dl1_cert.signatures = [relay_dl1_cert_sig]
             log.info(
                 'EIP712DelegateCertificate issued by delegate {delegate} for csPubKey {csPubKey} and bootedAt {bootedAt}',
                 delegate=self._w3.toChecksumAddress(relay_dl1_cert.delegate),
                 csPubKey=binascii.b2a_hex(relay_dl1_cert.csPubKey).decode(),
-                bootedAt=relay_dl1_cert_bootedAt)
+                bootedAt=relay_dl1_cert.bootedAt)
 
-            # start certificate chain we will send with our fresh delegate certificate above
+            # Start certificate chain we will send with our fresh delegate certificate above
             certificates = [(relay_dl1_cert.hash, relay_dl1_cert.marshal(), relay_dl1_cert.signatures)]
 
-            # append certificates of whole certificate chain, ending with root CA certificate of trustroot
+            # Append all certificates for complete certificate chain, ending with root CA certificate of trustroot
             for fn in ['relay_ep1.crt', 'relay_ca1.crt', 'root_ca1.crt']:
-                cert = EIP712AuthorityCertificate.load(os.path.join('.crossbar', fn))
+                cert = EIP712AuthorityCertificate.load(os.path.join(os.path.dirname(__file__), '.crossbar', fn))
                 certificates.append((cert.hash, cert.marshal(), cert.signatures))
 
-            # authentication extra information for wamp-cryptosign
+            # Assemble authentication extra information for WAMP-cryptosign
             authextra = {
                 # forward the client pubkey: required!
                 'pubkey': relay_dl1_ckey.public_key(binary=False),
@@ -119,7 +111,7 @@ class ClientSession(ApplicationSession):
             }
             self.log.debug('authenticating using authextra:\n\n{authextra}\n', authextra=pformat(authextra))
 
-            # now request to join
+            # Now request to join, authenticating with WAMP-Cryptosign
             self.join(self.config.realm, authmethods=['cryptosign'], authextra=authextra)
         except:
             self.log.failure()
@@ -129,17 +121,9 @@ class ClientSession(ApplicationSession):
         self.log.debug('{func} authentication challenge received: {challenge}',
                        func=hltype(self.onChallenge), challenge=challenge)
 
-        # check the trustchain the router provided against
-        # our trustroot, and check the signature provided by the
-        # router for our previous challenge. if both are ok, everything
-        # is fine - the router is authentic wrt our trustroot.
-        verify_key = None
-        if 'pubkey' in challenge.extra:
+        # Authenticate router (check signature over the router challenge we sent)
+        if 'pubkey' in challenge.extra and 'signature' in challenge.extra:
             verify_key = VerifyKey(challenge.extra['pubkey'], encoder=nacl.encoding.HexEncoder)
-
-        if 'signature' in challenge.extra:
-            assert verify_key
-
             signature = binascii.a2b_hex(challenge.extra['signature'])
             assert len(signature) == 96, 'unexpected length {} of signature'.format(len(signature))
             try:
@@ -151,14 +135,15 @@ class ClientSession(ApplicationSession):
                                func=hltype(self.onChallenge),
                                pubkey=challenge.extra['pubkey'])
 
+        # Actual channel ID in use
         channel_id = self.transport.transport_details.channel_id.get(self.config.extra['channel_binding'], None)
 
-        # sign the challenge with our private key.
+        # Sign the challenge with our private key.
         signed_challenge = self._key.sign_challenge(challenge,
                                                     channel_id=channel_id,
                                                     channel_id_type=self.config.extra['channel_binding'])
 
-        # send back the signed challenge for verification
+        # Send back the signed (client) challenge for verification (by router)
         return signed_challenge
 
     def onJoin(self, details):
@@ -170,7 +155,7 @@ class ClientSession(ApplicationSession):
             realm=hlid(details.realm), authid=hlid(details.authid), authrole=hlid(details.authrole))
         self.log.info(hlval('*' * 80, color='green', bold=True))
 
-        # alright, nothing more to do: leave again
+        # Alright, nothing more to do: leave again
         self.leave()
 
     @inlineCallbacks
@@ -193,29 +178,22 @@ class ClientSession(ApplicationSession):
 
 
 if __name__ == '__main__':
-
-    # parse command line arguments
     parser = argparse.ArgumentParser()
-
     parser.add_argument('--debug', dest='debug', action='store_true',
                         default=False, help='Enable logging at level "debug".')
-
     parser.add_argument('--seedphrase', dest='seedphrase', type=str,
                         default="avocado style uncover thrive same grace crunch want essay reduce current edge",
                         help='Seedphrase to generate security module keys from (both Ethereum and Cryptosign)')
-
     parser.add_argument('--channel_binding', dest='channel_binding', type=str, default='tls-unique',
                         help='Optional TLS channel binding, e.g. "tls-unique"')
     parser.add_argument('--challenge', dest='challenge', action='store_true',
                         default=True, help='Enable router challenge.')
-
     parser.add_argument('--url', dest='url', type=str, default='wss://localhost:8080/ws',
                         help='The router URL (default: wss://localhost:8080/ws).')
     parser.add_argument('--realm', dest='realm', type=str, default='realm1',
                         help='The realm to join. If not provided, let the router auto-choose the realm.')
     parser.add_argument('--authid', dest='authid', type=str, default=None,
                         help='The authid to connect under. If not provided, let the router auto-choose the authid.')
-
     options = parser.parse_args()
 
     if options.debug:
