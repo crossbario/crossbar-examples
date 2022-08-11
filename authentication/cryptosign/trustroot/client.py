@@ -38,6 +38,7 @@ class ClientSession(ApplicationSession):
     def __init__(self, config=None):
         self.log.debug('{func} initializing component: {config}', func=hltype(self.__init__), config=config)
         ApplicationSession.__init__(self, config)
+        self._key = None
         self._gw_config = {
             'type': 'infura',
             'key': os.environ.get('WEB3_INFURA_PROJECT_ID', ''),
@@ -48,88 +49,6 @@ class ClientSession(ApplicationSession):
                                                                               num_eth_keys=10, num_cs_keys=6)
 
     @inlineCallbacks
-    def _create_certificate_chain(self):
-        # data needed for delegate certificate: cert1
-        #
-        chainId = self._w3.eth.chain_id
-        verifyingContract = a2b_hex('0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57'[2:])
-        validFrom = self._w3.eth.block_number
-        delegate = self._eth_key.address(binary=True)
-        csPubKey = self._key.public_key(binary=True)
-        bootedAt = txaio.time_ns()
-        delegateMeta = ''
-
-        # data needed for intermediate authority certificate: cert2
-        #
-        issuer_cert2 = self._trustroot_eth_key.address(binary=True)
-        subject_cert2 = delegate
-        realm_cert2 = a2b_hex('0xA6e693CC4A2b4F1400391a728D26369D9b82ef96'[2:])
-        capabilities_cert2 = EIP712AuthorityCertificate.CAPABILITY_PUBLIC_RELAY | EIP712AuthorityCertificate.CAPABILITY_PRIVATE_RELAY
-        meta_cert2 = ''
-
-        # data needed for root authority certificate: cert3
-        #
-        issuer_cert3 = self._trustroot_eth_key.address(binary=True)
-        subject_cert3 = issuer_cert3
-        realm_cert3 = realm_cert2
-        capabilities_cert3 = EIP712AuthorityCertificate.CAPABILITY_ROOT_CA | EIP712AuthorityCertificate.CAPABILITY_INTERMEDIATE_CA | EIP712AuthorityCertificate.CAPABILITY_PUBLIC_RELAY | EIP712AuthorityCertificate.CAPABILITY_PRIVATE_RELAY | EIP712AuthorityCertificate.CAPABILITY_PROVIDER | EIP712AuthorityCertificate.CAPABILITY_CONSUMER
-        meta_cert3 = ''
-
-        # delegate certificate
-        #
-        cert1_data = create_eip712_delegate_certificate(chainId=chainId, verifyingContract=verifyingContract,
-                                                        validFrom=validFrom, delegate=delegate, csPubKey=csPubKey,
-                                                        bootedAt=bootedAt, meta=delegateMeta)
-
-        # print('\n\n{}\n\n'.format(pformat(cert1_data)))
-
-        cert1_sig = yield self._eth_key.sign_typed_data(cert1_data, binary=False)
-
-        cert1_data['message']['csPubKey'] = b2a_hex(cert1_data['message']['csPubKey']).decode()
-        cert1_data['message']['delegate'] = self._w3.toChecksumAddress(cert1_data['message']['delegate'])
-        cert1_data['message']['verifyingContract'] = self._w3.toChecksumAddress(
-            cert1_data['message']['verifyingContract'])
-
-        # intermediate CA certificate
-        #
-        cert2_data = create_eip712_authority_certificate(chainId=chainId, verifyingContract=verifyingContract,
-                                                         validFrom=validFrom, issuer=issuer_cert2,
-                                                         subject=subject_cert2,
-                                                         realm=realm_cert2, capabilities=capabilities_cert2,
-                                                         meta=meta_cert2)
-
-        # print('\n\n{}\n\n'.format(pformat(cert2_data)))
-
-        cert2_sig = yield self._trustroot_eth_key.sign_typed_data(cert2_data, binary=False)
-
-        cert2_data['message']['verifyingContract'] = self._w3.toChecksumAddress(
-            cert2_data['message']['verifyingContract'])
-        cert2_data['message']['issuer'] = self._w3.toChecksumAddress(cert2_data['message']['issuer'])
-        cert2_data['message']['subject'] = self._w3.toChecksumAddress(cert2_data['message']['subject'])
-        cert2_data['message']['realm'] = self._w3.toChecksumAddress(cert2_data['message']['realm'])
-
-        # create root authority certificate
-        #
-        cert3_data = create_eip712_authority_certificate(chainId=chainId, verifyingContract=verifyingContract,
-                                                         validFrom=validFrom, issuer=issuer_cert3,
-                                                         subject=subject_cert3,
-                                                         realm=realm_cert3, capabilities=capabilities_cert3,
-                                                         meta=meta_cert3)
-
-        cert3_sig = yield self._trustroot_eth_key.sign_typed_data(cert3_data, binary=False)
-
-        cert3_data['message']['verifyingContract'] = self._w3.toChecksumAddress(
-            cert3_data['message']['verifyingContract'])
-        cert3_data['message']['issuer'] = self._w3.toChecksumAddress(cert3_data['message']['issuer'])
-        cert3_data['message']['subject'] = self._w3.toChecksumAddress(cert3_data['message']['subject'])
-        cert3_data['message']['realm'] = self._w3.toChecksumAddress(cert3_data['message']['realm'])
-
-        # create certificates chain
-        #
-        certificates = [(cert1_data, cert1_sig), (cert2_data, cert2_sig), (cert3_data, cert3_sig)]
-        return certificates
-
-    @inlineCallbacks
     def onConnect(self):
         self.log.debug('{func} connected to router', func=hltype(self.onConnect))
         try:
@@ -137,12 +56,18 @@ class ClientSession(ApplicationSession):
 
             yield self._sm.open()
 
-            # Ethereum key pairs
+            # The Trustroot we announce
             root_ca1_ekey: EthereumKey = self._sm[1]
+            trustroot = root_ca1_ekey.address(binary=False)
+
+            # Our own Endpoint key which will sign a fresh Delegate certificate which we will send
             relay_ep1_ekey: EthereumKey = self._sm[6]
 
-            # Cryptosign key pairs
+            # Cryptosign key pairs of the Delegate (this authenticating WAMP client)
             relay_dl1_ckey: CryptosignKey = self._sm[10]
+
+            # We will use this key later in WAMP-Cryptosign authentication to sign the CHALLENGE
+            self._key = relay_dl1_ckey
 
             # ######## delegate ("node") certificate ############################################
             relay_dl1_cert_chainId = self._w3.eth.chain_id
@@ -164,8 +89,13 @@ class ClientSession(ApplicationSession):
                 csPubKey=binascii.b2a_hex(relay_dl1_cert.csPubKey).decode(),
                 bootedAt=relay_dl1_cert_bootedAt)
 
-            # certificates = yield self._create_certificate_chain()
+            # start certificate chain we will send with out fresh delegate certificate above
             certificates = [(relay_dl1_cert.marshal(), relay_dl1_cert_sig)]
+
+            # append certificates of whole certificate chain, ending with root CA certificate of trustroot
+            for fn in ['relay_ep1.crt', 'relay_ca1.crt', 'root_ca1.crt']:
+                cert, cert_sig = EIP712AuthorityCertificate.load(os.path.join('.crossbar', fn))
+                certificates.append((cert.marshal(), cert_sig))
 
             # authentication extra information for wamp-cryptosign
             authextra = {
@@ -175,13 +105,10 @@ class ClientSession(ApplicationSession):
                 # when running over TLS, require TLS channel binding
                 'channel_binding': self.config.extra['channel_binding'],
 
-                # not yet implemented. a public key the router should provide
-                # a trust chain for its public key. the trustroot can e.g. be
-                # hard-coded in the client, or come from a command line option.
-                # 'trustroot': self.config.extra['trustroot'],
-                'trustroot': root_ca1_ekey.address(binary=False),
+                # EIP712 trustroot the client announces
+                'trustroot': trustroot,
 
-                # certificate chain beginning with delegate certificate for this client (the delegate)
+                # certificate chain beginning with delegate certificate for this client
                 'certificates': certificates,
 
                 # for authenticating the router, this challenge will need to be signed by
@@ -276,12 +203,10 @@ if __name__ == '__main__':
                         default="avocado style uncover thrive same grace crunch want essay reduce current edge",
                         help='Seedphrase to generate security module keys from (both Ethereum and Cryptosign)')
 
-    parser.add_argument('--channel_binding', dest='channel_binding', type=str, default=None,
+    parser.add_argument('--channel_binding', dest='channel_binding', type=str, default='tls-unique',
                         help='Optional TLS channel binding, e.g. "tls-unique"')
-    parser.add_argument('--trustroot', dest='trustroot', type=str, default=None,
-                        help='Optional client trustroot, e.g. "0xf766Dc789CF04CD18aE75af2c5fAf2DA6650Ff57"')
     parser.add_argument('--challenge', dest='challenge', action='store_true',
-                        default=False, help='Enable router challenge.')
+                        default=True, help='Enable router challenge.')
 
     parser.add_argument('--url', dest='url', type=str, default='wss://localhost:8080/ws',
                         help='The router URL (default: wss://localhost:8080/ws).')
@@ -304,7 +229,6 @@ if __name__ == '__main__':
     # forward requested authid and key filename to ClientSession
     extra = {
         'channel_binding': options.channel_binding,
-        'trustroot': options.trustroot,
         'challenge': binascii.b2a_hex(os.urandom(32)).decode() if options.challenge else None,
         'authid': options.authid,
         'seedphrase': options.seedphrase,
