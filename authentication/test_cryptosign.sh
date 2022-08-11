@@ -132,13 +132,13 @@ crossbar stop  --cbdir=./cryptosign/tls/.crossbar || true
 ##
 ## WAMP-Cryptosign with Trustroot (using Twisted with channel binding "tls-unique")
 ##
-crossbar start --cbdir=./cryptosign/trustroot/.crossbar &
+crossbar start --cbdir=./cryptosign/trustroot/.crossbar --config=config-standalone-trustroot.json &
 sleep 10
 
-python ./cryptosign/trustroot/client_tx.py --url wss://localhost:8080 --seedphrase "${SEEDPHRASE}" --channel_binding="tls-unique" --challenge --trustroot 0x2F070c2f49a59159A0346396f1139203355ACA43
+python ./cryptosign/trustroot/client.py --url wss://localhost:8080 --realm realm1 --seedphrase "${SEEDPHRASE}"
 wamp_cryptosign_trustroot_tx_cnlbind_unique_good=$?
 
-python ./cryptosign/trustroot/client_tx.py --url wss://localhost:8080 --seedphrase "${BAD_SEEDPHRASE}" --channel_binding="tls-unique" --challenge --trustroot 0x2F070c2f49a59159A0346396f1139203355ACA43
+python ./cryptosign/trustroot/client.py --url wss://localhost:8080 --realm realm1 --seedphrase "${BAD_SEEDPHRASE}"
 wamp_cryptosign_trustroot_tx_cnlbind_unique_bad=$?
 
 crossbar stop  --cbdir=./cryptosign/trustroot/.crossbar || true
