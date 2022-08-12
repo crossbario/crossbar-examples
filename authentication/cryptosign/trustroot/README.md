@@ -2,25 +2,36 @@
 
 ## Testing
 
-Start Crossbar.io using
+Start Crossbar.io using the node configuration [config-standalone.json](.crossbar/config-standalone.json)
 
 ```
 make crossbar_standalone
 ```
 
-and run a client (from a new terminal) using
+> You should see the text `starting STANDALONE-realm with WAMP realm name "realm1" using router local realm_id realm001` in a log message when the node boots.
+
+**OR** start with the node configuration [config-shared.json](.crossbar/config-shared.json)
+
+```
+make crossbar_shared
+```
+
+> You should see the text `starting ETH-realm with WAMP realm name "0x66290fA8ADcD901Fd994e4f64Cfb53F4c359a326" using router local realm_id realm001` in a log message when the node boots.
+
+
+**AND** run a client (from a new terminal) using
 
 ```
 make client_good
 ```
 
-To run a client that fails to authenticate successfully:
+**OR** run a client that fails to authenticate successfully:
 
 ```
 make client_bad
 ```
 
-These tests are also integrated into the automated CI tests for WAMP-Authentication:
+These tests are also integrated into the [automated CI tests](https://github.com/crossbario/crossbar-examples/blob/master/authentication/test_cryptosign.sh) for WAMP-Cryptosign authentication:
 
 ```
 cd crossbar-examples/authentication

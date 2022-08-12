@@ -11,7 +11,7 @@ from autobahn.util import hltype, hlval
 from autobahn.twisted.component import Component, run
 from autobahn.wamp.types import PublishOptions
 from autobahn.wamp.exception import ApplicationError
-from autobahn.wamp.message import identity_realm_name_category
+from autobahn.wamp.message import identify_realm_name_category
 from autobahn.wamp.cryptosign import CryptosignKey
 from autobahn.wamp.interfaces import ICryptosignKey, IEthereumKey
 
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     # realm = 'realm1'
     realm = 'wamp-proto.eth'
 
-    realm_category = identity_realm_name_category(realm)
+    realm_category = identify_realm_name_category(realm)
     log.info('realm name "{realm}" is of category {realm_category}',
              realm=hlval(realm), realm_category=hlval(realm_category))
 
