@@ -71,7 +71,7 @@
                                     "render": "product_report.html"
                                 },
                                 {
-                                    "path": "/incomingforms",
+                                    "path": "/formsincoming",
                                     "method": "POST",
                                     "call": "com.example.incomingforms",
                                     "render": "greeting.html"
