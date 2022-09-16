@@ -49,6 +49,8 @@ class ReportsBackend(ApplicationSession):
         self._counter += 1
         self.log.info('ReportsBackend.formsincoming(json keyword arguments, details={details})',
                         details=details)
+        for key, value in kwargs.items():
+ 			self.log.info("%s == %s" % (key, value))
         result = {
             'name': 'Dandelion',
             'message': 'hi back at you!',
