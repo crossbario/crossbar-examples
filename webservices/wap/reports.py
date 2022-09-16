@@ -43,3 +43,15 @@ class ReportsBackend(ApplicationSession):
             'flasky': 'Hello, world! (counter={})'.format(self._counter)
         }
         return result
+    
+    @wamp.register(None)
+    def formsincoming(self, **kwargs, details=None):
+        self._counter += 1
+        self.log.info('ReportsBackend.formsincoming(json keyword arguments, details={details})',
+                        details=details)
+        result = {
+            'name': 'Dandelion',
+            'message': 'hi back at you!',
+            'flasky': 'Hello, world! (counter={})'.format(self._counter)
+        }
+        return result
