@@ -69,6 +69,12 @@
                                     "method": "GET",
                                     "call": "com.example.get_product_report",
                                     "render": "product_report.html"
+                                },
+                                {
+                                    "path": "/formsincoming",
+                                    "method": "POST",
+                                    "call": "com.example.incomingforms",
+                                    "render": "greeting.html"
                                 }
                             ],
                             "wamp": {

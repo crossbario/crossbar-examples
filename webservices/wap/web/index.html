@@ -14,6 +14,26 @@
             <li>
                 <a href="/reports/product/666/daily/2018/9">Product report test 2</a>
             </li>
+            <br>POST example:
+              <li>
+                 <form action="/reports/formsincoming" method="POST">
+                    <div>
+                       <label for="say">What greeting do you want to say?</label>
+                       <input name="say" id="say" value="Hi" />
+                    </div>
+                    <div>
+                       <label for="to">Who do you want to say it to?</label>
+                       <input name="to" id="to" value="Mom" />
+                    </div>
+                    <div>
+                       <label for="x">square this</label>
+                       <input name="x" id="x" value=2 />
+                    </div>
+                    <div>
+                       <button>Send my greetings</button>
+                    </div>
+                 </form>
+              </li>
         </ul>
     </body>
 </html>
