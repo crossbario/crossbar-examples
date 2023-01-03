@@ -1,0 +1,41 @@
+{
+    "version": 2,
+    "workers": [
+        {
+            "type": "router",
+            "realms": [
+                {
+                    "name": "0x66290fA8ADcD901Fd994e4f64Cfb53F4c359a326"
+                }
+            ],
+            "transports": [
+                {
+                    "type": "websocket",
+                    "serializers": ["cbor"],
+                    "endpoint": {
+                        "type": "tcp",
+                        "port": 8080,
+                        "tls": {
+                            "certificate": "server.crt",
+                            "key": "server.key",
+                            "dhparam": "dhparam.pem",
+                            "chain_certificates": [
+                                "intermediate.cert.pem",
+                                "ca.cert.pem"
+                            ]
+                        }
+                    },
+                    "auth": {
+                        "cryptosign": {
+                           "type": "static",
+                           "trustroots": {
+                                "0x66290fA8ADcD901Fd994e4f64Cfb53F4c359a326": {
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -2,7 +2,10 @@ SEEDPHRASE="avocado style uncover thrive same grace crunch want essay reduce cur
 BAD_SEEDPHRASE="edge current reduce essay want crunch grace same thrive uncover style avocado"
 
 crossbar_standalone:
-	crossbar start --loglevel=info --config=config-standalone-trustroot.json
+	crossbar start --loglevel=info --config=config-standalone.json
+
+crossbar_shared:
+	crossbar start --loglevel=info --config=config-shared.json
 
 clients: client_good client_bad
 
