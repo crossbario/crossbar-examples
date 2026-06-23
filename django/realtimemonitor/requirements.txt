@@ -43,7 +43,7 @@ treq==15.1.0
 Twisted==16.0.0
 txaio==2.2.2
 typing==3.7.4.1
-ujson==2.0.3
+ujson==5.13.0
 urllib3==1.25.9
 wsaccel==0.6.2
 zipp==1.2.0
