@@ -16,7 +16,7 @@ ipaddress==1.0.23
 Jinja2==2.11.2
 lmdb==0.98
 MarkupSafe==1.1.1
-mistune==0.8.4
+mistune==3.3.0
 msgpack-python==0.5.6
 netaddr==0.7.20
 pathlib2==2.3.5
